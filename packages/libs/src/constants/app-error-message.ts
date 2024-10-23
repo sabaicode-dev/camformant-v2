@@ -1,5 +1,3 @@
-// messages.js
-
 export const AUTH_MESSAGES = {
   // 1. General Authentication Messages
   GENERAL: {
