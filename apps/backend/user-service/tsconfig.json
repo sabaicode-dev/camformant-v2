@@ -16,24 +16,15 @@
     "noUnusedParameters": true,
     "alwaysStrict": true,
     "pretty": true,
+    "baseUrl": "./src",
     // Import Files From The Root Directory Using `@` prefix
     "paths": {
-      "@/*": [
-        "*",
-      ],
-      
+      "@/*": ["*"]
     }
   },
-  "include": [
-    "src/**/*",
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"],
   "ts-node": {
-    "require": [
-      "tsconfig-paths/register"
-    ]
+    "require": ["tsconfig-paths/register"]
   }
 }
