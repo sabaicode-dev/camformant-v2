@@ -24,7 +24,7 @@ export const defaultFilterValue: FilterValueParams = {
   workMode: "",
   required_experience: "",
   minSalary: 0,
-  maxSalary: 0
+  maxSalary: 0,
 };
 
 const SearchHomePage: React.FC = () => {
@@ -37,11 +37,12 @@ const SearchHomePage: React.FC = () => {
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [searchTrending, setSearchTrending] = useState<string[]>([]);
 
-
   useEffect(() => {
     const fetchSearchHistory = async () => {
       try {
-        const searchHistory = await axiosInstance.get(API_ENDPOINTS.SEARCH_HISTORY);
+        const searchHistory = await axiosInstance.get(
+          API_ENDPOINTS.SEARCH_HISTORY
+        );
         setSearchHistory(searchHistory.data.data);
       } catch (error) {
         console.error("fetchSearchHistory() method error::: ", error);
@@ -54,7 +55,9 @@ const SearchHomePage: React.FC = () => {
   useEffect(() => {
     const fetchSearchTrending = async () => {
       try {
-        const searchTrending = await axiosInstance.get(API_ENDPOINTS.SEARCH_TRENDING);
+        const searchTrending = await axiosInstance.get(
+          API_ENDPOINTS.SEARCH_TRENDING
+        );
         setSearchTrending(searchTrending.data.data);
       } catch (error) {
         console.error("fetchSearchTrending() method error::: ", error);
@@ -66,23 +69,31 @@ const SearchHomePage: React.FC = () => {
 
   return (
     <div className="pt-5">
-      <div className="container mx-auto px-4">
+      <div className="container px-4 mx-auto">
         {/* Search Bar */}
-        <div className="mb-6">
-          <Search focus={focusInput} buttonBack={true} setSearchValue={setSearchValue} setCompleteFilter={setFilterValues} isFilterDisplay={true} />
+        <div className="relative mb-6">
+          <Search
+            focus={focusInput}
+            buttonBack={true}
+            setSearchValue={setSearchValue}
+            setCompleteFilter={setFilterValues}
+            isFilterDisplay={true}
+          />
         </div>
 
         {/* Recent Searches Section */}
         <div className="mb-8">
-          <h2 className="text-lg font-semibold text-gray-700 mb-3">Recent Searches</h2>
-          <div className="w-full flex gap-3 p-3 overflow-x-auto">
+          <h2 className="mb-3 text-lg font-semibold text-gray-700">
+            Recent Searches
+          </h2>
+          <div className="flex w-full gap-3 p-3 overflow-x-auto">
             {searchHistory.length > 0 ? (
               searchHistory.map((item, index) => (
                 <div key={index} className="min-w-max">
                   <CategoryPosition
                     text={item}
                     onClick={() => setSearchValue(item)}
-                    className="bg-gray-100 px-4 py-2 rounded-lg shadow hover:bg-gray-200 transition duration-300 ease-in-out cursor-pointer"
+                    className="px-4 py-2 transition duration-300 ease-in-out bg-gray-100 rounded-lg shadow cursor-pointer hover:bg-gray-200"
                   />
                 </div>
               ))
@@ -94,15 +105,17 @@ const SearchHomePage: React.FC = () => {
 
         {/* Trending Searches Section */}
         <div className="mb-8">
-          <h2 className="text-lg font-semibold text-gray-700 mb-3">Trending Searches</h2>
-          <div className="w-full flex gap-3 p-3 overflow-x-auto">
+          <h2 className="mb-3 text-lg font-semibold text-gray-700">
+            Trending Searches
+          </h2>
+          <div className="flex w-full gap-3 p-3 overflow-x-auto">
             {searchTrending.length > 0 ? (
               searchTrending.map((item, index) => (
                 <div key={index} className="min-w-max">
                   <CategoryPosition
                     text={item}
                     onClick={() => setSearchValue(item)}
-                    className="bg-gray-100 px-4 py-2 rounded-lg shadow hover:bg-gray-200 transition duration-300 ease-in-out cursor-pointer"
+                    className="px-4 py-2 transition duration-300 ease-in-out bg-gray-100 rounded-lg shadow cursor-pointer hover:bg-gray-200"
                   />
                 </div>
               ))

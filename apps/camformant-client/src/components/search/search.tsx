@@ -3,28 +3,43 @@
 import { Sheet } from "react-modal-sheet";
 import { Filter } from "./filter";
 import Link from "next/link";
-import { Dispatch, RefObject, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { IoMdFunnel } from "react-icons/io";
 import { AiOutlineSearch } from "react-icons/ai";
 import { BackButton_md } from "../back/BackButton";
-import { defaultFilterValue, FilterValueParams } from "@/components/in-search/search-home-page";
+import {
+  defaultFilterValue,
+  FilterValueParams,
+} from "@/components/in-search/search-home-page";
 
 interface autoFocusd {
   focus?: RefObject<HTMLInputElement>;
   buttonBack?: boolean;
   isFilterDisplay?: boolean;
   setSearchValue?: Dispatch<SetStateAction<string>>;
-  setCompleteFilter?: Dispatch<SetStateAction<FilterValueParams>>
+  setCompleteFilter?: Dispatch<SetStateAction<FilterValueParams>>;
 }
 
-export const Search: React.FC<autoFocusd> = ({ focus, buttonBack, isFilterDisplay = false, setSearchValue, setCompleteFilter }) => {
+export const Search: React.FC<autoFocusd> = ({
+  focus,
+  buttonBack,
+  isFilterDisplay = false,
+  setSearchValue,
+  setCompleteFilter,
+}) => {
   const [isOpen, setOpen] = useState(false);
   const [filterValues, setFilterValues] = useState(defaultFilterValue);
 
   const handleCompleteFilter = () => {
     setCompleteFilter!(filterValues);
     setOpen(false);
-  }
+  };
 
   useEffect(() => {
     if (focus?.current) {
@@ -33,21 +48,21 @@ export const Search: React.FC<autoFocusd> = ({ focus, buttonBack, isFilterDispla
   }, [focus]);
 
   function handleReset() {
-    setFilterValues(defaultFilterValue)
+    setFilterValues(defaultFilterValue);
   }
 
   return (
     <>
-      {
-        isFilterDisplay && <button
+      {isFilterDisplay && (
+        <button
           onClick={() => setOpen(true)}
-          className="absolute translate-y-[16px] right-10 z-50 "
+          className="absolute translate-y-[16px] right-5 z-50 "
         >
           <IoMdFunnel size={22} className="text-primary" />
         </button>
-      }
+      )}
 
-      <div className=" w-full flex ">
+      <div className="flex w-full ">
         <div className={` ${buttonBack ? "block" : "hidden"} `}>
           <Link href={"../"}>
             <BackButton_md styles=" bg-white p-3 px-4 rounded-xl top-5 left-3 " />
@@ -63,11 +78,11 @@ export const Search: React.FC<autoFocusd> = ({ focus, buttonBack, isFilterDispla
             onChange={(e) => setSearchValue!(e.target.value)}
             ref={focus || undefined}
             placeholder="Search Job vacancy"
-            className="relative shadow-md outline-none p-4 placeholder:text-md bg-whit rounded-2xl w-full pl-16 "
+            className="relative w-full p-4 pl-16 shadow-md outline-none placeholder:text-md bg-whit rounded-2xl "
           />
         </Link>
       </div>
-      {isFilterDisplay &&
+      {isFilterDisplay && (
         <Sheet
           isOpen={isOpen}
           onClose={() => setOpen(false)}
@@ -75,9 +90,9 @@ export const Search: React.FC<autoFocusd> = ({ focus, buttonBack, isFilterDispla
         >
           <Sheet.Container>
             <Sheet.Header />
-            <div className="flex container justify-between pb-5 ">
-              <button className=" text-primary text-lg">{"Filter"}</button>
-              <button onClick={handleReset} className=" text-primary text-lg">
+            <div className="container flex justify-between pb-5 ">
+              <button className="text-lg  text-primary">{"Filter"}</button>
+              <button onClick={handleReset} className="text-lg  text-primary">
                 {"Reset"}
               </button>
             </div>
@@ -92,7 +107,7 @@ export const Search: React.FC<autoFocusd> = ({ focus, buttonBack, isFilterDispla
           </Sheet.Container>
           <Sheet.Backdrop />
         </Sheet>
-      }
+      )}
     </>
   );
 };

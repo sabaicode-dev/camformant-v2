@@ -20,11 +20,11 @@ const people = [
 
 export const Header: React.FC = () => {
   const [selected, setSelected] = useState(people[0]);
-  
+
   return (
     <div className="container pt-10 pb-10 ">
-      <div className=" flex flex-col justify-between h-40 bg-mybg-linear rounded-2xl">
-        <div className="w-full flex justify-start">
+      <div className="flex flex-col justify-between h-40 bg-mybg-linear rounded-2xl">
+        <div className="flex justify-start w-full">
           <Image
             className="bg-red-500 shadow-orange-700 shadow-md mt-[-20px] rounded-tl-lg rounded-e-[50px]"
             src={logoTeam}
@@ -32,15 +32,15 @@ export const Header: React.FC = () => {
             width={100}
           />
         </div>
-        <div className="flex pl-3 pr-3 justify-between">
+        <div className="flex justify-between pl-3 pr-3">
           <div>
             <div className="mb-4">
               <Listbox value={selected} onChange={setSelected}>
                 <div className="relative w-32 ">
-                  <Listbox.Button className="flex items-center justify-between space-x-3 rounded-lg text-white">
+                  <Listbox.Button className="flex items-center justify-between space-x-3 text-white rounded-lg">
                     <span className="block truncate">{selected.name}</span>
                     <AiFillCaretDown
-                      className="h-4 w-4 text-white"
+                      className="w-4 h-4 text-white"
                       aria-hidden="true"
                     />
                   </Listbox.Button>
@@ -50,14 +50,15 @@ export const Header: React.FC = () => {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                   >
-                    <Listbox.Options className="absolute mt-1 z-50 w-full overflow-auto rounded-lg bg-white shadow-lg">
+                    <Listbox.Options className="absolute z-50 w-full mt-1 overflow-auto bg-white rounded-lg shadow-lg">
                       {people.map((person, personIdx) => (
                         <Listbox.Option
                           key={personIdx}
                           className={({ active }) =>
-                            ` py-2 px-2 ${active
-                              ? "bg-amber-100 text-amber-900"
-                              : "text-gray-900"
+                            ` py-2 px-2 ${
+                              active
+                                ? "bg-amber-100 text-amber-900"
+                                : "text-gray-900"
                             }`
                           }
                           value={person}
@@ -65,8 +66,9 @@ export const Header: React.FC = () => {
                           {({ selected }) => (
                             <>
                               <span
-                                className={`block truncate ${selected ? "font-medium" : "font-normal"
-                                  }`}
+                                className={`block truncate ${
+                                  selected ? "font-medium" : "font-normal"
+                                }`}
                               >
                                 {person.name}
                               </span>
@@ -79,7 +81,7 @@ export const Header: React.FC = () => {
                 </div>
               </Listbox>
             </div>
-            <div className="w-10 h-5  ">
+            <div className="w-10 h-5 ">
               <ButtonLanguage />
             </div>
           </div>
@@ -88,15 +90,15 @@ export const Header: React.FC = () => {
           >
             <Link
               href="notification"
-              className="h-full flex items-center justify-center"
+              className="flex items-center justify-center h-full"
             >
-              <div className="bg-white rounded-full p-4">
+              <div className="p-4 bg-white rounded-full">
                 <FaBell size={20} color="#FF7300" />
               </div>
             </Link>
           </div>
         </div>
-        <div className="pl-3 pr-3 mb-[-25px] ">
+        <div className="pl-3 pr-3 mb-[-25px]">
           <Search />
         </div>
       </div>
