@@ -91,8 +91,8 @@ export const Search: React.FC<autoFocusd> = ({
           <Sheet.Container>
             <Sheet.Header />
             <div className="container flex justify-between pb-5 ">
-              <button className="text-lg  text-primary">{"Filter"}</button>
-              <button onClick={handleReset} className="text-lg  text-primary">
+              <button className="text-lg text-primary">{"Filter"}</button>
+              <button onClick={handleReset} className="text-lg text-primary">
                 {"Reset"}
               </button>
             </div>

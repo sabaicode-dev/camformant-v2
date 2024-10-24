@@ -24,7 +24,7 @@ export const defaultFilterValue: FilterValueParams = {
   workMode: "",
   required_experience: "",
   minSalary: 0,
-  maxSalary: 0,
+  maxSalary: 200,
 };
 
 const SearchHomePage: React.FC = () => {
