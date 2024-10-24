@@ -2,14 +2,14 @@ import mongoose, { model, Schema } from "mongoose";
 
 export enum EmploymentType {
   CONTRACT = "Contract",
-  INTERNSHIP = "Internship"
+  INTERNSHIP = "Internship",
 }
 
 export enum EmploymentSchedule {
   FULL_TIME = "Full-Time",
   PART_TIME = "Part-Time",
   FLEXIBLE_HOURS = "Flexible-Hours",
-  PROJECT_BASED = "Project-Based"
+  PROJECT_BASED = "Project-Based",
 }
 
 export enum WorkMode {
@@ -23,7 +23,7 @@ export interface IJob {
   companyId?: string;
   title?: string; // name of the job that company looking for. Example: Java Developer
   position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
-  workMode?: WorkMode[]; 
+  workMode?: WorkMode[];
   location?: string; // location could be phnom penh, kompong-cham, etc.
   requirement?: string;
   address?: string; // address could be the link address of the company (google link)
@@ -42,7 +42,11 @@ export interface IJob {
 
 const JobSchema: Schema = new Schema(
   {
-    companyId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Company' },
+    companyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Company",
+    },
     title: { type: String, required: true },
     position: { type: [String], required: true },
     workMode: { type: [String], required: true, enum: Object.values(WorkMode) },
@@ -72,7 +76,11 @@ const JobSchema: Schema = new Schema(
       enum: Object.values(EmploymentType),
       required: true,
     },
-    schedule: { type: [String], required: true, enum: Object.values(EmploymentSchedule) },
+    schedule: {
+      type: [String],
+      required: true,
+      enum: Object.values(EmploymentSchedule),
+    },
     required_experience: { type: [String], required: true },
     benefit: { type: [String], required: true },
     deadline: { type: Date, required: true },
@@ -86,6 +94,6 @@ const JobSchema: Schema = new Schema(
       },
     },
   }
-)
+);
 
 export const JobModel = model<IJob>("Job", JobSchema);

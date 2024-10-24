@@ -135,13 +135,19 @@ class AuthService {
 
       // Retrieve the user to get the `role` attribute
       const userInfo = await this.getUserByUsername(username);
+      console.log("userInfo: ", userInfo);
+
       const role =
         userInfo.UserAttributes?.find((attr) => attr.Name === "custom:role")
           ?.Value || "user";
 
+      const userSub = userInfo.UserAttributes?.filter(
+        (Name) => Name.Name === "sub"
+      )[0].Value;
       // Add the user to the group based on the `role` attribute
-      await this.addToGroup(username, role);
+      console.log("userSub: ", userSub);
 
+      await this.addToGroup(userSub!, role);
       // Send user info to the `User Service`
       await axios.post(`${configs.userServiceUrl}/v1/users`, {
         sub: userInfo.Username,
@@ -400,7 +406,7 @@ class AuthService {
     return decodedToken;
   }
 
-  async addToGroup(username: string, groupName: string) {
+  async addToGroup(username: string, groupName: string = "user") {
     const params = {
       GroupName: groupName,
       Username: username,
