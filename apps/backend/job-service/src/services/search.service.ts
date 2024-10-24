@@ -1,28 +1,32 @@
 import searchRepository from "@/src/database/repositories/search.repository";
-import { AuthenticationError } from "@sokritha-sabaicode/ms-libs";
-
+import { AuthenticationError } from "@sabaicode-dev/camformant-libs";
 
 class SearchJobService {
   async saveSearchHistory(userId: string | null, query: string) {
     try {
-      await searchRepository.saveSearchHistory(userId, query)
-
+      await searchRepository.saveSearchHistory(userId, query);
     } catch (error) {
-      console.error(`SearchJobService saveSearchHistory() method error::: `, error);
+      console.error(
+        `SearchJobService saveSearchHistory() method error::: `,
+        error
+      );
       throw error;
     }
   }
 
   async getSearchHistory(userId: string): Promise<string[]> {
     try {
-      console.log('userId::: ', userId)
+      console.log("userId::: ", userId);
       if (!userId) throw new AuthenticationError();
 
       const searchHistory = await searchRepository.getSearchHistory(userId);
 
       return searchHistory;
     } catch (error) {
-      console.error(`SearchJobService getSearchHistory() method error::: `, error);
+      console.error(
+        `SearchJobService getSearchHistory() method error::: `,
+        error
+      );
       throw error;
     }
   }
@@ -33,7 +37,10 @@ class SearchJobService {
 
       return trendingSearches;
     } catch (error) {
-      console.error(`SearchJobService getTrendingSearches() method error::: `, error);
+      console.error(
+        `SearchJobService getTrendingSearches() method error::: `,
+        error
+      );
       throw error;
     }
   }

@@ -1,9 +1,9 @@
-import validateRequest from '@/src/middewares/validate-input';
-import { Request, Response, NextFunction } from 'express';
-import Joi from 'joi';
-import { InvalidInputError } from '@sokritha-sabaicode/ms-libs';
+import validateRequest from "@/src/middewares/validate-input";
+import { Request, Response, NextFunction } from "express";
+import Joi from "joi";
+import { InvalidInputError } from "@sabaicode-dev/camformant-libs";
 
-describe('validateRequest Middleware', () => {
+describe("validateRequest Middleware", () => {
   let nextFunction: NextFunction;
 
   beforeEach(() => {
@@ -17,13 +17,13 @@ describe('validateRequest Middleware', () => {
   });
 
   // Case 1
-  it('should call next if validation passes', () => {
+  it("should call next if validation passes", () => {
     const req = {
       body: {
-        username: 'testuser',
-        email: 'testuser@example.com',
-        age: 25
-      }
+        username: "testuser",
+        email: "testuser@example.com",
+        age: 25,
+      },
     } as Request;
 
     const res = {} as Response;
@@ -35,12 +35,12 @@ describe('validateRequest Middleware', () => {
   });
 
   // Case 2
-  it('should throw InvalidInputError if validation fails', () => {
+  it("should throw InvalidInputError if validation fails", () => {
     const req = {
       body: {
-        email: 'notanemail',
-        age: -5
-      }
+        email: "notanemail",
+        age: -5,
+      },
     } as Request;
 
     const res = {} as Response;
@@ -52,14 +52,14 @@ describe('validateRequest Middleware', () => {
   });
 
   // Case 3
-  it('should throw InvalidInputError if unknown properties are present', () => {
+  it("should throw InvalidInputError if unknown properties are present", () => {
     const req = {
       body: {
-        username: 'testuser',
-        email: 'testuser@example.com',
+        username: "testuser",
+        email: "testuser@example.com",
         age: 25,
-        unknownProp: 'should not be here'
-      }
+        unknownProp: "should not be here",
+      },
     } as Request;
 
     const res = {} as Response;

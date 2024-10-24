@@ -12,7 +12,7 @@ import { FormFieldRegister } from "@/components/auth/form/form-field-register";
 import { RegisterProps, UserSchema } from "@/schema/register";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
- 
+
 const Page: React.FC = () => {
   const { signup, loading } = useAuth();
   const { addNotification, NotificationDisplay } = useNotification();
@@ -26,20 +26,22 @@ const Page: React.FC = () => {
   });
 
   const onSubmit = async (data: RegisterProps) => {
+    console.log("data: ", data);
+
     let contactMethod = "";
     if (emailRegex.test(data.contact)) {
-      contactMethod = "email"
+      contactMethod = "email";
     } else {
-      contactMethod = "phone_number"
+      contactMethod = "phone_number";
     }
 
     try {
-      await signup({ ...data, [contactMethod]: data.contact })
+      await signup({ ...data, [contactMethod]: data.contact });
     } catch (error) {
       if (isAPIErrorResponse(error)) {
-        addNotification(error.response.data.message, 'error');
+        addNotification(error.response.data.message, "error");
       } else {
-        addNotification(error as string, 'error');
+        addNotification(error as string, "error");
       }
     }
   };
@@ -55,7 +57,7 @@ const Page: React.FC = () => {
             </span>
           </button>
         </div>
-        <h1 className="flex w-full justify-center items-center text-xl font-bold my-5">
+        <h1 className="flex items-center justify-center w-full my-5 text-xl font-bold">
           Register Account
         </h1>
         <div className="flex flex-col gap-5">
@@ -88,15 +90,15 @@ const Page: React.FC = () => {
             error={errors.password}
           />
 
-          <div className="flex gap-x-2 pl-6 font-semibold">
+          <div className="flex pl-6 font-semibold gap-x-2">
             <span>have an account already? </span>
-            <Link href={"/login"} className=" text-orange-500 ">
+            <Link href={"/login"} className="text-orange-500 ">
               Sign in
             </Link>
           </div>
           <button
             type="submit"
-            className="mt-2 px-10 py-4 bg-primary text-white rounded-3xl"
+            className="px-10 py-4 mt-2 text-white bg-primary rounded-3xl"
           >
             {loading ? "Loading..." : "Register"}
           </button>

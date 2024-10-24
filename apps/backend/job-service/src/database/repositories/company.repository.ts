@@ -1,7 +1,11 @@
-
 import { CompanyParams } from "@/src/controllers/types/company-controller.type";
 import { CompanyModel, ICompany } from "@/src/database/models/company.model";
-import { NotFoundError, prettyObject, ResourceConflictError, InvalidInputError } from "@sokritha-sabaicode/ms-libs";
+import {
+  NotFoundError,
+  prettyObject,
+  ResourceConflictError,
+  InvalidInputError,
+} from "@sabaicode-dev/camformant-libs";
 import mongoose from "mongoose";
 
 interface MongoError extends Error {
@@ -80,9 +84,7 @@ class CompanyRepository {
     }
   }
 
-  public async updateCompanyById(
-    updateInfo: ICompany
-  ): Promise<ICompany> {
+  public async updateCompanyById(updateInfo: ICompany): Promise<ICompany> {
     try {
       const { _id, ...newUpdateInfo } = updateInfo;
       const result = await CompanyModel.findByIdAndUpdate(_id, newUpdateInfo, {

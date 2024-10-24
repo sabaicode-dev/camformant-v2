@@ -1,9 +1,12 @@
-import { JobGetAllRepoParams, JobParams, JobSortParams } from "@/src/controllers/types/job-controller.type";
+import {
+  JobGetAllRepoParams,
+  JobParams,
+  JobSortParams,
+} from "@/src/controllers/types/job-controller.type";
 import { CompanyModel } from "@/src/database/models/company.model";
 import { IJob, JobModel } from "@/src/database/models/job.model";
-import { NotFoundError, prettyObject } from "@sokritha-sabaicode/ms-libs";
+import { NotFoundError, prettyObject } from "@sabaicode-dev/camformant-libs";
 import { SortOrder } from "mongoose";
-
 
 class JobRepository {
   public async createNewJob(newInfo: JobParams): Promise<IJob> {
@@ -37,7 +40,7 @@ class JobRepository {
       "required_experience",
       "location",
       "position",
-      "workMode"
+      "workMode",
     ];
 
     // Convert sort from {'field': 'desc'} to {'field': -1}
@@ -53,7 +56,6 @@ class JobRepository {
       },
       {} as Record<keyof JobSortParams, SortOrder>
     );
-
 
     // Build MongoDB filter object
     const buildFilter = (filter: Record<string, any>) => {
@@ -121,17 +123,17 @@ class JobRepository {
       return mongoFilter;
     };
 
-    console.log('mongoFilter::: ', buildFilter(filter))
+    console.log("mongoFilter::: ", buildFilter(filter));
 
     // Adding search functionality
     const searchFilter = search
       ? {
-        $or: [
-          { title: { $regex: search, $options: "i" } },
-          { position: { $regex: search, $options: "i" } },
-          { "companyId.name": { $regex: search, $options: "i" } },
-        ],
-      }
+          $or: [
+            { title: { $regex: search, $options: "i" } },
+            { position: { $regex: search, $options: "i" } },
+            { "companyId.name": { $regex: search, $options: "i" } },
+          ],
+        }
       : {};
 
     try {

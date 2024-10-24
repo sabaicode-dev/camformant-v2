@@ -4,6 +4,7 @@
     "esModuleInterop": true,
     "target": "es6", // compile to es6
     "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "rootDir": "./src", // location of where it started to compile
     "outDir": "./build",
@@ -16,7 +17,6 @@
     "noUnusedParameters": true,
     "alwaysStrict": true,
     "pretty": true,
-    "baseUrl": "./src",
     // Import Files From The Root Directory Using `@` prefix
     "paths": {
       "@/*": ["*"]
