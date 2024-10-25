@@ -4,7 +4,7 @@ import React from "react";
 
 const Page: React.FC = () => {
   return (
-    <div className="h-screen w-full ipse:h-[130vh] ipx:h-screen ">
+    <div className="h-screen  w-full ipse:h-[200vh] ipx:h-screen ">
       <Background
         style="bg-mybg-linear rounded-ee-2xl rounded-es-2xl"
         childStyle="bg-none"

@@ -62,9 +62,12 @@ const Page: React.FC = () => {
         const response = await axiosInstance.get(`${API_ENDPOINTS.JOBS}`);
 
         const jobs = response.data.data.jobs;
+        const Jobfavorit=jobs.filter((job:any)=>{
+          return favoriteJobIds.includes(job._id)
+        })
 
         // Set favorite status to true for these jobs
-        const jobsWithFavoriteStatus = jobs.map((job: any) => ({
+        const jobsWithFavoriteStatus = Jobfavorit.map((job: any) => ({
           ...job,
           favorite: true,
         }));

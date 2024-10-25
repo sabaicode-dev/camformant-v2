@@ -85,6 +85,8 @@ const Page: React.FC = () => {
       const blob = await response.blob();
       const file = new File([blob], "cropped-image.png", { type: "image/png" });
       setUpload(file);
+      const imagefile=URL.createObjectURL(file)
+      setPic(imagefile)
       setIsCropping(false);
     } catch (error) {
       console.error("Failed to crop image", error);
@@ -107,7 +109,7 @@ const Page: React.FC = () => {
               <div className={` w-32 h-32 rounded-full overflow-hidden bg-white`}>
                 <Image
                   className="object-cover"
-                  src={user?.profile!}
+                  src={typeof pic === "string" && pic ? pic : user?.profile || ""}
                   height={200}
                   width={200}
                   alt="Profile Picture"
