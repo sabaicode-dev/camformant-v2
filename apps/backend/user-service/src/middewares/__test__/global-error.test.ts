@@ -1,7 +1,10 @@
 import { globalErrorHandler } from "@/src/middewares/global-error";
-import { NotFoundError, HTTP_STATUS_CODE, InvalidInputError } from "@sokritha-sabaicode/ms-libs";
+import {
+  NotFoundError,
+  HTTP_STATUS_CODE,
+  InvalidInputError,
+} from "@sabaicode-dev/camformant-libs";
 import { NextFunction, Request, Response } from "express";
-
 
 describe("errorHandler middleware", () => {
   let req: Partial<Request>;
@@ -23,16 +26,24 @@ describe("errorHandler middleware", () => {
     globalErrorHandler(mockError, req as Request, res as Response, next);
 
     expect(res.status).toHaveBeenCalledWith(HTTP_STATUS_CODE.NOT_FOUND);
-    expect(res.json).toHaveBeenCalledWith({ message: mockError.message, error: mockError.errors });
+    expect(res.json).toHaveBeenCalledWith({
+      message: mockError.message,
+      error: mockError.errors,
+    });
   });
 
   it("handles invalid input error correctly", () => {
-    const mockError = new InvalidInputError({ errors: ["username is required"] });
+    const mockError = new InvalidInputError({
+      errors: ["username is required"],
+    });
 
     globalErrorHandler(mockError, req as Request, res as Response, next);
 
     expect(res.status).toHaveBeenCalledWith(HTTP_STATUS_CODE.BAD_REQUEST);
-    expect(res.json).toHaveBeenCalledWith({ message: mockError.message, error: mockError.errors });
+    expect(res.json).toHaveBeenCalledWith({
+      message: mockError.message,
+      error: mockError.errors,
+    });
   });
 
   it("handles unexpected error correctly", () => {
@@ -43,5 +54,4 @@ describe("errorHandler middleware", () => {
     expect(res.status).toHaveBeenCalledWith(HTTP_STATUS_CODE.SERVER_ERROR);
     expect(res.json).toHaveBeenCalledWith({ message: mockError.message });
   });
-
 });

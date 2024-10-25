@@ -1,5 +1,7 @@
-import NotificationModel, { INotification } from "@/src/database/models/notification.model";
-import { prettyObject } from "@sokritha-sabaicode/ms-libs";
+import NotificationModel, {
+  INotification,
+} from "@/src/database/models/notification.model";
+import { prettyObject } from "@sabaicode-dev/camformant-libs";
 
 class NotificationRepository {
   async saveSubscription(newSubscriber: INotification) {
@@ -11,11 +13,15 @@ class NotificationRepository {
           upsert: true, // Add if there is no existing userId
           new: true, // Return the new document
           setDefaultsOnInsert: true, // Set default values if creating a new document
-        })
+        }
+      );
 
       return notification;
     } catch (error) {
-      console.error(`NotificationRepository - saveSubscription() method error: `, prettyObject(error as {}));
+      console.error(
+        `NotificationRepository - saveSubscription() method error: `,
+        prettyObject(error as {})
+      );
       throw error;
     }
   }
@@ -25,7 +31,10 @@ class NotificationRepository {
       const notification = await NotificationModel.find({ userId });
       return notification;
     } catch (error) {
-      console.error(`NotificationRepository - getSubscriptionByUserId() method error: `, prettyObject(error as {}));
+      console.error(
+        `NotificationRepository - getSubscriptionByUserId() method error: `,
+        prettyObject(error as {})
+      );
       throw error;
     }
   }
@@ -35,7 +44,10 @@ class NotificationRepository {
       const notification = await NotificationModel.findOne({ endpoint });
       return notification;
     } catch (error) {
-      console.error(`NotificationRepository - getSubscriptionByEndpoint() method error: `, prettyObject(error as {}));
+      console.error(
+        `NotificationRepository - getSubscriptionByEndpoint() method error: `,
+        prettyObject(error as {})
+      );
       throw error;
     }
   }
@@ -44,7 +56,10 @@ class NotificationRepository {
     try {
       await NotificationModel.findByIdAndDelete(id);
     } catch (error) {
-      console.error(`NotificationRepository - deleteSubscription() method error: `, prettyObject(error as {}));
+      console.error(
+        `NotificationRepository - deleteSubscription() method error: `,
+        prettyObject(error as {})
+      );
       throw error;
     }
   }

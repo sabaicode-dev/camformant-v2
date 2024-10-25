@@ -267,8 +267,15 @@
 						"format": "double"
 					},
 					"limit": {
-						"type": "number",
-						"format": "double"
+						"anyOf": [
+							{
+								"type": "number",
+								"format": "double"
+							},
+							{
+								"type": "string"
+							}
+						]
 					},
 					"filter": {
 						"type": "string"
@@ -434,10 +441,7 @@
 						"in": "query",
 						"name": "limit",
 						"required": false,
-						"schema": {
-							"format": "double",
-							"type": "number"
-						}
+						"schema": {}
 					},
 					{
 						"in": "query",

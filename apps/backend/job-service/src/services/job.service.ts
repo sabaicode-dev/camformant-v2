@@ -1,9 +1,11 @@
-import { JobGetAllControllerParams, JobParams } from "@/src/controllers/types/job-controller.type";
+import {
+  JobGetAllControllerParams,
+  JobParams,
+} from "@/src/controllers/types/job-controller.type";
 import { IJob } from "@/src/database/models/job.model";
 import jobRepository from "@/src/database/repositories/job.repository";
 import searchService from "@/src/services/search.service";
-import { prettyObject } from "@sokritha-sabaicode/ms-libs";
-
+import { prettyObject } from "@sabaicode-dev/camformant-libs";
 
 class JobService {
   public async createNewJob(newInfo: JobParams): Promise<IJob> {
@@ -20,6 +22,7 @@ class JobService {
   }
 
   public async getAllJobs(queries: JobGetAllControllerParams, userId = null) {
+    
     try {
       const { page, limit, filter, sort, search } = queries;
 
@@ -28,13 +31,13 @@ class JobService {
         limit,
         filter: filter && JSON.parse(filter),
         sort: sort && JSON.parse(sort),
-        search
+        search,
       };
 
       const result = await jobRepository.getAllJobs(newQueries);
 
       if (search) {
-        await searchService.saveSearchHistory(userId, search)
+        await searchService.saveSearchHistory(userId, search);
       }
 
       return result;

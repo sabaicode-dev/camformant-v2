@@ -1,9 +1,12 @@
-import { JobGetAllRepoParams, JobParams, JobSortParams } from "@/src/controllers/types/job-controller.type";
+import {
+  JobGetAllRepoParams,
+  JobParams,
+  JobSortParams,
+} from "@/src/controllers/types/job-controller.type";
 import { CompanyModel } from "@/src/database/models/company.model";
 import { IJob, JobModel } from "@/src/database/models/job.model";
-import { NotFoundError, prettyObject } from "@sokritha-sabaicode/ms-libs";
+import { NotFoundError, prettyObject } from "@sabaicode-dev/camformant-libs";
 import { SortOrder } from "mongoose";
-
 
 class JobRepository {
   public async createNewJob(newInfo: JobParams): Promise<IJob> {
@@ -22,7 +25,7 @@ class JobRepository {
   }
 
   public async getAllJobs(queries: JobGetAllRepoParams) {
-    const {
+    let {
       page = 1,
       limit = 5,
       filter = { position: "ALL" },
@@ -37,7 +40,7 @@ class JobRepository {
       "required_experience",
       "location",
       "position",
-      "workMode"
+      "workMode",
     ];
 
     // Convert sort from {'field': 'desc'} to {'field': -1}
@@ -53,7 +56,6 @@ class JobRepository {
       },
       {} as Record<keyof JobSortParams, SortOrder>
     );
-
 
     // Build MongoDB filter object
     const buildFilter = (filter: Record<string, any>) => {
@@ -121,17 +123,17 @@ class JobRepository {
       return mongoFilter;
     };
 
-    console.log('mongoFilter::: ', buildFilter(filter))
+    console.log("mongoFilter::: ", buildFilter(filter));
 
     // Adding search functionality
     const searchFilter = search
       ? {
-        $or: [
-          { title: { $regex: search, $options: "i" } },
-          { position: { $regex: search, $options: "i" } },
-          { "companyId.name": { $regex: search, $options: "i" } },
-        ],
-      }
+          $or: [
+            { title: { $regex: search, $options: "i" } },
+            { position: { $regex: search, $options: "i" } },
+            { "companyId.name": { $regex: search, $options: "i" } },
+          ],
+        }
       : {};
 
     try {
@@ -139,10 +141,11 @@ class JobRepository {
         ...buildFilter(filter),
         ...searchFilter,
       };
+      const totalItems = await JobModel.countDocuments(mongoFilter);
       const operation = JobModel.find(mongoFilter)
         .sort(sortFields)
-        .skip((page - 1) * limit)
-        .limit(limit)
+        .skip((page - 1) * (limit == "*" ? 0 : (limit as number)))
+        .limit(limit === "*" ? totalItems : (limit as number))
         .populate({
           path: "companyId",
           model: CompanyModel,
@@ -151,12 +154,14 @@ class JobRepository {
         });
 
       const result = await operation;
-      const totalItems = await JobModel.countDocuments(mongoFilter);
+      
 
       return {
         [JobModel.collection.collectionName]: result,
         totalItems,
-        totalPages: Math.ceil(totalItems / limit),
+        totalPages: Math.ceil(
+          totalItems / (limit == "*" ? totalItems : (limit as number))
+        ),
         currentPage: page,
       };
     } catch (error) {

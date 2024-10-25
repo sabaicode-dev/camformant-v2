@@ -19,7 +19,6 @@
   "dependencies": {
     "@sentry/node": "^8.32.0",
     "@sentry/profiling-node": "^8.32.0",
-    "@sabaicode-dev/camformant-libs": "0.0.1",
     "agenda": "^5.0.0",
     "axios": "^1.7.7",
     "cookie-parser": "^1.4.6",

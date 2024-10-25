@@ -1,27 +1,51 @@
 import UserModel, { IUser } from "@/src/database/models/user.model";
-import { MongoError, UserCreationRepoParams, UserGetAllRepoParams, UserSortParams, UserUpdateRepoParams } from "@/src/database/repositories/types/user-repository.type";
+import {
+  MongoError,
+  UserCreationRepoParams,
+  UserGetAllRepoParams,
+  UserSortParams,
+  UserUpdateRepoParams,
+} from "@/src/database/repositories/types/user-repository.type";
 import mongoose, { SortOrder } from "mongoose";
-import { APP_ERROR_MESSAGE, InvalidInputError, NotFoundError, ResourceConflictError, prettyObject } from "@sokritha-sabaicode/ms-libs";
+import {
+  AUTH_MESSAGES,
+  // APP_ERROR_MESSAGE,
+  InvalidInputError,
+  NotFoundError,
+  ResourceConflictError,
+  prettyObject,
+} from "@sabaicode-dev/camformant-libs";
 
 class UserRepository {
   async getAll(queries: UserGetAllRepoParams) {
-    const { page = 1, limit = 10, filter = {}, sort = { createdAt: 'desc' } } = queries;
+    const {
+      page = 1,
+      limit = 10,
+      filter = {},
+      sort = { createdAt: "desc" },
+    } = queries;
 
     // Convert sort from {'field': 'desc'} to {'field': -1}
-    const sortFields = Object.keys(sort).reduce((acc, key) => {
-      const direction = sort[key as keyof UserSortParams];
-      if (direction === 'asc' || direction === 'desc') {
-        acc[key as keyof UserSortParams] = direction === 'asc' ? 1 : -1;
-      }
-      return acc;
-    }, {} as Record<keyof UserSortParams, SortOrder>);
+    const sortFields = Object.keys(sort).reduce(
+      (acc, key) => {
+        const direction = sort[key as keyof UserSortParams];
+        if (direction === "asc" || direction === "desc") {
+          acc[key as keyof UserSortParams] = direction === "asc" ? 1 : -1;
+        }
+        return acc;
+      },
+      {} as Record<keyof UserSortParams, SortOrder>
+    );
 
     // Build MongoDB filter object
     const buildFilter = (filter: Record<string, any>) => {
       const mongoFilter: Record<string, any> = {};
       for (const key in filter) {
-        if (typeof filter[key] === 'object') {
-          if (filter[key].hasOwnProperty('min') || filter[key].hasOwnProperty('max')) {
+        if (typeof filter[key] === "object") {
+          if (
+            filter[key].hasOwnProperty("min") ||
+            filter[key].hasOwnProperty("max")
+          ) {
             mongoFilter[key] = {};
             if (filter[key].min !== undefined) {
               mongoFilter[key].$gte = filter[key].min;
@@ -41,8 +65,11 @@ class UserRepository {
 
     try {
       const mongoFilter = buildFilter(filter);
-      console.log(mongoFilter)
-      const operation = UserModel.find({ age: { '$gte': 18, '$lte': 28 }, gender: 'Male' })
+      console.log(mongoFilter);
+      const operation = UserModel.find({
+        age: { $gte: 18, $lte: 28 },
+        gender: "Male",
+      })
         .sort(sortFields)
         .skip((page - 1) * limit)
         .limit(limit);
@@ -54,10 +81,13 @@ class UserRepository {
         [UserModel.collection.collectionName]: result,
         totalItems,
         totalPages: Math.ceil(totalItems / limit),
-        currentPage: page
+        currentPage: page,
       };
     } catch (error) {
-      console.error(`UserRepository - getAll() method error: `, prettyObject(error as {}));
+      console.error(
+        `UserRepository - getAll() method error: `,
+        prettyObject(error as {})
+      );
       throw error;
     }
   }
@@ -72,19 +102,18 @@ class UserRepository {
 
       return result;
     } catch (error) {
-      console.error(`UserRepository - findById() method error: `, prettyObject(error as {}))
-      throw error
+      console.error(
+        `UserRepository - findById() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
     }
   }
 
   async findBySub(sub: string) {
     try {
       const result = await UserModel.findOne({
-        $or: [
-          { sub: sub },
-          { googleSub: sub },
-          { facebookSub: sub }
-        ],
+        $or: [{ sub: sub }, { googleSub: sub }, { facebookSub: sub }],
       });
 
       if (!result) {
@@ -93,8 +122,11 @@ class UserRepository {
 
       return result;
     } catch (error) {
-      console.error(`UserRepository - findById() method error: `, prettyObject(error as {}))
-      throw error
+      console.error(
+        `UserRepository - findById() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
     }
   }
 
@@ -104,11 +136,14 @@ class UserRepository {
 
       return result;
     } catch (error) {
-      console.error(`UserRepository - create() method error: `, prettyObject(error as {}))
+      console.error(
+        `UserRepository - create() method error: `,
+        prettyObject(error as {})
+      );
 
       // Duplicate Email
       if ((error as MongoError).code === 11000) {
-        throw new ResourceConflictError(APP_ERROR_MESSAGE.existedEmail);
+        throw new ResourceConflictError(AUTH_MESSAGES.AUTHENTICATION.ACCOUNT_ALREADY_EXISTS);
       }
 
       // Validation Error
@@ -122,7 +157,7 @@ class UserRepository {
         }
 
         throw new InvalidInputError({
-          errors: validationErrors  // Now passing the structured errors
+          errors: validationErrors, // Now passing the structured errors
         });
       }
 
@@ -132,16 +167,15 @@ class UserRepository {
 
   async updateBySub(updateInfo: UserUpdateRepoParams) {
     try {
-      const { id, ...newUpdateInfo } = updateInfo
+      const { id, ...newUpdateInfo } = updateInfo;
 
-      const result = await UserModel.findOneAndUpdate({
-        $or: [
-          { userId: id },
-          { googleSub: id },
-          { facebookSub: id },
-        ],
-      }, newUpdateInfo, { new: true });
-
+      const result = await UserModel.findOneAndUpdate(
+        {
+          $or: [{ userId: id }, { googleSub: id }, { facebookSub: id }],
+        },
+        newUpdateInfo,
+        { new: true }
+      );
 
       if (!result) {
         throw new NotFoundError();
@@ -149,8 +183,11 @@ class UserRepository {
 
       return result;
     } catch (error) {
-      console.error(`UserRepository - updateById() method error: `, prettyObject(error as {}))
-      throw error
+      console.error(
+        `UserRepository - updateById() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
     }
   }
 
@@ -162,8 +199,11 @@ class UserRepository {
         throw new NotFoundError();
       }
     } catch (error) {
-      console.error(`UserRepository - updateById() method error: `, prettyObject(error as {}))
-      throw error
+      console.error(
+        `UserRepository - updateById() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
     }
   }
 
@@ -176,12 +216,15 @@ class UserRepository {
       );
 
       if (!user) {
-        throw new NotFoundError('User not found');
+        throw new NotFoundError("User not found");
       }
 
       return user;
     } catch (error) {
-      console.error(`UserRepository - addFavorite() method error: `, prettyObject(error as {}));
+      console.error(
+        `UserRepository - addFavorite() method error: `,
+        prettyObject(error as {})
+      );
       throw error;
     }
   }
@@ -195,27 +238,33 @@ class UserRepository {
       );
 
       if (!user) {
-        throw new NotFoundError('User not found');
+        throw new NotFoundError("User not found");
       }
 
       return user;
     } catch (error) {
-      console.error(`UserRepository - removeFavorite() method error: `, prettyObject(error as {}));
+      console.error(
+        `UserRepository - removeFavorite() method error: `,
+        prettyObject(error as {})
+      );
       throw error;
     }
   }
 
   async getUserFavorites(userId: string): Promise<string[]> {
     try {
-      const user = await UserModel.findById(userId).select('favorites');
+      const user = await UserModel.findById(userId).select("favorites");
 
       if (!user) {
-        throw new NotFoundError('User not found');
+        throw new NotFoundError("User not found");
       }
 
       return user.favorites;
     } catch (error) {
-      console.error(`UserRepository - getUserFavorites() method error: `, prettyObject(error as {}));
+      console.error(
+        `UserRepository - getUserFavorites() method error: `,
+        prettyObject(error as {})
+      );
       throw error;
     }
   }

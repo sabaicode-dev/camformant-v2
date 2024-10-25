@@ -39,7 +39,7 @@ export interface JobSortParams {
 
 export interface JobGetAllControllerParams {
   page?: number;
-  limit?: number;
+  limit?: number|string;
   filter?: string;
   sort?: string;
   search?: string;
@@ -47,7 +47,7 @@ export interface JobGetAllControllerParams {
 
 export interface JobGetAllRepoParams {
   page?: number;
-  limit?: number;
+  limit?: number|string|undefined;
   filter?: JobsFilterParams;
   sort?: JobSortParams;
   search?: string;

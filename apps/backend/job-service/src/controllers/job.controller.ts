@@ -1,9 +1,16 @@
-import { JobGetAllControllerParams, JobParams } from "@/src/controllers/types/job-controller.type";
+import {
+  JobGetAllControllerParams,
+  JobParams,
+} from "@/src/controllers/types/job-controller.type";
 import { IJob } from "@/src/database/models/job.model";
 import jobService from "@/src/services/job.service";
 import searchService from "@/src/services/search.service";
 import sendResponse from "@/src/utils/send-response";
-import { APIResponse, PaginationResponse, prettyObject } from "@sokritha-sabaicode/ms-libs";
+import {
+  APIResponse,
+  PaginationResponse,
+  prettyObject,
+} from "@sabaicode-dev/camformant-libs";
 import {
   Controller,
   Route,
@@ -16,19 +23,16 @@ import {
   Delete,
   Queries,
   SuccessResponse,
-  Request
+  Request,
 } from "tsoa";
-import { Request as ExpressRequest } from 'express';
-
+import { Request as ExpressRequest } from "express";
 
 @Route("/v1/jobs")
 @Tags("Job")
 export class JobController extends Controller {
   @SuccessResponse("201", "Created")
   @Post("/")
-  public async createJob(
-    @Body() req: JobParams
-  ): Promise<APIResponse<IJob>> {
+  public async createJob(@Body() req: JobParams): Promise<APIResponse<IJob>> {
     try {
       const jobs = await jobService.createNewJob(req);
       this.setStatus(201); // set return status 201
@@ -44,23 +48,27 @@ export class JobController extends Controller {
     @Queries() queries: JobGetAllControllerParams
   ): Promise<APIResponse<PaginationResponse<IJob>>> {
     try {
-      const userId = request.cookies['user_id'] || null
+      const userId = request.cookies["user_id"] || null;
 
       const response = await jobService.getAllJobs(queries, userId);
 
-      return sendResponse<PaginationResponse<IJob>>({ message: "success", data: response });
+      return sendResponse<PaginationResponse<IJob>>({
+        message: "success",
+        data: response,
+      });
     } catch (error) {
       throw error;
     }
   }
 
-
   @Get("/search-history")
-  public async getSearchHistory(@Request() request: ExpressRequest): Promise<APIResponse<string[]>> {
+  public async getSearchHistory(
+    @Request() request: ExpressRequest
+  ): Promise<APIResponse<string[]>> {
     try {
-      const userId = request.cookies['user_id'] || null
+      const userId = request.cookies["user_id"] || null;
 
-      const response = await searchService.getSearchHistory(userId)
+      const response = await searchService.getSearchHistory(userId);
 
       return sendResponse<string[]>({ message: "success", data: response });
     } catch (error) {
@@ -121,7 +129,6 @@ export class JobController extends Controller {
       throw error;
     }
   }
-
 }
 
 export default new JobController();

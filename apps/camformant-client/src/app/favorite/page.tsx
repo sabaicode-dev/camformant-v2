@@ -28,15 +28,17 @@ const Page: React.FC = () => {
 
     try {
       if (newFavoriteStatus) {
-        await axiosInstance.post(`${API_ENDPOINTS.FAVORITE}`, { jobId });
+        await axiosInstance.post(`${API_ENDPOINTS.FAVORITE}`, {
+          jobId,
+        });
       } else {
         await axiosInstance.delete(`${API_ENDPOINTS.FAVORITE}/${jobId}`);
         // Remove the job from the list if unfavorited
         setJobData((prevData) => prevData.filter((job) => job._id !== jobId));
       }
     } catch (error) {
-      console.error('Error updating favorite status:', error);
-      setError('Failed to update favorite status. Please try again later.');
+      console.error("Error updating favorite status:", error);
+      setError("Failed to update favorite status. Please try again later.");
 
       // Revert the UI change if the API call fails
       updatedJobs[jobIndex].favorite = currentFavoriteStatus;
@@ -59,20 +61,21 @@ const Page: React.FC = () => {
           return;
         }
 
-        const response = await axiosInstance.get(`${API_ENDPOINTS.JOBS}`);
-
+        const response = await axiosInstance.get(`${API_ENDPOINTS.JOBS}?limit=*`);
         const jobs = response.data.data.jobs;
-
+        const favJobs = jobs.filter((job: any) =>
+          favoriteJobIds.includes(job._id.toString())
+        );
+        console.log("favorite job", favJobs);
         // Set favorite status to true for these jobs
-        const jobsWithFavoriteStatus = jobs.map((job: any) => ({
+        const jobsWithFavoriteStatus = favJobs.map((job: any) => ({
           ...job,
           favorite: true,
         }));
-
         setJobData(jobsWithFavoriteStatus);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching favorite jobs:', error);
+        console.error("Error fetching favorite jobs:", error);
         setError("Failed to fetch favorite jobs.");
         setLoading(false);
       }
