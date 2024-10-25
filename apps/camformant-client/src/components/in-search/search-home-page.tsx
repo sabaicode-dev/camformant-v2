@@ -23,7 +23,7 @@ export const defaultFilterValue: FilterValueParams = {
   type: "",
   workMode: "",
   required_experience: "",
-  minSalary: 0,
+  minSalary: 70,
   maxSalary: 200,
 };
 

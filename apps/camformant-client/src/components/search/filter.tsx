@@ -254,7 +254,7 @@ export const Filter: React.FC<FilterProps> = ({
                     backgroundColor: "white",
                   },
                 }}
-                step={10}
+                step={20}
               />
             </div>
           </div>

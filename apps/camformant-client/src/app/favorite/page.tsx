@@ -8,6 +8,7 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/auth";
+import { IJob } from "@/components/type-data/TypeofData";
 
 const Page: React.FC = () => {
   const { user } = useAuth();
@@ -35,8 +36,8 @@ const Page: React.FC = () => {
         setJobData((prevData) => prevData.filter((job) => job._id !== jobId));
       }
     } catch (error) {
-      console.error('Error updating favorite status:', error);
-      setError('Failed to update favorite status. Please try again later.');
+      console.error("Error updating favorite status:", error);
+      setError("Failed to update favorite status. Please try again later.");
 
       // Revert the UI change if the API call fails
       updatedJobs[jobIndex].favorite = currentFavoriteStatus;
@@ -52,19 +53,34 @@ const Page: React.FC = () => {
 
         // Get the user's favorite job IDs
         const favoriteJobIds = user?.favorites || [];
+        // console.log("user: ", user);
+        // console.log("favoriteJobIds: ", favoriteJobIds);
 
         if (favoriteJobIds.length === 0) {
           setJobData([]);
           setLoading(false);
           return;
         }
+        const response = await axiosInstance.get(
+          `${API_ENDPOINTS.JOBS}?limit=*`
+        );
+        // console.log(response.data.data);
 
-        const response = await axiosInstance.get(`${API_ENDPOINTS.JOBS}`);
+        // console.log(response.data);
 
-        const jobs = response.data.data.jobs;
+        const jobs: IJob[] = response.data.data.jobs;
 
+        const filteredJob = jobs.filter((job) => {
+          for (let i = 0; i < favoriteJobIds.length; i++) {
+            if (job._id === favoriteJobIds[i]) return job;
+          }
+        });
+
+        console.log(filteredJob);
+
+        //TODO:todo
         // Set favorite status to true for these jobs
-        const jobsWithFavoriteStatus = jobs.map((job: any) => ({
+        const jobsWithFavoriteStatus = filteredJob.map((job) => ({
           ...job,
           favorite: true,
         }));
@@ -72,7 +88,7 @@ const Page: React.FC = () => {
         setJobData(jobsWithFavoriteStatus);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching favorite jobs:', error);
+        console.error("Error fetching favorite jobs:", error);
         setError("Failed to fetch favorite jobs.");
         setLoading(false);
       }
@@ -84,7 +100,7 @@ const Page: React.FC = () => {
   if (error) {
     return (
       <div className="container mt-8">
-        <div className="text-center mt-10">
+        <div className="mt-10 text-center">
           <p>{error}</p>
         </div>
       </div>
@@ -93,7 +109,7 @@ const Page: React.FC = () => {
 
   return (
     <div className="container pt-2 mb-20">
-      <div className="mb-8 mt-4 h-10 w-14">
+      <div className="h-10 mt-4 mb-8 w-14">
         <Link href={"/profile"}>
           <BackButton_md styles=" bg-primary p-3 px-4 rounded-xl" />
         </Link>
@@ -127,7 +143,7 @@ const Page: React.FC = () => {
           </div>
         ))
       ) : (
-        <p className="mb-20 h-56 w-full flex justify-center items-center">
+        <p className="flex items-center justify-center w-full h-56 mb-20">
           No favorite jobs available
         </p>
       )}

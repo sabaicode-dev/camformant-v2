@@ -4,6 +4,7 @@ import { Sheet } from "react-modal-sheet";
 import { Filter } from "./filter";
 import Link from "next/link";
 import {
+  ChangeEvent,
   Dispatch,
   RefObject,
   SetStateAction,
@@ -50,6 +51,9 @@ export const Search: React.FC<autoFocusd> = ({
   function handleReset() {
     setFilterValues(defaultFilterValue);
   }
+  function handleInputOnChange(e: ChangeEvent<HTMLInputElement>) {
+    setSearchValue!(e.target.value);
+  }
 
   return (
     <>
@@ -75,7 +79,7 @@ export const Search: React.FC<autoFocusd> = ({
 
           <input
             type="text"
-            onChange={(e) => setSearchValue!(e.target.value)}
+            onChange={handleInputOnChange}
             ref={focus || undefined}
             placeholder="Search Job vacancy"
             className="relative w-full p-4 pl-16 shadow-md outline-none placeholder:text-md bg-whit rounded-2xl "
