@@ -265,16 +265,7 @@
 					}
 				},
 				"security": [],
-				"parameters": [
-					{
-						"in": "query",
-						"name": "state",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
+				"parameters": []
 			}
 		},
 		"/v1/auth/facebook": {
@@ -293,8 +284,28 @@
 			"get": {
 				"operationId": "OauthCallback",
 				"responses": {
-					"204": {
-						"description": "No content"
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"url": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"url",
+										"status"
+									],
+									"type": "object"
+								}
+							}
+						}
 					}
 				},
 				"security": [],

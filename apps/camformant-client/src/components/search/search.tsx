@@ -25,6 +25,7 @@ interface autoFocusd {
   isFilterDisplay?: boolean;
   setSearchValue?: Dispatch<SetStateAction<string>>;
   setCompleteFilter?: Dispatch<SetStateAction<FilterValueParams>>;
+  searchValue?: string;
 }
 
 export const Search: React.FC<autoFocusd> = ({
@@ -33,6 +34,7 @@ export const Search: React.FC<autoFocusd> = ({
   isFilterDisplay = false,
   setSearchValue,
   setCompleteFilter,
+  searchValue,
 }) => {
   const [isOpen, setOpen] = useState(false);
   const [filterValues, setFilterValues] = useState(defaultFilterValue);
@@ -53,6 +55,7 @@ export const Search: React.FC<autoFocusd> = ({
   }
   function handleInputOnChange(e: ChangeEvent<HTMLInputElement>) {
     setSearchValue!(e.target.value);
+    //TODO:
   }
 
   return (
@@ -76,7 +79,6 @@ export const Search: React.FC<autoFocusd> = ({
           <div className="absolute translate-y-[3px] translate-x-1  z-10 bg-gradient-to-r from-[#FF5858] to-primary rounded-full p-3.5 ">
             <AiOutlineSearch size={22} color="#ffff" />
           </div>
-
           <input
             type="text"
             onChange={handleInputOnChange}

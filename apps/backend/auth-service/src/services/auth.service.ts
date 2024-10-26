@@ -4,12 +4,14 @@ import {
   AdminGetUserCommand,
   AdminLinkProviderForUserCommand,
   AdminUpdateUserAttributesCommand,
+  AdminUpdateUserAttributesCommandInput,
   AuthFlowType,
   CognitoIdentityProviderClient,
   ConfirmSignUpCommand,
   InitiateAuthCommand,
   InitiateAuthCommandInput,
   ListUsersCommand,
+  ListUsersCommandInput,
   SignUpCommand,
   SignUpCommandInput,
   UserType,
@@ -232,9 +234,8 @@ class AuthService {
     }
   }
 
-  loginWithGoogle(state: string): string {
-    // const state = crypto.randomBytes(16).toString('hex')
-
+  loginWithGoogle(state: string = "user"): string {
+    // const state = crypto.randomBytes(16).toString("hex");
     const params = new URLSearchParams({
       response_type: "code",
       client_id: configs.awsCognitoClientId,
@@ -244,7 +245,10 @@ class AuthService {
       state: state,
       prompt: "select_account",
     });
+    // console.log("params: ", params);
+
     const cognitoOAuthURL = `${configs.awsCognitoDomain}/oauth2/authorize?${params.toString()}`;
+    console.log(cognitoOAuthURL);
 
     return cognitoOAuthURL;
   }
@@ -286,7 +290,7 @@ class AuthService {
       // Step 1: Get the token from Cognito
       const res = await axios.post(
         `${configs.awsCognitoDomain}/oauth2/token`,
-        params,
+        params.toString(),
         {
           headers: {
             Authorization: authorizationHeader,
@@ -294,6 +298,7 @@ class AuthService {
           },
         }
       );
+      console.log(res.data);
 
       const token = {
         accessToken: res.data.access_token,
@@ -303,8 +308,12 @@ class AuthService {
 
       // Step 2: Get the user info from token
       const userInfo = this.getUserInfoFromToken(token.idToken);
+      console.log("userInfo: ", userInfo);
+
       // @ts-ignore
       const email = userInfo.email;
+      console.log("email: ", email);
+
       const existingUser = await this.getUserByEmail(email);
       console.log("existingUser: ", existingUser);
 
@@ -354,13 +363,14 @@ class AuthService {
             googleSub: userInfo.sub,
             email,
             // @ts-ignore
-            username: userInfo.name,
+            username: userInfo["cognito:username"] || email,
             // @ts-ignore
             profile: userInfo.profile,
             role: state,
           });
 
           // Step 4.1: Update user info in Cognito
+          //TODO: solve role
           await this.updateUserCongitoAttributes(userInfo.sub!, {
             "custom:role": state!,
           });
@@ -442,15 +452,18 @@ class AuthService {
   }
 
   async getUserByEmail(email: string): Promise<UserType | undefined> {
-    const params = {
+    const params: ListUsersCommandInput = {
+      // AttributesToGet: ["email", "sub"],
       Filter: `email = "${email}"`,
       UserPoolId: configs.awsCognitoUserPoolId,
-      Limit: 1,
+      Limit: 3,
     };
 
     try {
-      const listUsersCommand = new ListUsersCommand(params);
-      const response = await client.send(listUsersCommand);
+      const command = new ListUsersCommand(params);
+      const response = await client.send(command);
+      console.log("res: ", response);
+
       return response.Users && response.Users[0];
     } catch (error) {
       console.error("AuthService getUserByEmail() method error:", error);
@@ -462,7 +475,7 @@ class AuthService {
     username: string,
     attributes: { [key: string]: string }
   ): Promise<void> {
-    const params = {
+    const params: AdminUpdateUserAttributesCommandInput = {
       Username: username,
       UserPoolId: configs.awsCognitoUserPoolId,
       UserAttributes: Object.entries(attributes).map(([key, value]) => ({
@@ -470,6 +483,8 @@ class AuthService {
         Value: value,
       })),
     };
+
+    console.log("param: ", params);
 
     try {
       const command = new AdminUpdateUserAttributesCommand(params);

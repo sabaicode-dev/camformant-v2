@@ -26,7 +26,7 @@ const Page: React.FC = () => {
   });
 
   const onSubmit = async (data: RegisterProps) => {
-    // console.log("data: ", data);
+    console.log("data: ", data);
 
     let contactMethod = "";
     if (emailRegex.test(data.contact)) {

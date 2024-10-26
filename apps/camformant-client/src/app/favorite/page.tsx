@@ -64,7 +64,7 @@ const Page: React.FC = () => {
         const response = await axiosInstance.get(
           `${API_ENDPOINTS.JOBS}?limit=*`
         );
-        // console.log(response.data.data);
+        console.log(response.data.data);
 
         // console.log(response.data);
 
