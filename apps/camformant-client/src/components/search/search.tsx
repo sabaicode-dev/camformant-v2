@@ -55,7 +55,6 @@ export const Search: React.FC<autoFocusd> = ({
   }
   function handleInputOnChange(e: ChangeEvent<HTMLInputElement>) {
     setSearchValue!(e.target.value);
-    //TODO:
   }
 
   return (
