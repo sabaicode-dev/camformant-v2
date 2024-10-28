@@ -123,7 +123,7 @@ const Message = React.memo(
       };
 
       fetchMessages();
-    }, [conversationId]);
+    }, [conversationId, inputMessage]);
 
     // Scroll to the bottom whenever messages change
     useEffect(() => {
