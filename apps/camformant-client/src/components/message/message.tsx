@@ -26,9 +26,9 @@ const SkeletonLoader = () => (
   <div className="w-full p-4">
     {/* Message Skeleton */}
     <div className="space-y-2">
-      <div className="h-12 bg-gray-300 rounded-md animate-pulse"></div>
-      <div className="h-12 bg-gray-300 rounded-md animate-pulse"></div>
-      <div className="h-12 bg-gray-300 rounded-md animate-pulse"></div>
+      <div className="h-12 bg-gray-300 rounded rounded-md animate-pulse"></div>
+      <div className="h-12 bg-gray-300 rounded rounded-md animate-pulse"></div>
+      <div className="h-12 bg-gray-300 rounded rounded-md animate-pulse"></div>
     </div>
   </div>
 );
@@ -115,7 +115,6 @@ const Message = React.memo(
           const response = await axiosInstance.get(
             `${API_ENDPOINTS.CONVERSATIONS}/${conversationId}/messages`
           );
-
           setMessages(response.data.data);
         } catch (error) {
           console.error("Failed to fetch messages:", error);
@@ -123,7 +122,7 @@ const Message = React.memo(
       };
 
       fetchMessages();
-    }, [conversationId, inputMessage]);
+    }, [conversationId]);
 
     // Scroll to the bottom whenever messages change
     useEffect(() => {
@@ -132,7 +131,6 @@ const Message = React.memo(
 
     const sendMessage = async () => {
       if (inputMessage.trim() === "") return;
-      console.log(inputMessage);
 
       console.log("userId", user!._id);
 

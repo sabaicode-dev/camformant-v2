@@ -5,7 +5,7 @@ import { Route, Controller, Post, Body, Request, Get, Path } from "tsoa";
 import { Request as ExpressRequest } from "express";
 import { IMessage } from "@/src/database/models/message.model";
 import { MessageService } from "@/src/services/message.service";
-import { enCodeText, TextEnc } from "../utils/crypto";
+import { TextEnc } from "../utils/crypto";
 
 export interface CreateConversationParams {
   companyId: string;
@@ -78,12 +78,14 @@ export class ConversationController extends Controller {
 
   @Post("/{conversationId}/messages")
   async saveMessage(@Body() requestBody: IMessage): Promise<IMessage> {
+    console.log(requestBody);
+
     const { text, senderId, recipientId, conversationId } = requestBody;
-    const encode = enCodeText(text);
-    console.log(encode);
+    // const encode = enCodeText(text);
+    // console.log(encode);
 
     return this.messageService.saveMessage({
-      text: encode,
+      text,
       senderId,
       recipientId,
       conversationId,

@@ -1,10 +1,11 @@
 import MessageModel, { IMessage } from "@/src/database/models/message.model";
+import { deCodeText } from "@/src/utils/crypto";
 
 export class MessageRepository {
   async createMessage(data: IMessage): Promise<IMessage> {
     try {
       const message = new MessageModel({
-        data,
+        ...data,
       });
       const result = message.save();
       console.log("result: ", result);
@@ -26,6 +27,11 @@ export class MessageRepository {
       const messages = MessageModel.find({ conversationId })
         .sort({ createdAt: 1 })
         .exec();
+
+      (await messages).map((message) => {
+        message.text = deCodeText(message.text);
+        return message;
+      });
 
       return messages;
     } catch (error) {
