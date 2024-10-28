@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useAuth } from "@/context/auth";
 import { useNotification } from "@/hooks/user-notification";
@@ -7,20 +7,29 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { useEffect, useState } from "react";
 import { MdCircleNotifications } from "react-icons/md";
 
-export default function Notification({ addNotification }: { addNotification: (message: string, type: "success" | "info" | "error") => void }) {
+export default function Notification({
+  addNotification,
+}: {
+  addNotification: (
+    message: string,
+    type: "success" | "info" | "error"
+  ) => void;
+}) {
   const { isAuthenticated } = useAuth();
   const [isSupported, setIsSupported] = useState(false);
-  const [subscription, setSubscription] = useState<PushSubscription | null>(null);
+  const [subscription, setSubscription] = useState<PushSubscription | null>(
+    null
+  );
   const [isVisible, setIsVisible] = useState(false); // For popup visibility
   const [loading, setLoading] = useState(false);
 
-  console.log('isAuthentication', isAuthenticated)
-  console.log('sub:::', subscription)
+  console.log("isAuthentication", isAuthenticated);
+  console.log("sub:::", subscription);
 
   // Register Notification When User Login
   useEffect(() => {
     if (isAuthenticated) {
-      if ('serviceWorker' in navigator && 'PushManager' in window) {
+      if ("serviceWorker" in navigator && "PushManager" in window) {
         setIsSupported(true);
         registerServiceWorker();
       }
@@ -37,13 +46,13 @@ export default function Notification({ addNotification }: { addNotification: (me
 
   async function registerServiceWorker() {
     // Check if service worker is already registered
-    let registration = await navigator.serviceWorker.getRegistration('/');
+    let registration = await navigator.serviceWorker.getRegistration("/");
 
     if (!registration) {
       // Register service worker if not registered
-      registration = await navigator.serviceWorker.register('/sw.js', {
-        scope: '/',
-        updateViaCache: 'none',
+      registration = await navigator.serviceWorker.register("/sw.js", {
+        scope: "/",
+        updateViaCache: "none",
       });
     }
   }
@@ -74,7 +83,7 @@ export default function Notification({ addNotification }: { addNotification: (me
         },
       });
     } catch (error) {
-      console.log('Subscribe Notification Error:::', error)
+      console.log("Subscribe Notification Error:::", error);
     } finally {
       setLoading(false); // Unset loading state
     }
@@ -86,12 +95,11 @@ export default function Notification({ addNotification }: { addNotification: (me
     try {
       await subscription?.unsubscribe();
     } catch (error) {
-      console.log('Unsubscribe Notification Error:::', error)
+      console.log("Unsubscribe Notification Error:::", error);
     } finally {
       setSubscription(null);
       setLoading(false); // Unset loading state
     }
-
   }
 
   const handleToggle = async () => {
@@ -99,33 +107,33 @@ export default function Notification({ addNotification }: { addNotification: (me
       await unsubscribeFromPush();
     } else {
       if (!isAuthenticated) {
-        console.log('hey')
-        addNotification('Please login to enable notification!', 'error')
+        console.log("hey");
+        addNotification("Please login to enable notification!", "error");
       } else {
         await subscribeToPush();
-
       }
     }
   };
 
   if (!isSupported && isAuthenticated) {
-    return <div
-      className={`fixed top-4 right-4 left-4 bg-gray-800 text-white p-4 rounded-lg shadow-md transition-all transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+    return (
+      <div
+        className={`fixed top-4 right-4 left-4 bg-gray-800 text-white p-4 rounded-lg shadow-md transition-all transform ${
+          isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
         }`}
-      style={{ transition: 'all 0.5s ease', zIndex: 9999 }} // Smooth transition and ensure z-index is high
-    >
-      <p>Push notifications are not supported in this browser.</p>
-    </div>;
+        style={{ transition: "all 0.5s ease", zIndex: 9999 }} // Smooth transition and ensure z-index is high
+      >
+        <p>Push notifications are not supported in this browser.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="w-full flex items-center justify-between bg-gray-100 rounded-lg shadow-sm">
+    <div className="flex items-center justify-between w-full bg-gray-100 rounded-lg shadow-sm">
       {/* Left Section: Icon and Text */}
-      <div className="flex w-full text-lg gap-5 items-center">
+      <div className="flex items-center w-full gap-5 text-lg">
         <MdCircleNotifications size={22} />
-        <span>
-          Notification
-        </span>
+        <span>Notification</span>
       </div>
 
       {/* Right Section: Toggle Switch */}
@@ -133,9 +141,9 @@ export default function Notification({ addNotification }: { addNotification: (me
         <input
           type="checkbox"
           className="sr-only peer"
-          checked={!!subscription}
+          // checked={!!subscription}
           onChange={handleToggle}
-          disabled={loading} // Disable during loading state
+          // disabled={loading} // Disable during loading state
         />
         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-orange-600"></div>
       </label>
@@ -144,8 +152,8 @@ export default function Notification({ addNotification }: { addNotification: (me
 }
 
 function urlBase64ToUint8Array(base64String: string) {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
   const rawData = window.atob(base64);
-  return new Uint8Array(rawData.split('').map((char) => char.charCodeAt(0)));
+  return new Uint8Array(rawData.split("").map((char) => char.charCodeAt(0)));
 }
