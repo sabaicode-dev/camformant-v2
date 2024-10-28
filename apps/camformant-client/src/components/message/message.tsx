@@ -39,6 +39,7 @@ const Message = React.memo(
     const { user } = useAuth();
     const router = useRouter();
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
+    const [isSend, setIsSend] = useState(false);
 
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputMessage, setInputMessage] = useState<string>("");
@@ -122,7 +123,8 @@ const Message = React.memo(
       };
 
       fetchMessages();
-    }, [conversationId]);
+      setIsSend(false);
+    }, [conversationId, isSend]);
 
     // Scroll to the bottom whenever messages change
     useEffect(() => {
@@ -147,6 +149,7 @@ const Message = React.memo(
       // Play the sending sound & Clear the input
       playNotificationSound();
       setInputMessage("");
+      setIsSend(true);
     };
 
     if (!conversationId) {
