@@ -214,13 +214,13 @@ const Message = React.memo(
                 messages.map((message, idx) => (
                   <div
                     key={message._id}
-                    className={`${messages.length - 1 === idx ? "mb-8" : "mb-2"} flex ${message.senderId === user?._id ? "justify-start" : "justify-end"}`}
+                    className={`${messages.length - 1 === idx ? "mb-8" : "mb-2"} flex ${message.senderId === user?._id ? "justify-end" : "justify-start"}`}
                   >
                     <div
                       className={`p-3 rounded-lg max-w-xs break-words ${
                         message.senderId === user?._id
-                          ? "bg-gray-200 text-gray-900"
-                          : "bg-blue-600 text-white"
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-200 text-gray-900"
                       }`}
                     >
                       {message.text}

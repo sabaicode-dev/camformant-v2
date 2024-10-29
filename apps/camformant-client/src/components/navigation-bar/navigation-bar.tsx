@@ -21,21 +21,21 @@ export const NavigationBar: React.FC = () => {
           <div className="text-xs">Home</div>
         </Link>
         <Link
-          href="resume"
+          href="/resume"
           className={`flex flex-col items-center ${pathname === "/resume" ? "text-primaryCam" : ""}`}
         >
           <HiDocument className="text-xl" />
           <div className="text-xs">Resume</div>
         </Link>
         <Link
-          href="applied"
+          href="/applied"
           className={`flex flex-col items-center ${pathname === "/applied" ? "text-primaryCam" : ""}`}
         >
           <HiClipboardCheck className="text-xl" />
           <div className="text-xs">Applied</div>
         </Link>
         <Link
-          href="profile"
+          href="/profile"
           className={`flex flex-col items-center ${pathname === "/profile" ? "text-primaryCam" : ""}`}
         >
           <HiUserCircle className="text-xl" />
