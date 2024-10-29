@@ -67,7 +67,7 @@ export const Card: React.FC<CardProps> = (props) => {
       </div>
       <Link href={`/jobs/${_id}`}>
         <div>
-          <div className="flex flex-wrap space-x-2 text-xs text-primary ">
+          <div className="flex flex-wrap space-x-2 text-xs text-primaryCam ">
             {type &&
               type.length > 0 &&
               type.map((item, index) => (
@@ -79,7 +79,7 @@ export const Card: React.FC<CardProps> = (props) => {
                 </span>
               ))}
           </div>
-          <div className="flex flex-wrap mt-3 space-x-2 text-xs text-primary ">
+          <div className="flex flex-wrap mt-3 space-x-2 text-xs text-primaryCam ">
             {schedule &&
               schedule.length > 0 &&
               schedule.map((item, index) => (
@@ -95,7 +95,7 @@ export const Card: React.FC<CardProps> = (props) => {
             <div className="text-sm text-gray-400">
               {job_opening} Job Opening
             </div>
-            <div className="text-lg font-semibold text-primary">{`${min_salary}$-${max_salary}$`}</div>
+            <div className="text-lg font-semibold text-primaryCam">{`${min_salary}$-${max_salary}$`}</div>
           </div>
 
           {deadline && (

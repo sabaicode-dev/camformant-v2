@@ -19,28 +19,28 @@ export const CardDescription: React.FC<CardApplyProps> = ({
   benefit,
 }) => {
   return (
-    <div className="w-full flex flex-col justify-center p-3 bg-white rounded-3xl shadow-md pb-6">
-      <div className="flex w-full justify-between ">
+    <div className="flex flex-col justify-center w-full p-3 pb-6 bg-white shadow-md rounded-3xl">
+      <div className="flex justify-between w-full ">
         <h2 className="text-sm font-semibold ">{title}</h2>
-        {/* <p className="text-gray-400 text-sm ">5 Application</p>s */}
+        {/* <p className="text-sm text-gray-400 ">5 Application</p>s */}
       </div>
       <div className="text-xs">
-        <div className="text-primary text-base pt-3 font-semibold">
+        <div className="pt-3 text-base font-semibold text-primaryCam">
           {min_salary}$-{max_salary}$
         </div>
-        <div className="flex flex-wrap space-x-3 text-sm font-semibold text-primary pt-3">
+        <div className="flex flex-wrap pt-3 space-x-3 text-sm font-semibold text-primaryCam">
           {schedule &&
             schedule.length > 0 &&
             schedule.map((item, index) => <span key={index}>{item}</span>)}
         </div>
-        <div className="flex flex-wrap space-x-3 text-sm font-semibold text-primary pt-1">
+        <div className="flex flex-wrap pt-1 space-x-3 text-sm font-semibold text-primaryCam">
           {benefit &&
             benefit.length > 0 &&
             benefit.map((item, index) => <span key={index}>{item}</span>)}
         </div>
 
-        <h2 className="text-base font-semibold pt-3">Job Description </h2>
-        <p className=" text-xs pt-2">{description}</p>
+        <h2 className="pt-3 text-base font-semibold">Job Description </h2>
+        <p className="pt-2 text-xs ">{description}</p>
       </div>
     </div>
   );
