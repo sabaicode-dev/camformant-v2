@@ -54,8 +54,8 @@ export const Card: React.FC<CardProps> = (props) => {
             className="object-cover w-12 h-12 border rounded-full"
           />
           <div>
-            <h1 className="font-semibold text-md text-secondary">{title}</h1>
-            <span className="text-sm text-secondary">
+            <h1 className="font-semibold text-md text-secondaryCam">{title}</h1>
+            <span className="text-sm text-secondaryCam">
               {position?.map((text) => `${text} `)}
             </span>
           </div>
@@ -100,13 +100,13 @@ export const Card: React.FC<CardProps> = (props) => {
 
           {deadline && (
             <div className="flex justify-between mt-3">
-              <div className="flex items-center space-x-2 text-secondary">
+              <div className="flex items-center space-x-2 text-secondaryCam">
                 <label className="text-sm ">
                   <MdCalendarToday />
                 </label>
                 <span className="text-xs">{dateFormat(deadline, "en-US")}</span>
               </div>
-              <div className="flex space-x-2 text-secondary">
+              <div className="flex space-x-2 text-secondaryCam">
                 <label className="text-sm">
                   <FaMapMarkerAlt />
                 </label>

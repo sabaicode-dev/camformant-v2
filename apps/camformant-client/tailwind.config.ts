@@ -37,7 +37,7 @@ const config: Config = {
         primaryCam: {
           DEFAULT: "#FF7300",
         },
-        secondary: {
+        secondaryCam: {
           DEFAULT: "#27384c",
         },
       },

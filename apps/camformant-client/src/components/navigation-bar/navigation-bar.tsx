@@ -12,7 +12,7 @@ export const NavigationBar: React.FC = () => {
   const pathname = usePathname();
   return (
     <div className="fixed bottom-0 z-30 w-full bg-white border-t ">
-      <div className="flex justify-around p-4 gap-x-8 text-secondary">
+      <div className="flex justify-around p-4 gap-x-8 text-secondaryCam">
         <Link
           href="/"
           className={`flex flex-col items-center  ${pathname === "/" || pathname === "/search" ? "text-primaryCam" : ""}`}
