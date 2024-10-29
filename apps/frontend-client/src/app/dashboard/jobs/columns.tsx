@@ -15,10 +15,11 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 
 export type Payment = {
-    id: string;
-    amount: number;
-    status: "pending" | "processing" | "success" | "failed";
+    _id: string;
+    name: string;
     email: string;
+    job_openings: number;
+    job_closings: number;
 };
 
 export const columns: ColumnDef<Payment>[] = [
@@ -47,11 +48,7 @@ export const columns: ColumnDef<Payment>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "status",
-        header: "Status",
-    },
-    {
-        accessorKey: "email",
+        accessorKey: "name",
         header: ({ column }) => {
             return (
                 <Button
@@ -60,23 +57,42 @@ export const columns: ColumnDef<Payment>[] = [
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    Email
+                    Name
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             );
         },
     },
     {
-        accessorKey: "amount",
-        header: () => <div className="text-right">Amount</div>,
-        cell: ({ row }) => {
-            const amount = parseFloat(row.getValue("amount"));
-            const formatted = new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-            }).format(amount);
-
-            return <div className="text-right font-medium">{formatted}</div>;
+        accessorKey: "job_openings",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    job_openings
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+    },
+    {
+        accessorKey: "job_closings",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    job_closings
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
         },
     },
     {
@@ -96,7 +112,7 @@ export const columns: ColumnDef<Payment>[] = [
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
                             onClick={() =>
-                                navigator.clipboard.writeText(payment.id)
+                                navigator.clipboard.writeText(payment._id)
                             }
                         >
                             Copy payment ID

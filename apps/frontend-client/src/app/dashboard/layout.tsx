@@ -7,7 +7,7 @@ const layout = ({ children }: { children: ReactNode }) => {
     return (
         <SidebarProvider>
             <AppSidebar />
-            <main>
+            <main className="w-full">
                 <MenuBar />
                 {children}
             </main>

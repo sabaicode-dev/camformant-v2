@@ -1,27 +1,16 @@
-import {
-    BriefcaseBusiness,
-    Calendar,
-    ChevronUp,
-    Home,
-    Inbox,
-    Search,
-    Settings,
-} from "lucide-react";
+"use client";
+import { Briefcase, ChevronUp, Home, User } from "lucide-react";
 
 import {
     Sidebar,
-    SidebarContent,
     SidebarFooter,
     SidebarGroup,
-    SidebarGroupContent,
     SidebarGroupLabel,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
 import Image from "next/image";
-import SabaiROkLogo from "../../public/logoSabaiRok.svg";
 import {
     DropdownMenu,
     DropdownMenuItem,
@@ -29,69 +18,34 @@ import {
     DropdownMenuContent,
 } from "./ui/dropdown-menu";
 import { UserProfile } from "./UserProfile";
-// Menu items.
-const items = [
-    {
-        title: "Dashboard",
-        url: "/dashboard",
-        icon: Home,
-    },
-    {
-        title: "Users",
-        url: "/dashboard/users",
-        icon: Inbox,
-    },
-    {
-        title: "Posts",
-        url: "/dashboard/posts",
-        icon: Calendar,
-    },
-    {
-        title: "Jobs",
-        url: "/dashboard/jobs",
-        icon: BriefcaseBusiness,
-    },
-    {
-        title: "Search",
-        url: "/dashboard/search",
-        icon: Search,
-    },
-    {
-        title: "Settings",
-        url: "/dashboard/settings",
-        icon: Settings,
-    },
-];
+import CollapsibleContentMenu from "./CollapsibleContentMenu";
+import { itemsMenu } from "@/utils/navigationItems";
+import SabaiROkLogo from "../../public/logoSabaiRok.svg";
 
 export function AppSidebar() {
     return (
         <Sidebar>
-            <SidebarContent>
-                <SidebarGroup>
-                    <SidebarGroupLabel>
-                        <Image
-                            src={SabaiROkLogo}
-                            width={100}
-                            height={100}
-                            alt="logo"
-                        />
-                    </SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                            {items.map((item) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild>
-                                        <Link href={item.url}>
-                                            <item.icon />
-                                            <span>{item.title}</span>
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
-            </SidebarContent>
+            <SidebarGroup>
+                <SidebarGroupLabel>
+                    <Image
+                        src={SabaiROkLogo}
+                        width={100}
+                        height={100}
+                        alt="logo"
+                    />
+                </SidebarGroupLabel>
+            </SidebarGroup>
+            <SidebarGroup className="h-full">
+                {itemsMenu.map((item, index) => (
+                    <CollapsibleContentMenu
+                        key={index}
+                        item={item.item}
+                        triggerName={item.triggerName}
+                        iconTrigger={<item.iconTrigger />}
+                        isCollapsibleOpen={item.isCollapsibleOpen}
+                    />
+                ))}
+            </SidebarGroup>
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>

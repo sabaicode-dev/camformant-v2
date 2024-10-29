@@ -1,5 +1,5 @@
 "use client";
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -21,6 +21,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -29,6 +30,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
@@ -38,12 +40,20 @@ export function DataTable<TData, TValue>({
     columns,
     data,
 }: DataTableProps<TData, TValue>) {
-    const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] =
-        React.useState<ColumnFiltersState>([]);
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({});
-    const [rowSelection, setRowSelection] = React.useState({});
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
+        searchParams.get("name")
+            ? [{ id: "name", value: searchParams.get("name") }]
+            : []
+    );
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+        {}
+    );
+    const [rowSelection, setRowSelection] = useState({});
+
     const table = useReactTable({
         data,
         columns,
@@ -62,23 +72,36 @@ export function DataTable<TData, TValue>({
             rowSelection,
         },
     });
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (columnFilters.length > 0 && columnFilters[0].value) {
+            const filterValue = columnFilters[0].value as string;
+            params.set("name", filterValue);
+            router.replace(`/dashboard/jobs?${params.toString()}`);
+        } else {
+            params.delete("name");
+            router.replace(`/dashboard/jobs?${params.toString()}`);
+        }
+    }, [columnFilters, router]);
+
     return (
         <div>
             <div className="flex-1 text-sm text-muted-foreground">
                 {table.getFilteredSelectedRowModel().rows.length} of{" "}
                 {table.getFilteredRowModel().rows.length} row(s) selected.
             </div>
+
             <div className="flex items-center py-4">
                 <Input
-                    placeholder="Filter amount..."
+                    placeholder="Filter name..."
                     value={
-                        (table
-                            .getColumn("status")
-                            ?.getFilterValue() as string) ?? ""
+                        (table.getColumn("name")?.getFilterValue() as string) ??
+                        ""
                     }
                     onChange={(event) =>
                         table
-                            .getColumn("status")
+                            .getColumn("name")
                             ?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
