@@ -51,7 +51,7 @@ export const Card: React.FC<CardProps> = (props) => {
           <img
             src={profile}
             alt={title}
-            className="object-cover w-12 h-12 border rounded-full"
+            className="object-cover w-12 h-12 rounded-full"
           />
           <div>
             <h1 className="font-semibold text-md text-secondaryCam">{title}</h1>

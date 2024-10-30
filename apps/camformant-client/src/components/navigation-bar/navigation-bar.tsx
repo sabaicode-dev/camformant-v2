@@ -11,7 +11,7 @@ import {
 export const NavigationBar: React.FC = () => {
   const pathname = usePathname();
   return (
-    <div className="fixed bottom-0 z-30 w-full bg-white border-t ">
+    <div className="fixed bottom-0 z-30 w-full bg-white border-t border-gray-100 ">
       <div className="flex justify-around p-4 gap-x-8 text-secondaryCam">
         <Link
           href="/"
