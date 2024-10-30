@@ -80,7 +80,7 @@ const Page: React.FC = () => {
 
         //TODO:todo
         // Set favorite status to true for these jobs
-        const jobsWithFavoriteStatus = jobs.map((job: any) => ({
+        const jobsWithFavoriteStatus = filteredJob.map((job) => ({
           ...job,
           favorite: true,
         }));

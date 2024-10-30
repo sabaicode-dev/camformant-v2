@@ -53,10 +53,17 @@ export const Search: React.FC<autoFocusd> = ({
   function handleReset() {
     setFilterValues(defaultFilterValue);
   }
-  function handleInputOnChange(e: ChangeEvent<HTMLInputElement>) {
-    setSearchValue!(e.target.value);
-  }
 
+  function handleInputOnChange(e: ChangeEvent<HTMLInputElement>) {
+   const inputValue = e.target.value.trim().toLowerCase();
+  
+    // Only set search value if it includes "job" in any part of the text
+    if (inputValue==="job") {
+      setSearchValue!(inputValue);
+    } else {
+      setSearchValue!(""); // Clear the search if "job" is not included
+    }
+  }
   return (
     <>
       {isFilterDisplay && (
