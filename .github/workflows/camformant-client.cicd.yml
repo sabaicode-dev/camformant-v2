@@ -40,45 +40,45 @@ jobs:
       - name: Build the Next.js project
         run: yarn build
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main'
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   if: github.ref == 'refs/heads/main'
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: "20"
 
-      - name: Configure npm to use GitHub Packages
-        run: |
-          echo "@sabaicode-dev:registry=https://npm.pkg.github.com/" > ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+  #     - name: Configure npm to use GitHub Packages
+  #       run: |
+  #         echo "@sabaicode-dev:registry=https://npm.pkg.github.com/" > ~/.npmrc
+  #         echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
-      - name: Install dependencies for camformant-client
-        run: yarn install
+  #     - name: Install dependencies for camformant-client
+  #       run: yarn install
 
-      - name: Set Environment Variables
-        run: |
-          echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > $GITHUB_ENV
-          echo "NEXT_PUBLIC_AUTH_ENDPOINT=${{ secrets.NEXT_PUBLIC_AUTH_ENDPOINT }}" >> $GITHUB_ENV
-          echo "NEXT_PUBLIC_USER_ENDPOINT=${{ secrets.NEXT_PUBLIC_USER_ENDPOINT }}" >> $GITHUB_ENV
-          echo "NEXT_PUBLIC_JOB_ENDPOINT=${{ secrets.NEXT_PUBLIC_JOB_ENDPOINT }}" >> $GITHUB_ENV
-          echo "NEXT_PUBLIC_CONVERSATION_ENDPOINT=${{ secrets.NEXT_PUBLIC_CONVERSATION_ENDPOINT }}" >> $GITHUB_ENV
-          echo "NEXT_PUBLIC_PUSH_NOTIFICATION_ENDPOINT=${{ secrets.NEXT_PUBLIC_PUSH_NOTIFICATION_ENDPOINT }}" >> $GITHUB_ENV
-          echo "NEXT_PUBLIC_VAPID_PUBLIC_KEY=${{ secrets.NEXT_PUBLIC_VAPID_PUBLIC_KEY }}" >> $GITHUB_ENV
+  #     - name: Set Environment Variables
+  #       run: |
+  #         echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > $GITHUB_ENV
+  #         echo "NEXT_PUBLIC_AUTH_ENDPOINT=${{ secrets.NEXT_PUBLIC_AUTH_ENDPOINT }}" >> $GITHUB_ENV
+  #         echo "NEXT_PUBLIC_USER_ENDPOINT=${{ secrets.NEXT_PUBLIC_USER_ENDPOINT }}" >> $GITHUB_ENV
+  #         echo "NEXT_PUBLIC_JOB_ENDPOINT=${{ secrets.NEXT_PUBLIC_JOB_ENDPOINT }}" >> $GITHUB_ENV
+  #         echo "NEXT_PUBLIC_CONVERSATION_ENDPOINT=${{ secrets.NEXT_PUBLIC_CONVERSATION_ENDPOINT }}" >> $GITHUB_ENV
+  #         echo "NEXT_PUBLIC_PUSH_NOTIFICATION_ENDPOINT=${{ secrets.NEXT_PUBLIC_PUSH_NOTIFICATION_ENDPOINT }}" >> $GITHUB_ENV
+  #         echo "NEXT_PUBLIC_VAPID_PUBLIC_KEY=${{ secrets.NEXT_PUBLIC_VAPID_PUBLIC_KEY }}" >> $GITHUB_ENV
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+  #     - name: Configure AWS Credentials
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: us-east-1
 
-      - name: Deploy to AWS with SST
-        run: npx sst deploy --stage prod
-        working-directory: "apps/camformant-client"
+  #     - name: Deploy to AWS with SST
+  #       run: npx sst deploy --stage prod
+  #       working-directory: "apps/camformant-client"
