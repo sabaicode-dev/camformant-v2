@@ -115,7 +115,6 @@ jobs:
             echo "AWS_COGNITO_USER_POOL_ID=${{ secrets.AWS_COGNITO_USER_POOL_ID }}" >> /home/ubuntu/apps/auth-service/build/configs/.env.production
             echo "AWS_COGNITO_CLIENT_ID=${{ secrets.AWS_COGNITO_CLIENT_ID }}" >> /home/ubuntu/apps/auth-service/build/configs/.env.production
             echo "AWS_COGNITO_CLIENT_SECRET=${{ secrets.AWS_COGNITO_CLIENT_SECRET }}" >> /home/ubuntu/apps/auth-service/build/configs/.env.production
-            # echo "AWS_COGNITO_IDENTITY_POOL_ID=${{ secrets.AWS_COGNITO_IDENTITY_POOL_ID }}" >> /home/ubuntu/apps/auth-service/build/configs/.env.production
             echo "AWS_COGNITO_DOMAIN=${{ secrets.AWS_COGNITO_DOMAIN }}" >> /home/ubuntu/apps/auth-service/build/configs/.env.production
             echo "AWS_REDIRECT_URI=${{ secrets.AWS_REDIRECT_URI }}" >> /home/ubuntu/apps/auth-service/build/configs/.env.production
             echo "CLIENT_URL=${{ secrets.CLIENT_URL }}" >> /home/ubuntu/apps/auth-service/build/configs/.env.production
