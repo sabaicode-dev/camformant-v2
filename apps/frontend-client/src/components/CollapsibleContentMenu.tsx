@@ -37,6 +37,7 @@ const CollapsibleContentMenu: React.FC<CollapsibleContentMenuProps> = ({
     isCollapsibleOpen,
 }) => {
     const pathname = usePathname();
+    const isActive = pathname === item[0].url;
     return (
         <>
             {isCollapsibleOpen ? (
@@ -59,35 +60,23 @@ const CollapsibleContentMenu: React.FC<CollapsibleContentMenuProps> = ({
                                             aria-orientation="vertical"
                                         />
                                         <SidebarMenu className="pl-4">
-                                            {item.map((item: any) => {
-                                                const isActive =
-                                                    pathname === item.url; // Check if the current path matches the item url
-
-                                                return (
-                                                    <SidebarMenuItem
-                                                        key={item.title}
-                                                    >
-                                                        <SidebarMenuButton
-                                                            asChild
-                                                            className={cn(
-                                                                "flex items-center",
-                                                                isActive
-                                                                    ? "active-class"
-                                                                    : "" // Apply active class conditionally
-                                                            )}
+                                            {item.map((item: any) => (
+                                                <SidebarMenuItem
+                                                    key={item.title}
+                                                >
+                                                    <SidebarMenuButton asChild>
+                                                        <Link
+                                                            href={item.url}
+                                                            className="flex items-center"
                                                         >
-                                                            <Link
-                                                                href={item.url}
-                                                            >
-                                                                <item.icon />
-                                                                <span>
-                                                                    {item.title}
-                                                                </span>
-                                                            </Link>
-                                                        </SidebarMenuButton>
-                                                    </SidebarMenuItem>
-                                                );
-                                            })}
+                                                            <item.icon />
+                                                            <span>
+                                                                {item.title}
+                                                            </span>
+                                                        </Link>
+                                                    </SidebarMenuButton>
+                                                </SidebarMenuItem>
+                                            ))}
                                         </SidebarMenu>
                                     </div>
                                 </SidebarMenu>
@@ -100,7 +89,12 @@ const CollapsibleContentMenu: React.FC<CollapsibleContentMenuProps> = ({
                     <SidebarMenu>
                         <SidebarMenuItem>
                             <SidebarMenuButton asChild>
-                                <Link href={item[0].url}>
+                                <Link
+                                    href={item[0].url}
+                                    className={cn("flex items-center", {
+                                        "active-class": isActive,
+                                    })}
+                                >
                                     <span className="size-7">
                                         {iconTrigger}
                                     </span>

@@ -80,38 +80,6 @@ export const columns: ColumnDef<Jobs>[] = [
         },
     },
     {
-        accessorKey: "job_openings",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() =>
-                        column.toggleSorting(column.getIsSorted() === "asc")
-                    }
-                >
-                    job_openings
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            );
-        },
-    },
-    {
-        accessorKey: "job_closings",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() =>
-                        column.toggleSorting(column.getIsSorted() === "asc")
-                    }
-                >
-                    job_closings
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            );
-        },
-    },
-    {
         id: "actions",
         cell: ({ row }) => {
             const payment = row.original;

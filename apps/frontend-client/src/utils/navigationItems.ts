@@ -90,8 +90,6 @@ const chat = [
     },
 ];
 
-
-
 // Menu Settings.
 
 const settings = [
