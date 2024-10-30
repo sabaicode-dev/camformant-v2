@@ -8,12 +8,12 @@ interface CardLocationProps {
 
 export const CardLocation: React.FC<CardLocationProps> = ({ address }) => {
   // Use the address directly as the src for the iframe
-  const googleMapsUrl = address || "";
+  const googleMapsUrl= address||""
   console.log("googleMapsUrl:", googleMapsUrl);
 
   return (
     <div>
-      <h1 className="pb-4 pl-3 text-sm font-semibold">Location</h1>
+      <h1 className="text-sm font-semibold pl-3 pb-4">Location</h1>
       <Link href={address || ""} target="_blank">
         <iframe
           className="w-full h-52 rounded-3xl"
@@ -23,6 +23,7 @@ export const CardLocation: React.FC<CardLocationProps> = ({ address }) => {
           referrerPolicy="no-referrer-when-downgrade"
         ></iframe>
       </Link>
+
     </div>
-  );
+    )
 };
