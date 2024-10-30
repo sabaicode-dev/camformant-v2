@@ -3,12 +3,12 @@ name: CI/CD Pipeline for Auth Service
 on:
   pull_request:
     branches:
-      - dev
+      - main
     paths:
       - "apps/backend/auth-service/**"
   push:
     branches:
-      - dev
+      - main
     paths:
       - "apps/backend/auth-service/**"
 
