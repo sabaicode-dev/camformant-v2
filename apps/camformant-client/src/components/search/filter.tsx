@@ -60,7 +60,7 @@ const Experience: React.FC<ExperienceProps> = ({
   return (
     <div
       className={`bg-gray-200 rounded-full px-4 py-2 w-full cursor-pointer ${
-        isSelected ? "bg-primary text-white" : "bg-gray-200 text-black"
+        isSelected ? "bg-primaryCam text-white" : "bg-gray-200 text-black"
       }`}
       onClick={() => onClick(text)}
     >
@@ -254,7 +254,7 @@ export const Filter: React.FC<FilterProps> = ({
                     backgroundColor: "white",
                   },
                 }}
-                step={10}
+                step={20}
               />
             </div>
           </div>
@@ -263,7 +263,7 @@ export const Filter: React.FC<FilterProps> = ({
       <div className="flex items-center justify-center p-4 border-t-2 ">
         <button
           onClick={handleCompleteFilter}
-          className="w-full p-5 text-white bg-primary rounded-2xl"
+          className="w-full p-5 text-white bg-primaryCam rounded-2xl"
         >
           Done
         </button>

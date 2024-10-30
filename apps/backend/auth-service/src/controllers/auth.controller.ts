@@ -15,7 +15,6 @@ import {
   Get,
   Post,
   Queries,
-  Query,
   Request,
   Route,
   SuccessResponse,
@@ -74,8 +73,8 @@ export class AuthController extends Controller {
   }
 
   @Get("/google")
-  public loginWithGoogle(@Query() state: string) {
-    const cognitoOAuthURL = AuthService.loginWithGoogle(state);
+  public loginWithGoogle() {
+    const cognitoOAuthURL = AuthService.loginWithGoogle();
 
     return sendResponse({
       message: "Login with Google successfully",
@@ -98,6 +97,15 @@ export class AuthController extends Controller {
     @Queries() query: GoogleCallbackRequest
   ) {
     try {
+      if (query.error) {
+        console.error(`OAuth Error: "Unknown error"}`);
+
+        // Redirect to frontend with the error message
+        return {
+          status: 302,
+          url: configs.clientUrl,
+        };
+      }
       const response = (request as any).res as Response;
       const tokens = await AuthService.getOAuthToken(query);
 

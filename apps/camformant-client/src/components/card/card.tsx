@@ -54,8 +54,8 @@ export const Card: React.FC<CardProps> = (props) => {
             className="object-cover w-12 h-12 border rounded-full"
           />
           <div>
-            <h1 className="font-semibold text-md text-secondary">{title}</h1>
-            <span className="text-sm text-secondary">
+            <h1 className="font-semibold text-md text-secondaryCam">{title}</h1>
+            <span className="text-sm text-secondaryCam">
               {position?.map((text) => `${text} `)}
             </span>
           </div>
@@ -67,7 +67,7 @@ export const Card: React.FC<CardProps> = (props) => {
       </div>
       <Link href={`/jobs/${_id}`}>
         <div>
-          <div className="flex flex-wrap space-x-2 text-xs text-primary ">
+          <div className="flex flex-wrap space-x-2 text-xs text-primaryCam ">
             {type &&
               type.length > 0 &&
               type.map((item, index) => (
@@ -79,7 +79,7 @@ export const Card: React.FC<CardProps> = (props) => {
                 </span>
               ))}
           </div>
-          <div className="flex flex-wrap mt-3 space-x-2 text-xs text-primary ">
+          <div className="flex flex-wrap mt-3 space-x-2 text-xs text-primaryCam ">
             {schedule &&
               schedule.length > 0 &&
               schedule.map((item, index) => (
@@ -95,18 +95,18 @@ export const Card: React.FC<CardProps> = (props) => {
             <div className="text-sm text-gray-400">
               {job_opening} Job Opening
             </div>
-            <div className="text-lg font-semibold text-primary">{`${min_salary}$-${max_salary}$`}</div>
+            <div className="text-lg font-semibold text-primaryCam">{`${min_salary}$-${max_salary}$`}</div>
           </div>
 
           {deadline && (
             <div className="flex justify-between mt-3">
-              <div className="flex items-center space-x-2 text-secondary">
+              <div className="flex items-center space-x-2 text-secondaryCam">
                 <label className="text-sm ">
                   <MdCalendarToday />
                 </label>
                 <span className="text-xs">{dateFormat(deadline, "en-US")}</span>
               </div>
-              <div className="flex space-x-2 text-secondary">
+              <div className="flex space-x-2 text-secondaryCam">
                 <label className="text-sm">
                   <FaMapMarkerAlt />
                 </label>

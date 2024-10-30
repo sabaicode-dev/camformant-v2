@@ -14,7 +14,11 @@ const MessageSchema: Schema = new Schema(
     text: { type: String, required: true },
     senderId: { type: String, required: true },
     recipientId: { type: String, required: true },
-    conversationId: { type: Types.ObjectId, required: true, ref: 'Conversation' },
+    conversationId: {
+      type: Types.ObjectId,
+      required: true,
+      ref: "Conversation",
+    },
   },
   { timestamps: true }
 );

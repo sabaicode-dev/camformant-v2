@@ -24,19 +24,23 @@ export const defaultFilterValue: FilterValueParams = {
   workMode: "",
   required_experience: "",
   minSalary: 0,
-  maxSalary: 200,
+  maxSalary: 5000,
 };
 
 const SearchHomePage: React.FC = () => {
   const { user } = useAuth();
-  const focusInput = useRef(null);
+  const focusInput = useRef<HTMLInputElement>(null);
 
   const [searchValue, setSearchValue] = useState<string>("");
   const [filterValues, setFilterValues] = useState(defaultFilterValue);
 
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [searchTrending, setSearchTrending] = useState<string[]>([]);
-
+  const onChangeSearchValue = (value: string) => {
+    focusInput.current?.focus;
+    focusInput.current!.value = value;
+    setSearchValue(value);
+  };
   useEffect(() => {
     const fetchSearchHistory = async () => {
       try {
@@ -78,6 +82,7 @@ const SearchHomePage: React.FC = () => {
             setSearchValue={setSearchValue}
             setCompleteFilter={setFilterValues}
             isFilterDisplay={true}
+            searchValue={searchValue}
           />
         </div>
 
@@ -92,7 +97,10 @@ const SearchHomePage: React.FC = () => {
                 <div key={index} className="min-w-max">
                   <CategoryPosition
                     text={item}
-                    onClick={() => setSearchValue(item)}
+                    onClick={() => {
+                      setSearchValue(item);
+                      onChangeSearchValue(item);
+                    }}
                     className="px-4 py-2 transition duration-300 ease-in-out bg-gray-100 rounded-lg shadow cursor-pointer hover:bg-gray-200"
                   />
                 </div>
@@ -114,7 +122,12 @@ const SearchHomePage: React.FC = () => {
                 <div key={index} className="min-w-max">
                   <CategoryPosition
                     text={item}
-                    onClick={() => setSearchValue(item)}
+                    onClick={() => {
+                      setSearchValue(item);
+                      // focusInput.current?.focus;
+                      // focusInput.current!.value = searchValue;
+                      onChangeSearchValue(item);
+                    }}
                     className="px-4 py-2 transition duration-300 ease-in-out bg-gray-100 rounded-lg shadow cursor-pointer hover:bg-gray-200"
                   />
                 </div>

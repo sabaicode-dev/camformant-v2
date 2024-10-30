@@ -6,7 +6,6 @@ import Skeleton from "react-loading-skeleton";
 import { MdOutlineKeyboardDoubleArrowLeft } from "react-icons/md";
 import { BsPersonVcard } from "react-icons/bs";
 
-
 interface typeMiniCard {
   name: string;
   index: number;
@@ -62,14 +61,14 @@ const MiniCardResume: React.FC<typeMiniCard> = ({
   return (
     <div>
       {isLoading ? (
-        <div className="flex w-full max-w-lg p-6 items-center rounded-lg shadow-md gap-4 bg-white border border-gray-200">
+        <div className="flex items-center w-full max-w-lg gap-4 p-6 bg-white border border-gray-200 rounded-lg shadow-md">
           <Skeleton height={40} width={40} className="rounded-lg" />
           <div className="flex-1">
             <Skeleton height={35} width="80%" className="mb-2" />
           </div>
         </div>
       ) : (
-        <div className="flex h-full justify-center items-center">
+        <div className="flex items-center justify-center h-full">
           <div
             {...handlers}
             key={index}
@@ -79,16 +78,21 @@ const MiniCardResume: React.FC<typeMiniCard> = ({
               href={name}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full h-full flex items-center gap-4"
+              className="flex items-center w-full h-full gap-4"
             >
-              <span aria-label="File icon" className="text-3xl p-1 text-primary  ">
-              <BsPersonVcard />
+              <span
+                aria-label="File icon"
+                className="p-1 text-3xl text-primaryCam "
+              >
+                <BsPersonVcard />
               </span>
               <span className="text-lg font-semibold text-gray-800">
                 CV / Resume {index + 1}
               </span>
-              <span className="absolute text-primary text-2xl right-4 animate-back-and-forth">
-                <MdOutlineKeyboardDoubleArrowLeft  className={`${isSwiped ? " rotate-180 ": ""}`} />
+              <span className="absolute text-2xl text-primaryCam right-4 animate-back-and-forth">
+                <MdOutlineKeyboardDoubleArrowLeft
+                  className={`${isSwiped ? " rotate-180 " : ""}`}
+                />
               </span>
             </a>
           </div>

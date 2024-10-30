@@ -27,11 +27,16 @@ class JobRepository {
   public async getAllJobs(queries: JobGetAllRepoParams) {
     const {
       page = 1,
-      limit = 5,
       filter = { position: "ALL" },
       sort = { createdAt: "desc" },
       search = "",
     } = queries;
+    const skip =
+      queries.limit === "*" || !queries.limit
+        ? 0
+        : (page - 1) * parseInt(queries.limit);
+    const limit =
+      queries.limit === "*" || !queries.limit ? 5 : parseInt(queries.limit);
 
     // Define a list of properties that should always be treated as arrays
     const arrayProperties = [
@@ -141,24 +146,37 @@ class JobRepository {
         ...buildFilter(filter),
         ...searchFilter,
       };
-      const operation = JobModel.find(mongoFilter)
-        .sort(sortFields)
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .populate({
-          path: "companyId",
-          model: CompanyModel,
-          select:
-            "name location bio profile email phone_number job_openings job_closings",
-        });
+      let operation: IJob[] = [];
+      if (queries.limit === "*") {
+        operation = await JobModel.find(mongoFilter)
+          .sort(sortFields)
+          .skip(skip)
+          .populate({
+            path: "companyId",
+            model: CompanyModel,
+            select:
+              "name location bio profile email phone_number job_openings job_closings",
+          });
+      } else {
+        operation = await JobModel.find(mongoFilter)
+          .sort(sortFields)
+          .skip(skip)
+          .limit(limit)
+          .populate({
+            path: "companyId",
+            model: CompanyModel,
+            select:
+              "name location bio profile email phone_number job_openings job_closings",
+          });
+      }
 
       const result = await operation;
       const totalItems = await JobModel.countDocuments(mongoFilter);
-
+      const ItemsPerPage = queries.limit === "*" ? totalItems : limit;
       return {
         [JobModel.collection.collectionName]: result,
         totalItems,
-        totalPages: Math.ceil(totalItems / limit),
+        totalPages: Math.ceil(totalItems / ItemsPerPage),
         currentPage: page,
       };
     } catch (error) {

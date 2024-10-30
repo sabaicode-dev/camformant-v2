@@ -267,8 +267,7 @@
 						"format": "double"
 					},
 					"limit": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
 					"filter": {
 						"type": "string"
@@ -435,8 +434,7 @@
 						"name": "limit",
 						"required": false,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					},
 					{

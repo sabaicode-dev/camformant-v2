@@ -4,6 +4,7 @@ import { Sheet } from "react-modal-sheet";
 import { Filter } from "./filter";
 import Link from "next/link";
 import {
+  ChangeEvent,
   Dispatch,
   RefObject,
   SetStateAction,
@@ -24,6 +25,7 @@ interface autoFocusd {
   isFilterDisplay?: boolean;
   setSearchValue?: Dispatch<SetStateAction<string>>;
   setCompleteFilter?: Dispatch<SetStateAction<FilterValueParams>>;
+  searchValue?: string;
 }
 
 export const Search: React.FC<autoFocusd> = ({
@@ -32,6 +34,7 @@ export const Search: React.FC<autoFocusd> = ({
   isFilterDisplay = false,
   setSearchValue,
   setCompleteFilter,
+  searchValue,
 }) => {
   const [isOpen, setOpen] = useState(false);
   const [filterValues, setFilterValues] = useState(defaultFilterValue);
@@ -50,6 +53,9 @@ export const Search: React.FC<autoFocusd> = ({
   function handleReset() {
     setFilterValues(defaultFilterValue);
   }
+  function handleInputOnChange(e: ChangeEvent<HTMLInputElement>) {
+    setSearchValue!(e.target.value);
+  }
 
   return (
     <>
@@ -58,7 +64,7 @@ export const Search: React.FC<autoFocusd> = ({
           onClick={() => setOpen(true)}
           className="absolute translate-y-[16px] right-5 z-50 "
         >
-          <IoMdFunnel size={22} className="text-primary" />
+          <IoMdFunnel size={22} className="text-primaryCam" />
         </button>
       )}
 
@@ -69,13 +75,12 @@ export const Search: React.FC<autoFocusd> = ({
           </Link>
         </div>
         <Link href="/search" className="w-full ">
-          <div className="absolute translate-y-[3px] translate-x-1  z-10 bg-gradient-to-r from-[#FF5858] to-primary rounded-full p-3.5 ">
+          <div className="absolute translate-y-[3px] translate-x-1  z-10 bg-gradient-to-r from-[#FF5858] to-primaryCam rounded-full p-3.5 ">
             <AiOutlineSearch size={22} color="#ffff" />
           </div>
-
           <input
             type="text"
-            onChange={(e) => setSearchValue!(e.target.value)}
+            onChange={handleInputOnChange}
             ref={focus || undefined}
             placeholder="Search Job vacancy"
             className="relative w-full p-4 pl-16 shadow-md outline-none placeholder:text-md bg-whit rounded-2xl "
@@ -91,8 +96,8 @@ export const Search: React.FC<autoFocusd> = ({
           <Sheet.Container>
             <Sheet.Header />
             <div className="container flex justify-between pb-5 ">
-              <button className="text-lg text-primary">{"Filter"}</button>
-              <button onClick={handleReset} className="text-lg text-primary">
+              <button className="text-lg text-primaryCam">{"Filter"}</button>
+              <button onClick={handleReset} className="text-lg text-primaryCam">
                 {"Reset"}
               </button>
             </div>
