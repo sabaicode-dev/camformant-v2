@@ -1,0 +1,152 @@
+import { PersonIcon } from "@radix-ui/react-icons";
+import { BriefcaseBusiness, Calendar, ChartNetwork, Home, Inbox, List, MessageSquare, Search, Settings, Users2 } from "lucide-react";
+
+// Menu Dashboard.
+
+const dashboard = [
+    {
+        title: "Dashboard",
+        url: "/dashboard",
+        icon: Home,
+    }
+];
+
+// Menu jobs.
+const jobs = [
+    {
+        title: "Jobs",
+        url: "/dashboard/jobs",
+        icon: BriefcaseBusiness,
+    },
+    {
+        title: "Lists",
+        url: "/dashboard/search",
+        icon: List,
+    },
+];
+
+// Menu Posts
+
+const posts = [
+    {
+        title: "Posts",
+        url: "/dashboard/posts",
+        icon: Inbox,
+    },
+    {
+        title: "List",
+        url: "/dashboard/posts/list",
+        icon: List,
+    },
+];
+
+// Menu users.
+
+const users = [
+    {
+        title: "Users",
+        url: "/dashboard/users",
+        icon: Inbox,
+    },
+    {
+        title: "Profile",
+        url: "/dashboard/users/profile",
+        icon: PersonIcon,
+    },
+    {
+        title: "List",
+        url: "/dashboard/users/list",
+        icon: List,
+    },
+];
+
+// Menu Calendar.
+
+const calendar = [
+    {
+        title: "Calendar",
+        url: "/dashboard/calendar",
+        icon: Calendar,
+    },
+];
+
+// Menu Chart 
+
+const chart = [
+    {
+        title: "Chart",
+        url: "/dashboard/chart",
+        icon: ChartNetwork,
+    },
+];
+
+// Menu Chat.
+
+const chat = [
+    {
+        title: "Chat",
+        url: "/dashboard/chat",
+        icon: MessageSquare,
+    },
+];
+
+// Menu Settings.
+
+const settings = [
+    {
+        title: "Account Settings",
+        url: "/dashboard/settings",
+        icon: Settings,
+    },
+];
+
+export const itemsMenu = [
+    {
+        item: dashboard,
+        triggerName: "Dashboard",
+        iconTrigger: Home,
+        isCollapsibleOpen: false,
+    },
+    {
+        item: users,
+        triggerName: "Users",
+        iconTrigger: Users2,
+        isCollapsibleOpen: true,
+    },
+    {
+        item: jobs,
+        triggerName: "Jobs",
+        iconTrigger: BriefcaseBusiness,
+        isCollapsibleOpen: true,
+    },
+    {
+        item: posts,
+        triggerName: "Posts",
+        iconTrigger: Inbox,
+        isCollapsibleOpen: true,
+    },
+    {
+        item: calendar,
+        triggerName: "Calendar",
+        iconTrigger: Calendar,
+        isCollapsibleOpen: false,
+    },
+    {
+        item: chart,
+        triggerName: "Chart",
+        iconTrigger: ChartNetwork,
+        isCollapsibleOpen: false,
+    },
+    {
+        item: chat,
+        triggerName: "Chat",
+        iconTrigger: MessageSquare,
+        isCollapsibleOpen: false,
+    },
+    {
+        item: settings,
+        triggerName: "Account Settings",
+        iconTrigger: Settings,
+        isCollapsibleOpen: false,
+    },
+]
