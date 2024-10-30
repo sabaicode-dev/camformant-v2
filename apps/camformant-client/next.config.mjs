@@ -40,6 +40,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'cam-formant.s3.amazonaws.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'microservice-sample-resource.s3.amazonaws.com',
         pathname: '/**',
       },

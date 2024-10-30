@@ -15,6 +15,7 @@ import {
   ResourceConflictError,
   prettyObject,
 } from "@sabaicode-dev/camformant-libs";
+import UserProfileModel, { IUserProfile } from "@/src/database/models/userProfile.model";
 
 class UserRepository {
   async getAll(queries: UserGetAllRepoParams) {
@@ -143,7 +144,9 @@ class UserRepository {
 
       // Duplicate Email
       if ((error as MongoError).code === 11000) {
-        throw new ResourceConflictError(AUTH_MESSAGES.AUTHENTICATION.ACCOUNT_ALREADY_EXISTS);
+        throw new ResourceConflictError(
+          AUTH_MESSAGES.AUTHENTICATION.ACCOUNT_ALREADY_EXISTS
+        );
       }
 
       // Validation Error
@@ -266,6 +269,34 @@ class UserRepository {
         prettyObject(error as {})
       );
       throw error;
+    }
+  }
+  async getProfileById(userId: string, category: string) {
+    try {
+      let categoryData: any = {};
+      if (category == "ability") {
+        categoryData = await UserProfileModel.findById(userId).select(
+          "skills expertise languages -_id"
+        );
+      } else
+        categoryData = await UserProfileModel.findById(userId).select(
+          `${category} -_id`
+        );
+      return categoryData;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateProfile(userId:string,updateBody:IUserProfile){
+    try {
+      let profile = await UserProfileModel.findByIdAndUpdate(userId,updateBody,{new:true});
+      if(!profile){
+        throw new NotFoundError("Profile not found");
+      }
+      return profile;
+    } catch (err) {
+      throw err;
     }
   }
 }

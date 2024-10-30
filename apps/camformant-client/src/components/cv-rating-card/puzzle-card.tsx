@@ -52,19 +52,19 @@ const PuzzleCard: React.FC <typePropsTotal> = ({propTotal}) => {
 
     const TitleCard = [
         { txt: "Basic Information", rating: info, route: "/basic" },
-        { txt: "Eucaturation", rating: edu, route: "/educ" },
-        { txt: "Exprience ", rating: exp, route: "/exp" },
-        { txt: "Self Desception", rating: self, route: "/self" },
-        { txt: "Skills", rating: skill, route: "/skills" },
-        { txt: "Certificates", rating: cert, route: "/certificates" },
-        { txt: "Portfilio", rating: port, route: "/portfilio" },
-        { txt: "References", rating: ref, route: "/refenrences" },
+        { txt: "Education", rating: edu, route: "/educ" },
+        { txt: "Experience ", rating: exp, route: "/exp" },
+        { txt: "Ability ", rating: 0, route: "/ability" },
+        { txt: "Self Description", rating: self, route: "/description" },
+        { txt: "Certificate", rating: cert, route: "/certificate" },
+        { txt: "Portfilio", rating: port, route: "/portfolio" },
+        { txt: "Reference", rating: ref, route: "/reference" },
     ];
     return (
-        <div className="flex container justify-center w-full gap-[4%] h-full pt-5 flex-wrap  ">
+        <div className="flex container justify-center w-full gap-[4%] h-full pt-5 flex-wrap pb-40  ">
             {TitleCard.map((item,index) => (
                 <div key={index} className=" h-24 w-[46%] shadow-md rounded-md ">
-                    <Link href={`${item.txt}/${item.route}`}>
+                    <Link href={`self/${item.route}`}>
                         <CardRating rating={item.rating} txt={item.txt} />
                     </Link>
                 </div>

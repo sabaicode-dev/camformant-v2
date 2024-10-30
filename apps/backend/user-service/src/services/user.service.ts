@@ -137,6 +137,18 @@ class UserService {
       throw error;
     }
   }
+  async getProfileById(userId:string,category:string){
+    try {
+      const profile = await UserRepository.getProfileById(userId,category);
+      return profile;
+    } catch (error) {
+      console.error(
+        `UserService - getProfileById() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
 }
 
 export default new UserService();

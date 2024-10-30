@@ -11,6 +11,7 @@ import {
   Queries,
   Middlewares,
   Request,
+  Query,
 } from "tsoa";
 import UserService from "@/src/services/user.service";
 import sendResponse from "@/src/utils/send-response";
@@ -209,6 +210,20 @@ export class UsersController extends Controller {
         prettyObject(error as {})
       );
       throw error;
+    }
+  }
+
+  @Get("/profile-detail/:userId")
+  public async  getProfileByID(
+    @Path() userId:string,
+    @Query() category:string
+  ){
+    try{
+      const userProfile=await UserService.getProfileById(userId,category)
+    return {data:userProfile}
+    }
+    catch(err){
+      throw err
     }
   }
 }

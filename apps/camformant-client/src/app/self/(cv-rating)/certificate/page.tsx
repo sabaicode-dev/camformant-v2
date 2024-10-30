@@ -5,7 +5,7 @@ import React from "react";
 const Page = () => {
   return (
     <div>
-      <HeaderBasic title="Skills" />
+      <HeaderBasic title="Certificates" nextRoute="/self/portfolio"/>
       <CommingSoon />
     </div>
   );

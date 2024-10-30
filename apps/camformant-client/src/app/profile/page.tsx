@@ -55,7 +55,7 @@ const Page: React.FC = () => {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isCropping, setIsCropping] = useState(false);
 
-  console.log('isLoading:::', loading)
+  console.log("isLoading:::", loading);
 
   function handleImage() {
     RefFile.current?.click();
@@ -85,10 +85,12 @@ const Page: React.FC = () => {
       const blob = await response.blob();
       const file = new File([blob], "cropped-image.png", { type: "image/png" });
       setUpload(file);
+      const imagePreviewUrl = URL.createObjectURL(file); // Generate URL for display
+      setPic(imagePreviewUrl);
       setIsCropping(false);
     } catch (error) {
       console.error("Failed to crop image", error);
-      addNotification("Failed to crop image", 'error')
+      addNotification("Failed to crop image", "error");
     }
   };
 
@@ -103,11 +105,13 @@ const Page: React.FC = () => {
         <Background style="bg-mybg-linear ipx:h-[20%] ipse:h-[22%]">
           <div className="container mt-[-70px] flex flex-col items-center justify-center gap-5">
             {/* ==================== PROFILE PICTURE  ================================*/}
-            <div className={`relative ${loading ? 'hidden' : ''}`}>
-              <div className={` w-32 h-32 rounded-full overflow-hidden bg-white`}>
+            <div className={`relative ${loading ? "hidden" : ""}`}>
+              <div
+                className={` w-32 h-32 rounded-full overflow-hidden bg-white`}
+              >
                 <Image
                   className="object-cover"
-                  src={user?.profile!}
+                  src={typeof pic === "string" ? pic : user?.profile || ""}
                   height={200}
                   width={200}
                   alt="Profile Picture"
@@ -155,32 +159,30 @@ const Page: React.FC = () => {
             )}
 
             {/* ==================== USERNAME  ================================*/}
-            <h1 className={`relative text-xl ${loading ? 'hidden' : ''}`}>
+            <h1 className={`relative text-xl ${loading ? "hidden" : ""}`}>
               {user ? user.username : "no nickname"}
             </h1>
 
             {/* ==================== PERSONAL INFO  ================================*/}
             {loading ? (
               <SkeletonLoader />
-            ) : <div className="p-5 w-full flex flex-col gap-5 justify-center items-center bg-white shadow-[0_35px_224px_15px_rgba(0,0,0,0.2)] rounded-3xl">
-              <Link
-                className={`w-full`}
-                href={"/cv-rating"}
-              >
-                <span className="flex w-full text-lg gap-5 items-center">
-                  <FaCircleUser />
-                  <div>Personal Profile</div>
-                </span>
-              </Link>
-              <Link className="w-full" href={"/favorite"}>
-                <span className="flex w-full text-lg gap-5 items-center">
-                  <FaRegHeart size={18} />
-                  <div className="pl-1">favorite</div>
-                </span>
-              </Link>
+            ) : (
+              <div className="p-5 w-full flex flex-col gap-5 justify-center items-center bg-white shadow-[0_35px_224px_15px_rgba(0,0,0,0.2)] rounded-3xl">
+                <Link className={`w-full`} href={"/cv-rating"}>
+                  <span className="flex w-full text-lg gap-5 items-center">
+                    <FaCircleUser />
+                    <div>Personal Profile</div>
+                  </span>
+                </Link>
+                <Link className="w-full" href={"/favorite"}>
+                  <span className="flex w-full text-lg gap-5 items-center">
+                    <FaRegHeart size={18} />
+                    <div className="pl-1">favorite</div>
+                  </span>
+                </Link>
                 <Notification addNotification={addNotification} />
-            </div>
-            }
+              </div>
+            )}
             <ButtonSignOut
               onHandleLogout={logout}
               isLogout={user?.username || null}
@@ -189,7 +191,6 @@ const Page: React.FC = () => {
         </Background>
       </div>
     </React.Fragment>
-
   );
 };
 

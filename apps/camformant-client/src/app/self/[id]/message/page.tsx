@@ -30,6 +30,7 @@ const ChatPage = () => {
   // Fetch job data
   const fetchJob = useCallback(async () => {
     try {
+      console.log(companyId)
       const response = await axiosInstance.get(`${API_ENDPOINTS.JOBS}/${companyId}`);
 
       if (response.status === 200 && response.data.data) {
