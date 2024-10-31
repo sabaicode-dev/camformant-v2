@@ -58,6 +58,7 @@ export const RecommendationPost: React.FC = () => {
           },
         });
         const jobs = jobResponse.data.data.jobs;
+        // console.log("jobs: ", jobs);
 
         // Merge favorite status into jobs
         const jobsWithFavoriteStatus = jobs.map((job: any) => ({
@@ -80,7 +81,7 @@ export const RecommendationPost: React.FC = () => {
   if (error) {
     return (
       <div className="container mt-8">
-        <div className="text-center mt-10">
+        <div className="mt-10 text-center">
           <p>{error}</p>
         </div>
       </div>
@@ -89,7 +90,7 @@ export const RecommendationPost: React.FC = () => {
 
   return (
     <div className="container mt-2">
-      <div className="my-2 flex flex-row justify-between">
+      <div className="flex flex-row justify-between my-2">
         <Heading title="Recommend Company" />
         <Image
           src={"/images/bloodbros-search.gif"}
@@ -110,36 +111,36 @@ export const RecommendationPost: React.FC = () => {
       >
         {loading
           ? Array.from({ length: 3 }).map((_, index) => (
-            <SwiperSlide key={index}>
-              <div className="mb-5 p-1">
-                <SkeletonCard />
-              </div>
-            </SwiperSlide>
-          ))
+              <SwiperSlide key={index}>
+                <div className="p-1 mb-5">
+                  <SkeletonCard />
+                </div>
+              </SwiperSlide>
+            ))
           : jobData.map((job) => (
-            <SwiperSlide key={job._id}>
-              <div className="mb-5 p-1">
-                <Card
-                  _id={job._id}
-                  title={job.title}
-                  position={job.position}
-                  profile={job.companyId?.profile}
-                  min_salary={job.min_salary}
-                  max_salary={job.max_salary}
-                  job_opening={job.job_opening}
-                  type={job.type}
-                  schedule={job.schedule}
-                  location={job.location}
-                  deadline={new Date(job.deadline)}
-                  heart={job.favorite}
-                  setHeart={() => toggleFavorite(job._id)}
-                />
-              </div>
-            </SwiperSlide>
-          ))}
+              <SwiperSlide key={job._id}>
+                <div className="p-1 mb-5">
+                  <Card
+                    _id={job._id}
+                    title={job.title}
+                    position={job.position}
+                    profile={job.companyId?.profile}
+                    min_salary={job.min_salary}
+                    max_salary={job.max_salary}
+                    job_opening={job.job_opening}
+                    type={job.type}
+                    schedule={job.schedule}
+                    location={job.location}
+                    deadline={new Date(job.deadline)}
+                    heart={job.favorite}
+                    setHeart={() => toggleFavorite(job._id)}
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
       </Swiper>
 
-      <div className="mt-7 mb-10">
+      <div className="mb-10 mt-7">
         <Button
           text="Find Your Matching"
           link="#"

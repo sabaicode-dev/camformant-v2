@@ -114,7 +114,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "page": {"dataType":"double"},
-            "limit": {"dataType":"double"},
+            "limit": {"dataType":"string"},
             "filter": {"dataType":"string"},
             "sort": {"dataType":"string"},
             "search": {"dataType":"string"},

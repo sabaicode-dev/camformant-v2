@@ -14,8 +14,7 @@ import SkeletonCard from "@/components/skeleton/skeleton-card";
 export const PositionPost: React.FC = () => {
   const { user } = useAuth();
   const [jobData, setJobData] = useState<any[]>([]);
-  const [selectedPosition, setSelectedPosition] =
-    useState<string>("All");
+  const [selectedPosition, setSelectedPosition] = useState<string>("All");
 
   // FETCHING DATA STATE
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -30,9 +29,7 @@ export const PositionPost: React.FC = () => {
     try {
       const nextPage = page + 1;
       const query = buildQuery(nextPage, selectedPosition);
-      const res = await axiosInstance.get(
-        `${API_ENDPOINTS.JOBS}${query}`
-      );
+      const res = await axiosInstance.get(`${API_ENDPOINTS.JOBS}${query}`);
 
       const { jobs, totalPages } = res.data.data; // Adjust based on your actual response structure
 
@@ -41,18 +38,19 @@ export const PositionPost: React.FC = () => {
       }
 
       const jobsWithFavoriteStatus = jobs.map((job: Job) => ({
-        ...job, favorite: user?.favorites.includes(job._id) || false
-      }))
+        ...job,
+        favorite: user?.favorites.includes(job._id) || false,
+      }));
 
       setJobData((prevJobs) => [...prevJobs, ...jobsWithFavoriteStatus]);
       setPage(nextPage);
     } catch (error) {
-      console.error('Error fetching more jobs:', error);
+      console.error("Error fetching more jobs:", error);
       setError("Failed to load more jobs. Please try again later.");
     } finally {
       setIsLoading(false);
     }
-  }, [hasMore, isLoading, page, selectedPosition]);
+  }, [hasMore, isLoading, page, selectedPosition, user?.favorites]);
 
   const onScroll = useCallback(async () => {
     if (
@@ -84,13 +82,13 @@ export const PositionPost: React.FC = () => {
 
     try {
       if (newFavoriteStatus) {
-        await axiosInstance.post(API_ENDPOINTS.FAVORITE, { jobId })
+        await axiosInstance.post(API_ENDPOINTS.FAVORITE, { jobId });
       } else {
-        await axiosInstance.delete(`${API_ENDPOINTS.FAVORITE}/${jobId}`)
+        await axiosInstance.delete(`${API_ENDPOINTS.FAVORITE}/${jobId}`);
       }
     } catch (error) {
-      console.error('Error updating favorite status:', error);
-      setError('Failed to update favorite status. Please try again later.');
+      console.error("Error updating favorite status:", error);
+      setError("Failed to update favorite status. Please try again later.");
 
       // Revert the UI change if the API call fails
       updatedJobs[jobIndex].favorite = currentFavoriteStatus;
@@ -108,7 +106,9 @@ export const PositionPost: React.FC = () => {
 
       try {
         const query = buildQuery(1, selectedPosition);
-        const jobResponse = await axiosInstance.get(`${API_ENDPOINTS.JOBS}${query}`);
+        const jobResponse = await axiosInstance.get(
+          `${API_ENDPOINTS.JOBS}${query}`
+        );
 
         const { jobs, totalPages } = jobResponse.data.data; // Adjust based on your actual response structure
 
@@ -119,8 +119,8 @@ export const PositionPost: React.FC = () => {
         // Merge favorite status into jobs
         const jobsWithFavoriteStatus = jobs.map((job: any) => ({
           ...job,
-          favorite: user?.favorites.includes(job._id) || false
-        }))
+          favorite: user?.favorites.includes(job._id) || false,
+        }));
 
         setJobData(jobsWithFavoriteStatus);
       } catch (error) {
@@ -143,7 +143,7 @@ export const PositionPost: React.FC = () => {
     <div className="container mt-5 pb-14">
       <Heading title="Positions" subTitle="You can find more positions here" />
 
-      <div className="mb-8 mt-4 flex justify-start items-center gap-5 overflow-x-auto p-1">
+      <div className="flex items-center justify-start gap-5 p-1 mt-4 mb-8 overflow-x-auto">
         {categoryPosition.categoryPosition.map((x) => (
           <div key={x.text}>
             <CategoryPosition
@@ -184,7 +184,7 @@ export const PositionPost: React.FC = () => {
             </div>
           ))
       ) : (
-        <p className="mb-20 h-56 w-full flex justify-center items-center">
+        <p className="flex items-center justify-center w-full h-56 mb-20">
           No jobs available
         </p>
       )}
@@ -193,18 +193,17 @@ export const PositionPost: React.FC = () => {
         <p className="text-center text-gray-500">Loading more jobs...</p>
       )}
       {!hasMore && jobData.length > 0 && (
-        <p className="text-center text-gray-500 my-10">You have seen all jobs.</p>
+        <p className="my-10 text-center text-gray-500">
+          You have seen all jobs.
+        </p>
       )}
-      {error && (
-        <p className="text-center text-red-500">{error}</p>
-      )}
+      {error && <p className="text-center text-red-500">{error}</p>}
     </div>
   );
 };
 
-
 function buildQuery(page: number, selectedPosition: string) {
   const filter = { position: selectedPosition };
   const encodedFilter = encodeURIComponent(JSON.stringify(filter));
-  return `?filter=${encodedFilter}&page=${page}`;
+  return `?filter=${encodedFilter}&page=${page}&limit=5`;
 }

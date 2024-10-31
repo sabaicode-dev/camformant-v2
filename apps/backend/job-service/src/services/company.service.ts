@@ -2,7 +2,7 @@ import { CompanyParams } from "@/src/controllers/types/company-controller.type";
 import { ICompany } from "@/src/database/models/company.model";
 import companyRepository from "@/src/database/repositories/company.repository";
 import { deleteFile, uploadFile } from "@/src/utils/s3";
-import { NotFoundError } from "@sokritha-sabaicode/ms-libs";
+import { NotFoundError } from "@sabaicode-dev/camformant-libs";
 
 class CompanyService {
   public async createCompany(
@@ -10,7 +10,7 @@ class CompanyService {
     profile: Express.Multer.File
   ): Promise<ICompany> {
     try {
-      const imageUrl = await uploadFile(profile, 'company-profile');
+      const imageUrl = await uploadFile(profile, "company-profile");
       const newCompany = await companyRepository.createCompany({
         ...data,
         profile: imageUrl,
@@ -22,9 +22,7 @@ class CompanyService {
 
       return newCompany;
     } catch (error) {
-      console.error(
-        `CompanyService createNewCompany() method error:`, error
-      );
+      console.error(`CompanyService createNewCompany() method error:`, error);
       throw error;
     }
   }
@@ -37,9 +35,7 @@ class CompanyService {
       }
       return result;
     } catch (error) {
-      console.error(
-        `CompanyService getAllCompany() method error:`, error
-      );
+      console.error(`CompanyService getAllCompany() method error:`, error);
       throw error;
     }
   }
@@ -53,9 +49,7 @@ class CompanyService {
       }
       return result;
     } catch (error) {
-      console.error(
-        `CompanyService findCompanyById() method error:`, error
-      );
+      console.error(`CompanyService findCompanyById() method error:`, error);
       throw error;
     }
   }
@@ -90,9 +84,7 @@ class CompanyService {
 
       return result;
     } catch (error) {
-      console.error(
-        `CompanyService updateCompanyById() method error:`, error
-      );
+      console.error(`CompanyService updateCompanyById() method error:`, error);
       throw error;
     }
   }
@@ -113,9 +105,7 @@ class CompanyService {
       // Delete the company from the database
       await companyRepository.deleteCompanyById(companyId);
     } catch (error) {
-      console.error(
-        `CompanyService deleteCompanyById() method error:`, error
-      );
+      console.error(`CompanyService deleteCompanyById() method error:`, error);
       throw error;
     }
   }

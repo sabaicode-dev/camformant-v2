@@ -1,9 +1,12 @@
-import { JobGetAllRepoParams, JobParams, JobSortParams } from "@/src/controllers/types/job-controller.type";
+import {
+  JobGetAllRepoParams,
+  JobParams,
+  JobSortParams,
+} from "@/src/controllers/types/job-controller.type";
 import { CompanyModel } from "@/src/database/models/company.model";
 import { IJob, JobModel } from "@/src/database/models/job.model";
-import { NotFoundError, prettyObject } from "@sokritha-sabaicode/ms-libs";
+import { NotFoundError, prettyObject } from "@sabaicode-dev/camformant-libs";
 import { SortOrder } from "mongoose";
-
 
 class JobRepository {
   public async createNewJob(newInfo: JobParams): Promise<IJob> {
@@ -24,11 +27,16 @@ class JobRepository {
   public async getAllJobs(queries: JobGetAllRepoParams) {
     const {
       page = 1,
-      limit = 5,
       filter = { position: "ALL" },
       sort = { createdAt: "desc" },
       search = "",
     } = queries;
+    const skip =
+      queries.limit === "*" || !queries.limit
+        ? 0
+        : (page - 1) * parseInt(queries.limit);
+    const limit =
+      queries.limit === "*" || !queries.limit ? 5 : parseInt(queries.limit);
 
     // Define a list of properties that should always be treated as arrays
     const arrayProperties = [
@@ -37,7 +45,7 @@ class JobRepository {
       "required_experience",
       "location",
       "position",
-      "workMode"
+      "workMode",
     ];
 
     // Convert sort from {'field': 'desc'} to {'field': -1}
@@ -53,7 +61,6 @@ class JobRepository {
       },
       {} as Record<keyof JobSortParams, SortOrder>
     );
-
 
     // Build MongoDB filter object
     const buildFilter = (filter: Record<string, any>) => {
@@ -121,17 +128,17 @@ class JobRepository {
       return mongoFilter;
     };
 
-    console.log('mongoFilter::: ', buildFilter(filter))
+    console.log("mongoFilter::: ", buildFilter(filter));
 
     // Adding search functionality
     const searchFilter = search
       ? {
-        $or: [
-          { title: { $regex: search, $options: "i" } },
-          { position: { $regex: search, $options: "i" } },
-          { "companyId.name": { $regex: search, $options: "i" } },
-        ],
-      }
+          $or: [
+            { title: { $regex: search, $options: "i" } },
+            { position: { $regex: search, $options: "i" } },
+            { "companyId.name": { $regex: search, $options: "i" } },
+          ],
+        }
       : {};
 
     try {
@@ -139,24 +146,37 @@ class JobRepository {
         ...buildFilter(filter),
         ...searchFilter,
       };
-      const operation = JobModel.find(mongoFilter)
-        .sort(sortFields)
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .populate({
-          path: "companyId",
-          model: CompanyModel,
-          select:
-            "name location bio profile email phone_number job_openings job_closings",
-        });
+      let operation: IJob[] = [];
+      if (queries.limit === "*") {
+        operation = await JobModel.find(mongoFilter)
+          .sort(sortFields)
+          .skip(skip)
+          .populate({
+            path: "companyId",
+            model: CompanyModel,
+            select:
+              "name location bio profile email phone_number job_openings job_closings",
+          });
+      } else {
+        operation = await JobModel.find(mongoFilter)
+          .sort(sortFields)
+          .skip(skip)
+          .limit(limit)
+          .populate({
+            path: "companyId",
+            model: CompanyModel,
+            select:
+              "name location bio profile email phone_number job_openings job_closings",
+          });
+      }
 
       const result = await operation;
       const totalItems = await JobModel.countDocuments(mongoFilter);
-
+      const ItemsPerPage = queries.limit === "*" ? totalItems : limit;
       return {
         [JobModel.collection.collectionName]: result,
         totalItems,
-        totalPages: Math.ceil(totalItems / limit),
+        totalPages: Math.ceil(totalItems / ItemsPerPage),
         currentPage: page,
       };
     } catch (error) {

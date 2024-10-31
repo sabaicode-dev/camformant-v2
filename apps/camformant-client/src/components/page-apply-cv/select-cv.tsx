@@ -13,35 +13,31 @@ const SelectCV = () => {
   const [cvs, setCvs] = useState<CvData | null>(null);
   const [next, setNext] = useState<boolean>(false);
   const [cvIndex, setCvIndex] = useState<number>(0);
-  const [reFetch,setRefetch] = useState<boolean>(false);
-
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-  };
+  const [reFetch, setRefetch] = useState<boolean>(false);
 
   useEffect(() => {
-
     const getCv = async () => {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      };
       try {
-        setRefetch(true)   
+        setRefetch(true);
         const check_cv = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/v1/user/cv/`,
           config
         );
         if (check_cv.status === 200) {
-          setCvs(check_cv.data); 
-       
+          setCvs(check_cv.data);
         }
       } catch (error) {
       } finally {
-        setRefetch(false)
+        setRefetch(false);
       }
     };
     getCv();
-    
   }, [next]);
 
   const handleSelectCV = (index: number) => {
@@ -60,9 +56,12 @@ const SelectCV = () => {
         {" "}
         <BackButton_md styles="absolute bg-white p-3 px-4 rounded-xl top-9 left-4 " />
       </span>
-      <div className="w-full  flex flex-col gap-3 h-full overflow-scroll pb-20 ">
+      <div className="flex flex-col w-full h-full gap-3 pb-20 overflow-scroll ">
         {cvs?.cv?.map((item: string, index: number) => (
-          <div className=" bg-white h-full rounded-lg shadow-lg relative " key={index}>
+          <div
+            className="relative h-full bg-white rounded-lg shadow-lg "
+            key={index}
+          >
             <MiniCardResume
               handlePush={() => handleSelectCV(index)}
               ReactNode_Child={<ImCheckmark className="text-green-600" />}

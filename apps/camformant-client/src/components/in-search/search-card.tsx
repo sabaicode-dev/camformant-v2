@@ -6,14 +6,20 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { FilterValueParams } from "@/components/in-search/search-home-page";
 import SkeletonCard from "@/components/skeleton/skeleton-card";
 
-const SearchCard = ({ searchValue, filterValues }: { searchValue: string, filterValues: FilterValueParams }) => {
+const SearchCard = ({
+  searchValue,
+  filterValues,
+}: {
+  searchValue: string;
+  filterValues: FilterValueParams;
+}) => {
   const [jobData, setJobData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [love, setLove] = useState<boolean>(true);
 
-  // Debounced search value (waits 300ms after the user stops typing)
-  const debouncedSearchValue = useDebounce(searchValue, 3000);
+  // Debounced search value (waits 1s after the user stops typing)
+  const debouncedSearchValue = useDebounce(searchValue, 1000);
 
   const toggleFavorite = (jobId: string) => {
     setJobData((prevData: any) =>
@@ -24,6 +30,9 @@ const SearchCard = ({ searchValue, filterValues }: { searchValue: string, filter
   };
 
   useEffect(() => {
+    // console.log(filterValues);
+    // console.log(searchValue);
+
     const fetchJobData = async () => {
       if (!debouncedSearchValue && isFilterEmpty(filterValues)) return;
 
@@ -31,14 +40,17 @@ const SearchCard = ({ searchValue, filterValues }: { searchValue: string, filter
         setLoading(true);
 
         const salary = {
-          min_salary: filterValues.minSalary > 0 ? filterValues.minSalary : undefined,
-          max_salary: filterValues.maxSalary > 0 ? filterValues.maxSalary : undefined,
+          min_salary:
+            filterValues.minSalary > 0 ? filterValues.minSalary : undefined,
+          max_salary:
+            filterValues.maxSalary > 0 ? filterValues.maxSalary : undefined,
         };
 
         const cleanedSalary = Object.fromEntries(
           Object.entries(salary).filter(([_, value]) => value !== undefined)
         );
-        const filterSalary = Object.keys(cleanedSalary).length > 0 ? cleanedSalary : undefined;
+        const filterSalary =
+          Object.keys(cleanedSalary).length > 0 ? cleanedSalary : undefined;
 
         const filter = {
           schedule: filterValues.schedule || undefined,
@@ -58,7 +70,9 @@ const SearchCard = ({ searchValue, filterValues }: { searchValue: string, filter
           params.search = debouncedSearchValue;
         }
 
-        const jobResponse = await axiosInstance.get(`${API_ENDPOINTS.JOBS}`, { params });
+        const jobResponse = await axiosInstance.get(`${API_ENDPOINTS.JOBS}`, {
+          params,
+        });
         const jobs = jobResponse?.data?.data?.jobs || [];
         setJobData(jobs);
       } catch (error) {
@@ -89,10 +103,10 @@ const SearchCard = ({ searchValue, filterValues }: { searchValue: string, filter
 
   return (
     <Suspense>
-      <div className="flex flex-col pt-6 pb-20 gap-4 w-full h-full">
+      <div className="flex flex-col w-full h-full gap-4 pt-6 pb-20">
         {loading ? (
           Array.from({ length: 4 }).map((_, index) => (
-            <div className="mb-2 p-1" key={index}>
+            <div className="p-1 mb-2" key={index}>
               <SkeletonCard />
             </div>
           ))
@@ -104,14 +118,13 @@ const SearchCard = ({ searchValue, filterValues }: { searchValue: string, filter
               alt="No jobs found"
               className="w-64 h-64"
             /> */}
-            <h2 className="text-lg font-semibold text-gray-700 mt-5">
+            <h2 className="mt-5 text-lg font-semibold text-gray-700">
               No Jobs Found
             </h2>
-            <p className="text-gray-500 text-center max-w-md mt-2">
-              We could not find any jobs matching your criteria. Try clearing the
-              filters or search with different keywords.
+            <p className="max-w-md mt-2 text-center text-gray-500">
+              We could not find any jobs matching your criteria. Try clearing
+              the filters or search with different keywords.
             </p>
-
           </div>
         ) : (
           jobData.map((job: any, index: any) => (

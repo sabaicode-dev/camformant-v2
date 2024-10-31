@@ -1,8 +1,18 @@
-import { APP_ERROR_MESSAGE, ApplicationError, HTTP_STATUS_CODE, prettyObject } from "@sokritha-sabaicode/ms-libs";
+import {
+  // APP_ERROR_MESSAGE,
+  ApplicationError,
+  HTTP_STATUS_CODE,
+  prettyObject,
+} from "@sabaicode-dev/camformant-libs";
 import { NextFunction, Request, Response } from "express";
-import * as Sentry from '@sentry/node';
+import * as Sentry from "@sentry/node";
 
-export function globalErrorHandler(error: unknown, _req: Request, res: Response, _next: NextFunction) {
+export function globalErrorHandler(
+  error: unknown,
+  _req: Request,
+  res: Response,
+  _next: NextFunction
+) {
   // Log the error with Sentry
   Sentry.captureException(error);
 
@@ -12,11 +22,20 @@ export function globalErrorHandler(error: unknown, _req: Request, res: Response,
     const message = error.message;
     const errors = error.errors;
 
-    console.error(`$UserService - globalErrorHandler() method error: `, prettyObject(error))
-    return res.status(status).json({ message, error: errors })
+    console.error(
+      `$UserService - globalErrorHandler() method error: `,
+      prettyObject(error)
+    );
+    return res.status(status).json({ message, error: errors });
   }
 
   // Unhandle Error
-  console.error(`$UserService - globalErrorHandler() method unexpected error: `, prettyObject(error as {}))
-  res.status(HTTP_STATUS_CODE.SERVER_ERROR).json({ message: APP_ERROR_MESSAGE.serverError })
+  console.error(
+    `$UserService - globalErrorHandler() method unexpected error: `,
+    prettyObject(error as {})
+  );
+  res
+    .status(HTTP_STATUS_CODE.SERVER_ERROR)
+    .json({ message: "Something went wrong, try again later" });
+  // .json({ message: APP_ERROR_MESSAGE.serverError });
 }

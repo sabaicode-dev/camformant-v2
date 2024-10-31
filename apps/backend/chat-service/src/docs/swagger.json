@@ -298,6 +298,37 @@
 					}
 				]
 			}
+		},
+		"/v1/conversations/enc": {
+			"get": {
+				"operationId": "GetEncrypt",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"decode": {
+											"type": "string"
+										},
+										"encode": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"decode",
+										"encode"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
 		}
 	},
 	"servers": [
