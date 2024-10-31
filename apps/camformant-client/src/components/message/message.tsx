@@ -11,6 +11,7 @@ import { formatDistanceToNow } from "date-fns";
 import { useAuth } from "@/context/auth";
 import React from "react";
 import { Job } from "@/app/jobs/[id]/message/page";
+import Image from "next/image";
 
 interface Message {
   _id?: string;
@@ -86,7 +87,7 @@ const Message = React.memo(
         socket.emit("leaveRoom", { conversationId });
         socket.off("receiveMessage", handleReceiveMessage);
       };
-    }, [conversationId]);
+    }, [conversationId, playNotificationSound, scrollToBottom]);
 
     // Check Online & Offline Users
     useEffect(() => {
@@ -129,7 +130,7 @@ const Message = React.memo(
     // Scroll to the bottom whenever messages change
     useEffect(() => {
       scrollToBottom();
-    }, [messages]);
+    }, [messages, scrollToBottom]);
 
     const sendMessage = async () => {
       if (inputMessage.trim() === "") return;
@@ -183,7 +184,7 @@ const Message = React.memo(
                 {/* Company profile image */}
                 {job.companyId.profile && (
                   <div className="relative w-20 h-20 -ml-5 overflow-hidden rounded-full">
-                    <img
+                    <Image
                       src={job.companyId.profile}
                       alt={`${job.companyId.name} profile`}
                       className="object-cover w-full h-full rounded-full"

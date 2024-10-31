@@ -30,7 +30,9 @@ const ChatPage = () => {
   // Fetch job data
   const fetchJob = useCallback(async () => {
     try {
-      const response = await axiosInstance.get(`${API_ENDPOINTS.JOBS}/${companyId}`);
+      const response = await axiosInstance.get(
+        `${API_ENDPOINTS.JOBS}/${companyId}`
+      );
 
       if (response.status === 200 && response.data.data) {
         setJob(response.data.data);
@@ -44,14 +46,14 @@ const ChatPage = () => {
         setError("Job not found");
       }
     } catch (error) {
-      console.error('chat error: ', error)
+      console.error("chat error: ", error);
       setError("Failed to fetch job data");
     }
   }, [companyId, user]);
 
   useEffect(() => {
     if (companyId) {
-      console.log('fetch job')
+      console.log("fetch job");
       fetchJob();
     }
   }, [companyId, fetchJob]);
@@ -81,13 +83,13 @@ const ChatPage = () => {
 
   if (error) {
     return (
-      <div className="h-screen flex flex-col">
+      <div className="flex flex-col h-screen">
         <Background>
           <div className="flex flex-col items-center justify-center h-full">
-            <p className="text-red-500 text-xl">{error}</p>
+            <p className="text-xl text-red-500">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+              className="px-4 py-2 mt-4 text-white bg-blue-500 rounded"
             >
               Retry
             </button>

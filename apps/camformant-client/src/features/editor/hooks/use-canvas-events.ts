@@ -18,7 +18,6 @@ export const UseCanvasEvents = ({
   useEffect(() => {
     if (canvas) {
       canvas.on("touch:gesture", (e) => {
-        
         alert(e);
       });
       canvas.on("object:added", () => save());
@@ -84,5 +83,5 @@ export const UseCanvasEvents = ({
         // canvas.off("touch:end");
       }
     };
-  }, [canvas, clearSelectionCallback]);
+  }, [canvas, clearSelectionCallback, save, setSelectedObjects]);
 };

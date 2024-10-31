@@ -50,7 +50,7 @@ export const PositionPost: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [hasMore, isLoading, page, selectedPosition]);
+  }, [hasMore, isLoading, page, selectedPosition, user?.favorites]);
 
   const onScroll = useCallback(async () => {
     if (

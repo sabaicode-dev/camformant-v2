@@ -21,7 +21,7 @@ const ErrorAlert: React.FC<ErrorAlertProps> = ({
 
     // Cleanup the timer if the component is unmounted before the timer completes
     return () => clearTimeout(timer);
-  }, [show]);
+  }, [show, setShow]);
 
   if (!show) return null;
 

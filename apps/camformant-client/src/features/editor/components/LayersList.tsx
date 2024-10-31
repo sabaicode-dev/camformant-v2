@@ -36,12 +36,12 @@ const LayersList: React.FC<LayersListProps> = ({ canvas }) => {
       canvas.off("object:removed", updateLayersList);
       canvas.off("object:modified", updateLayersList);
     };
-  }, [canvas]);
+  }, [canvas, updateLayersList]);
 
   // Forcefully re-render the component whenever the canvas changes
   useEffect(() => {
     updateLayersList();
-  }, [canvas?.getObjects().length]); // Trigger whenever the objects' length changes
+  }, [canvas?.getObjects().length, updateLayersList]); // Trigger whenever the objects' length changes
 
   return (
     <div className="layers-list absolute z-[50]">
@@ -52,6 +52,7 @@ const LayersList: React.FC<LayersListProps> = ({ canvas }) => {
           .reverse()
           .map((layer, index) => (
             <li
+              key={1}
               // key={layer?.id ? `${layer.id}-${index}` : index}
               style={{
                 cursor: "pointer",
