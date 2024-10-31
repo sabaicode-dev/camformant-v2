@@ -107,10 +107,8 @@ export function DataTable<TData, TValue>({
 
                 {/* Dropdown for column visibility */}
                 <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-auto">
-                            Views
-                        </Button>
+                    <DropdownMenuTrigger asChild className="bg-black">
+                        <Button className="ml-auto bg-black">Views</Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         {table
