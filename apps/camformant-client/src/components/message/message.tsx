@@ -11,6 +11,7 @@ import { formatDistanceToNow } from "date-fns";
 import { useAuth } from "@/context/auth";
 import React from "react";
 import { Job } from "@/app/jobs/[id]/message/page";
+import Image from "next/image";
 
 interface Message {
   _id?: string;
@@ -39,6 +40,7 @@ const Message = React.memo(
     const { user } = useAuth();
     const router = useRouter();
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
+    const [isSend, setIsSend] = useState(false);
 
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputMessage, setInputMessage] = useState<string>("");
@@ -85,7 +87,7 @@ const Message = React.memo(
         socket.emit("leaveRoom", { conversationId });
         socket.off("receiveMessage", handleReceiveMessage);
       };
-    }, [conversationId]);
+    }, [conversationId, playNotificationSound, scrollToBottom]);
 
     // Check Online & Offline Users
     useEffect(() => {
@@ -122,12 +124,13 @@ const Message = React.memo(
       };
 
       fetchMessages();
-    }, [conversationId]);
+      setIsSend(false);
+    }, [conversationId, isSend]);
 
     // Scroll to the bottom whenever messages change
     useEffect(() => {
       scrollToBottom();
-    }, [messages]);
+    }, [messages, scrollToBottom]);
 
     const sendMessage = async () => {
       if (inputMessage.trim() === "") return;
@@ -147,6 +150,7 @@ const Message = React.memo(
       // Play the sending sound & Clear the input
       playNotificationSound();
       setInputMessage("");
+      setIsSend(true);
     };
 
     if (!conversationId) {
@@ -180,7 +184,7 @@ const Message = React.memo(
                 {/* Company profile image */}
                 {job.companyId.profile && (
                   <div className="relative w-20 h-20 -ml-5 overflow-hidden rounded-full">
-                    <img
+                    <Image
                       src={job.companyId.profile}
                       alt={`${job.companyId.name} profile`}
                       className="object-cover w-full h-full rounded-full"
@@ -211,13 +215,13 @@ const Message = React.memo(
                 messages.map((message, idx) => (
                   <div
                     key={message._id}
-                    className={`${messages.length - 1 === idx ? "mb-8" : "mb-2"} flex ${message.senderId === user?._id ? "justify-start" : "justify-end"}`}
+                    className={`${messages.length - 1 === idx ? "mb-8" : "mb-2"} flex ${message.senderId === user?._id ? "justify-end" : "justify-start"}`}
                   >
                     <div
                       className={`p-3 rounded-lg max-w-xs break-words ${
                         message.senderId === user?._id
-                          ? "bg-gray-200 text-gray-900"
-                          : "bg-blue-600 text-white"
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-200 text-gray-900"
                       }`}
                     >
                       {message.text}

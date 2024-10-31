@@ -98,7 +98,7 @@ const Page: React.FC = () => {
           </div>
           <button
             type="submit"
-            className="px-10 py-4 mt-2 text-white bg-primary rounded-3xl"
+            className="px-10 py-4 mt-2 text-white bg-primaryCam rounded-3xl"
           >
             {loading ? "Loading..." : "Register"}
           </button>

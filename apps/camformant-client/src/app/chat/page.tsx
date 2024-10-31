@@ -6,7 +6,7 @@ import Background from "@/components/background/background";
 import SkeletonCard from "@/components/message/SkeletonCard"; // Import SkeletonCard
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
-
+import Image from "next/image";
 interface JobConversation {
   participants: string[];
   companyName: string;
@@ -72,7 +72,7 @@ const Chat = () => {
                 >
                   {job.companyProfile && (
                     <div className="flex overflow-hidden bg-gray-200 rounded-full w-14 h-11 xl:w-20 xl:h-20">
-                      <img
+                      <Image
                         src={job.companyProfile}
                         alt={`${job.companyName} profile`}
                         className="object-cover w-full h-full rounded-full"

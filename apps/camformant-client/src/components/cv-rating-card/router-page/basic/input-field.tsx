@@ -29,18 +29,24 @@ const InputField: React.FC<PostData> = ({ post }) => {
 
   // const ip = 'http://172.20.10.5:3030'
   // const ip = "http://localhost:3040";
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true, // Make sure cookies are handled properly
-  };
+  const config = React.useMemo(
+    () => ({
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true, // Make sure cookies are handled properly
+    }),
+    []
+  );
 
   useEffect(() => {
     async function GetData() {
       try {
         setLoading(true);
-        const data = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/v1/user/basic/`, config);
+        const data = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/basic/`,
+          config
+        );
         setLoading(true);
         const res = data.data;
         setEmail(res.email);
@@ -56,7 +62,7 @@ const InputField: React.FC<PostData> = ({ post }) => {
       }
     }
     GetData();
-  }, []);
+  }, [config]);
 
   const PostData = async () => {
     try {
@@ -89,7 +95,7 @@ const InputField: React.FC<PostData> = ({ post }) => {
     if (post) {
       PostData();
     }
-  }, [post]);
+  }, [post, PostData]);
 
   useEffect(() => {
     if (sumbit === true) {

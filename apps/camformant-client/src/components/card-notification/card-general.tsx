@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import React from "react";
 
 interface NotificationProps {
@@ -81,11 +82,11 @@ const GeneralCard: React.FC<NotificationProps> = ({
   time,
 }) => {
   return (
-    <div className="flex items-center p-4 border border-gray-50 shadow-md  rounded-3xl mb-3 w-full ">
-      <img
-        src={image}
+    <div className="flex items-center w-full p-4 mb-3 border shadow-md border-gray-50 rounded-3xl ">
+      <Image
+        src={image!}
         alt="Company Logo"
-        className="w-10 h-10 rounded-full mr-4"
+        className="w-10 h-10 mr-4 rounded-full"
       />
       <div className="flex-1">
         <p className="text-md font-2xl ">{title}</p>
@@ -101,7 +102,7 @@ const GeneralCard: React.FC<NotificationProps> = ({
 
 export const CardGeneral = () => {
   return (
-    <div className=" flex flex-wrap justify-center  gap-y-3 mb-16">
+    <div className="flex flex-wrap justify-center mb-16 gap-y-3">
       {notifications.map((tip, index) => (
         <GeneralCard
           key={index}

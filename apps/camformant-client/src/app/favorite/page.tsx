@@ -111,7 +111,7 @@ const Page: React.FC = () => {
     <div className="container pt-2 mb-20">
       <div className="h-10 mt-4 mb-8 w-14">
         <Link href={"/profile"}>
-          <BackButton_md styles=" bg-primary p-3 px-4 rounded-xl" />
+          <BackButton_md styles=" bg-primaryCam p-3 px-4 rounded-xl" />
         </Link>
       </div>
       {loading ? (
