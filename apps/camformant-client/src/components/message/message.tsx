@@ -23,7 +23,7 @@ interface Message {
 }
 
 const SkeletonLoader = () => (
-  <div className="p-4 w-full">
+  <div className="w-full p-4">
     {/* Message Skeleton */}
     <div className="space-y-2">
       <div className="h-12 bg-gray-300 rounded rounded-md animate-pulse"></div>
@@ -39,6 +39,7 @@ const Message = React.memo(
     const { user } = useAuth();
     const router = useRouter();
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
+    const [isSend, setIsSend] = useState(false);
 
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputMessage, setInputMessage] = useState<string>("");
@@ -122,7 +123,8 @@ const Message = React.memo(
       };
 
       fetchMessages();
-    }, [conversationId]);
+      setIsSend(false);
+    }, [conversationId, isSend]);
 
     // Scroll to the bottom whenever messages change
     useEffect(() => {
@@ -147,11 +149,12 @@ const Message = React.memo(
       // Play the sending sound & Clear the input
       playNotificationSound();
       setInputMessage("");
+      setIsSend(true);
     };
 
     if (!conversationId) {
       return (
-        <div className="h-screen w-full flex flex-col">
+        <div className="flex flex-col w-full h-screen">
           <Background>
             <SkeletonLoader />
           </Background>
@@ -160,18 +163,18 @@ const Message = React.memo(
     }
 
     return (
-      <div className="relative flex flex-col h-screen w-screen">
+      <div className="relative flex flex-col w-screen h-screen">
         {/* Background component */}
         <Background>
           {/* Header section: company profile */}
-          <div className="bg-white rounded-t-3xl w-full h-32 flex justify-between items-center">
+          <div className="flex items-center justify-between w-full h-32 bg-white rounded-t-3xl">
             {job && (
               <div
                 key={job._id}
                 className=" absolute mt-[-220px] ml-36 gap-8 flex items-center justify-center"
               >
                 {/* Back1 displayed in front */}
-                <div className=" -ml-32 z-10">
+                <div className="z-10 -ml-32 ">
                   <button onClick={() => router.back()}>
                     <BackButton />
                   </button>
@@ -179,21 +182,21 @@ const Message = React.memo(
 
                 {/* Company profile image */}
                 {job.companyId.profile && (
-                  <div className="relative w-20 h-20 overflow-hidden rounded-full -ml-5">
+                  <div className="relative w-20 h-20 -ml-5 overflow-hidden rounded-full">
                     <img
                       src={job.companyId.profile}
                       alt={`${job.companyId.name} profile`}
-                      className="w-full h-full object-cover rounded-full"
+                      className="object-cover w-full h-full rounded-full"
                     />
                   </div>
                 )}
 
                 {/* Company name and online status */}
-                <div className="-ml-5 text-center flex flex-col">
-                  <p className="font-mono font-bold text-xl xl:text-3xl text-white">
+                <div className="flex flex-col -ml-5 text-center">
+                  <p className="font-mono text-xl font-bold text-white xl:text-3xl">
                     {job.companyId.name}
                   </p>
-                  <p className="text-gray-700 mt-2  text-sm ">
+                  <p className="mt-2 text-sm text-gray-700 ">
                     {onlineUsers.includes(job._id) ? "online 🟢" : "offline"}
                   </p>
                 </div>
@@ -211,13 +214,13 @@ const Message = React.memo(
                 messages.map((message, idx) => (
                   <div
                     key={message._id}
-                    className={`${messages.length - 1 === idx ? "mb-8" : "mb-2"} flex ${message.senderId === user?._id ? "justify-start" : "justify-end"}`}
+                    className={`${messages.length - 1 === idx ? "mb-8" : "mb-2"} flex ${message.senderId === user?._id ? "justify-end" : "justify-start"}`}
                   >
                     <div
                       className={`p-3 rounded-lg max-w-xs break-words ${
                         message.senderId === user?._id
-                          ? "bg-gray-200 text-gray-900"
-                          : "bg-blue-600 text-white"
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-200 text-gray-900"
                       }`}
                     >
                       {message.text}
@@ -239,10 +242,10 @@ const Message = React.memo(
           </div>
 
           {/* Footer section: message input */}
-          <div className="absolute bottom-9 left-0 w-full bg-white py-4 flex justify-center items-center xl:w-full">
-            <div className="p-5 w-full  flex justify-center items-center relative">
+          <div className="absolute left-0 flex items-center justify-center w-full py-4 bg-white bottom-9 xl:w-full">
+            <div className="relative flex items-center justify-center w-full p-5">
               <input
-                className="p-4 border border-gray-200 rounded-3xl shadow-sm w-full"
+                className="w-full p-4 border border-gray-200 shadow-sm rounded-3xl"
                 type="text"
                 placeholder="Text Message"
                 value={inputMessage}
@@ -250,7 +253,7 @@ const Message = React.memo(
                 onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               />
               <span
-                className="text-2xl absolute right-7 cursor-pointer"
+                className="absolute text-2xl cursor-pointer right-7"
                 onClick={sendMessage}
               >
                 <IoMdSend />

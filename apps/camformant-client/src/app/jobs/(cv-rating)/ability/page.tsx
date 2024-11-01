@@ -11,77 +11,64 @@ import {
   addEntry,
   deleteEntry,
   handleInputChange,
-} from "@/utils/functions/inputFunctions";
+} from "@/utils/functions/input-functions";
 import DropDownMenu from "@/components/user-profile/dropdown-menu";
+import {
+  ExpertiseParams,
+  LanguageParams,
+  SkillParams,
+} from "@/utils/types/user-profile";
+import axiosInstance from "@/utils/axios";
+import { useAuth } from "@/context/auth";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 
 const Page: React.FC = () => {
-  const [experience, setExperience] = useState<string>("");
-
-  const [skillEntries, setSkillEntries] = useState([
+  const [skillEntries, setSkillEntries] = useState<SkillParams[]>([
     {
       name: "",
       percent: "",
     },
   ]);
-  const [expertiseEntries, setExpertiseEntries] = useState([
+  const [expertiseEntries, setExpertiseEntries] = useState<ExpertiseParams[]>([
     {
       name: "",
       proficiency: "",
     },
   ]);
-  const [languageEntries, setLanguageEntries] = useState([
-    {
-      name: "",
-      proficiency: "",
-    },
-  ]);
-
+  const [languageEntries, setLanguageEntries] = useState<LanguageParams[]>([{
+    name: "",
+    proficiency: "",
+  }]);
+  const { user } = useAuth();
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [next, setNext] = useState<boolean>(false);
-  const [isPut,setIsPut]=useState<boolean>(false)//for check if our page have any change that must put or not
+  const [isPut, setIsPut] = useState<boolean>(false); //for check if our page have any change that must put or not
 
   // const ip = 'http://172.20.10.5:3030'
   // const ip = 'http://localhost:3040'
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true, // Make sure cookies are handled properly
-  };
 
   useEffect(() => {
     async function GetData() {
       try {
         setNext(true);
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/experience/`,
-          config
+        const response = await axiosInstance.get(
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=ability`
         );
-        const data = response.data;
-        setExperience(data.years_of_experience);
-        setSkillEntries(
-          data.skills.map((entry: { name: string; percent: number }) => ({
-            name: entry.name || "",
-            percent:
-              Number(entry.percent) == 0 ? Number(entry.percent) == 0 : "",
-          }))
-        );
-        setExpertiseEntries(
-          data.expertise.map(
-            (entry: { name: string; proficiency: string }) => ({
-              name: entry.name || "",
-              proficiency: entry.proficiency || "",
-            })
-          )
-        );
-        setLanguageEntries(
-          data.langauges.map(
-            (entry: { name: string; proficiency: string }) => ({
-              name: entry.name || "",
-              proficiency: entry.proficiency || "",
-            })
-          )
-        );
+        const data = response.data.data;
+        console.log("abiloty", data);
+        data.skills.length &&
+          setSkillEntries(
+            data.skills
+          );
+        data.expertise.length &&
+          setExpertiseEntries(
+            data.expertise
+          );
+        data.languages.length &&
+          setLanguageEntries(
+            data.languages
+          );
+        console.log("lanuage", languageEntries);
       } catch (error) {
       } finally {
         setNext(false);
@@ -93,18 +80,21 @@ const Page: React.FC = () => {
   async function PostData() {
     try {
       setNext(true);
-      const DataValue = {
+      const dataValue: {
+        skills: SkillParams[];
+        expertise: ExpertiseParams[];
+        languages: LanguageParams[];
+      } = {
         skills: skillEntries,
         expertise: expertiseEntries,
-        languageEntries: languageEntries,
+        languages: languageEntries,
       };
 
-      const respone = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/user/ability/`,
-        DataValue,
-        config
+      const response = await axiosInstance.put(
+        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
+        { ...dataValue }
       );
-      return respone;
+      return response;
     } catch (error) {
       console.error(error);
     } finally {
@@ -114,9 +104,11 @@ const Page: React.FC = () => {
 
   return (
     <div className="pb-20">
-      <HeaderBasic title="Ability" 
-      {...(isPut ? { next: PostData } : {})}
-      nextRoute="/self/description" />
+      <HeaderBasic
+        title="Ability"
+        {...(isPut ? { next: PostData } : {})}
+        nextRoute="/jobs/description"
+      />
       {next && <SkeletonLoader text="Loading ..." />}
       <CustomLabel text={"Skills"} />
       {skillEntries.map((entry, index) => (
@@ -124,19 +116,21 @@ const Page: React.FC = () => {
           {Object.entries(entry).map(([key, value]) => (
             <InputComponent
               key={key}
-              values={value}
+              values={typeof value === "string" ? value : value.toString()}
               setFocused={setFocusedField}
               focused={focusedField}
               txt={key} // Helper function to get label text if needed
               typeofInput={key.includes("date") ? "date" : "text"} // Set type based on key
               setValues={(newValue) =>
-                handleInputChange(
+                {handleInputChange(
                   setSkillEntries,
                   skillEntries,
                   index,
                   key,
                   newValue
                 )
+                newValue==value||setIsPut(true)
+              }
               }
               valuesFouce={`skill-${key}-${index}`}
             />
@@ -153,6 +147,7 @@ const Page: React.FC = () => {
         }
         onDelete={() => {
           deleteEntry(setSkillEntries, skillEntries);
+          setIsPut(true);
         }}
       />
       <CustomLabel text={"Expertise"} />
@@ -188,7 +183,7 @@ const Page: React.FC = () => {
                     key,
                     newValue
                   );
-                  newValue==value||setIsPut(true)
+                  newValue == value || setIsPut(true);
                 }}
                 currentText={value}
                 arrText={["Beginner", "Intermediate", "Advanced"]}
@@ -205,7 +200,10 @@ const Page: React.FC = () => {
             proficiency: "",
           })
         }
-        onDelete={() => deleteEntry(setExpertiseEntries, expertiseEntries)}
+        onDelete={() => {
+          deleteEntry(setExpertiseEntries, expertiseEntries);
+          setIsPut(true);
+        }}
       />
       <CustomLabel text={"Langauges"} />
 
@@ -220,17 +218,16 @@ const Page: React.FC = () => {
                 focused={focusedField}
                 txt={key} // Helper function to get label text if needed
                 typeofInput={key.includes("date") ? "date" : "text"} // Set type based on key
-                setValues={(newValue) =>{
+                setValues={(newValue) => {
                   handleInputChange(
                     setLanguageEntries,
                     languageEntries,
                     index,
                     key,
                     newValue
-                  )
-                  newValue==value||setIsPut(true)
-                }
-                }
+                  );
+                  newValue == value || setIsPut(true);
+                }}
                 valuesFouce={`language-${key}-${index}`}
               />
             ) : (
@@ -243,9 +240,10 @@ const Page: React.FC = () => {
                     key,
                     newValue
                   );
+                  newValue == value || setIsPut(true);
                 }}
                 currentText={value}
-                arrText={["Beginner", "Intermediate", "Advanced"]}
+                arrText={["Beginner", "Native", "Fluent"]}
               />
             )
           )}
@@ -259,7 +257,10 @@ const Page: React.FC = () => {
             proficiency: "",
           })
         }
-        onDelete={() => deleteEntry(setLanguageEntries, languageEntries)}
+        onDelete={() => {
+          deleteEntry(setLanguageEntries, languageEntries);
+          setIsPut(true);
+        }}
       />
     </div>
   );

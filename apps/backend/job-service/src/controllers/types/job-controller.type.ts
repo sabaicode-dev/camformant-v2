@@ -1,7 +1,11 @@
 // ========================
 // Job Interface
 
-import { EmploymentSchedule, EmploymentType, WorkMode } from "@/src/database/models/job.model";
+import {
+  EmploymentSchedule,
+  EmploymentType,
+  WorkMode,
+} from "@/src/database/models/job.model";
 
 // ========================
 export interface JobParams {
@@ -39,7 +43,7 @@ export interface JobSortParams {
 
 export interface JobGetAllControllerParams {
   page?: number;
-  limit?: number|string;
+  limit?: string;
   filter?: string;
   sort?: string;
   search?: string;
@@ -47,7 +51,7 @@ export interface JobGetAllControllerParams {
 
 export interface JobGetAllRepoParams {
   page?: number;
-  limit?: number|string|undefined;
+  limit?: string;
   filter?: JobsFilterParams;
   sort?: JobSortParams;
   search?: string;

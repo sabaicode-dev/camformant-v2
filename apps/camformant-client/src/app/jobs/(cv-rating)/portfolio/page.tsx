@@ -10,19 +10,16 @@ import {
   addEntry,
   deleteEntry,
   handleInputChange,
-} from "@/utils/functions/inputFunctions";
+} from "@/utils/functions/input-functions";
+import { PortfolioParam } from "@/utils/types/user-profile";
 import React, { useEffect, useState } from "react";
 
-interface PortfolioParam {
-  name: string;
-  url: string;
-}
 const Page = () => {
   const { user } = useAuth();
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [next, setNext] = useState<boolean>(false);
   const [isPut, setIsPut] = useState<boolean>(false);
-  const [portfoEntries, setPortfoEntries] = useState([
+  const [portfoEntries, setPortfoEntries] = useState<PortfolioParam[]>([
     {
       name: "",
       url: "",
@@ -35,18 +32,14 @@ const Page = () => {
         setNext(true);
         console.log("user", user);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=educations`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=portfolio`
         );
         if (!response) {
           return null;
         }
-        const data = response.data;
-        console.log("data", data);
-        setPortfoEntries(
-          data.map((entry: PortfolioParam) => ({
-            name: entry.name || "",
-            url: entry.url || "",
-          }))
+        const data = response.data.data.portfolio;
+        data.length&&setPortfoEntries(
+          data
         );
       } catch (error) {
       } finally {
@@ -58,13 +51,13 @@ const Page = () => {
   async function PostData() {
     try {
       setNext(true); // Trigger loading
-      const DataValue = {
-        portoEntries: portfoEntries,
+      const dataValue = {
+        portfolio: portfoEntries,
       };
 
       const response = await axiosInstance.put(
-        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/`,
-        DataValue
+        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
+        { ...dataValue }
       );
       return response;
     } catch (error) {
@@ -77,7 +70,7 @@ const Page = () => {
     <div>
       <HeaderBasic
         title="Portfilo"
-        nextRoute={"/self/references"}
+        nextRoute={"/jobs/references"}
         {...(isPut ? { next: PostData } : {})}
       />
       {next && <SkeletonLoader text="Loading ..." />}
@@ -99,7 +92,7 @@ const Page = () => {
                   key,
                   newValue
                 );
-                (newValue == value)|| setIsPut(true);
+                newValue == value || setIsPut(true);
               }}
               valuesFouce={`portfo-${key}-${index}`}
             />
@@ -114,7 +107,10 @@ const Page = () => {
             url: "",
           })
         }
-        onDelete={() => deleteEntry(setPortfoEntries, portfoEntries)}
+        onDelete={() => {
+          deleteEntry(setPortfoEntries, portfoEntries);
+          setIsPut(true);
+        }}
       />
     </div>
   );

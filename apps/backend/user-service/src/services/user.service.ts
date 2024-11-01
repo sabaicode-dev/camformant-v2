@@ -6,6 +6,7 @@ import {
 } from "@/src/database/repositories/types/user-repository.type";
 import UserRepository from "@/src/database/repositories/user.repository";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
+// import { EducationParams} from "../database/models/userProfile.model";
 
 class UserService {
   async getAllUsers(queries: UserGetAllControllerParams) {
@@ -137,9 +138,11 @@ class UserService {
       throw error;
     }
   }
-  async getProfileById(userId:string,category:string){
+
+
+  async getProfileById(userId:string,category?:string){
     try {
-      const profile = await UserRepository.getProfileById(userId,category);
+      const profile = await UserRepository.getProfileByUserId(userId,category);
       return profile;
     } catch (error) {
       console.error(
@@ -149,6 +152,17 @@ class UserService {
       throw error;
     }
   }
+  async updateUserProfile(userid:string,updateBody:any){
+    try{
+      const userData=await UserRepository.updateProfile(userid,updateBody)
+      return userData
+    }
+    catch(err){
+      throw err
+    }
+  }
+
+
 }
 
 export default new UserService();

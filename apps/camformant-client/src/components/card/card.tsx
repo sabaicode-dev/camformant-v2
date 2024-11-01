@@ -12,7 +12,7 @@ interface CardProps {
   _id?: string;
   deadline?: Date;
   title?: string;
-  position?: string;
+  position?: string[];
   profile?: string;
   min_salary?: number;
   max_salary?: number;
@@ -45,17 +45,19 @@ export const Card: React.FC<CardProps> = (props) => {
   const router = useRouter();
 
   return (
-    <div className="shadow drop-shadow-md bg-white rounded-2xl p-5">
+    <div className="p-5 bg-white shadow drop-shadow-md rounded-2xl">
       <div className="flex justify-between">
-        <section className="flex gap-x-5 items-center">
+        <section className="flex items-center gap-x-5">
           <img
             src={profile}
             alt={title}
-            className="w-12 h-12 rounded-full object-cover border"
+            className="object-cover w-12 h-12 border rounded-full"
           />
           <div>
-            <h1 className="text-md font-semibold text-secondary">{title}</h1>
-            <span className="text-sm text-secondary">{position}</span>
+            <h1 className="font-semibold text-md text-secondaryCam">{title}</h1>
+            <span className="text-sm text-secondaryCam">
+              {position?.map((text) => `${text} `)}
+            </span>
           </div>
         </section>
 
@@ -65,7 +67,7 @@ export const Card: React.FC<CardProps> = (props) => {
       </div>
       <Link href={`/jobs/${_id}`}>
         <div>
-          <div className="flex flex-wrap space-x-2 text-xs text-primary  ">
+          <div className="flex flex-wrap space-x-2 text-xs text-primaryCam ">
             {type &&
               type.length > 0 &&
               type.map((item, index) => (
@@ -77,7 +79,7 @@ export const Card: React.FC<CardProps> = (props) => {
                 </span>
               ))}
           </div>
-          <div className="flex flex-wrap space-x-2 text-xs text-primary mt-3 ">
+          <div className="flex flex-wrap mt-3 space-x-2 text-xs text-primaryCam ">
             {schedule &&
               schedule.length > 0 &&
               schedule.map((item, index) => (
@@ -89,22 +91,22 @@ export const Card: React.FC<CardProps> = (props) => {
                 </span>
               ))}
           </div>
-          <div className="flex justify-between items-center mt-4">
+          <div className="flex items-center justify-between mt-4">
             <div className="text-sm text-gray-400">
               {job_opening} Job Opening
             </div>
-            <div className=" text-lg text-primary font-semibold">{`${min_salary}$-${max_salary}$`}</div>
+            <div className="text-lg font-semibold text-primaryCam">{`${min_salary}$-${max_salary}$`}</div>
           </div>
 
           {deadline && (
             <div className="flex justify-between mt-3">
-              <div className="flex space-x-2 items-center text-secondary">
+              <div className="flex items-center space-x-2 text-secondaryCam">
                 <label className="text-sm ">
                   <MdCalendarToday />
                 </label>
                 <span className="text-xs">{dateFormat(deadline, "en-US")}</span>
               </div>
-              <div className="flex space-x-2 text-secondary">
+              <div className="flex space-x-2 text-secondaryCam">
                 <label className="text-sm">
                   <FaMapMarkerAlt />
                 </label>

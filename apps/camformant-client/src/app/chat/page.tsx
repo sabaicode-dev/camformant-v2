@@ -26,7 +26,9 @@ const Chat = () => {
   const getJobs = async () => {
     try {
       setIsLoading(true);
-      const conversations = await axiosInstance.get(API_ENDPOINTS.CONVERSATIONS);
+      const conversations = await axiosInstance.get(
+        API_ENDPOINTS.CONVERSATIONS
+      );
       setJobs(conversations.data.data);
     } catch (error: any) {
       console.error("Error:", error);
@@ -43,8 +45,8 @@ const Chat = () => {
   return (
     <div className="relative h-screen">
       <Background>
-        <div className="absolute inset-0 flex flex-col mt-28 bg-white rounded-3xl xl:mt-32">
-          <div className="flex-1 overflow-auto p-4">
+        <div className="absolute inset-0 flex flex-col bg-white mt-28 rounded-3xl xl:mt-32">
+          <div className="flex-1 p-4 overflow-auto">
             <p className="absolute mt-[-80px] text-white font-mono text-3xl font-bold">
               Contact
             </p>
@@ -60,46 +62,34 @@ const Chat = () => {
             ) : error ? (
               <p>Something went wrong! Please try again.</p>
             ) : jobs.length === 0 ? (
-              <p>No users available.</p>
+              <p>{"No users available."}</p>
             ) : (
-              jobs
-                .map((job, idx) => (
-                  <div
-                    key={idx}
-                    className="p-4 mb-4 cursor-pointer hover:bg-gray-200 flex items-center gap-8"
-                    onClick={() => handleJobClick(job)}
-                  >
-                    {job.companyProfile && (
-                      <div className="w-14 h-11 flex overflow-hidden rounded-full xl:w-20 xl:h-20 bg-gray-200">
-                        <img
-                          src={job.companyProfile}
-                          alt={`${job.companyName} profile`}
-                          className="w-full h-full object-cover rounded-full"
-                        />
-                      </div>
-                    )}
-                    <div className="flex w-full justify-between">
-                      <p>{job.companyName}</p>
-
+              jobs.map((job, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center gap-8 p-4 mb-4 cursor-pointer hover:bg-gray-200"
+                  onClick={() => handleJobClick(job)}
+                >
+                  {job.companyProfile && (
+                    <div className="flex overflow-hidden bg-gray-200 rounded-full w-14 h-11 xl:w-20 xl:h-20">
+                      <img
+                        src={job.companyProfile}
+                        alt={`${job.companyName} profile`}
+                        className="object-cover w-full h-full rounded-full"
+                      />
                     </div>
+                  )}
+                  <div className="flex justify-between w-full">
+                    <p>{job.companyName}</p>
                   </div>
-                ))
+                </div>
+              ))
             )}
           </div>
         </div>
       </Background>
-
     </div>
   );
 };
 
 export default Chat;
-
-
-
-
-
-
-
-
-

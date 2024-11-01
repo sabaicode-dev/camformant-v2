@@ -41,6 +41,10 @@ app.use(express.json());
 // ========================
 // Global API V1
 // ========================
+app.use((_req, _res, next) => {
+  console.log("reached user service");
+  next();
+});
 RegisterRoutes(app);
 
 // ========================

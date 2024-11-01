@@ -3,74 +3,98 @@ import React, { useEffect, useState } from "react";
 import CardRating from "./rating-card";
 import Link from "next/link";
 import axios from "axios";
+import { useAuth } from "@/context/auth";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import axiosInstance from "@/utils/axios";
+import { calculateProgressBar } from "@/utils/functions/progressbar-function";
 
-interface typePropsTotal{
-    propTotal:(value:number) => void;
+interface typePropsTotal {
+  propTotal: (value: number) => void;
 }
-const PuzzleCard: React.FC <typePropsTotal> = ({propTotal}) => {
+const PuzzleCard: React.FC<typePropsTotal> = ({ propTotal }) => {
+  const [info, setInfo] = useState<number>(0);
+  const [edu, setEdu] = useState<number>(0);
+  const [exp, setExp] = useState<number>(0);
+  const [self, setSelf] = useState<number>(0);
+  const [cert, setCert] = useState<number>(0);
+  const [port, setPort] = useState<number>(0);
+  const [ref, setRef] = useState<number>(0);
+  const [ability, setAbility] = useState<number>(0);
+  const { user } = useAuth();
 
-    const [info, setInfo] = useState<number>(0);
-    const [edu, setEud] = useState<number>(0);
-    const [exp, setExp] = useState<number>(0);
-    const [self, setSelf] = useState<number>(0);
-    const [skill, setSkill] = useState<number>(0);
-    const [cert, setCert] = useState<number>(0);
-    const [port, setPort] = useState<number>(0);
-    const [ref, setRef] = useState<number>(0);
-
-    useEffect(()=>{
-        async function GetCard(){
-            // const ip = 'http://localhost:3040' 
-            // const ip = 'http://192.168.3.167:3030' 
-            const config = {
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                withCredentials: true, // Make sure cookies are handled properly
-              };
-            try{
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/v1/user/pfComplete/`,config);
-                if(!response){
-                    return null
-                }
-                setInfo(Number(response.data.basic) || 0);
-                setEud(Number(response.data.education) || 0);
-                setExp(Number(response.data.experience) || 0);
-                setRef(Number(response.data.reference) || 0);
-                
-            }catch(error){
-                console.error(error);
-            }
+  useEffect(() => {
+    async function GetCard() {
+      // const ip = 'http://localhost:3040'
+      // const ip = 'http://192.168.3.167:3030'
+      try {
+        const response = await axiosInstance.get(
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}`
+        ); //get uer data
+        if (!response) {
+          return null;
         }
-        GetCard();
-    },[])
-    useEffect(() => {
-        const totalRating=info + edu + exp + self + skill + cert + port + ref
-        const totalRatingNew = Math.round((totalRating * 100) / 800);
-        propTotal(totalRatingNew)
-    }, [info, edu, exp, self, skill, cert, port, ref,propTotal])
+        console.log(" preogress", response.data.data);
+        setInfo(calculateProgressBar(response.data.data.basic, 8));
+        console.log("basic", info);
+        setEdu(calculateProgressBar(response.data.data.educations, 4));
+        console.log("education", edu);
+        setExp(calculateProgressBar(response.data.data.experiences, 4));
+        setSelf(calculateProgressBar(response.data.data.descriptions, 2));
 
-    const TitleCard = [
-        { txt: "Basic Information", rating: info, route: "/basic" },
-        { txt: "Education", rating: edu, route: "/educ" },
-        { txt: "Experience ", rating: exp, route: "/exp" },
-        { txt: "Ability ", rating: 0, route: "/ability" },
-        { txt: "Self Description", rating: self, route: "/description" },
-        { txt: "Certificate", rating: cert, route: "/certificate" },
-        { txt: "Portfilio", rating: port, route: "/portfolio" },
-        { txt: "Reference", rating: ref, route: "/reference" },
-    ];
-    return (
-        <div className="flex container justify-center w-full gap-[4%] h-full pt-5 flex-wrap pb-40  ">
-            {TitleCard.map((item,index) => (
-                <div key={index} className=" h-24 w-[46%] shadow-md rounded-md ">
-                    <Link href={`self/${item.route}`}>
-                        <CardRating rating={item.rating} txt={item.txt} />
-                    </Link>
-                </div>
-            ))}
+        setPort(calculateProgressBar(response.data.data.portfolio, 2));
+        console.log(" referrncer");
+        setRef(calculateProgressBar(response.data.data.references, 5));
+        console.log("skill");
+        const skillProgress: number = calculateProgressBar(
+          response.data.data.skills,
+          2
+        );
+        const expertise: number = calculateProgressBar(
+          response.data.data.expertise,
+          2
+        );
+        const language: number = calculateProgressBar(
+          response.data.data.languages,
+          2
+        );
+        setAbility(Math.round((skillProgress + expertise + language) / 3));
+
+        console.log("basic", info);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    GetCard();
+  }, []);
+  useEffect(() => {
+    const totalRating = info + edu + exp + self + cert + port + ref + ability;
+    console.log("Total rating: " + totalRating);
+    const totalRatingNew = Math.round((totalRating * 100) / 700);
+    totalRatingNew;
+    propTotal(totalRatingNew);
+  }, [info, edu, exp, self, cert, port, ref, ability, propTotal]);
+
+  const TitleCard = [
+    { txt: "Basic Information", rating: info, route: "/basic" },
+    { txt: "Education", rating: edu, route: "/educ" },
+    { txt: "Experience ", rating: exp, route: "/exp" },
+    { txt: "Ability ", rating: ability, route: "/ability" },
+    { txt: "Self Description", rating: self, route: "/description" },
+    { txt: "Portfilio", rating: port, route: "/portfolio" },
+    { txt: "Certificate", rating: cert, route: "/certificate"},
+    { txt: "Reference", rating: ref, route: "/references" },
+  ];
+  return (
+    <div className="flex container justify-center w-full gap-[4%] h-full pt-5 flex-wrap pb-40  ">
+      {TitleCard.map((item, index) => (
+        <div key={index} className=" h-24 w-[46%] shadow-md rounded-md ">
+          <Link href={`jobs/${item.route}`}>
+            <CardRating rating={item.rating} txt={item.txt} />
+          </Link>
         </div>
-    );
+      ))}
+    </div>
+  );
 };
 
 export default PuzzleCard;

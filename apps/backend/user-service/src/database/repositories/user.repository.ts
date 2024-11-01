@@ -15,7 +15,7 @@ import {
   ResourceConflictError,
   prettyObject,
 } from "@sabaicode-dev/camformant-libs";
-import UserProfileModel, { IUserProfile } from "@/src/database/models/userProfile.model";
+import UserProfileDetailModel from "@/src/database/models/userProfile.model";
 
 class UserRepository {
   async getAll(queries: UserGetAllRepoParams) {
@@ -271,30 +271,47 @@ class UserRepository {
       throw error;
     }
   }
-  async getProfileById(userId: string, category: string) {
+  async getProfileByUserId(userId: string, category?: string) {
     try {
       let categoryData: any = {};
-      if (category == "ability") {
-        categoryData = await UserProfileModel.findById(userId).select(
-          "skills expertise languages -_id"
-        );
+      if (!category) {
+        categoryData = await UserProfileDetailModel.find({ userId: userId });
+      } else if (category == "ability") {
+        categoryData = await UserProfileDetailModel.find({
+          userId: userId,
+        }).select("skills expertise languages -_id");
       } else
-        categoryData = await UserProfileModel.findById(userId).select(
+        categoryData = await UserProfileDetailModel.find({ userId }).select(
           `${category} -_id`
         );
-      return categoryData;
+      return categoryData[0];
     } catch (err) {
       throw err;
     }
   }
 
-  async updateProfile(userId:string,updateBody:IUserProfile){
+  async updateProfile(userId: string, updateBody: any) {
     try {
-      let profile = await UserProfileModel.findByIdAndUpdate(userId,updateBody,{new:true});
-      if(!profile){
-        throw new NotFoundError("Profile not found");
+      let existingUserId = await UserProfileDetailModel.find(
+        { userId: userId },
+        { userId: 1 }
+      );
+
+      if (existingUserId.length === 0) {
+        let response = await UserProfileDetailModel.create({
+          userId,
+          ...updateBody,
+        });
+        return response;
+      } else {
+        const updatedUser = await UserProfileDetailModel.findOneAndUpdate(
+          { userId },
+          { $set: { ...updateBody } },
+          { new: true, useFindAndModify: false }
+        );
+        
+        return updatedUser;
       }
-      return profile;
     } catch (err) {
       throw err;
     }

@@ -1,6 +1,6 @@
 import { gatewayLogger } from "@/src/server";
 import {
-
+  // APP_ERROR_MESSAGE,
   ApplicationError,
   HTTP_STATUS_CODE,
   prettyObject,
@@ -31,5 +31,6 @@ export function globalErrorHandler(
   );
   res
     .status(HTTP_STATUS_CODE.SERVER_ERROR)
-    .json({ message: ApplicationError });
+    .json({ message: "APP_ERROR_MESSAGE.serverError" });
+  // .json({ message: APP_ERROR_MESSAGE.serverError });
 }

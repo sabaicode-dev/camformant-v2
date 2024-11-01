@@ -111,7 +111,7 @@ const Page: React.FC = () => {
               >
                 <Image
                   className="object-cover"
-                  src={typeof pic === "string" ? pic : user?.profile || ""}
+                  src={typeof pic === "string" ? pic : user?.profile || "https://static.vecteezy.com/system/resources/previews/005/129/844/non_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"}
                   height={200}
                   width={200}
                   alt="Profile Picture"

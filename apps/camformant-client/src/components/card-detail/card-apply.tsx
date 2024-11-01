@@ -21,41 +21,41 @@ export const CardApply: React.FC<CardApplyProps> = ({
   job_opening,
   createdAt,
 }) => {
-
-
   // Check if createdAt is a valid Date object
   const validCreatedAt =
     createdAt instanceof Date && !isNaN(createdAt.getTime());
-    
+
   return (
-    <div className="p-5 rounded-3xl bg-white shadow-md flex flex-col">
-      <div className="flex justify-start gap-5 items-start ">
+    <div className="flex flex-col p-5 bg-white shadow-md rounded-3xl">
+      <div className="flex items-start justify-start gap-5 ">
         <Image
           src={profile || ""}
           width={75}
           height={75}
           alt={name || "logo"}
-          className="object-cover rounded-full drop-shadow-xl h-16 w-16"
+          className="object-cover w-16 h-16 rounded-full drop-shadow-xl"
         />
-        <div className="flex flex-col gap-4 justify-center">
+        <div className="flex flex-col justify-center gap-4">
           <div>
-            <h1 className=" text-secondary font-semibold text-base">{name}</h1>
-            <p className="text-gray-400 text-xs pt-1">{location}</p>
+            <h1 className="text-base font-semibold  text-secondaryCam">
+              {name}
+            </h1>
+            <p className="pt-1 text-xs text-gray-400">{location}</p>
           </div>
-          <p className="text-gray-400 text-xs">{job_opening} Job Opening </p>
+          <p className="text-xs text-gray-400">{job_opening} Job Opening </p>
         </div>
       </div>
       <div className="flex justify-between mt-9">
         {deadline && (
-          <span className=" flex text-red-500 items-center gap-2 text-xs">
+          <span className="flex items-center gap-2 text-xs text-red-500 ">
             <MdCalendarToday />
             {dateFormat(deadline, "en-US")}
           </span>
         )}
         {validCreatedAt ? (
-          <p className="text-gray-400 text-xs">{getRelativeTime(createdAt)}</p>
+          <p className="text-xs text-gray-400">{getRelativeTime(createdAt)}</p>
         ) : (
-          <p className="text-gray-400 text-xs">No deadline provided</p>
+          <p className="text-xs text-gray-400">No deadline provided</p>
         )}
       </div>
     </div>

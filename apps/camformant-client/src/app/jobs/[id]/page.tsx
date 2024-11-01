@@ -38,9 +38,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const response = await axiosInstance.get(
-          `${API_ENDPOINTS.JOBS}/${id}`
-        );
+        const response = await axiosInstance.get(`${API_ENDPOINTS.JOBS}/${id}`);
         if (response.status === 200 && response.data.data) {
           const job = response.data.data;
           job.createdAt = new Date(job.createdAt);
@@ -72,7 +70,7 @@ const Page: React.FC = () => {
         setNext(true);
 
         const cv = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/cv/`,
+          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/cv/`
         );
 
         setCV(true);
@@ -102,7 +100,7 @@ const Page: React.FC = () => {
         };
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/v1/user/apply/?apply=${getIndexCv}`,
-          data,
+          data
         );
         if (response.status === 200) {
           console.log("Application submitted successfully");
@@ -128,7 +126,7 @@ const Page: React.FC = () => {
   }
 
   return (
-    <div className="w-full h-full flex flex-col pb-28 ">
+    <div className="flex flex-col w-full h-full pb-28 ">
       <Link href={"../"}>
         <BackButton_md styles="absolute bg-white p-3 px-4 rounded-xl top-5 left-4 " />
       </Link>
@@ -187,10 +185,19 @@ const Page: React.FC = () => {
         ))}
       </div>
 
-      <div className=' fixed pl-5 pr-5 w-full h-20 flex justify-center gap-3 items-center bottom-0 z-30 bg-white '>
-        <button onClick={popUpApply} className={` ${next ? 'bg-gray-400 pointer-events-none ' : 'bg-primary'} p-3 w-full rounded-3xl text-white`}>Apply Now</button>
-        <span className=' p-3  text-primary text-xl bg-white drop-shadow-2xl rounded-2xl '>
-          <Link href={`${id}/message`}> <MdMessage /></Link> </span>
+      <div className="fixed bottom-0 z-30 flex items-center justify-center w-full h-20 gap-3 pl-5 pr-5 bg-white ">
+        <button
+          onClick={popUpApply}
+          className={` ${next ? "bg-gray-400 pointer-events-none " : "bg-primaryCam"} p-3 w-full rounded-3xl text-white`}
+        >
+          Apply Now
+        </button>
+        <span className="p-3 text-xl bg-white text-primaryCam drop-shadow-2xl rounded-2xl">
+          <Link href={`${id}/message`}>
+            {" "}
+            <MdMessage />
+          </Link>{" "}
+        </span>
       </div>
 
       <Sheet
@@ -202,8 +209,8 @@ const Page: React.FC = () => {
         <Sheet.Container>
           <Sheet.Header />
           <Sheet.Content>
-            <div className="flex flex-col gap-5 pl-5 pr-5 h-ful w-full justify-center items-center ">
-              <p className="w-full pl-5 text-gray-400  ">
+            <div className="flex flex-col items-center justify-center w-full gap-5 pl-5 pr-5 h-ful ">
+              <p className="w-full pl-5 text-gray-400 ">
                 Please select for apply{" "}
               </p>
               <div
@@ -215,7 +222,7 @@ const Page: React.FC = () => {
                 <h1 className="flex items-center gap-5">
                   {" "}
                   <span
-                    className={`${selected ? "text-black" : "text-primary  "} text-2xl `}
+                    className={`${selected ? "text-black" : "text-primaryCam  "} text-2xl `}
                   >
                     <BsPersonVcard />
                   </span>{" "}
@@ -224,7 +231,7 @@ const Page: React.FC = () => {
               </div>
               <Link
                 href={"/cv"}
-                className="pl-5 h-20 w-full flex rounded-3xl items-center bg-white drop-shadow-xl "
+                className="flex items-center w-full h-20 pl-5 bg-white rounded-3xl drop-shadow-xl "
               >
                 <h1>Attached CV </h1>
               </Link>

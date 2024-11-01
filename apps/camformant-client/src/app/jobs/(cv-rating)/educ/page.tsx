@@ -12,16 +12,11 @@ import {
   addEntry,
   deleteEntry,
   handleInputChange,
-} from "@/utils/functions/inputFunctions";
+} from "@/utils/functions/input-functions";
+import { EducationParams } from "@/utils/types/user-profile";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Sheet } from "react-modal-sheet";
-export interface EducationParams {
-  academic: string;
-  school: string;
-  major: string;
-  year: string;
-}
 
 const Page = () => {
   const inputEmpty = {
@@ -32,14 +27,15 @@ const Page = () => {
   };
   const { user } = useAuth();
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [educationEntries, setEducationEntries] = useState([inputEmpty]);
+  const [educationEntries, setEducationEntries] = useState<EducationParams[]>([
+    inputEmpty,
+  ]);
   const [startYear, setStartYear] = useState<string[]>([]);
   const [endYear, setEndYear] = useState<string[]>([]);
   let [indexForUpdate, setIndexForUdate] = useState<number>(0);
   const [next, setNext] = useState<boolean>(false);
   const [isOpen, setOpen] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [isPut,setIsPut]=useState<boolean>(false)
+  const [isPut, setIsPut] = useState<boolean>(false);
 
   // const ip = 'http://172.20.10.5:3030'
   // const ip = 'http://localhost:3040'
@@ -47,24 +43,16 @@ const Page = () => {
   useEffect(() => {
     async function GetData() {
       try {
+        console.log("user id", user!._id);
         setNext(true);
-        setLoading(true);
-        console.log("user",user)
         const response = await axiosInstance.get(
           `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=educations`
         );
-        if (!response) {
-          return null;
-        }
-        const data = response.data;
-        console.log("data",data)
+       
+        const data = response.data.data.educations;
+        if(data.length==0) return
         setEducationEntries(
-          data.map((entry: EducationParams) => ({
-            academic: entry.academic || "",
-            school: entry.school || "",
-            major: entry.major || "",
-            year: entry.year || "",
-          }))
+          data
         );
         for (let i = 0; i < educationEntries.length; i++) {
           setStartYear((prev) => {
@@ -79,9 +67,9 @@ const Page = () => {
           });
         }
       } catch (error) {
+        console.error(error);
       } finally {
         setNext(false);
-        setLoading(false);
       }
     }
     GetData();
@@ -90,14 +78,15 @@ const Page = () => {
   async function PostData() {
     try {
       setNext(true); // Trigger loading
-      const DataValue = {
+      const dataValue = {
         educations: educationEntries,
       };
 
       const response = await axiosInstance.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/user/education/`,
-        DataValue
+        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
+        { ...dataValue }
       );
+      console.log(response);
       return response;
     } catch (error) {
       console.error(error);
@@ -108,33 +97,33 @@ const Page = () => {
 
   return (
     <div className="pb-20">
-      <HeaderBasic title="Education"
-       {...(isPut?{next:PostData}:{})}
-        nextRoute={"/self/exp"}
-        />
+      <HeaderBasic
+        title="Education"
+        {...(isPut ? { next: PostData } : {})}
+        nextRoute={"/jobs/exp"}
+      />
       {next && <SkeletonLoader text="Loading ..." />}
       {educationEntries.map((entry, index) => (
         <div>
           {Object.entries(entry).map(([key, value]) => {
             return key != "year" ? (
               <InputComponent
-                key={key}
+                key={`education-${key}-${index}`}
                 values={value}
                 setFocused={setFocusedField}
                 focused={focusedField}
                 txt={key} // Helper function to get label text if needed
                 typeofInput={key.includes("date") ? "date" : "text"} // Set type based on key
-                setValues={(newValue) =>{
+                setValues={(newValue) => {
                   handleInputChange(
                     setEducationEntries,
                     educationEntries,
                     index,
                     key,
                     newValue
-                  )
-                    newValue==value||setIsPut(true)
-                }
-                }
+                  );
+                  newValue == value || setIsPut(true);
+                }}
                 valuesFouce={`education-${key}-${index}`}
               />
             ) : (
@@ -177,7 +166,10 @@ const Page = () => {
         onAdd={() =>
           addEntry(setEducationEntries, educationEntries, inputEmpty)
         }
-        onDelete={() => deleteEntry(setEducationEntries, educationEntries)}
+        onDelete={() => {
+          deleteEntry(setEducationEntries, educationEntries);
+          setIsPut(true);
+        }}
       />
     </div>
   );

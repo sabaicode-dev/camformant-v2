@@ -9,7 +9,7 @@ const DropDownMenu:React.FC<{
 }) => {
   return ( 
     <div className="w-full container pt-10">
-      <select className="min-w-full h-16 w-full outline-none rounded-2xl p-5 shadow-md shadow-black-300 pl-7 text-gray-400"
+      <select className="min-w-full h-16 w-full outline-none rounded-2xl p-5 shadow-md shadow-black-300 pl-7 text-black"
       value={currentText}
       onChange={(e)=>setValue(e.target.value)}
       >

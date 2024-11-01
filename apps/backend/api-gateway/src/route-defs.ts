@@ -153,13 +153,22 @@ const ROUTE_PATHS: RoutesConfig = {
         ],
       },
       {
+        path: "/uploadFile/:userId",
+        methods: {
+          POST: {
+            authRequired: false,
+            roles: ["user", "admin"],
+          },
+        },
+      },
+      {
         path: "/profile-detail/:userId",
         methods: {
           GET: {
             authRequired: true,
             roles: ["user", "admin"],
           },
-          POST: {
+          PUT: {
             authRequired: true,
             roles: ["user", "admin"],
           },

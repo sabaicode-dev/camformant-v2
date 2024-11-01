@@ -1,5 +1,5 @@
 {
-  "private":"true",
+  "private": "true",
   "name": "camformant-v2",
   "version": "1.0.0",
   "main": "index.js",
@@ -10,12 +10,16 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "concurrently \"yarn workspace ms-ui-components watch\" \"yarn workspace camformant-client dev\" \"yarn workspace user-service dev\" \"yarn workspace chat-service dev\" \"yarn workspace notification-service dev\" \"yarn workspace job-service dev\" \"yarn workspace auth-service dev\" \"yarn workspace api-gateway-service dev\"",
+    "start:api-gateway": "yarn workspace api-gateway-service dev",
+    "start:job-service": "yarn workspace job-service dev",
+    "start": "concurrently \"yarn workspace api-gateway-service dev\" \"yarn workspace auth-service dev\" \"yarn workspace chat-service dev\" \"yarn workspace job-service dev\" \"yarn workspace notification-service dev\" \"yarn workspace user-service dev\" \"yarn workspace camformant-client dev\" \"yarn workspace frontend-dashboard dev\"",
     "start:camformant-client": "yarn workspace camformant-client dev",
     "start:dashboard": "concurrently \"yarn workspace ms-ui-components watch\" \"yarn workspace camformant-dashboard dev\"",
     "start:user-service": "yarn workspace user-service dev",
     "start:product-service": "yarn workspace product-service dev",
     "start:auth-service": "yarn workspace auth-service dev",
+    "start:chat-service": "yarn workspace chat-service dev",
+    "start:notification-service": "yarn workspace notification-service dev",
     "docker:dev": "docker-compose -f ./apps/backend/docker-compose.dev.yml up -d",
     "docker:local": "docker-compose -f ./apps/backend/docker-compose.local.yml up -d",
     "docker:stop": "docker-compose -f ./apps/backend/docker-compose.dev.yml down"

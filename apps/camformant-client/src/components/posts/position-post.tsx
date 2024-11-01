@@ -143,7 +143,7 @@ export const PositionPost: React.FC = () => {
     <div className="container mt-5 pb-14">
       <Heading title="Positions" subTitle="You can find more positions here" />
 
-      <div className="mb-8 mt-4 flex justify-start items-center gap-5 overflow-x-auto p-1">
+      <div className="flex items-center justify-start gap-5 p-1 mt-4 mb-8 overflow-x-auto">
         {categoryPosition.categoryPosition.map((x) => (
           <div key={x.text}>
             <CategoryPosition
@@ -184,7 +184,7 @@ export const PositionPost: React.FC = () => {
             </div>
           ))
       ) : (
-        <p className="mb-20 h-56 w-full flex justify-center items-center">
+        <p className="flex items-center justify-center w-full h-56 mb-20">
           No jobs available
         </p>
       )}
@@ -193,7 +193,7 @@ export const PositionPost: React.FC = () => {
         <p className="text-center text-gray-500">Loading more jobs...</p>
       )}
       {!hasMore && jobData.length > 0 && (
-        <p className="text-center text-gray-500 my-10">
+        <p className="my-10 text-center text-gray-500">
           You have seen all jobs.
         </p>
       )}
@@ -205,5 +205,5 @@ export const PositionPost: React.FC = () => {
 function buildQuery(page: number, selectedPosition: string) {
   const filter = { position: selectedPosition };
   const encodedFilter = encodeURIComponent(JSON.stringify(filter));
-  return `?filter=${encodedFilter}&page=${page}`;
+  return `?filter=${encodedFilter}&page=${page}&limit=5`;
 }

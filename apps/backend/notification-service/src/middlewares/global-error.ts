@@ -1,6 +1,6 @@
 import {
+  // APP_ERROR_MESSAGE,
   ApplicationError,
-  AUTH_MESSAGES,
   HTTP_STATUS_CODE,
   prettyObject,
 } from "@sabaicode-dev/camformant-libs";
@@ -32,5 +32,6 @@ export function globalErrorHandler(
   );
   res
     .status(HTTP_STATUS_CODE.SERVER_ERROR)
-    .json({ message: AUTH_MESSAGES.AUTHENTICATION.EMAIL_ALREADY_IN_USE });
+    .json({ message: "APP_ERROR_MESSAGE.serverError" });
+  // .json({ message: APP_ERROR_MESSAGE.serverError });
 }

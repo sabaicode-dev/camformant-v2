@@ -9,9 +9,10 @@ import {
   Put,
   Delete,
   Queries,
+  Query,
   Middlewares,
   Request,
-  Query,
+  UploadedFile,
 } from "tsoa";
 import UserService from "@/src/services/user.service";
 import sendResponse from "@/src/utils/send-response";
@@ -29,6 +30,8 @@ import { UserGetAllControllerParams } from "@/src/controllers/types/user-control
 import { Request as ExpressRequest } from "express";
 import agenda from "@/src/utils/agenda";
 import { SCHEDULE_JOBS } from "@/src/jobs";
+import { uploadToS3 } from "../utils/s3";
+// import { unionProfileType } from "./types/userprofile.type";
 
 @Route("v1/users")
 export class UsersController extends Controller {
@@ -214,16 +217,50 @@ export class UsersController extends Controller {
   }
 
   @Get("/profile-detail/:userId")
-  public async  getProfileByID(
-    @Path() userId:string,
-    @Query() category:string
-  ){
-    try{
-      const userProfile=await UserService.getProfileById(userId,category)
-    return {data:userProfile}
+  public async getProfileByID(
+    @Path() userId: string,
+    @Query() category?: string
+  ) {
+    try {
+      const userProfile = await UserService.getProfileById(userId, category);
+      return sendResponse<any>({
+        message: "success",
+        data: userProfile,
+      });
+    } catch (err) {
+      throw err;
     }
-    catch(err){
-      throw err
+  }
+  @Put("/profile-detail/:userId")
+  public async updateUserProfile(
+    @Path() userId: string,
+    @Body() updateBody: any
+  ) {
+    try {
+      const userData = await UserService.updateUserProfile(userId, updateBody);
+
+      return sendResponse<any>({
+        message: "Data is updated successfully",
+        data: userData,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Post("/uploadFile/:userId")
+  public async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Path() userId: string
+  ): Promise<string> {
+    try {
+      const response: string = await uploadToS3(
+        file,
+        `/user-service/${userId}`
+      );
+      return response;
+    } catch (err) {
+      throw err;
     }
   }
 }
