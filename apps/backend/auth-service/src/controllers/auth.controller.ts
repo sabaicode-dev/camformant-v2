@@ -89,13 +89,10 @@ export class AuthController extends Controller {
           // path: "/", // Apply to all paths
         });
       };
+      await AuthService.signout(tokens["access_token"]);
       for (const token in tokens) {
         clearCookie(token);
       }
-      // clearCookie("access_token");
-      // clearCookie("refresh_token");
-      // clearCookie("username");
-      // clearCookie("user_id");
 
       return sendResponse({ message: "Signout successfully" });
     } catch (error) {
