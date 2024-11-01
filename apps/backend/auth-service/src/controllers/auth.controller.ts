@@ -71,6 +71,37 @@ export class AuthController extends Controller {
       throw error;
     }
   }
+  @Post("/signout")
+  public async signout(@Request() request: Express.Request) {
+    try {
+      // const input: GlobalSignOutCommandInput = {
+      //   AccessToken: "",
+      // };
+      // const result = await AuthService.signout(body);
+      //@ts-ignore
+      const tokens = request.cookies;
+      const response = (request as any).res as Response;
+      const clearCookie = (name: string) => {
+        response.cookie(name, "", {
+          expires: new Date(0), // Expire immediately
+          httpOnly: true, // Optional: set to true for security
+          // secure: process.env.NODE_ENV === "production", // Secure in production
+          // path: "/", // Apply to all paths
+        });
+      };
+      for (const token in tokens) {
+        clearCookie(token);
+      }
+      // clearCookie("access_token");
+      // clearCookie("refresh_token");
+      // clearCookie("username");
+      // clearCookie("user_id");
+
+      return sendResponse({ message: "Signout successfully" });
+    } catch (error) {
+      throw error;
+    }
+  }
 
   @Get("/google")
   public loginWithGoogle() {
