@@ -20,12 +20,12 @@ const SkeletonLoader = ({
   height = "h-32",
   rounded = "rounded-full",
 }) => (
-  <section className="container flex flex-col items-center gap-y-10 p-4">
+  <section className="container flex flex-col items-center p-4 gap-y-10">
     <div className="flex flex-col items-center gap-4">
       <div className={`${width} ${height} ${rounded} bg-gray-200`} />
       <div className="w-20 h-5 bg-gray-200 rounded-md" />
     </div>
-    <div className="flex flex-col items-start gap-4 w-full">
+    <div className="flex flex-col items-start w-full gap-4">
       <div className="flex justify-between gap-4">
         <div className="w-5 h-5 bg-gray-200 rounded-3xl" />
         <div className="w-40 h-5 bg-gray-200 rounded-md" />
@@ -55,7 +55,7 @@ const Page: React.FC = () => {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isCropping, setIsCropping] = useState(false);
 
-  console.log('isLoading:::', loading)
+  console.log("isLoading:::", loading);
 
   function handleImage() {
     RefFile.current?.click();
@@ -88,7 +88,7 @@ const Page: React.FC = () => {
       setIsCropping(false);
     } catch (error) {
       console.error("Failed to crop image", error);
-      addNotification("Failed to crop image", 'error')
+      addNotification("Failed to crop image", "error");
     }
   };
 
@@ -103,11 +103,13 @@ const Page: React.FC = () => {
         <Background style="bg-mybg-linear ipx:h-[20%] ipse:h-[22%]">
           <div className="container mt-[-70px] flex flex-col items-center justify-center gap-5">
             {/* ==================== PROFILE PICTURE  ================================*/}
-            <div className={`relative ${loading ? 'hidden' : ''}`}>
-              <div className={` w-32 h-32 rounded-full overflow-hidden bg-white`}>
+            <div className={`relative ${loading ? "hidden" : ""}`}>
+              <div
+                className={` w-32 h-32 rounded-full overflow-hidden bg-white`}
+              >
                 <Image
                   className="object-cover"
-                  src={user?.profile!}
+                  src={user?.profile! || "/images/def-user-profile.png"}
                   height={200}
                   width={200}
                   alt="Profile Picture"
@@ -123,7 +125,7 @@ const Page: React.FC = () => {
               />
               <span
                 onClick={handleImage}
-                className="text-gray-400 shadow-xl right-0 bottom-0 absolute p-3 flex items-center rounded-full bg-white text-2xl"
+                className="absolute bottom-0 right-0 flex items-center p-3 text-2xl text-gray-400 bg-white rounded-full shadow-xl"
               >
                 <IoCameraSharp />
               </span>
@@ -131,8 +133,8 @@ const Page: React.FC = () => {
 
             {/* ==================== CROPPING IMAGE  ================================*/}
             {isCropping && (
-              <div className="fixed w-full inset-0 z-40 flex items-center justify-center bg-black bg-opacity-60 ">
-                <div className="relative w-96 h-screen p-4 rounded">
+              <div className="fixed inset-0 z-40 flex items-center justify-center w-full bg-black bg-opacity-60 ">
+                <div className="relative h-screen p-4 rounded w-96">
                   <Cropper
                     image={imageSrc || ""}
                     crop={crop}
@@ -143,7 +145,7 @@ const Page: React.FC = () => {
                     onCropComplete={handleCropComplete}
                   />
                 </div>
-                <div className="z-50 top-0 w-full absolute bg-white ">
+                <div className="absolute top-0 z-50 w-full bg-white ">
                   <HeaderBasic
                     title="Profile Picture"
                     save="Save"
@@ -155,32 +157,30 @@ const Page: React.FC = () => {
             )}
 
             {/* ==================== USERNAME  ================================*/}
-            <h1 className={`relative text-xl ${loading ? 'hidden' : ''}`}>
+            <h1 className={`relative text-xl ${loading ? "hidden" : ""}`}>
               {user ? user.username : "no nickname"}
             </h1>
 
             {/* ==================== PERSONAL INFO  ================================*/}
             {loading ? (
               <SkeletonLoader />
-            ) : <div className="p-5 w-full flex flex-col gap-5 justify-center items-center bg-white shadow-[0_35px_224px_15px_rgba(0,0,0,0.2)] rounded-3xl">
-              <Link
-                className={`w-full`}
-                href={"/cv-rating"}
-              >
-                <span className="flex w-full text-lg gap-5 items-center">
-                  <FaCircleUser />
-                  <div>Personal Profile</div>
-                </span>
-              </Link>
-              <Link className="w-full" href={"/favorite"}>
-                <span className="flex w-full text-lg gap-5 items-center">
-                  <FaRegHeart size={18} />
-                  <div className="pl-1">favorite</div>
-                </span>
-              </Link>
+            ) : (
+              <div className="p-5 w-full flex flex-col gap-5 justify-center items-center bg-white shadow-[0_35px_224px_15px_rgba(0,0,0,0.2)] rounded-3xl">
+                <Link className={`w-full`} href={"/cv-rating"}>
+                  <span className="flex items-center w-full gap-5 text-lg">
+                    <FaCircleUser />
+                    <div>Personal Profile</div>
+                  </span>
+                </Link>
+                <Link className="w-full" href={"/favorite"}>
+                  <span className="flex items-center w-full gap-5 text-lg">
+                    <FaRegHeart size={18} />
+                    <div className="pl-1">favorite</div>
+                  </span>
+                </Link>
                 <Notification addNotification={addNotification} />
-            </div>
-            }
+              </div>
+            )}
             <ButtonSignOut
               onHandleLogout={logout}
               isLogout={user?.username || null}
@@ -189,7 +189,6 @@ const Page: React.FC = () => {
         </Background>
       </div>
     </React.Fragment>
-
   );
 };
 
