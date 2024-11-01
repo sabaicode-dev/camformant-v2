@@ -165,7 +165,7 @@ const Page: React.FC = () => {
             {loading ? (
               <SkeletonLoader />
             ) : (
-              <div className="p-5 w-full flex flex-col gap-5 justify-center items-center bg-white shadow-[0_35px_224px_15px_rgba(0,0,0,0.2)] rounded-3xl">
+              <div className="p-5 w-full flex flex-col gap-6 justify-center items-center bg-white shadow-[0_35px_224px_15px_rgba(0,0,0,0.2)] rounded-3xl">
                 <Link className={`w-full`} href={"/cv-rating"}>
                   <span className="flex items-center w-full gap-5 text-lg">
                     <FaCircleUser />
