@@ -10,6 +10,7 @@ import { Card } from "@/components/card/card";
 import { useAuth } from "@/context/auth";
 import { Job } from "@/app/jobs/[id]/message/page";
 import SkeletonCard from "@/components/skeleton/skeleton-card";
+import Image from "next/image";
 
 export const PositionPost: React.FC = () => {
   const { user } = useAuth();
@@ -54,13 +55,14 @@ export const PositionPost: React.FC = () => {
 
   const onScroll = useCallback(async () => {
     if (
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
+      window.innerHeight + window.scrollY >= document.body.offsetHeight - 1 &&
       hasMore &&
-      !isLoading
+      !isLoading &&
+      jobData.length > 0
     ) {
       await loadMoreData();
     }
-  }, [hasMore, isLoading, loadMoreData]);
+  }, [hasMore, isLoading, loadMoreData, jobData]);
 
   const handleSelectPosition = (category: string) => {
     setSelectedPosition(category);
@@ -140,7 +142,7 @@ export const PositionPost: React.FC = () => {
   }, [onScroll]);
 
   return (
-    <div className="container mt-5 pb-14">
+    <div className="container mt-5 pb-28">
       <Heading title="Positions" subTitle="You can find more positions here" />
 
       <div className="flex items-center justify-start gap-5 p-1 mt-4 mb-8 overflow-x-auto">
@@ -184,9 +186,16 @@ export const PositionPost: React.FC = () => {
             </div>
           ))
       ) : (
-        <p className="flex items-center justify-center w-full h-56 mb-20">
-          No jobs available
-        </p>
+        <div className="flex flex-col items-center w-full">
+          <Image
+            src={"/images/unavailable.png"}
+            alt=""
+            width={500}
+            height={500}
+            className="w-full"
+          />
+          <p className="mb-20 ">No jobs available</p>
+        </div>
       )}
 
       {isLoading && hasMore && (
