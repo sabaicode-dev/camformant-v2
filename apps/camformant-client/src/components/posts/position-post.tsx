@@ -11,6 +11,42 @@ import { useAuth } from "@/context/auth";
 import { Job } from "@/app/jobs/[id]/message/page";
 import SkeletonCard from "@/components/skeleton/skeleton-card";
 import Image from "next/image";
+export enum EmploymentSchedule {
+  FULL_TIME = "Full-Time",
+  PART_TIME = "Part-Time",
+  FLEXIBLE_HOURS = "Flexible-Hours",
+  PROJECT_BASED = "Project-Based",
+}
+export enum EmploymentType {
+  CONTRACT = "Contract",
+  INTERNSHIP = "Internship",
+}
+export enum WorkMode {
+  REMOTE = "Remote",
+  ON_SITE = "On-Site",
+  HYBRID = "Hybrid",
+}
+interface IJob {
+  _id?: string;
+  companyId?: string;
+  title?: string; // name of the job that company looking for. Example: Java Developer
+  position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
+  workMode?: WorkMode[];
+  location?: string; // location could be phnom penh, kompong-cham, etc.
+  requirement?: string;
+  address?: string; // address could be the link address of the company (google link)
+  description?: string;
+  min_salary?: number;
+  max_salary?: number;
+  deadline?: Date;
+  job_opening?: number;
+  type?: EmploymentType[];
+  schedule?: EmploymentSchedule[];
+  required_experience?: string[];
+  benefit?: string[];
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 
 export const PositionPost: React.FC = () => {
   const { user } = useAuth();
@@ -117,11 +153,12 @@ export const PositionPost: React.FC = () => {
         if (jobs.length === 0 || 1 >= totalPages) {
           setHasMore(false);
         }
+        console.log("jobs::::, ", jobs);
 
         // Merge favorite status into jobs
-        const jobsWithFavoriteStatus = jobs.map((job: any) => ({
+        const jobsWithFavoriteStatus = jobs.map((job: IJob) => ({
           ...job,
-          favorite: user?.favorites.includes(job._id) || false,
+          favorite: user?.favorites.includes(job._id!) || false,
         }));
 
         setJobData(jobsWithFavoriteStatus);
@@ -185,7 +222,7 @@ export const PositionPost: React.FC = () => {
               <SkeletonCard />
             </div>
           ))
-      ) : (
+      ) : jobData.length === 0 ? (
         <div className="flex flex-col items-center w-full">
           <Image
             src={"/images/unavailable.png"}
@@ -196,6 +233,8 @@ export const PositionPost: React.FC = () => {
           />
           <p className="mb-20 ">No jobs available</p>
         </div>
+      ) : (
+        ""
       )}
 
       {isLoading && hasMore && (

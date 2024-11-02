@@ -75,6 +75,8 @@ const Chat = () => {
                       <Image
                         src={job.companyProfile}
                         alt={`${job.companyName} profile`}
+                        width={200}
+                        height={200}
                         className="object-cover w-full h-full rounded-full"
                       />
                     </div>

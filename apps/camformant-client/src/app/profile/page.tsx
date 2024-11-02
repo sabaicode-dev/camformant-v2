@@ -14,6 +14,7 @@ import ButtonSignOut from "@/components/login-logout/sign-out";
 import { useNotification } from "@/hooks/user-notification";
 import Notification from "@/components/notification/notification";
 import { useAuth } from "@/context/auth";
+import { useRouter } from "next/navigation";
 
 const SkeletonLoader = ({
   width = "w-32",
@@ -44,7 +45,7 @@ const SkeletonLoader = ({
 
 const Page: React.FC = () => {
   const { addNotification, NotificationDisplay } = useNotification();
-  const { user, loading, logout } = useAuth();
+  const { user, loading, logout, isAuthenticated, login } = useAuth();
 
   const RefFile = useRef<HTMLInputElement | null>(null);
   const [pic, setPic] = useState<File | string | null>(null);
@@ -54,6 +55,7 @@ const Page: React.FC = () => {
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isCropping, setIsCropping] = useState(false);
+  const router = useRouter();
 
   console.log("isLoading:::", loading);
 
@@ -158,7 +160,7 @@ const Page: React.FC = () => {
 
             {/* ==================== USERNAME  ================================*/}
             <h1 className={`relative text-xl ${loading ? "hidden" : ""}`}>
-              {user ? user.username : "no nickname"}
+              {user ? user.username : "Please Login to get your name"}
             </h1>
 
             {/* ==================== PERSONAL INFO  ================================*/}
@@ -182,7 +184,9 @@ const Page: React.FC = () => {
               </div>
             )}
             <ButtonSignOut
-              onHandleLogout={logout}
+              onHandleLogout={
+                isAuthenticated ? logout : () => router.push("/login")
+              }
               isLogout={user?.username || null}
             />
           </div>

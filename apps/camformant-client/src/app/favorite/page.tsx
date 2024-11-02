@@ -9,6 +9,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/auth";
 import { IJob } from "@/components/type-data/TypeofData";
+import Image from "next/image";
 
 const Page: React.FC = () => {
   const { user } = useAuth();
@@ -143,9 +144,16 @@ const Page: React.FC = () => {
           </div>
         ))
       ) : (
-        <p className="flex items-center justify-center w-full h-56 mb-20">
-          No favorite jobs available
-        </p>
+        <div className="items-center w-full p-5 mt-20">
+          <p className="w-full text-center">No favorite jobs available</p>
+          <Image
+            src={"/images/favorite.png"}
+            alt="no favorite"
+            width={200}
+            height={200}
+            className="w-full"
+          />
+        </div>
       )}
     </div>
   );

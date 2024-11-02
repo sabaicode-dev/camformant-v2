@@ -62,7 +62,7 @@ export const Search: React.FC<autoFocusd> = ({
       {isFilterDisplay && (
         <button
           onClick={() => setOpen(true)}
-          className="absolute translate-y-[16px] right-5 z-50 "
+          className="absolute translate-y-[16px] right-3 top-1 z-50 "
         >
           <IoMdFunnel size={22} className="text-primaryCam" />
         </button>
