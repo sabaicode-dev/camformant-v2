@@ -215,7 +215,7 @@ export const PositionPost: React.FC = () => {
           </div>
         ))
       ) : isLoading ? (
-        Array(5)
+        Array(3)
           .fill(0)
           .map((_, index) => (
             <div key={index} className="mb-4 rounded-xl drop-shadow-md">
@@ -231,7 +231,7 @@ export const PositionPost: React.FC = () => {
             height={500}
             className="w-full"
           />
-          <p className="mb-20 ">No jobs available</p>
+          <p className="mb-10 ">No jobs available</p>
         </div>
       ) : (
         ""

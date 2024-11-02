@@ -7,6 +7,7 @@ import { FilterValueParams } from "@/components/in-search/search-home-page";
 import SkeletonCard from "@/components/skeleton/skeleton-card";
 import { IJob } from "../type-data/TypeofData";
 import { useAuth } from "@/context/auth";
+import Image from "next/image";
 
 const SearchCard = ({
   searchValue,
@@ -232,20 +233,22 @@ const SearchCard = ({
     <Suspense>
       <div className="flex flex-col w-full h-full gap-4 pt-6 pb-20">
         {loading ? (
-          Array.from({ length: 4 }).map((_, index) => (
+          Array.from({ length: 3 }).map((_, index) => (
             <div className="p-1 mb-2" key={index}>
               <SkeletonCard />
             </div>
           ))
         ) : jobData.length === 0 ? (
           // Display this section when no jobs are found
-          <div className="flex flex-col items-center justify-center mt-10">
-            {/* <img
-              src="/no-jobs-found.png"
+          <div className="flex flex-col items-center justify-center">
+            <Image
+              src="/images/unavailable.png"
               alt="No jobs found"
-              className="w-64 h-64"
-            /> */}
-            <h2 className="mt-5 text-lg font-semibold text-gray-700">
+              width={500}
+              height={500}
+              className="w-72 h-72"
+            />
+            <h2 className="mt-1 text-lg font-semibold text-gray-700">
               No Jobs Found
             </h2>
             <p className="max-w-md mt-2 text-center text-gray-500">
@@ -274,7 +277,9 @@ const SearchCard = ({
             </div>
           ))
         )}
-        {error && <div className="text-red-500">{error}</div>}
+        {error && (
+          <div className="w-full text-center text-red-500">{error}</div>
+        )}
       </div>
     </Suspense>
   );
