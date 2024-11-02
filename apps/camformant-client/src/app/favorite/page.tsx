@@ -144,14 +144,14 @@ const Page: React.FC = () => {
           </div>
         ))
       ) : (
-        <div className="items-center w-full p-5 mt-20">
+        <div className="flex flex-col items-center w-full p-5 mt-20 gap-y-5">
           <p className="w-full text-center">No favorite jobs available</p>
           <Image
             src={"/images/favorite.png"}
             alt="no favorite"
-            width={200}
-            height={200}
-            className="w-full"
+            width={2000}
+            height={1762}
+            className="w-full lg:w-1/2"
           />
         </div>
       )}

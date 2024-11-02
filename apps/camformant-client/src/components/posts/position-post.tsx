@@ -227,9 +227,9 @@ export const PositionPost: React.FC = () => {
           <Image
             src={"/images/unavailable.png"}
             alt=""
-            width={500}
-            height={500}
-            className="w-full"
+            width={1280}
+            height={1280}
+            className="w-full lg:w-1/2"
           />
           <p className="mb-10 ">No jobs available</p>
         </div>

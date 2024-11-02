@@ -58,8 +58,8 @@ const CardResume: React.FC = () => {
           <Image
             src={Mypic}
             alt="Default profile image"
-            width={200}
-            height={200}
+            width={252}
+            height={188}
           />
           <div className="flex flex-col items-center justify-center">
             <h1 className="text-sm">Sorry, You Do not Have a Resume Yet.</h1>

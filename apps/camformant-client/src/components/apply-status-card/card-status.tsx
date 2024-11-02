@@ -130,7 +130,7 @@ const CardStatus: React.FC<ApplyTotal> = ({ total, setTotal }) => {
   return (
     <div className="pb-20">
       {isLoading
-        ? Array(5)
+        ? Array(3)
             .fill(0)
             .map((_, index) => (
               <div key={index} className="mb-5 rounded-xl drop-shadow-md">

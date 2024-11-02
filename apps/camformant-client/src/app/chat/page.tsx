@@ -60,7 +60,9 @@ const Chat = () => {
                 <SkeletonCard />
               </>
             ) : error ? (
-              <p>Something went wrong! Please try again.</p>
+              <p className="w-full mt-10 text-center text-md">
+                Something went wrong! Please try again.
+              </p>
             ) : jobs.length === 0 ? (
               <p>{"No users available."}</p>
             ) : (

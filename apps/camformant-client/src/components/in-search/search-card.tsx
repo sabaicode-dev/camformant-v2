@@ -244,8 +244,8 @@ const SearchCard = ({
             <Image
               src="/images/unavailable.png"
               alt="No jobs found"
-              width={500}
-              height={500}
+              width={1280}
+              height={1280}
               className="w-72 h-72"
             />
             <h2 className="mt-1 text-lg font-semibold text-gray-700">
