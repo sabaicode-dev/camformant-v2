@@ -206,6 +206,260 @@
 				},
 				"type": "object",
 				"additionalProperties": false
+			},
+			"BasicParams": {
+				"properties": {
+					"surname": {
+						"type": "string"
+					},
+					"lastname": {
+						"type": "string"
+					},
+					"career": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"dob": {
+						"type": "string"
+					},
+					"address": {
+						"type": "string"
+					},
+					"phonenumber": {
+						"type": "string"
+					},
+					"martial": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"surname",
+					"lastname",
+					"career",
+					"email",
+					"dob",
+					"address",
+					"phonenumber"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"SkillParams": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"percent": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"name",
+					"percent"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ExpertiseParams": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"proficiency": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"proficiency"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LanguageParams": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"proficiency": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"proficiency"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"EducationParams": {
+				"properties": {
+					"academic": {
+						"type": "string"
+					},
+					"school": {
+						"type": "string"
+					},
+					"major": {
+						"type": "string"
+					},
+					"year": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"academic",
+					"school",
+					"major",
+					"year"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ExperienceParams": {
+				"properties": {
+					"position": {
+						"type": "string"
+					},
+					"company": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"year": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"position",
+					"company"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ReferenceParams": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"career": {
+						"type": "string"
+					},
+					"company": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"phonenumber": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"career",
+					"company",
+					"email",
+					"phonenumber"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"DescriptionParams": {
+				"properties": {
+					"description": {
+						"type": "string"
+					},
+					"strength": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"description",
+					"strength"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"PortfolioParams": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"url": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"url"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IUserProfile": {
+				"properties": {
+					"userId": {
+						"type": "string"
+					},
+					"basic": {
+						"$ref": "#/components/schemas/BasicParams"
+					},
+					"skills": {
+						"items": {
+							"$ref": "#/components/schemas/SkillParams"
+						},
+						"type": "array"
+					},
+					"expertise": {
+						"items": {
+							"$ref": "#/components/schemas/ExpertiseParams"
+						},
+						"type": "array"
+					},
+					"languages": {
+						"items": {
+							"$ref": "#/components/schemas/LanguageParams"
+						},
+						"type": "array"
+					},
+					"educations": {
+						"items": {
+							"$ref": "#/components/schemas/EducationParams"
+						},
+						"type": "array"
+					},
+					"experiences": {
+						"items": {
+							"$ref": "#/components/schemas/ExperienceParams"
+						},
+						"type": "array"
+					},
+					"references": {
+						"items": {
+							"$ref": "#/components/schemas/ReferenceParams"
+						},
+						"type": "array"
+					},
+					"descriptions": {
+						"$ref": "#/components/schemas/DescriptionParams"
+					},
+					"portfolio": {
+						"items": {
+							"$ref": "#/components/schemas/PortfolioParams"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"userId"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -509,7 +763,9 @@
 							"application/json": {
 								"schema": {
 									"properties": {
-										"data": {},
+										"data": {
+											"$ref": "#/components/schemas/IUserProfile"
+										},
 										"message": {
 											"type": "string"
 										}

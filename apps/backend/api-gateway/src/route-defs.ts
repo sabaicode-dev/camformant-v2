@@ -156,7 +156,7 @@ const ROUTE_PATHS: RoutesConfig = {
         path: "/uploadFile/:userId",
         methods: {
           POST: {
-            authRequired: false,
+            authRequired: true,
             roles: ["user", "admin"],
           },
         },

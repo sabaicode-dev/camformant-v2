@@ -52,3 +52,20 @@ export interface Description {
   description: string;
   strength: string;
 }
+
+export interface MatchParams {
+  message: string;
+  shortMessage: string;
+  replacements: { value: string }[];
+  offset: number;
+  length: number;
+  context: {
+    text: string;
+    offset: number;
+    length: number;
+  };
+  sentence: string;
+  type: {
+    typeName: string;
+  };
+}

@@ -18,7 +18,7 @@ export const  uploadToS3 = async(file: Express.Multer.File, location?: string) =
   try {
     const command = new PutObjectCommand(uploadParams);
     await s3.send(command);
-    return `https://${configs.awsS3BucketName}.s3.amazonaws.com/${uploadParams.Key}`;
+    return `https://${configs.awsS3BucketName}.s3.${configs.awsRegion}.amazonaws.com/${uploadParams.Key}`;
   } catch (error) {
     throw error;
   }

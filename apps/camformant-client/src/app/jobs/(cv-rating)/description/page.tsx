@@ -7,12 +7,22 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import axiosInstance from "@/utils/axios";
 import { useAuth } from "@/context/auth";
 import { truncateSync } from "fs";
+import { checkGrammar } from "@/app/api/check-grammar";
+import { MatchParams } from "@/utils/types/user-profile";
 
+interface FeedbackParams {
+  feedbackStren: MatchParams[];
+  feedbackDesc: MatchParams[];
+}
 const SelfDescription: React.FC = () => {
   const { user } = useAuth();
   const [isPut, setIsPut] = useState<boolean>(false);
   const [strength, setStrength] = useState("");
   const [description, setDescription] = useState("");
+  const [feedbacks, setFeedbacks] = useState<FeedbackParams>({
+    feedbackStren: [],
+    feedbackDesc: [],
+  });
   const [isOpen, setOpen] = useState(false);
   const [next, setNext] = useState<boolean>(false);
   const [selectedRecommendation, setSelectedRecommendation] = useState("");
@@ -47,6 +57,7 @@ const SelfDescription: React.FC = () => {
         const data = response.data.data.descriptions;
         setStrength(data.strength);
         setDescription(data.description);
+        console.log("feedback",feedbacks)
       } catch (error) {
       } finally {
         setNext(false);
@@ -59,8 +70,8 @@ const SelfDescription: React.FC = () => {
     try {
       setNext(true); // Trigger loading
       const dataValue = {
-          description,
-          strength,
+        description,
+        strength,
       };
 
       const response = await axiosInstance.put(
@@ -74,6 +85,43 @@ const SelfDescription: React.FC = () => {
       setNext(false); // Stop loading
     }
   }
+  async function handleChange(
+    e: React.ChangeEvent<HTMLInputElement>,
+    setState: React.Dispatch<React.SetStateAction<string>>,
+    key: string
+  ) {
+    setState(e.target.value);
+    const issues: MatchParams[] = await checkGrammar(e.target.value);
+    setFeedbacks((prev: FeedbackParams) => {
+      return {
+        ...prev,
+        [key]: issues,
+      };
+    });
+  }
+  function handleSuggestionClick(
+    replacement: string,
+    offset: number,
+    length: number,
+    stateValue: string,
+    setState: React.Dispatch<React.SetStateAction<string>>,
+    key: string
+  ) {
+    const beforeText = stateValue.substring(0, offset);
+    const afterText = stateValue.substring(offset + length);
+    const newText = beforeText + replacement + afterText;
+    setState(newText);
+
+    // Recheck the grammar after the replacement
+    checkGrammar(newText).then((issues: MatchParams[]) => {
+      setFeedbacks((prev: FeedbackParams) => {
+        return {
+          ...prev,
+          [key]: issues,
+        };
+      });
+    });
+  }
 
   return (
     <div>
@@ -84,16 +132,43 @@ const SelfDescription: React.FC = () => {
       />
       <div className=" p-5 font-sans">
         <div className=" mb-4">
-          <input
-            type="text"
-            className="w-full p-7 mb-4 border rounded-3xl shadow-md"
-            value={strength}
-            onChange={(e) => {
-              setStrength(e.target.value);
-              e.target.value == strength || setIsPut(true);
-            }}
-            placeholder="Introduce your strengths in one sentence"
-          />
+          <div className="relative">
+            <input
+              type="text"
+              className="w-full p-7 mb-4 border rounded-3xl shadow-md"
+              value={strength}
+              onChange={(e) => {
+                handleChange(e, setStrength, "feedbackStren");
+                e.target.value == strength || setIsPut(true);
+              }}
+              placeholder="Introduce your strengths in one sentence"
+            />
+            {feedbacks.feedbackStren.length ? (
+              <ul className="absolute top-[-10px] list-none flex bg-gray-300 rounded-lg">
+                <span className="font-semibold mx-4">Mistake:</span>
+                {feedbacks.feedbackStren.map(
+                  (element: MatchParams, index: number) => (
+                    <li
+                    className="mr-5 cursor-pointer"
+                      key={element.offset}
+                      onClick={() =>
+                        handleSuggestionClick(
+                          element.replacements[0].value,
+                          element.offset,
+                          element.length,
+                          strength,
+                          setStrength,
+                          "feedbackStren"
+                        )
+                      }
+                    >
+                      {element.replacements && element.replacements[0].value}
+                    </li>
+                  )
+                )}
+              </ul>
+            ):<></>}
+          </div>
           <button
             className="text-yellow-500  w-full flex justify-end"
             onClick={() => setOpen(true)}
@@ -101,16 +176,43 @@ const SelfDescription: React.FC = () => {
             Show Recommendation
           </button>
 
-          <input
-            type="text"
-            className="w-full p-7 mb-4 border rounded-3xl shadow-md mt-5"
-            value={description}
-            onChange={(e) => {
-              setDescription(e.target.value);
-              e.target.value == description || setIsPut(true);
-            }}
-            placeholder="Describe about yourself"
-          />
+          <div className="relative">
+            <input
+              type="text"
+              className="w-full p-7 mb-4 border rounded-3xl shadow-md mt-5"
+              value={description}
+              onChange={(e) => {
+                handleChange(e, setDescription, "feedbackDesc");
+                e.target.value == description || setIsPut(true);
+              }}
+              placeholder="Describe about yourself"
+            />
+            {feedbacks.feedbackDesc.length ? (
+              <ul className="absolute top-[-10px] list-none flex bg-gray-300 rounded-lg">
+                <span className="font-semibold mx-4">Mistake:</span>
+                {feedbacks.feedbackDesc.map(
+                  (element: MatchParams, index: number) => (
+                    <li
+                      className="mr-5 cursor-pointer"
+                      key={element.offset}
+                      onClick={() =>
+                        handleSuggestionClick(
+                          element.replacements[0].value,
+                          element.offset,
+                          element.length,
+                          description,
+                          setDescription,
+                          "feedbackDesc"
+                        )
+                      }
+                    >
+                      {element.replacements && element.replacements[0].value}
+                    </li>
+                  )
+                )}
+              </ul>
+            ):<></>}
+          </div>
         </div>
 
         <Sheet

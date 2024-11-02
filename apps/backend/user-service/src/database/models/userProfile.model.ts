@@ -107,16 +107,16 @@ const CertificateSchema = new mongoose.Schema(
 const UserProfileSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
-    basic: { type: BasicSchema, required: false },
+    basic: { type: BasicSchema},
     skills: { type: [SkillSchema]},
     expertise: { type: [ExpertiseSchema]},
     educations: { type: [EducationSchema]},
     experiences: { type: [ExperienceSchema]},
     languages: { type: [LanguageSchema] },
     references: { type: [ReferenceSchema]},
-    descriptions: { type: DescriptionSchema, required: false },
+    descriptions: { type: DescriptionSchema},
     portfolio: { type: [Portfoliochema]},
-    certificates:{type:[CertificateSchema], required: false}
+    certificates:{type:[CertificateSchema], }
   },
   {
     toObject: {

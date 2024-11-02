@@ -1,12 +1,14 @@
 "use client";
+import { FileParams } from "@/app/jobs/(cv-rating)/certificate/page";
 import { useAuth } from "@/context/auth";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { useState } from "react";
 interface InputFileParams {
-  setFiles?: React.Dispatch<React.SetStateAction<{ url: string }[]>>;
+  setFiles: React.Dispatch<React.SetStateAction<FileParams[]>>;
+  setIsPost: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const InputFile: React.FC<InputFileParams> = (setFiles) => {
+const InputFile: React.FC<InputFileParams> = ({setFiles,setIsPost}) => {
   const { user } = useAuth();
   const [fileName, setFileName] = useState("No file chosen");
   const uploadToS3 = async (file: File) => {
@@ -17,7 +19,7 @@ const InputFile: React.FC<InputFileParams> = (setFiles) => {
     formData.append("file", file);
     console.log("filename", formData);
     try {
-      const response: string = await axiosInstance.post(
+      const response: {data:string} = await axiosInstance.post(
         `${API_ENDPOINTS.USER_PROFILE_UPLOADF_FILE}/${user?._id}`,
         formData,
         {
@@ -26,7 +28,11 @@ const InputFile: React.FC<InputFileParams> = (setFiles) => {
           },
         }
       );
-      console.log("respone", response);
+      console.log("respone",response)
+      setFiles((previous:FileParams[])=>{
+        return [...previous, {url: response.data}]
+      })
+      setIsPost(true)
       if (!response) {
         console.log("something wrong with uploading");
       }

@@ -105,6 +105,117 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "BasicParams": {
+        "dataType": "refObject",
+        "properties": {
+            "surname": {"dataType":"string","required":true},
+            "lastname": {"dataType":"string","required":true},
+            "career": {"dataType":"string","required":true},
+            "email": {"dataType":"string","required":true},
+            "dob": {"dataType":"string","required":true},
+            "address": {"dataType":"string","required":true},
+            "phonenumber": {"dataType":"string","required":true},
+            "martial": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "SkillParams": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "percent": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ExpertiseParams": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "proficiency": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "LanguageParams": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "proficiency": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "EducationParams": {
+        "dataType": "refObject",
+        "properties": {
+            "academic": {"dataType":"string","required":true},
+            "school": {"dataType":"string","required":true},
+            "major": {"dataType":"string","required":true},
+            "year": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ExperienceParams": {
+        "dataType": "refObject",
+        "properties": {
+            "position": {"dataType":"string","required":true},
+            "company": {"dataType":"string","required":true},
+            "description": {"dataType":"string"},
+            "year": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ReferenceParams": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "career": {"dataType":"string","required":true},
+            "company": {"dataType":"string","required":true},
+            "email": {"dataType":"string","required":true},
+            "phonenumber": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "DescriptionParams": {
+        "dataType": "refObject",
+        "properties": {
+            "description": {"dataType":"string","required":true},
+            "strength": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "PortfolioParams": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "url": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IUserProfile": {
+        "dataType": "refObject",
+        "properties": {
+            "userId": {"dataType":"string","required":true},
+            "basic": {"ref":"BasicParams"},
+            "skills": {"dataType":"array","array":{"dataType":"refObject","ref":"SkillParams"}},
+            "expertise": {"dataType":"array","array":{"dataType":"refObject","ref":"ExpertiseParams"}},
+            "languages": {"dataType":"array","array":{"dataType":"refObject","ref":"LanguageParams"}},
+            "educations": {"dataType":"array","array":{"dataType":"refObject","ref":"EducationParams"}},
+            "experiences": {"dataType":"array","array":{"dataType":"refObject","ref":"ExperienceParams"}},
+            "references": {"dataType":"array","array":{"dataType":"refObject","ref":"ReferenceParams"}},
+            "descriptions": {"ref":"DescriptionParams"},
+            "portfolio": {"dataType":"array","array":{"dataType":"refObject","ref":"PortfolioParams"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const templateService = new ExpressTemplateService(models, {"noImplicitAdditionalProperties":"throw-on-extras","bodyCoercion":true});
 

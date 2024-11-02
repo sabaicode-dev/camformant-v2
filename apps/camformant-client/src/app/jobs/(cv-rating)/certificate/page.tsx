@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import HeaderBasic from "@/components/cv-rating-card/router-page/basic/header-basic";
 import SkeletonLoader from "@/components/cv-rating-card/router-page/basic/skeleton";
 import InputFile from "@/components/user-profile/input-file";
@@ -12,11 +12,13 @@ export interface FileParams {
 }
 const Page = () => {
   const { user } = useAuth();
-  const [filesEntries, setFilesEntries] = useState<FileParams[]>([{ url: "" }]);
+  const [filesEntries, setFilesEntries] = useState<FileParams[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [isPost, setIsPost] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const removeFile = (index: number) => {
     setFilesEntries(filesEntries.filter((file, i) => i !== index));
+    setIsPost(true);
   };
   useEffect(() => {
     async function getData() {
@@ -24,12 +26,13 @@ const Page = () => {
         `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=certificates`
       );
       const data = response.data.data.certificates;
+      console.log(data);
       setLoading(true);
       data.length && setFilesEntries(data);
     }
 
     getData();
-  });
+  },[]);
   const PostData = async () => {
     try {
       const dataValue = {
@@ -50,8 +53,12 @@ const Page = () => {
   };
   return (
     <div>
-      <HeaderBasic title="Certificates" nextRoute="/self/portfolio" />
-      <InputFile setFiles={setFilesEntries} />
+      <HeaderBasic
+        title="Certificates"
+        {...(isPost ? { next: PostData } : {})}
+        nextRoute="/self/portfolio"
+      />
+      <InputFile setFiles={setFilesEntries} setIsPost={setIsPost} />
       <UploadedFile files={filesEntries} removeFile={removeFile} />
     </div>
   );

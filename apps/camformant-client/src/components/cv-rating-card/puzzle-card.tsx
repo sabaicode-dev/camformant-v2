@@ -40,9 +40,8 @@ const PuzzleCard: React.FC<typePropsTotal> = ({ propTotal }) => {
         console.log("education", edu);
         setExp(calculateProgressBar(response.data.data.experiences, 4));
         setSelf(calculateProgressBar(response.data.data.descriptions, 2));
-
+        setCert(calculateProgressBar(response.data.data.certificates, 1))
         setPort(calculateProgressBar(response.data.data.portfolio, 2));
-        console.log(" referrncer");
         setRef(calculateProgressBar(response.data.data.references, 5));
         console.log("skill");
         const skillProgress: number = calculateProgressBar(
@@ -69,7 +68,7 @@ const PuzzleCard: React.FC<typePropsTotal> = ({ propTotal }) => {
   useEffect(() => {
     const totalRating = info + edu + exp + self + cert + port + ref + ability;
     console.log("Total rating: " + totalRating);
-    const totalRatingNew = Math.round((totalRating * 100) / 700);
+    const totalRatingNew = Math.round((totalRating * 100) / 800);
     totalRatingNew;
     propTotal(totalRatingNew);
   }, [info, edu, exp, self, cert, port, ref, ability, propTotal]);

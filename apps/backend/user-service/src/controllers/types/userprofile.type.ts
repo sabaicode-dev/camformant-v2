@@ -1,4 +1,5 @@
-export interface IUserProfile {
+export interface IUserProfile{
+  userId: string;
   basic?: BasicParams;
   skills?: SkillParams[];
   expertise?: ExpertiseParams[];
@@ -58,14 +59,22 @@ export interface PortfolioParams {
   name: string;
   url: string;
 }
-export type unionProfileType =
-  | IUserProfile
+export interface CertificateParams {
+    url:string
+ 
+}
+
+export type UnionProfileType =
+  | IUserProfile[]
   | BasicParams
-  | SkillParams
-  | ExperienceParams
-  | EducationParams
-  | ExperienceParams
-  | LanguageParams
+  | SkillParams[]
+  | ExperienceParams[]
+  | EducationParams[]
+  | ExperienceParams[]
+  | LanguageParams[]
   | DescriptionParams
-  | ReferenceParams
-  | PortfolioParams;
+  | ReferenceParams[]
+  | PortfolioParams[]
+  |CertificateParams[]
+  |null
+  ;

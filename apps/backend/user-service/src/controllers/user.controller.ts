@@ -31,6 +31,7 @@ import { Request as ExpressRequest } from "express";
 import agenda from "@/src/utils/agenda";
 import { SCHEDULE_JOBS } from "@/src/jobs";
 import { uploadToS3 } from "../utils/s3";
+import { IUserProfile } from "./types/userprofile.type";
 // import { unionProfileType } from "./types/userprofile.type";
 
 @Route("v1/users")
@@ -223,7 +224,7 @@ export class UsersController extends Controller {
   ) {
     try {
       const userProfile = await UserService.getProfileById(userId, category);
-      return sendResponse<any>({
+      return sendResponse<IUserProfile>({
         message: "success",
         data: userProfile,
       });
@@ -252,11 +253,11 @@ export class UsersController extends Controller {
   public async uploadFile(
     @UploadedFile() file: Express.Multer.File,
     @Path() userId: string
-  ): Promise<string> {
+  ):Promise<string>{
     try {
-      const response: string = await uploadToS3(
+      const response = await uploadToS3(
         file,
-        `/user-service/${userId}`
+        `user-service/${userId}`
       );
       return response;
     } catch (err) {
