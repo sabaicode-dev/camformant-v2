@@ -9,6 +9,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/auth";
 import { IJob } from "@/components/type-data/TypeofData";
+import Image from "next/image";
 
 const Page: React.FC = () => {
   const { user } = useAuth();
@@ -112,7 +113,7 @@ const Page: React.FC = () => {
     <div className="container pt-2 mb-20">
       <div className="h-10 mt-4 mb-8 w-14">
         <Link href={"/profile"}>
-          <BackButton_md styles=" bg-primaryCam p-3 px-4 rounded-xl" />
+          <BackButton_md styles="bg-primaryCam p-3 px-4 rounded-xl text-gray-200" />
         </Link>
       </div>
       {loading ? (
@@ -144,9 +145,16 @@ const Page: React.FC = () => {
           </div>
         ))
       ) : (
-        <p className="flex items-center justify-center w-full h-56 mb-20">
-          No favorite jobs available
-        </p>
+        <div className="flex flex-col items-center w-full p-5 mt-20 gap-y-5">
+          <p className="w-full text-center">No favorite jobs available</p>
+          <Image
+            src={"/images/favorite.png"}
+            alt="no favorite"
+            width={2000}
+            height={1762}
+            className="w-full lg:w-1/2"
+          />
+        </div>
       )}
     </div>
   );

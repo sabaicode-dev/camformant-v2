@@ -44,7 +44,12 @@ export class UsersController extends Controller {
       const response = await UserService.getAllUsers(queries);
 
       return sendResponse({ message: "success", data: response });
+      return sendResponse({ message: "success", data: response });
     } catch (error) {
+      console.error(
+        `UsersController - createUser() method error: `,
+        prettyObject(error as {})
+      );
       console.error(
         `UsersController - createUser() method error: `,
         prettyObject(error as {})
@@ -69,10 +74,20 @@ export class UsersController extends Controller {
         SCHEDULE_JOBS.NOTIFICATION_NEW_REGISTRATION,
         { userId: response._id }
       );
+      await agenda.schedule(
+        "in 1 minutes",
+        SCHEDULE_JOBS.NOTIFICATION_NEW_REGISTRATION,
+        { userId: response._id }
+      );
 
       this.setStatus(201); // set return status 201
       return sendResponse<IUser>({ message: "success", data: response });
+      return sendResponse<IUser>({ message: "success", data: response });
     } catch (error) {
+      console.error(
+        `UsersController - createUser() method error: `,
+        prettyObject(error as {})
+      );
       console.error(
         `UsersController - createUser() method error: `,
         prettyObject(error as {})
@@ -87,11 +102,15 @@ export class UsersController extends Controller {
   ): Promise<UserProfileResponse> {
     try {
       const sub = request.cookies["username"];
-
       const response = await UserService.getUserBySub(sub);
 
       return sendResponse<IUser>({ message: "success", data: response });
+      return sendResponse<IUser>({ message: "success", data: response });
     } catch (error) {
+      console.error(
+        `UsersController - getUserProfile() method error: `,
+        prettyObject(error as {})
+      );
       console.error(
         `UsersController - getUserProfile() method error: `,
         prettyObject(error as {})
@@ -115,7 +134,15 @@ export class UsersController extends Controller {
         message: "Favorite added successfully",
         data: response,
       });
+      return sendResponse<IUser>({
+        message: "Favorite added successfully",
+        data: response,
+      });
     } catch (error) {
+      console.error(
+        `UsersController - addFavorite() method error: `,
+        prettyObject(error as {})
+      );
       console.error(
         `UsersController - addFavorite() method error: `,
         prettyObject(error as {})
@@ -134,7 +161,12 @@ export class UsersController extends Controller {
       const favorites = await UserService.getUserFavorites(userId);
 
       return sendResponse<string[]>({ message: "success", data: favorites });
+      return sendResponse<string[]>({ message: "success", data: favorites });
     } catch (error) {
+      console.error(
+        `UsersController - getFavorites() method error: `,
+        prettyObject(error as {})
+      );
       console.error(
         `UsersController - getFavorites() method error: `,
         prettyObject(error as {})
@@ -157,7 +189,15 @@ export class UsersController extends Controller {
         message: "Favorite removed successfully",
         data: response,
       });
+      return sendResponse<IUser>({
+        message: "Favorite removed successfully",
+        data: response,
+      });
     } catch (error) {
+      console.error(
+        `UsersController - removeFavorite() method error: `,
+        prettyObject(error as {})
+      );
       console.error(
         `UsersController - removeFavorite() method error: `,
         prettyObject(error as {})
@@ -172,10 +212,16 @@ export class UsersController extends Controller {
   ): Promise<UserProfileResponse> {
     try {
       console.log("userId: ", userId);
+      console.log("userId: ", userId);
       const response = await UserService.getUserBySub(userId);
 
       return sendResponse<IUser>({ message: "success", data: response });
+      return sendResponse<IUser>({ message: "success", data: response });
     } catch (error) {
+      console.error(
+        `UsersController - getUserProfile() method error: `,
+        prettyObject(error as {})
+      );
       console.error(
         `UsersController - getUserProfile() method error: `,
         prettyObject(error as {})
@@ -199,6 +245,10 @@ export class UsersController extends Controller {
         `UsersController - createUser() method error: `,
         prettyObject(error as {})
       );
+      console.error(
+        `UsersController - createUser() method error: `,
+        prettyObject(error as {})
+      );
       throw error;
     }
   }
@@ -209,6 +259,10 @@ export class UsersController extends Controller {
     try {
       await UserService.deleteUserById(userId);
     } catch (error) {
+      console.error(
+        `UsersController - createUser() method error: `,
+        prettyObject(error as {})
+      );
       console.error(
         `UsersController - createUser() method error: `,
         prettyObject(error as {})

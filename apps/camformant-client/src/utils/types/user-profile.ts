@@ -1,5 +1,3 @@
-import { StringDecoder } from "string_decoder";
-
 export interface SkillParams {
   name: string;
   percent?: string;
@@ -48,7 +46,7 @@ export interface ReferenceParams {
   phonenumber: string;
 }
 
-export interface Description {
+export interface DescriptionParams {
   description: string;
   strength: string;
 }

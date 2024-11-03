@@ -6,7 +6,7 @@ import {
 } from "@/src/database/repositories/types/user-repository.type";
 import UserRepository from "@/src/database/repositories/user.repository";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
-// import { EducationParams} from "../database/models/userProfile.model";
+
 
 class UserService {
   async getAllUsers(queries: UserGetAllControllerParams) {
@@ -131,15 +131,10 @@ class UserService {
       const favorites = await UserRepository.getUserFavorites(userId);
       return favorites;
     } catch (error) {
-      console.error(
-        `UserService - getUserFavorites() method error: `,
-        prettyObject(error as {})
-      );
+      console.error(`UserService - getUserFavorites() method error: `, prettyObject(error as {}));
       throw error;
     }
   }
-
-
   async getProfileById(userId:string,category?:string){
     try {
       const profile = await UserRepository.getProfileByUserId(userId,category);

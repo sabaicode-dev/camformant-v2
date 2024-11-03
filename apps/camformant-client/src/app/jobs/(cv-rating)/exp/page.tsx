@@ -53,18 +53,10 @@ const Page: React.FC = () => {
         data.length&&setExperEntries(
           data
         );
-        for (let i = 0; i < experEntries.length; i++) {
-          setStartYear((prev) => {
-            const updatedStartYear = [...prev];
-            updatedStartYear[i] = experEntries[i].year.split("-")[0];
-            return updatedStartYear;
-          });
-          setEndYear((prev) => {
-            const updatedEndYear = [...prev];
-            updatedEndYear[i] = experEntries[i].year.split("-")[1];
-            return updatedEndYear;
-          });
-        }
+        let updatedEndYears = data.map((entry:ExperienceParams) => entry.year.split("-")[0]);
+        setStartYear(updatedEndYears);
+        updatedEndYears = data.map((entry:ExperienceParams) => entry.year.split("-")[1]||entry.year.split("-")[0]);
+        setEndYear(updatedEndYears);
       } catch (error) {
       } finally {
         setNext(false);

@@ -39,6 +39,7 @@ const PuzzleCard: React.FC<typePropsTotal> = ({ propTotal }) => {
         setEdu(calculateProgressBar(response.data.data.educations, 4));
         console.log("education", edu);
         setExp(calculateProgressBar(response.data.data.experiences, 4));
+        console.log("self")
         setSelf(calculateProgressBar(response.data.data.descriptions, 2));
         setCert(calculateProgressBar(response.data.data.certificates, 1))
         setPort(calculateProgressBar(response.data.data.portfolio, 2));

@@ -47,11 +47,11 @@ const authenticateToken = async (
   try {
     const { methodConfig } = req;
 
-    console.log("req cookie:::", req.cookies);
+    // console.log("req cookie:::", req.cookies);
 
     // Step 1
     if (methodConfig.authRequired) {
-      console.log("need authicated")
+      console.log("need authicated");
       // Step 2
       const token = req.cookies?.["access_token"];
       if (!token) {
@@ -67,7 +67,7 @@ const authenticateToken = async (
 
       let role: string[] = [];
       const userPayload = await jwtDecode(req.cookies?.["id_token"]);
-      console.log("userPayload", userPayload);
+      // console.log("userPayload", userPayload);
 
       // @ts-ignore
       if (userPayload["cognito:username"].includes("google")) {
@@ -81,7 +81,7 @@ const authenticateToken = async (
               },
             }
           );
-          console.log("data", data.data.role);
+          // console.log("data", data.data.role);
           role.push(data.data.role);
         } else {
           // @ts-ignore
@@ -90,7 +90,7 @@ const authenticateToken = async (
       } else {
         role = payload["cognito:groups"] || [];
       }
-      console.log("role", role);
+      // console.log("role", role);
 
       req.currentUser = {
         username: payload.username,
@@ -191,14 +191,13 @@ const routeConfigMiddleware = (
 ) => {
   const { path, method } = req;
 
-  console.log("path:::", path);
-  console.log("method:::", method);
+  console.log("path:::", path, " method:::", method);
 
   // Step 1
   let routeConfig = null;
   for (const key in ROUTE_PATHS) {
     routeConfig = findRouteConfig(path, ROUTE_PATHS[key]);
-    console.log("routeConfig", routeConfig);
+    // console.log("routeConfig", routeConfig);
     if (routeConfig) break;
   }
 

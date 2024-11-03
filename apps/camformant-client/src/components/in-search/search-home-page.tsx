@@ -75,7 +75,7 @@ const SearchHomePage: React.FC = () => {
     <div className="pt-5">
       <div className="container px-4 mx-auto">
         {/* Search Bar */}
-        <div className="relative mb-6">
+        <div className="relative mb-6 ">
           <Search
             focus={focusInput}
             buttonBack={true}

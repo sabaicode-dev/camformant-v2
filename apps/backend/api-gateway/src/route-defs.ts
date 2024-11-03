@@ -62,6 +62,15 @@ const ROUTE_PATHS: RoutesConfig = {
         },
       },
       {
+        path: "/signout",
+        methods: {
+          POST: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+        },
+      },
+      {
         path: "/google",
         methods: {
           GET: {

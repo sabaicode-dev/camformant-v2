@@ -7,16 +7,14 @@ import {
   UserUpdateRepoParams,
 } from "@/src/database/repositories/types/user-repository.type";
 import mongoose, { SortOrder } from "mongoose";
+import UserProfileDetailModel from "@/src/database/models/userProfile.model";
 import {
   AUTH_MESSAGES,
-  // APP_ERROR_MESSAGE,
   InvalidInputError,
   NotFoundError,
-  ResourceConflictError,
   prettyObject,
+  ResourceConflictError,
 } from "@sabaicode-dev/camformant-libs";
-import UserProfileDetailModel from "@/src/database/models/userProfile.model";
-
 class UserRepository {
   async getAll(queries: UserGetAllRepoParams) {
     const {
@@ -309,7 +307,7 @@ class UserRepository {
           { $set: { ...updateBody } },
           { new: true, useFindAndModify: false }
         );
-        
+
         return updatedUser;
       }
     } catch (err) {

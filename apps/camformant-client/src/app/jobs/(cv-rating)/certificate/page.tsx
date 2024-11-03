@@ -15,24 +15,29 @@ const Page = () => {
   const [filesEntries, setFilesEntries] = useState<FileParams[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isPost, setIsPost] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
   const removeFile = (index: number) => {
     setFilesEntries(filesEntries.filter((file, i) => i !== index));
     setIsPost(true);
   };
   useEffect(() => {
     async function getData() {
-      const response = await axiosInstance.get(
-        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=certificates`
-      );
-      const data = response.data.data.certificates;
-      console.log(data);
-      setLoading(true);
-      data.length && setFilesEntries(data);
+      try {
+        const response = await axiosInstance.get(
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=certificates`
+        );
+        const data = response.data.data.certificates;
+        console.log(data);
+        setLoading(true);
+        data.length && setFilesEntries(data);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
     }
 
     getData();
-  },[]);
+  }, []);
   const PostData = async () => {
     try {
       const dataValue = {
@@ -47,6 +52,7 @@ const Page = () => {
       console.log("response", response);
       return response;
     } catch (error) {
+      console.log;
     } finally {
       setLoading(false);
     }
@@ -58,6 +64,7 @@ const Page = () => {
         {...(isPost ? { next: PostData } : {})}
         nextRoute="/self/portfolio"
       />
+      {isLoading && <SkeletonLoader text="Loading ..." />}
       <InputFile setFiles={setFilesEntries} setIsPost={setIsPost} />
       <UploadedFile files={filesEntries} removeFile={removeFile} />
     </div>

@@ -42,6 +42,7 @@ const InputDate: React.FC<InputDateProps> = ({
   const [submitEnabled, setSubmitEnabled] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log("end year",endYear)
     if (mode === "date") {
       // Enable submit if day, month, and year are provided
       if (day && month && year) {
@@ -60,6 +61,7 @@ const InputDate: React.FC<InputDateProps> = ({
   }, [day, month, year, startYear, endYear, mode]);
 
   function handleSubmit() {
+  
     if (submitEnabled) {
       setOpen(false);
       if (setValue) {
@@ -102,7 +104,7 @@ const InputDate: React.FC<InputDateProps> = ({
               min={1}
               max={31}
               className="w-24 p-5 outline-none shadow-md rounded-xl"
-              value={day}
+              value={day?Number(day):day}
               onChange={(e) => setDay && setDay(e.target.value)}
             />
             <input
@@ -111,7 +113,7 @@ const InputDate: React.FC<InputDateProps> = ({
               min={1}
               max={12}
               className="w-24 p-5 outline-none shadow-md rounded-xl"
-              value={month}
+              value={month?Number(month):month}
               onChange={(e) => setMonth && setMonth(e.target.value)}
             />
             <input
@@ -120,20 +122,19 @@ const InputDate: React.FC<InputDateProps> = ({
               min={1900}
               max={2099}
               className="w-24 p-5 outline-none shadow-md rounded-xl"
-              value={year}
+              value={year?Number(year):year}
               onChange={(e) => setYear && setYear(e.target.value)}
             />
           </>
         ) : (
           <>
-            <div>{index}</div>
             <input
               type="number"
               placeholder="Start Year"
               min={1950}
               max={2024}
               className="w-60 p-5 outline-none shadow-md rounded-xl"
-              value={startYear}
+              value={startYear?Number(startYear):startYear}
               onChange={(e) =>
                 setStartYear &&
                 setStartYear((prev: string[]) => {
@@ -149,7 +150,7 @@ const InputDate: React.FC<InputDateProps> = ({
               min={1950}
               max={2024}
               className="w-60 p-5 outline-none shadow-md rounded-xl"
-              value={endYear}
+              value={endYear?Number(endYear):endYear}
               onChange={(e) =>
                 setEndYear &&
                 setEndYear((prev: string[]) => {

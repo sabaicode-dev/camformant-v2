@@ -7,6 +7,9 @@ import {
   AuthFlowType,
   CognitoIdentityProviderClient,
   ConfirmSignUpCommand,
+  GlobalSignOutCommand,
+  GlobalSignOutCommandInput,
+  GlobalSignOutCommandOutput,
   InitiateAuthCommand,
   InitiateAuthCommandInput,
   ListUsersCommand,
@@ -224,6 +227,17 @@ class AuthService {
       console.error("AuthService login() method error:", error);
       throw new Error(`Error verifying user: ${error}`);
     }
+  }
+  async signout(access_token: string): Promise<string | undefined> {
+    const params: GlobalSignOutCommandInput = {
+      AccessToken: access_token,
+    };
+    try {
+      const command = new GlobalSignOutCommand(params);
+      const result: GlobalSignOutCommandOutput = await client.send(command);
+      console.log("result::: ", result);
+      return "success cleared cookies from cignito";
+    } catch (error) {}
   }
 
   loginWithGoogle(state: string): string {
@@ -580,3 +594,4 @@ class AuthService {
 }
 
 export default new AuthService();
+

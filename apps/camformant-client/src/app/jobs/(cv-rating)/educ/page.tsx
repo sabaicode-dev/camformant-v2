@@ -54,18 +54,12 @@ const Page = () => {
         setEducationEntries(
           data
         );
-        for (let i = 0; i < educationEntries.length; i++) {
-          setStartYear((prev) => {
-            const updatedStartYear = [...prev];
-            updatedStartYear[i] = educationEntries[i].year.split("-")[0];
-            return updatedStartYear;
-          });
-          setEndYear((prev) => {
-            const updatedEndYear = [...prev];
-            updatedEndYear[i] = educationEntries[i].year.split("-")[1];
-            return updatedEndYear;
-          });
-        }
+        let updatedEndYears = data.map((entry:EducationParams) => entry.year.split("-")[0]);
+        setStartYear(updatedEndYears);
+        updatedEndYears = data.map((entry:EducationParams) => entry.year.split("-")[1]||entry.year.split("-")[0]);
+        setEndYear(updatedEndYears);
+
+        console.log("start year",startYear)
       } catch (error) {
         console.error(error);
       } finally {
@@ -175,4 +169,7 @@ const Page = () => {
   );
 };
 
+
 export default Page;
+
+

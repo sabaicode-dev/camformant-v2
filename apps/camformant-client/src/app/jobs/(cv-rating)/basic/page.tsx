@@ -47,6 +47,9 @@ const Page = () => {
         setDate(res.dob);
         setAddress(res.address);
         setStatus(res.martial);
+        setDay(res.dob.split('/')[0])
+        setMonth(res.dob.split('/')[1])
+        setYear(res.dob.split('/')[2])
       } catch (error) {
       } finally {
         setLoading(false);

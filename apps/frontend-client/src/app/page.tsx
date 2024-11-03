@@ -1,5 +1,7 @@
 import { Button } from "ms-ui-components";
 import { loggerBeautifulObject } from "@sabaicode-dev/camformant-libs";
+import { loggerBeautifulObject } from "@sabaicode-dev/camformant-libs";
+import DashboardPage from "./dashboard/page";
 
 export default function Home() {
   loggerBeautifulObject({
@@ -11,4 +13,9 @@ export default function Home() {
       <Button />
     </main>
   );
+    loggerBeautifulObject({
+        foo: "bar",
+    });
+
+    return <DashboardPage />;
 }

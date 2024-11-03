@@ -9,6 +9,7 @@ import { useAuth } from "@/context/auth";
 import { truncateSync } from "fs";
 import { checkGrammar } from "@/app/api/check-grammar";
 import { MatchParams } from "@/utils/types/user-profile";
+import SkeletonLoader from "@/components/cv-rating-card/router-page/basic/skeleton";
 
 interface FeedbackParams {
   feedbackStren: MatchParams[];
@@ -125,6 +126,7 @@ const SelfDescription: React.FC = () => {
 
   return (
     <div>
+      {next&&<SkeletonLoader text={"loading..."} />}
       <HeaderBasic
         title="Self Descriptions"
         nextRoute={"/jobs/certificate"}
@@ -162,7 +164,7 @@ const SelfDescription: React.FC = () => {
                         )
                       }
                     >
-                      {element.replacements && element.replacements[0].value}
+                      {element.replacements[0]?.value && element.replacements[0].value}
                     </li>
                   )
                 )}
@@ -206,7 +208,7 @@ const SelfDescription: React.FC = () => {
                         )
                       }
                     >
-                      {element.replacements && element.replacements[0].value}
+                      {element.replacements[0]?.value && element.replacements[0].value}
                     </li>
                   )
                 )}

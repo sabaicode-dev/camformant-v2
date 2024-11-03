@@ -26,7 +26,7 @@ const HeaderBasic:React.FC<typeofHeader> = ({next,title,save,cacel,nextRoute}) =
                 if(next){
                     console.log("sth chnmaged")
                 }
-                // nextRoute&&router.push(nextRoute);
+                nextRoute&&router.push(nextRoute);
             }} className="text-orange-500 text-lg pr-3 ">{save? save:'Next'}</button>
         </div>
     );

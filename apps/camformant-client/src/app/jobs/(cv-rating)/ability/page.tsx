@@ -4,7 +4,6 @@ import HeaderBasic from "@/components/cv-rating-card/router-page/basic/header-ba
 import InputComponent from "@/components/input-field/input-component";
 import Button from "@/components/cv-rating-card/router-page/basic/button-addremove";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import SkeletonLoader from "@/components/cv-rating-card/router-page/basic/skeleton";
 import CustomLabel from "@/components/user-profile/profile-label";
 import {
@@ -116,7 +115,7 @@ const Page: React.FC = () => {
           {Object.entries(entry).map(([key, value]) => (
             <InputComponent
               key={key}
-              values={typeof value === "string" ? value : value.toString()}
+              values={typeof value === "string" ? value : value?.toString()}
               setFocused={setFocusedField}
               focused={focusedField}
               txt={key} // Helper function to get label text if needed

@@ -6,6 +6,7 @@ import Link from "next/link";
 import "react-loading-skeleton/dist/skeleton.css";
 import Heart from "./heart";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface CardProps {
   userId?: string;
@@ -48,10 +49,12 @@ export const Card: React.FC<CardProps> = (props) => {
     <div className="p-5 bg-white shadow drop-shadow-md rounded-2xl">
       <div className="flex justify-between">
         <section className="flex items-center gap-x-5">
-          <img
-            src={profile}
-            alt={title}
-            className="object-cover w-12 h-12 border rounded-full"
+          <Image
+            src={profile!}
+            alt={title!}
+            width={48}
+            height={48}
+            className="object-cover w-12 h-12 rounded-full"
           />
           <div>
             <h1 className="font-semibold text-md text-secondaryCam">{title}</h1>
