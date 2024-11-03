@@ -127,7 +127,7 @@ const Page: React.FC = () => {
 
   return (
     <div className="flex flex-col w-full h-full pb-28 ">
-      <Link href={"../"}>
+      <Link href={"../home"}>
         <BackButton_md styles="absolute bg-white p-3 px-4 rounded-xl top-5 left-4 " />
       </Link>
       <Background style="bg-mybg-image h-[250px] ">

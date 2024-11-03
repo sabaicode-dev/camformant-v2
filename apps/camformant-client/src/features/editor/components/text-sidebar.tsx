@@ -26,16 +26,16 @@ export const TextSidebar = ({
   return (
     <aside
       className={cn(
-        "bg-white relative border-r z-[40] flex justify-center items-center",
+        "bg-white relative z-[40] flex justify-center items-center",
         activeTool === "text" ? "visible" : "hidden"
       )}
     >
       {/* Header Sidebar */}
       {/* <ToolSidebarHeader title="Text" description="Add text to your canvas" /> */}
       <ScrollArea>
-        <div className="p-4 space-x-3 border-b flex overflow-x-auto">
+        <div className="flex p-4 space-x-3 overflow-x-auto border border-orange-300">
           <Button
-            className="w-36 h-8"
+            className="h-8 w-36"
             onClick={() =>
               editor?.addText("TEXT", {
                 width: 200,
@@ -45,7 +45,7 @@ export const TextSidebar = ({
             TEXT
           </Button>
           <Button
-            className="w-36 h-8"
+            className="h-8 w-36"
             variant="secondary"
             size="lg"
             onClick={() =>
@@ -58,7 +58,7 @@ export const TextSidebar = ({
             <span className="text-2xl font-bold">HEADING</span>
           </Button>
           <Button
-            className="w-36 h-8"
+            className="h-8 w-36"
             variant="secondary"
             size="lg"
             onClick={() =>
@@ -71,7 +71,7 @@ export const TextSidebar = ({
             <span className="text-xl font-semibold">SUB HEADING</span>
           </Button>
           <Button
-            className="w-36 h-8"
+            className="h-8 w-36"
             variant="secondary"
             size="lg"
             onClick={() =>
