@@ -18,7 +18,7 @@ import { ImagesSidebar } from "@/features/editor/components/images-sidebar";
 import { FilterSidebar } from "@/features/editor/components/filter-sidebar";
 import { SettingsSidebar } from "@/features/editor/components/settings-sizebar.tsx";
 import { TextColorSidebar } from "./text-color-sidebar";
-import LayersList from "./LayersList";
+// import LayersList from "./LayersList";
 const Editor = () => {
   //set default active on select feature
   const [activeTool, setActiveTool] = useState<ActiveTool>("select");
@@ -95,7 +95,7 @@ const Editor = () => {
         </div>
       </div>
 
-      <div className="h-[calc(100%-68px-80px)] flex">
+      <div className="flex h-[calc(100%-68px-80px)] ">
         <OpacitySidebar
           editor={editor}
           activeTool={activeTool}
@@ -122,7 +122,7 @@ const Editor = () => {
             className="flex-1 h-[calc(100%-124px)] bg-muted"
             ref={containerRef}
           >
-            {/* <canvas ref={canvasRef} /> */}
+            <canvas ref={canvasRef} />
           </div>
 
           <StrokeColorSidebar

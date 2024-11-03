@@ -3,7 +3,7 @@ import React from "react";
 import "@/app/globals.css";
 const page = () => {
   return (
-    <div className="absolute w-full h-full bg-primaryCam">
+    <div className="h-full  bg-primaryCam">
       <Editor />
     </div>
   );

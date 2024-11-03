@@ -2,10 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* html,
+html,
 body {
   height: 100%;
-} */
+}
 
 .swiper-pagination {
   position: static !important;
@@ -109,7 +109,6 @@ body {
     @apply bg-background text-foreground;
   }
 }
-/* 
 .circle-picker {
   width: auto !important;
   flex-wrap: nowrap !important;
@@ -146,4 +145,4 @@ body {
 .layers-list h3 {
   text-align: center;
   margin: 10px 0;
-} */
+}

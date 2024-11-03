@@ -50,15 +50,15 @@ export const Navbar = ({
   });
   return (
     <nav className="w-full flex items-center p-4 h-[68px] gap-x-8 border-b lg:pl-[34px]">
-      <div className="w-full flex items-center gap-x-1 h-full ">
+      <div className="flex items-center w-full h-full gap-x-1 ">
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button size="sm" variant="ghost">
               File
-              <ChevronDown className="size-4 ml-2"></ChevronDown>
+              <ChevronDown className="ml-2 size-4"></ChevronDown>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="min-w-60">
+          <DropdownMenuContent align="start" className="bg-red-500 min-w-60">
             <DropdownMenuItem
               onClick={() => openFilePicker()}
               className="flex items-center gap-x-2"
@@ -94,17 +94,17 @@ export const Navbar = ({
           </Button>
         </Hint>
         <Separator orientation="vertical" className="mx-2" />
-        <div className="w-full flex justify-between">
+        <div className="flex justify-between w-full">
           <div className="flex items-center gap-x-2">
             <BsCloudCheck className="size-[20px] text-muted-foreground" />
             <div className="text-xs text-muted-foreground">Saved</div>
           </div>
-          <div className=" flex items-center gap-x-4">
+          <div className="flex items-center gap-x-4">
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
                 <Button size="sm" variant="ghost">
                   Export
-                  <Download className="size-4 ml-4" />
+                  <Download className="ml-4 size-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="min-w-60">
