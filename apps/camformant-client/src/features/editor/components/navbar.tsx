@@ -49,19 +49,26 @@ export const Navbar = ({
     },
   });
   return (
-    <nav className="w-full flex items-center p-4 h-[68px] gap-x-8 border-b lg:pl-[34px]">
-      <div className="flex items-center w-full h-full gap-x-1 ">
+    <nav className="w-full flex items-center h-[68px] gap-x-8 border-b border-orange-300 lg:pl-[34px]">
+      <div className="flex items-center w-full h-full p-4 gap-x-1">
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
-            <Button size="sm" variant="ghost">
+            <Button
+              size="sm"
+              variant="ghost"
+              className="py-6 hover:bg-orange-100"
+            >
               File
               <ChevronDown className="ml-2 size-4"></ChevronDown>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="bg-red-500 min-w-60">
+          <DropdownMenuContent
+            align="start"
+            className="p-0 bg-white border-gray-100 min-w-60"
+          >
             <DropdownMenuItem
               onClick={() => openFilePicker()}
-              className="flex items-center gap-x-2"
+              className="flex items-center gap-x-2 hover:bg-orange-300"
             >
               <CiFileOn className="size-8" />
               <div>
@@ -102,14 +109,21 @@ export const Navbar = ({
           <div className="flex items-center gap-x-4">
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
-                <Button size="sm" variant="ghost">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="py-6 hover:bg-orange-100"
+                >
                   Export
                   <Download className="ml-4 size-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-60">
+              <DropdownMenuContent
+                align="end"
+                className="p-0 bg-white border-gray-100 min-w-60"
+              >
                 <DropdownMenuItem
-                  className="flex items-center gap-x-2"
+                  className="flex items-center gap-x-2 hover:bg-orange-100"
                   onClick={() => editor?.saveJson()}
                 >
                   <CiFileOn className="size-8" />
@@ -121,7 +135,7 @@ export const Navbar = ({
                   </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="flex items-center gap-x-2"
+                  className="flex items-center gap-x-2 hover:bg-orange-100"
                   onClick={() => editor?.savePng()}
                 >
                   <CiFileOn className="size-8" />
@@ -133,7 +147,7 @@ export const Navbar = ({
                   </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="flex items-center gap-x-2"
+                  className="flex items-center gap-x-2 hover:bg-orange-100"
                   onClick={() => editor?.saveJpg()}
                 >
                   <CiFileOn className="size-8" />
@@ -145,7 +159,7 @@ export const Navbar = ({
                   </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="flex items-center gap-x-2"
+                  className="flex items-center gap-x-2 hover:bg-orange-100"
                   onClick={() => editor?.saveSvg()}
                 >
                   <CiFileOn className="size-8" />

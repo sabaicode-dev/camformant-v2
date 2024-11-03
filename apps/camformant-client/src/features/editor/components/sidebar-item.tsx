@@ -20,8 +20,8 @@ export const SidebarItem = ({
       variant="ghost"
       onClick={onClick}
       className={cn(
-        "flex-shrink-0 w-16 h-16 flex flex-col rounded-none justify-center items-center hover:text-primaryCam",
-        isActive && "bg-slate-100 text-primaryCam"
+        "flex-shrink-0 w-16 h-16 flex flex-col rounded-none justify-center items-center hover:text-primaryCam hover:bg-orange-200",
+        isActive && "bg-orange-100 text-primaryCam"
       )}
     >
       <Icon className="stroke-2 size-5 shrink-0" />
