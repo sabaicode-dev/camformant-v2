@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { NavigationBar } from "@/components/navigation-bar/navigation-bar";
 import { AuthProvider } from "@/context/auth";
 
@@ -34,13 +34,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <AuthProvider>
-          {/* <NavigationBar /> */}
-          {children}
-        </AuthProvider>
-      </body>
-    </html>
+    <div>
+      <AuthProvider>
+        <NavigationBar />
+        {children}
+      </AuthProvider>
+    </div>
   );
 }

@@ -59,19 +59,19 @@ const Editor = () => {
     };
   }, [init]);
   return (
-    <div className="flex flex-col h-full w-full relative">
+    <div className="relative flex flex-col w-full h-full">
       <Navbar
         editor={editor}
         activeTool={activeTool}
         onChangeActiveTool={onChangeActiveTool}
       />
       {/* test */}
-      <div className="w-full flex">
+      <div className="flex w-full">
         <Sidebar
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
         />
-        <div className="w-full flex overflow-x-auto absolute top-[calc(68px+64px)]">
+        <div className="absolute flex w-full overflow-x-auto top-[calc(132px)]">
           <TextSidebar
             editor={editor}
             activeTool={activeTool}
@@ -114,15 +114,15 @@ const Editor = () => {
 
         {/* Canvas */}
         <main
-          className="bg-muted flex-1 overflow-x-auto flex flex-col relative"
+          className="relative flex flex-col flex-1 overflow-x-auto bg-muted"
           id="touchInfo"
         >
-          <LayersList canvas={canvas} id={""} />
+          {/* <LayersList canvas={canvas} id={""} /> */}
           <div
             className="flex-1 h-[calc(100%-124px)] bg-muted"
             ref={containerRef}
           >
-            <canvas ref={canvasRef} />
+            {/* <canvas ref={canvasRef} /> */}
           </div>
 
           <StrokeColorSidebar

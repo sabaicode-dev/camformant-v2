@@ -70,7 +70,7 @@ export const Search: React.FC<autoFocusd> = ({
 
       <div className="flex items-center w-full">
         <div className={` ${buttonBack ? "block" : "hidden"} `}>
-          <Link href={"../"}>
+          <Link href={"../home"}>
             <BackButton_md styles=" bg-white p-3 px-4 rounded-xl top-5 left-3 " />
           </Link>
         </div>

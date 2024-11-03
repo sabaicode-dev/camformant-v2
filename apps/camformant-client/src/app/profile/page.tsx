@@ -125,12 +125,14 @@ const Page: React.FC = () => {
                 name="myImage"
                 accept="image/*"
               />
-              <span
-                onClick={handleImage}
-                className="absolute bottom-0 right-0 flex items-center p-3 text-2xl text-gray-400 bg-white rounded-full shadow-xl"
-              >
-                <IoCameraSharp />
-              </span>
+              {isAuthenticated && (
+                <span
+                  onClick={handleImage}
+                  className="absolute bottom-0 right-0 flex items-center p-3 text-2xl text-gray-400 bg-white rounded-full shadow-xl"
+                >
+                  <IoCameraSharp />
+                </span>
+              )}
             </div>
 
             {/* ==================== CROPPING IMAGE  ================================*/}

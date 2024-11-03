@@ -6,6 +6,7 @@ const config: Config = {
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/features/components/*.{js,ts,jsx,tsx,mdx}",
     "./src/home/**/*.{js,ts,jsx,tsx,mdx}",
     "../../node_modules/ms-ui-components/**/*.{js,ts,jsx,tsx}",
   ],
