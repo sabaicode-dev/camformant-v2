@@ -80,7 +80,7 @@ const Page = () => {
         `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
         { ...dataValue }
       );
-      console.log(response);
+      console.log("post respone",response);
       return response;
     } catch (error) {
       console.error(error);

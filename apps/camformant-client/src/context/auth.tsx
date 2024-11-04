@@ -28,6 +28,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   loading: boolean;
   user: User | null;
+  setUser:React.Dispatch<React.SetStateAction<User|null>>
   login: ({ email, phone_number, password }: LoginRequest) => Promise<void>;
   logout: () => Promise<void>;
   signup: ({
@@ -44,7 +45,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User|null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -175,6 +176,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isAuthenticated,
         loading,
         user,
+        setUser,
         login,
         logout,
         signup,

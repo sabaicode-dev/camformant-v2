@@ -70,6 +70,7 @@ const Page = () => {
         address, // Address from state
         status: status, // Marital status from state
       };
+      console.log("response",dataValue)
       console.log("Data", dataValue);
       setLoading(true);
       const response = await axiosInstance.put(
@@ -79,6 +80,7 @@ const Page = () => {
       console.log("response",response)
       return response;
     } catch (error) {
+      console.error(error);
     } finally {
       setLoading(false);
     }

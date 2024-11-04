@@ -15,6 +15,8 @@ import { useNotification } from "@/hooks/user-notification";
 import Notification from "@/components/notification/notification";
 import { useAuth } from "@/context/auth";
 import { useRouter } from "next/navigation";
+import axiosInstance from "@/utils/axios";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 
 const SkeletonLoader = ({
   width = "w-32",
@@ -45,7 +47,7 @@ const SkeletonLoader = ({
 
 const Page: React.FC = () => {
   const { addNotification, NotificationDisplay } = useNotification();
-  const { user, loading, logout, isAuthenticated, login } = useAuth();
+  const { user, loading, logout, isAuthenticated, setUser } = useAuth();
 
   const RefFile = useRef<HTMLInputElement | null>(null);
   const [pic, setPic] = useState<File | string | null>(null);
@@ -74,6 +76,41 @@ const Page: React.FC = () => {
       };
     }
   }
+  async function uploadToS3(file: File) {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const response: { data: string } = await axiosInstance.post(
+        API_ENDPOINTS.USER_PROFILE_UPLOADF_FILE,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      setPic(response.data);
+      changeProfile(response.data);
+    } catch (err) {
+      console.log("error", err);
+    }
+  }
+
+  async function changeProfile(photo: string) {
+    try {
+      const response = await axiosInstance.put(
+        `${API_ENDPOINTS.USER_PROFILE}/photo`,
+        { photo: photo }
+      );
+      setUser({
+        ...user!,
+        profile: response.data.data.profile,
+      });
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
 
   const handleCropComplete = (_croppedArea: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -88,8 +125,8 @@ const Page: React.FC = () => {
       const file = new File([blob], "cropped-image.png", { type: "image/png" });
       setUpload(file);
       const imagePreviewUrl = URL.createObjectURL(file); // Generate URL for display
-      setPic(imagePreviewUrl);
       setIsCropping(false);
+      await uploadToS3(file);
     } catch (error) {
       console.error("Failed to crop image", error);
       addNotification("Failed to crop image", "error");
@@ -113,7 +150,7 @@ const Page: React.FC = () => {
               >
                 <Image
                   className="object-cover"
-                  src={user?.profile! || "/images/def-user-profile.png"}
+                  src={user?.profile || "/images/def-user-profile.png"}
                   height={200}
                   width={200}
                   alt="Profile Picture"

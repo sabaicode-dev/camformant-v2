@@ -46,9 +46,7 @@ const Page = () => {
           `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=references`
         );
         const data = response.data.data.references;
-        data.length&&setRefEntries(
-          data
-        );
+        data.length && setRefEntries(data);
       } catch (error) {
       } finally {
         setNext(false);
@@ -81,7 +79,7 @@ const Page = () => {
       <HeaderBasic
         title="Reference"
         {...(isPut ? { next: PostData } : {})}
-        nextRoute="/"
+        nextRoute="/cv-rating"
       />
       {next && <SkeletonLoader text="Loading ..." />}
       {refEntries.map((entry, index) => (
@@ -115,7 +113,7 @@ const Page = () => {
         onAdd={() => addEntry(setRefEntries, refEntries, inputEmpty)}
         onDelete={() => {
           deleteEntry(setRefEntries, refEntries);
-          setIsPut(true)
+          setIsPut(true);
         }}
       />
     </div>

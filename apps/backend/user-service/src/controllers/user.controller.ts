@@ -31,7 +31,8 @@ import { Request as ExpressRequest } from "express";
 import agenda from "@/src/utils/agenda";
 import { SCHEDULE_JOBS } from "@/src/jobs";
 import { uploadToS3 } from "../utils/s3";
-import { IUserProfile } from "./types/userprofile.type";
+import { IUserProfile, UnionProfileType } from "./types/userprofile.type";
+import { CvStyleParams } from "./types/user-cv-controller.type";
 // import { unionProfileType } from "./types/userprofile.type";
 
 @Route("v1/users")
@@ -105,7 +106,6 @@ export class UsersController extends Controller {
       const response = await UserService.getUserBySub(sub);
 
       return sendResponse<IUser>({ message: "success", data: response });
-      return sendResponse<IUser>({ message: "success", data: response });
     } catch (error) {
       console.error(
         `UsersController - getUserProfile() method error: `,
@@ -116,6 +116,23 @@ export class UsersController extends Controller {
         prettyObject(error as {})
       );
       throw error;
+    }
+  }
+  @Put("/me/photo")
+  public async changePhoto(
+    @Request() request: ExpressRequest,
+    @Body() bodyData: { photo: string }
+  ): Promise<UserProfileResponse> {
+    try {
+      const photo: string = bodyData.photo;
+      const userId = request.cookies["user_id"];
+      const response = await UserService.changeProfilePic(photo, userId);
+      return sendResponse<IUser>({
+        message: "Image is updated successfully",
+        data: response,
+      });
+    } catch (err) {
+      throw err;
     }
   }
 
@@ -130,10 +147,6 @@ export class UsersController extends Controller {
 
       const response = await UserService.addFavorite(userId, jobId);
 
-      return sendResponse<IUser>({
-        message: "Favorite added successfully",
-        data: response,
-      });
       return sendResponse<IUser>({
         message: "Favorite added successfully",
         data: response,
@@ -160,7 +173,6 @@ export class UsersController extends Controller {
 
       const favorites = await UserService.getUserFavorites(userId);
 
-      return sendResponse<string[]>({ message: "success", data: favorites });
       return sendResponse<string[]>({ message: "success", data: favorites });
     } catch (error) {
       console.error(
@@ -289,12 +301,12 @@ export class UsersController extends Controller {
   @Put("/profile-detail/:userId")
   public async updateUserProfile(
     @Path() userId: string,
-    @Body() updateBody: any
+    @Body() updateBody: IUserProfile
   ) {
     try {
       const userData = await UserService.updateUserProfile(userId, updateBody);
 
-      return sendResponse<any>({
+      return sendResponse<UnionProfileType>({
         message: "Data is updated successfully",
         data: userData,
       });
@@ -302,18 +314,29 @@ export class UsersController extends Controller {
       throw err;
     }
   }
-
-  @Post("/uploadFile/:userId")
+  @Post("/uploadFile")
   public async uploadFile(
     @UploadedFile() file: Express.Multer.File,
-    @Path() userId: string
-  ):Promise<string>{
+    @Request() request: ExpressRequest
+  ): Promise<string> {
     try {
-      const response = await uploadToS3(
-        file,
-        `user-service/${userId}`
-      );
+      const userId = request.cookies["user_id"];
+      const response: string = await uploadToS3(file, `user-service/${userId}`);
       return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  //cv endpoint
+  @Get("/cvstyle/:style")
+  public async getCVStyle(@Path() style: string) {
+    try {
+      const data = await UserService.getCvStyle(style);
+      return sendResponse<CvStyleParams>({
+        message: "CV Style is fetched successfully",
+        data: data,
+      });
     } catch (err) {
       throw err;
     }

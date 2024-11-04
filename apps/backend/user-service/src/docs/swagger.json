@@ -403,9 +403,6 @@
 			},
 			"IUserProfile": {
 				"properties": {
-					"userId": {
-						"type": "string"
-					},
 					"basic": {
 						"$ref": "#/components/schemas/BasicParams"
 					},
@@ -455,8 +452,131 @@
 						"type": "array"
 					}
 				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"mongoose.Types.ObjectId": {
+				"type": "string"
+			},
+			"IdParams": {
+				"properties": {
+					"_id": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"userId": {
+						"type": "string"
+					}
+				},
 				"required": [
+					"_id",
 					"userId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CertificateParams": {
+				"properties": {
+					"url": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"url"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UnionProfileType": {
+				"anyOf": [
+					{
+						"$ref": "#/components/schemas/IdParams"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/IUserProfile"
+						},
+						"type": "array"
+					},
+					{
+						"$ref": "#/components/schemas/BasicParams"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/SkillParams"
+						},
+						"type": "array"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/ExperienceParams"
+						},
+						"type": "array"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/EducationParams"
+						},
+						"type": "array"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/LanguageParams"
+						},
+						"type": "array"
+					},
+					{
+						"$ref": "#/components/schemas/DescriptionParams"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/ReferenceParams"
+						},
+						"type": "array"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/PortfolioParams"
+						},
+						"type": "array"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/CertificateParams"
+						},
+						"type": "array"
+					}
+				],
+				"nullable": true
+			},
+			"CvStyleParams": {
+				"properties": {
+					"_id": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"style": {
+						"type": "string"
+					},
+					"json": {
+						"properties": {
+							"objects": {
+								"items": {},
+								"type": "array"
+							},
+							"version": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"objects",
+							"version"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"_id",
+					"style",
+					"json"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -571,6 +691,43 @@
 				},
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/v1/users/me/photo": {
+			"put": {
+				"operationId": "ChangePhoto",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserProfileResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"photo": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"photo"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/v1/users/me/favorites": {
@@ -809,7 +966,9 @@
 							"application/json": {
 								"schema": {
 									"properties": {
-										"data": {},
+										"data": {
+											"$ref": "#/components/schemas/UnionProfileType"
+										},
 										"message": {
 											"type": "string"
 										}
@@ -839,13 +998,15 @@
 					"required": true,
 					"content": {
 						"application/json": {
-							"schema": {}
+							"schema": {
+								"$ref": "#/components/schemas/IUserProfile"
+							}
 						}
 					}
 				}
 			}
 		},
-		"/v1/users/uploadFile/{userId}": {
+		"/v1/users/uploadFile": {
 			"post": {
 				"operationId": "UploadFile",
 				"responses": {
@@ -861,16 +1022,7 @@
 					}
 				},
 				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "userId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
+				"parameters": [],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -890,6 +1042,46 @@
 						}
 					}
 				}
+			}
+		},
+		"/v1/users/cvstyle/{style}": {
+			"get": {
+				"operationId": "GetCVStyle",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"$ref": "#/components/schemas/CvStyleParams"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "style",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/v1/users/health": {

@@ -62,7 +62,7 @@ const Page = () => {
       <HeaderBasic
         title="Certificates"
         {...(isPost ? { next: PostData } : {})}
-        nextRoute="/self/portfolio"
+        nextRoute="/jobs/portfolio"
       />
       {isLoading && <SkeletonLoader text="Loading ..." />}
       <InputFile setFiles={setFilesEntries} setIsPost={setIsPost} />

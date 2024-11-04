@@ -136,6 +136,15 @@ const ROUTE_PATHS: RoutesConfig = {
         },
         nestedRoutes: [
           {
+            path:"/photo",
+            methods:{
+              PUT:{
+                authRequired: true,
+                roles: ["user", "admin"],
+              }
+            }
+          },
+          {
             path: "/favorites",
             methods: {
               GET: {
@@ -162,7 +171,7 @@ const ROUTE_PATHS: RoutesConfig = {
         ],
       },
       {
-        path: "/uploadFile/:userId",
+        path: "/uploadFile",
         methods: {
           POST: {
             authRequired: true,
@@ -183,6 +192,16 @@ const ROUTE_PATHS: RoutesConfig = {
           },
         },
       },
+      {
+        path: "/cvstyle/:style",
+        methods: {
+          GET: {
+            authRequired: false,
+           
+          },
+          
+        },
+      }
     ],
   },
   JOB_SERVICE: {

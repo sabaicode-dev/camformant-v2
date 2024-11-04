@@ -15,6 +15,12 @@ import {
   prettyObject,
   ResourceConflictError,
 } from "@sabaicode-dev/camformant-libs";
+import { CvStyleModel } from "../models/userCv.model";
+import { CvStyleParams } from "@/src/controllers/types/user-cv-controller.type";
+import {
+  IUserProfile,
+  UnionProfileType,
+} from "@/src/controllers/types/userprofile.type";
 class UserRepository {
   async getAll(queries: UserGetAllRepoParams) {
     const {
@@ -126,6 +132,23 @@ class UserRepository {
         prettyObject(error as {})
       );
       throw error;
+    }
+  }
+  async updateProfilePic(photo: string, userId: string): Promise<IUser> {
+    try {
+      const user = await UserModel.findByIdAndUpdate(
+        userId,
+        {
+          profile: photo,
+        },
+        { new: true }
+      );
+      if (!user) {
+        throw new NotFoundError("User not found");
+      }
+      return user;
+    } catch (err) {
+      throw err;
     }
   }
 
@@ -269,7 +292,10 @@ class UserRepository {
       throw error;
     }
   }
-  async getProfileByUserId(userId: string, category?: string) {
+  async getProfileByUserId(
+    userId: string,
+    category?: string
+  ): Promise<IUserProfile> {
     try {
       let categoryData: any = {};
       if (!category) {
@@ -288,7 +314,10 @@ class UserRepository {
     }
   }
 
-  async updateProfile(userId: string, updateBody: any) {
+  async updateProfile(
+    userId: string,
+    updateBody: IUserProfile
+  ): Promise<UnionProfileType> {
     try {
       let existingUserId = await UserProfileDetailModel.find(
         { userId: userId },
@@ -297,8 +326,8 @@ class UserRepository {
 
       if (existingUserId.length === 0) {
         let response = await UserProfileDetailModel.create({
-          userId,
           ...updateBody,
+          userId,
         });
         return response;
       } else {
@@ -310,6 +339,14 @@ class UserRepository {
 
         return updatedUser;
       }
+    } catch (err) {
+      throw err;
+    }
+  }
+  async getCvStyle(style: string): Promise<CvStyleParams> {
+    try {
+      const cvData: CvStyleParams[] = await CvStyleModel.find({ style });
+      return cvData[0];
     } catch (err) {
       throw err;
     }

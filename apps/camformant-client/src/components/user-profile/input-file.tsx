@@ -9,7 +9,6 @@ interface InputFileParams {
   setIsPost: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const InputFile: React.FC<InputFileParams> = ({setFiles,setIsPost}) => {
-  const { user } = useAuth();
   const [fileName, setFileName] = useState("No file chosen");
   const uploadToS3 = async (file: File) => {
     if (!file) {
@@ -20,7 +19,7 @@ const InputFile: React.FC<InputFileParams> = ({setFiles,setIsPost}) => {
     console.log("filename", formData);
     try {
       const response: {data:string} = await axiosInstance.post(
-        `${API_ENDPOINTS.USER_PROFILE_UPLOADF_FILE}/${user?._id}`,
+       API_ENDPOINTS.USER_PROFILE_UPLOADF_FILE,
         formData,
         {
           headers: {

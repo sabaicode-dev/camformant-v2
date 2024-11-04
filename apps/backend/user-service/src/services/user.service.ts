@@ -6,6 +6,8 @@ import {
 } from "@/src/database/repositories/types/user-repository.type";
 import UserRepository from "@/src/database/repositories/user.repository";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
+import { CvStyleParams } from "@/src/controllers/types/user-cv-controller.type";
+import { IUserProfile, UnionProfileType } from "@/src/controllers/types/userprofile.type";
 
 
 class UserService {
@@ -58,7 +60,16 @@ class UserService {
       throw error;
     }
   }
+async changeProfilePic(photo:string,userId:string):Promise<IUser>{
+  try{
+    const response=await UserRepository.updateProfilePic(photo,userId)
+    return response
+  }
+  catch(err){
+    throw err
+  }
 
+}
   async createNewUser(userInfo: UserCreationRepoParams) {
     try {
       console.log("userInfo", userInfo);
@@ -135,7 +146,7 @@ class UserService {
       throw error;
     }
   }
-  async getProfileById(userId:string,category?:string){
+  async getProfileById(userId:string,category?:string):Promise<IUserProfile> {
     try {
       const profile = await UserRepository.getProfileByUserId(userId,category);
       return profile;
@@ -147,10 +158,19 @@ class UserService {
       throw error;
     }
   }
-  async updateUserProfile(userid:string,updateBody:any){
+  async updateUserProfile(userid:string,updateBody:IUserProfile):Promise<UnionProfileType>{
     try{
       const userData=await UserRepository.updateProfile(userid,updateBody)
       return userData
+    }
+    catch(err){
+      throw err
+    }
+  }
+  async getCvStyle(style:string):Promise<CvStyleParams>{
+    try{
+      const response:CvStyleParams=await UserRepository.getCvStyle(style)
+      return response
     }
     catch(err){
       throw err

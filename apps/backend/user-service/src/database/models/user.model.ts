@@ -71,12 +71,4 @@ userSchema.path("phone_number").validate(function (value) {
 const UserModel = mongoose.model<IUser>("User", userSchema);
 
 
-
-const UserProfileSchema = new mongoose.Schema({}, { strict: false });
-//model
-export const UserProfileModel = mongoose.model(
-  "UserProfile",
-  UserProfileSchema,
-  "UserProfile"
-);
 export default UserModel;

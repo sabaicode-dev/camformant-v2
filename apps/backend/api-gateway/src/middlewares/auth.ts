@@ -206,6 +206,7 @@ const routeConfigMiddleware = (
   }
   // Step 2
   const methodConfig = routeConfig.methods?.[method];
+  console.log(methodConfig)
   if (!methodConfig) {
     return next(new NotFoundError("Method not allowed"));
   }
