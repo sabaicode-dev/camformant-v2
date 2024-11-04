@@ -236,13 +236,7 @@ const SearchCard = ({
   return (
     <Suspense>
       <div className="flex flex-col w-full h-full gap-4 pt-6 pb-20">
-        {loading ? (
-          Array.from({ length: 3 }).map((_, index) => (
-            <div className="p-1 mb-2" key={index}>
-              <SkeletonCard />
-            </div>
-          ))
-        ) : jobData.length === 0 ? (
+        {!loading && jobData.length === 0 ? (
           // Display this section when no jobs are found
           <div className="flex flex-col items-center justify-center">
             <Image
@@ -281,6 +275,12 @@ const SearchCard = ({
             </div>
           ))
         )}
+        {loading &&
+          Array.from({ length: 3 }).map((_, index) => (
+            <div className="p-1 mb-2" key={index}>
+              <SkeletonCard />
+            </div>
+          ))}
         {error && (
           <div className="w-full text-center text-red-500">{error}</div>
         )}
