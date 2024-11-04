@@ -29,12 +29,12 @@ export const ShapeSidebar = ({
   return (
     <aside
       className={cn(
-        "bg-white relative border-r z-[40] flex justify-center items-center",
+        "bg-white relative z-[40] flex justify-center items-center",
         activeTool === "shapes" ? "visible" : "hidden"
       )}
     >
       <ScrollArea>
-        <div className="p-4 space-x-3 border-b flex overflow-x-hidden">
+        <div className="flex p-4 space-x-3 overflow-x-hidden border border-orange-300">
           <ShapeTool
             onClick={() => editor?.addCircle()}
             icon={FaCircle}

@@ -27,9 +27,9 @@ const SkeletonLoader = () => (
   <div className="w-full p-4">
     {/* Message Skeleton */}
     <div className="space-y-2">
-      <div className="h-12 bg-gray-300 rounded rounded-md animate-pulse"></div>
-      <div className="h-12 bg-gray-300 rounded rounded-md animate-pulse"></div>
-      <div className="h-12 bg-gray-300 rounded rounded-md animate-pulse"></div>
+      <div className="h-12 bg-gray-300 rounded-md animate-pulse"></div>
+      <div className="h-12 bg-gray-300 rounded-md animate-pulse"></div>
+      <div className="h-12 bg-gray-300 rounded-md animate-pulse"></div>
     </div>
   </div>
 );
@@ -172,7 +172,7 @@ const Message = React.memo(
             {job && (
               <div
                 key={job._id}
-                className=" absolute mt-[-220px] ml-36 gap-8 flex items-center justify-center"
+                className=" absolute mt-[-250px] ml-36 gap-8 flex items-center justify-center"
               >
                 {/* Back1 displayed in front */}
                 <div className="z-10 -ml-32 ">
@@ -187,6 +187,8 @@ const Message = React.memo(
                     <Image
                       src={job.companyId.profile}
                       alt={`${job.companyId.name} profile`}
+                      width={200}
+                      height={200}
                       className="object-cover w-full h-full rounded-full"
                     />
                   </div>
@@ -208,7 +210,7 @@ const Message = React.memo(
           {/*body section: render message*/}
           <div className="-mt-28">
             <div
-              className="overflow-auto w-screen h-[70vh] p-4 rounded-md xl:h-[60vh]"
+              className="overflow-auto w-screen h-[70vh] p-4 rounded-md xl:h-[60vh] pb-10"
               ref={messageContainerRef} // Add ref here
             >
               {messages &&

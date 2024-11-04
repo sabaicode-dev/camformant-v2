@@ -21,10 +21,10 @@ export const API_ENDPOINTS = {
   SEARCH_TRENDING: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/search-trending`,
 
   // CHAT SERVICE
-  CONVERSATIONS: `${process.env.NEXT_PUBLIC_CONVERSATION_ENDPOINT}`
-}
+  CONVERSATIONS: `${process.env.NEXT_PUBLIC_CONVERSATION_ENDPOINT}`,
+};
 
 export const API_ENDPOINTS_SERVER = {
   // USER SERVICE
   USER_PROFILE: `/${process.env.NEXT_PUBLIC_USER_ENDPOINT}/me`,
-}
+};
