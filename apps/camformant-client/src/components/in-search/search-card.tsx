@@ -60,7 +60,7 @@ const SearchCard = ({
     }
   };
   const loadMoreData = useCallback(async () => {
-    console.log("page::: ", page);
+    // console.log("page::: ", page);
 
     if (!hasMore || loading) return; // Prevent fetching if no more data or already loading
 
@@ -100,7 +100,7 @@ const SearchCard = ({
     try {
       const query = buildQuery(page);
       const res = await axiosInstance.get(`${API_ENDPOINTS.JOBS}`, { params });
-      console.log("jobs:::", res.data.data);
+      // console.log("jobs:::", res.data.data);
 
       const { jobs, totalPages, currentPage } = res.data.data; // Adjust based on your actual response structure
 
@@ -143,6 +143,8 @@ const SearchCard = ({
 
     const fetchJobData = async () => {
       if (!debouncedSearchValue && isFilterEmpty(filterValues)) return;
+      // console.log("refetch::::");
+      // console.log("filterValues::: ", filterValues);
 
       try {
         setLoading(true);
@@ -192,9 +194,10 @@ const SearchCard = ({
           jobResponse?.data?.data?.currentPage
         ) {
           setHasMore(true);
+          ///BUG:
           setPage(jobResponse?.data?.data?.currentPage + 1);
         }
-        console.log("obResponse?.data? ", jobResponse?.data);
+        // console.log("obResponse?.data? ", jobResponse?.data);
 
         // setJobData(jobs);
         const jobsWithFavoriteStatus = jobs.map((job: IJob) => ({
@@ -213,6 +216,7 @@ const SearchCard = ({
 
     fetchJobData();
   }, [debouncedSearchValue, filterValues, searchValue, user?.favorites]);
+  // console.log("filter::: inner", filterValues);
 
   const isFilterEmpty = (filterValues: FilterValueParams) => {
     return (

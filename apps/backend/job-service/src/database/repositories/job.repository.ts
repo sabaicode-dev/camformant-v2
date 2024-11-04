@@ -71,21 +71,15 @@ class JobRepository {
       for (const key in filter) {
         // Handle range filtering for salaries
         if (key === "salary" && typeof filter[key] === "object") {
-          const { min_salary, max_salary } = filter[key];
+          console.log("salary::: ", filter[key]);
 
-          // Ensure salary ranges overlap
-          if (min_salary !== undefined && max_salary !== undefined) {
-            mongoFilter.$and = [
-              { min_salary: { $lte: max_salary } }, // Job's min salary <= user's max salary
-              { max_salary: { $gte: min_salary } }, // Job's max salary >= user's min salary
-            ];
-          } else if (min_salary !== undefined) {
-            // If only min salary is provided, return jobs with max salary >= min salary
-            mongoFilter.max_salary = { $gte: min_salary };
-          } else if (max_salary !== undefined) {
-            // If only max salary is provided, return jobs with min salary <= max salary
-            mongoFilter.min_salary = { $lte: max_salary };
-          }
+          const { min_salary = 0, max_salary = 5000 } = filter[key];
+          mongoFilter.$and = [
+            { min_salary: { $gte: min_salary, $lte: max_salary } },
+            { max_salary: { $gte: min_salary, $lte: max_salary } },
+          ];
+
+          console.log("mongoFilter::: ", mongoFilter);
         } else if (
           typeof filter[key] === "object" &&
           !Array.isArray(filter[key])
@@ -153,9 +147,6 @@ class JobRepository {
     }
     // console.log("userFavFilter::::,", userFavFilter);
 
-    // JobModel.find({
-    //   _id: { $in: userFav.map((id) => id) },
-    // });
     try {
       const mongoFilter = {
         ...(userFavFilter || {}),
