@@ -52,7 +52,7 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
- const table = useReactTable({
+  const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
@@ -126,7 +126,7 @@ export function DataTable<TData, TValue>({
         </DropdownMenu>
       </div>
       {/* table of applicant */}
-      <div className="">
+      <div>
         <Table>
             {/* head of table */}
           <TableHeader>

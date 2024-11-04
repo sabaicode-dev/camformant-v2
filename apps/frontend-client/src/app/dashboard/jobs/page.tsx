@@ -29,7 +29,9 @@ const Jobs = async () => {
         <>
             <DynamicBreadcrumb />
             Jobs
-            <DataTable data={data} columns={columns} />
+            <div className="">
+              <DataTable data={data} columns={columns} />
+            </div>
         </>
     );
 };

@@ -1,22 +1,25 @@
 import { PersonIcon } from "@radix-ui/react-icons";
-import { BriefcaseBusiness, Calendar, ChartNetwork, Home, Inbox, List, MessageSquare, Search, Settings, Users2 } from "lucide-react";
+import {LayoutDashboard,Sheet,LetterText, Calendar, ChartNetwork, UserPen, List, MessageSquare, Settings, Users2 } from "lucide-react";
 
+
+
+// All icons in sidebar
 // Menu Dashboard.
 
 const dashboard = [
     {
         title: "Dashboard",
         url: "/dashboard",
-        icon: Home,
+        icon: LayoutDashboard,
     }
 ];
 
 // Menu jobs.
 const jobs = [
     {
-        title: "Jobs",
+        title: "View Applicant",
         url: "/dashboard/jobs",
-        icon: BriefcaseBusiness,
+        icon: Sheet,
     },
     {
         title: "Lists",
@@ -31,7 +34,7 @@ const posts = [
     {
         title: "Posts",
         url: "/dashboard/posts",
-        icon: Inbox,
+        icon: LetterText,
     },
     {
         title: "List",
@@ -46,12 +49,12 @@ const users = [
     {
         title: "Users",
         url: "/dashboard/users",
-        icon: Inbox,
+        icon: PersonIcon,
     },
     {
         title: "Profile",
         url: "/dashboard/users/profile",
-        icon: PersonIcon,
+        icon: UserPen,
     },
     {
         title: "List",
@@ -90,8 +93,6 @@ const chat = [
     },
 ];
 
-
-
 // Menu Settings.
 
 const settings = [
@@ -106,7 +107,7 @@ export const itemsMenu = [
     {
         item: dashboard,
         triggerName: "Dashboard",
-        iconTrigger: Home,
+        iconTrigger: LayoutDashboard,
         isCollapsibleOpen: false,
     },
     {
@@ -117,14 +118,14 @@ export const itemsMenu = [
     },
     {
         item: jobs,
-        triggerName: "Jobs",
-        iconTrigger: BriefcaseBusiness,
+        triggerName: "View Applicant",
+        iconTrigger: Sheet,
         isCollapsibleOpen: true,
     },
     {
         item: posts,
         triggerName: "Posts",
-        iconTrigger: Inbox,
+        iconTrigger: LetterText,
         isCollapsibleOpen: true,
     },
     {

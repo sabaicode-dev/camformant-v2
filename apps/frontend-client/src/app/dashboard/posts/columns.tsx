@@ -20,8 +20,8 @@ export type Jobs = {
   profile: string;
   name: string;
   email: string;
-  job: number;
-  moblie: number;
+  job_openings: number;
+  job_closings: number;
 };
 
 export const columns: ColumnDef<Jobs>[] = [
@@ -50,7 +50,7 @@ export const columns: ColumnDef<Jobs>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "profile",
+    accessorKey: "Profile",
     cell: ({ row }) => {
       const userProfile = row.original;
       return (
@@ -66,25 +66,15 @@ export const columns: ColumnDef<Jobs>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => {
-      return <div className="">Name</div>;
-    },
-  },
-  {
-    accessorKey: "job",
-    header: ({ column }) => {
-      return <div className="">job</div>;
-    },
-  },
-  {
-    accessorKey: "job",
-    header: ({ column }) => {
-      return <div className="">mobile</div>;
-    },
-  },
-  {
-    accessorKey: "job",
-    header: ({ column }) => {
-      return <div className=" ">email</div>;
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
     },
   },
   {
