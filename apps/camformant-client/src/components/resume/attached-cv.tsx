@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
 import axios from "axios";
 import { FaFilePdf } from "react-icons/fa";
@@ -12,12 +12,15 @@ interface typeUploads {
 const AttachedCvs: React.FC<typeUploads> = ({ next, setNext }) => {
   const [file, setFile] = useState<File | null>(null);
   const UploadsRef = useRef<HTMLInputElement | null>(null);
-  const config = {
-    headers: {
-      "Content-Type": "multipart/form-data", // Ensure this is correct
-    },
-    withCredentials: true,
-  };
+  const config = useMemo(
+    () => ({
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+    }),
+    []
+  );
 
   function handleUploads() {
     UploadsRef.current?.click();
@@ -38,7 +41,7 @@ const AttachedCvs: React.FC<typeUploads> = ({ next, setNext }) => {
         formData.append("file_path", file);
 
         const res = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/user/cv/`, // Update this to your endpoint for conversion
+          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/cv/`, // Update this to your endpoint for conversion
           formData,
           config
         );
@@ -56,7 +59,7 @@ const AttachedCvs: React.FC<typeUploads> = ({ next, setNext }) => {
     }
 
     PostCV();
-  }, [file]);
+  }, [file, config, setNext]);
 
   return (
     <div>
@@ -67,9 +70,9 @@ const AttachedCvs: React.FC<typeUploads> = ({ next, setNext }) => {
       )}
       <button
         onClick={handleUploads}
-        className="w-full p-10 shadow-xl rounded-3xl flex justify-start items-center bg-white"
+        className="flex items-center justify-start w-full p-10 bg-white shadow-xl rounded-3xl"
       >
-        <span className=" pr-4 text-red-500">
+        <span className="pr-4 text-red-500 ">
           <FaFilePdf />
         </span>
         Uploads CV / Attached CV

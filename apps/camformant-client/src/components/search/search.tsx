@@ -62,7 +62,7 @@ export const Search: React.FC<autoFocusd> = ({
       {isFilterDisplay && (
         <button
           onClick={() => setOpen(true)}
-          className="absolute translate-y-[16px] right-5 z-50 "
+          className="absolute translate-y-[16px] right-3 top-1 z-50 "
         >
           <IoMdFunnel size={22} className="text-primaryCam" />
         </button>
@@ -70,7 +70,7 @@ export const Search: React.FC<autoFocusd> = ({
 
       <div className="flex items-center w-full">
         <div className={` ${buttonBack ? "block" : "hidden"} `}>
-          <Link href={"../"}>
+          <Link href={"../home"}>
             <BackButton_md styles=" bg-white p-3 px-4 rounded-xl top-5 left-3 " />
           </Link>
         </div>

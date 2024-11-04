@@ -1,9 +1,9 @@
-import { gatewayLogger } from "@/src/server";
+// import { gatewayLogger } from "@/src/server";
 import {
   // APP_ERROR_MESSAGE,
   ApplicationError,
   HTTP_STATUS_CODE,
-  prettyObject,
+  // prettyObject,
 } from "@sabaicode-dev/camformant-libs";
 import { NextFunction, Request, Response } from "express";
 
@@ -19,16 +19,16 @@ export function globalErrorHandler(
     const message = error.message;
     const errors = error.errors;
 
-    gatewayLogger.error(
-      `$API Gateway - globalErrorHandler() method error: ${prettyObject(error)}`
-    );
+    // gatewayLogger.error(
+    //   `$API Gateway - globalErrorHandler() method error: ${prettyObject(error)}`
+    // );
     return res.status(status).json({ message, error: errors });
   }
 
   // Unhandle Error
-  gatewayLogger.error(
-    `$API Gateway - globalErrorHandler() unexpected method error: ${prettyObject(error as {})}`
-  );
+  // gatewayLogger.error(
+  //   `$API Gateway - globalErrorHandler() unexpected method error: ${prettyObject(error as {})}`
+  // );
   res
     .status(HTTP_STATUS_CODE.SERVER_ERROR)
     .json({ message: "APP_ERROR_MESSAGE.serverError" });

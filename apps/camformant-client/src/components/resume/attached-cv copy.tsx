@@ -2,6 +2,7 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
+import Image from "next/image";
 
 const AttachedCvs: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -69,17 +70,17 @@ const AttachedCvs: React.FC = () => {
       {imageURL ? (
         // Show the converted image
         <div className="mt-4">
-          <img
+          <Image
             src={imageURL}
             alt="Converted CV"
-            className="max-w-full h-auto rounded-lg"
+            className="h-auto max-w-full rounded-lg"
           />
         </div>
       ) : (
         // Show the upload button if no image is available
         <button
           onClick={handleUploads}
-          className="w-full p-10 shadow-xl rounded-3xl flex justify-start items-center bg-white"
+          className="flex items-center justify-start w-full p-10 bg-white shadow-xl rounded-3xl"
         >
           Attach CV
         </button>

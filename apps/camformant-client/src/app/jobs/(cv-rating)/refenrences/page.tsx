@@ -17,12 +17,12 @@ const Page = () => {
   const [next,setNext] = useState<boolean>(false);
 
   // const ip = 'http://localhost:3040' 
-  const config = {
+  const config = React.useMemo(() => ({
     headers: {
       "Content-Type": "application/json",
     },
     withCredentials: true, // Make sure cookies are handled properly
-  };
+  }), []);
 
   useEffect(()=>{
     async function GetData(){
@@ -42,7 +42,7 @@ const Page = () => {
       }
     }
     GetData()
-  },[])
+  },[config])
 
 
     async function PostData(){

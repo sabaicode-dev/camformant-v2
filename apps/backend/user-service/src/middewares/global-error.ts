@@ -36,6 +36,6 @@ export function globalErrorHandler(
   );
   res
     .status(HTTP_STATUS_CODE.SERVER_ERROR)
-    .json({ message: "APP ERROR.server error" });
+    .json({ message: "Something went wrong, try again later" });
   // .json({ message: APP_ERROR_MESSAGE.serverError });
 }

@@ -714,6 +714,10 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     strokeDashArray,
     fontFamily,
     autoZoom,
+    fillColor,
+    moveDown,
+    moveRight,
+    moveUp,
     // handleTouchEvents,
   ]);
 

@@ -6,7 +6,9 @@ import Background from "@/components/background/background";
 import SkeletonCard from "@/components/message/SkeletonCard"; // Import SkeletonCard
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
-
+import Image from "next/image";
+import { useAuth } from "@/context/auth";
+import Link from "next/link";
 interface JobConversation {
   participants: string[];
   companyName: string;
@@ -18,7 +20,7 @@ const Chat = () => {
   const [jobs, setJobs] = useState<JobConversation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<any>(null);
-
+  const { isAuthenticated } = useAuth();
   useEffect(() => {
     getJobs();
   }, []);
@@ -59,8 +61,22 @@ const Chat = () => {
                 <SkeletonCard />
                 <SkeletonCard />
               </>
+            ) : !isAuthenticated ? (
+              <div className="flex flex-col items-center justify-center gap-y-5">
+                <p className="w-full mt-10 text-center text-md">
+                  Please Login and try again.
+                </p>
+                <Link
+                  href="/login"
+                  className="p-3 text-white rounded-xl bg-primaryCam"
+                >
+                  Login
+                </Link>
+              </div>
             ) : error ? (
-              <p>Something went wrong! Please try again.</p>
+              <p className="w-full mt-10 text-center text-md">
+                Something went wrong! Please try again.
+              </p>
             ) : jobs.length === 0 ? (
               <p>{"No users available."}</p>
             ) : (
@@ -72,9 +88,11 @@ const Chat = () => {
                 >
                   {job.companyProfile && (
                     <div className="flex overflow-hidden bg-gray-200 rounded-full w-14 h-11 xl:w-20 xl:h-20">
-                      <img
+                      <Image
                         src={job.companyProfile}
                         alt={`${job.companyName} profile`}
+                        width={200}
+                        height={200}
                         className="object-cover w-full h-full rounded-full"
                       />
                     </div>

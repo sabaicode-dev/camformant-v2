@@ -19,7 +19,7 @@ interface SidebarProps {
 
 export function Sidebar({ activeTool, onChangeActiveTool }: SidebarProps) {
   return (
-    <aside className="bg-white border-r flex w-full h-full overflow-x-scroll whitespace-nowrap items-center justify-center">
+    <aside className="flex items-center justify-center w-full h-full overflow-x-scroll bg-white border-b border-b-orange-300 whitespace-nowrap">
       <SidebarItem
         icon={LayoutTemplate}
         label="Design"

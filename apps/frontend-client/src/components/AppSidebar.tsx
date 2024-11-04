@@ -1,5 +1,5 @@
 "use client";
-import { Briefcase, ChevronUp, Home, User } from "lucide-react";
+import { ChevronUp } from "lucide-react";
 
 import {
   Sidebar,

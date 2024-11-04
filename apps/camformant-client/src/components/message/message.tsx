@@ -11,6 +11,7 @@ import { formatDistanceToNow } from "date-fns";
 import { useAuth } from "@/context/auth";
 import React from "react";
 import { Job } from "@/app/jobs/[id]/message/page";
+import Image from "next/image";
 
 interface Message {
   _id?: string;
@@ -26,9 +27,9 @@ const SkeletonLoader = () => (
   <div className="w-full p-4">
     {/* Message Skeleton */}
     <div className="space-y-2">
-      <div className="h-12 bg-gray-300 rounded rounded-md animate-pulse"></div>
-      <div className="h-12 bg-gray-300 rounded rounded-md animate-pulse"></div>
-      <div className="h-12 bg-gray-300 rounded rounded-md animate-pulse"></div>
+      <div className="h-12 bg-gray-300 rounded-md animate-pulse"></div>
+      <div className="h-12 bg-gray-300 rounded-md animate-pulse"></div>
+      <div className="h-12 bg-gray-300 rounded-md animate-pulse"></div>
     </div>
   </div>
 );
@@ -86,7 +87,7 @@ const Message = React.memo(
         socket.emit("leaveRoom", { conversationId });
         socket.off("receiveMessage", handleReceiveMessage);
       };
-    }, [conversationId]);
+    }, [conversationId, playNotificationSound, scrollToBottom]);
 
     // Check Online & Offline Users
     useEffect(() => {
@@ -129,7 +130,7 @@ const Message = React.memo(
     // Scroll to the bottom whenever messages change
     useEffect(() => {
       scrollToBottom();
-    }, [messages]);
+    }, [messages, scrollToBottom]);
 
     const sendMessage = async () => {
       if (inputMessage.trim() === "") return;
@@ -171,7 +172,7 @@ const Message = React.memo(
             {job && (
               <div
                 key={job._id}
-                className=" absolute mt-[-220px] ml-36 gap-8 flex items-center justify-center"
+                className=" absolute mt-[-250px] ml-36 gap-8 flex items-center justify-center"
               >
                 {/* Back1 displayed in front */}
                 <div className="z-10 -ml-32 ">
@@ -183,9 +184,11 @@ const Message = React.memo(
                 {/* Company profile image */}
                 {job.companyId.profile && (
                   <div className="relative w-20 h-20 -ml-5 overflow-hidden rounded-full">
-                    <img
+                    <Image
                       src={job.companyId.profile}
                       alt={`${job.companyId.name} profile`}
+                      width={200}
+                      height={200}
                       className="object-cover w-full h-full rounded-full"
                     />
                   </div>
@@ -207,7 +210,7 @@ const Message = React.memo(
           {/*body section: render message*/}
           <div className="-mt-28">
             <div
-              className="overflow-auto w-screen h-[70vh] p-4 rounded-md xl:h-[60vh]"
+              className="overflow-auto w-screen h-[70vh] p-4 rounded-md xl:h-[60vh] pb-10"
               ref={messageContainerRef} // Add ref here
             >
               {messages &&

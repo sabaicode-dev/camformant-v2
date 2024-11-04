@@ -46,16 +46,16 @@ export const useArrowKey = ({ canvas, step = 5 }: UseArrowKeyProps) => {
   //
   const moveLeft = useCallback(() => {
     moveSelected("left");
-  }, [canvas]);
+  }, [canvas, moveSelected]);
   const moveRight = useCallback(() => {
     moveSelected("right");
-  }, [canvas]);
+  }, [canvas, moveSelected]);
   const moveUp = useCallback(() => {
     moveSelected("up");
-  }, [canvas]);
+  }, [canvas, moveSelected]);
   const moveDown = useCallback(() => {
     moveSelected("down");
-  }, [canvas]);
+  }, [canvas, moveSelected]);
 
   return { moveLeft, moveRight, moveUp, moveDown };
 };

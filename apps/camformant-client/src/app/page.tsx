@@ -1,15 +1,18 @@
-import Chat from "@/components/chat-home/chat";
-import { Header } from "@/components/header/header";
-import { PositionPost } from "@/components/posts/position-post";
-import { RecommendationPost } from "@/components/posts/recommendation-post";
+"use client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/home");
+  }, [router]);
+
   return (
     <>
-      <Header />
-      <RecommendationPost />
-      <PositionPost />
-      <Chat className="fixed bottom-20 right-0 p-4 bg-gradient-to-br from-orange-400 via-pink-300 to-yellow-300 shadow-2xl rounded-full text-white transform transition-transform hover:scale-105" />
+      <div className="w-full text-2xl text-center text-primaryCam">
+        Redirecting to Home Page...
+      </div>
     </>
   );
 }
