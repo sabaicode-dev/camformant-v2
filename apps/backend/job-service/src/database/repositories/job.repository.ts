@@ -6,7 +6,7 @@ import {
 import { CompanyModel } from "@/src/database/models/company.model";
 import { IJob, JobModel } from "@/src/database/models/job.model";
 import { NotFoundError, prettyObject } from "@sabaicode-dev/camformant-libs";
-import { SortOrder } from "mongoose";
+import mongoose, { SortOrder } from "mongoose";
 
 class JobRepository {
   public async createNewJob(newInfo: JobParams): Promise<IJob> {
@@ -30,6 +30,7 @@ class JobRepository {
       filter = { position: "ALL" },
       sort = { createdAt: "desc" },
       search = "",
+      userFav,
     } = queries;
     const skip =
       queries.limit === "*" || !queries.limit
@@ -47,6 +48,8 @@ class JobRepository {
       "position",
       "workMode",
     ];
+
+    //
 
     // Convert sort from {'field': 'desc'} to {'field': -1}
     const sortFields = Object.keys(sort).reduce(
@@ -128,7 +131,7 @@ class JobRepository {
       return mongoFilter;
     };
 
-    console.log("mongoFilter::: ", buildFilter(filter));
+    // console.log("mongoFilter::: ", buildFilter(filter));
 
     // Adding search functionality
     const searchFilter = search
@@ -140,12 +143,27 @@ class JobRepository {
           ],
         }
       : {};
+    // console.log("userFav:::, ", userFav);
 
+    const userFavFilter: any = {};
+    if (userFav?.length !== 0) {
+      userFavFilter._id = {
+        $in: userFav?.map((id) => new mongoose.Types.ObjectId(id)),
+      };
+    }
+    // console.log("userFavFilter::::,", userFavFilter);
+
+    // JobModel.find({
+    //   _id: { $in: userFav.map((id) => id) },
+    // });
     try {
       const mongoFilter = {
+        ...(userFavFilter || {}),
         ...buildFilter(filter),
         ...searchFilter,
       };
+      // console.log("filter mongo:::, ", mongoFilter);
+
       let operation: IJob[] = [];
       if (queries.limit === "*") {
         operation = await JobModel.find(mongoFilter)

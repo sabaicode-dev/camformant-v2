@@ -23,7 +23,8 @@ class JobService {
 
   public async getAllJobs(queries: JobGetAllControllerParams, userId = null) {
     try {
-      const { page, limit, filter, sort, search } = queries;
+      const { page, limit, filter, sort, search, userFav } = queries;
+      const searchUserFav = userFav?.split(",") || [];
 
       const newQueries = {
         page,
@@ -31,6 +32,7 @@ class JobService {
         filter: filter && JSON.parse(filter),
         sort: sort && JSON.parse(sort),
         search,
+        userFav: searchUserFav,
       };
 
       const result = await jobRepository.getAllJobs(newQueries);
