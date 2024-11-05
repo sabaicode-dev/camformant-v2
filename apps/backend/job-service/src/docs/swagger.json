@@ -277,6 +277,9 @@
 					},
 					"search": {
 						"type": "string"
+					},
+					"userFav": {
+						"type": "string"
 					}
 				},
 				"type": "object",
@@ -456,6 +459,14 @@
 					{
 						"in": "query",
 						"name": "search",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "userFav",
 						"required": false,
 						"schema": {
 							"type": "string"

@@ -41,7 +41,7 @@ const Chat = () => {
   };
 
   const handleJobClick = (job: JobConversation) => {
-    router.push(`jobs/${job.participants[1]}/message`);
+    router.push(`jobs/${job.participants[0]}/message`);
   };
 
   return (

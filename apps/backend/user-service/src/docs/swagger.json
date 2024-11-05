@@ -206,6 +206,386 @@
 				},
 				"type": "object",
 				"additionalProperties": false
+			},
+			"BasicParams": {
+				"properties": {
+					"surname": {
+						"type": "string"
+					},
+					"lastname": {
+						"type": "string"
+					},
+					"career": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"dob": {
+						"type": "string"
+					},
+					"address": {
+						"type": "string"
+					},
+					"phonenumber": {
+						"type": "string"
+					},
+					"martial": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"surname",
+					"lastname",
+					"career",
+					"email",
+					"dob",
+					"address",
+					"phonenumber"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"SkillParams": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"percent": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"name",
+					"percent"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ExpertiseParams": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"proficiency": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"proficiency"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LanguageParams": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"proficiency": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"proficiency"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"EducationParams": {
+				"properties": {
+					"academic": {
+						"type": "string"
+					},
+					"school": {
+						"type": "string"
+					},
+					"major": {
+						"type": "string"
+					},
+					"year": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"academic",
+					"school",
+					"major",
+					"year"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ExperienceParams": {
+				"properties": {
+					"position": {
+						"type": "string"
+					},
+					"company": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"year": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"position",
+					"company"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ReferenceParams": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"career": {
+						"type": "string"
+					},
+					"company": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"phonenumber": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"career",
+					"company",
+					"email",
+					"phonenumber"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"DescriptionParams": {
+				"properties": {
+					"description": {
+						"type": "string"
+					},
+					"strength": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"description",
+					"strength"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CertificateParams": {
+				"properties": {
+					"url": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"url"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"PortfolioParams": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"url": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"url"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IUserProfile": {
+				"properties": {
+					"basic": {
+						"$ref": "#/components/schemas/BasicParams"
+					},
+					"skills": {
+						"items": {
+							"$ref": "#/components/schemas/SkillParams"
+						},
+						"type": "array"
+					},
+					"expertise": {
+						"items": {
+							"$ref": "#/components/schemas/ExpertiseParams"
+						},
+						"type": "array"
+					},
+					"languages": {
+						"items": {
+							"$ref": "#/components/schemas/LanguageParams"
+						},
+						"type": "array"
+					},
+					"educations": {
+						"items": {
+							"$ref": "#/components/schemas/EducationParams"
+						},
+						"type": "array"
+					},
+					"experiences": {
+						"items": {
+							"$ref": "#/components/schemas/ExperienceParams"
+						},
+						"type": "array"
+					},
+					"references": {
+						"items": {
+							"$ref": "#/components/schemas/ReferenceParams"
+						},
+						"type": "array"
+					},
+					"descriptions": {
+						"$ref": "#/components/schemas/DescriptionParams"
+					},
+					"certificates": {
+						"items": {
+							"$ref": "#/components/schemas/CertificateParams"
+						},
+						"type": "array"
+					},
+					"portfolio": {
+						"items": {
+							"$ref": "#/components/schemas/PortfolioParams"
+						},
+						"type": "array"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"mongoose.Types.ObjectId": {
+				"type": "string"
+			},
+			"IdParams": {
+				"properties": {
+					"_id": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"userId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"_id",
+					"userId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UnionProfileType": {
+				"anyOf": [
+					{
+						"$ref": "#/components/schemas/IdParams"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/IUserProfile"
+						},
+						"type": "array"
+					},
+					{
+						"$ref": "#/components/schemas/BasicParams"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/SkillParams"
+						},
+						"type": "array"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/ExperienceParams"
+						},
+						"type": "array"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/EducationParams"
+						},
+						"type": "array"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/LanguageParams"
+						},
+						"type": "array"
+					},
+					{
+						"$ref": "#/components/schemas/DescriptionParams"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/ReferenceParams"
+						},
+						"type": "array"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/PortfolioParams"
+						},
+						"type": "array"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/CertificateParams"
+						},
+						"type": "array"
+					}
+				],
+				"nullable": true
+			},
+			"CvStyleParams": {
+				"properties": {
+					"_id": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"style": {
+						"type": "string"
+					},
+					"json": {
+						"properties": {
+							"objects": {
+								"items": {},
+								"type": "array"
+							},
+							"version": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"objects",
+							"version"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"_id",
+					"style",
+					"json"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -317,6 +697,43 @@
 				},
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/v1/users/me/photo": {
+			"put": {
+				"operationId": "ChangePhoto",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserProfileResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"photo": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"photo"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/v1/users/me/favorites": {
@@ -491,6 +908,280 @@
 					{
 						"in": "path",
 						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v1/users/profile-detail/{userId}": {
+			"get": {
+				"operationId": "GetProfileByID",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"$ref": "#/components/schemas/IUserProfile"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "category",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateUserProfile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"$ref": "#/components/schemas/UnionProfileType"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/IUserProfile"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/users/uploadFile": {
+			"post": {
+				"operationId": "UploadFile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"file": {
+										"type": "string",
+										"format": "binary"
+									}
+								},
+								"required": [
+									"file"
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/users/cv": {
+			"get": {
+				"operationId": "GetCvFiles",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "UpdateCvFiles",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"url": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"url"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/users/cv/{cvId}": {
+			"delete": {
+				"operationId": "DeleteCvFile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "cvId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v1/users/cvstyle/{style}": {
+			"get": {
+				"operationId": "GetCVStyle",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"$ref": "#/components/schemas/CvStyleParams"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "style",
 						"required": true,
 						"schema": {
 							"type": "string"

@@ -6,13 +6,19 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path'
 import swaggerUi from "swagger-ui-express";
+import cors from 'cors';
 
 // Dynamically load swagger.json & Initialize Sentry
 const swaggerDocument = JSON.parse(fs.readFileSync(path.join(__dirname, 'docs/swagger.json'), 'utf8'));
 
 
 const app = express()
-
+const corsOptions = {
+  origin: 'http://localhost:3000', // Allow requests from this origin
+  methods: 'GET,POST,PUT,DELETE', // Specify allowed HTTP methods
+  allowedHeaders: 'Content-Type,Authorization' // Specify allowed headers
+};
+app.use(cors(corsOptions));
 // ================================
 // Security Middleware
 // ================================

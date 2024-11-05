@@ -4,7 +4,6 @@ import {
   AdminGetUserCommand,
   AdminLinkProviderForUserCommand,
   AdminUpdateUserAttributesCommand,
-  AdminUpdateUserAttributesCommandInput,
   AuthFlowType,
   CognitoIdentityProviderClient,
   ConfirmSignUpCommand,
@@ -14,7 +13,6 @@ import {
   InitiateAuthCommand,
   InitiateAuthCommandInput,
   ListUsersCommand,
-  ListUsersCommandInput,
   SignUpCommand,
   SignUpCommandInput,
   UserType,
@@ -140,19 +138,13 @@ class AuthService {
 
       // Retrieve the user to get the `role` attribute
       const userInfo = await this.getUserByUsername(username);
-      console.log("userInfo: ", userInfo);
-
       const role =
         userInfo.UserAttributes?.find((attr) => attr.Name === "custom:role")
           ?.Value || "user";
 
-      const userSub = userInfo.UserAttributes?.filter(
-        (Name) => Name.Name === "sub"
-      )[0].Value;
       // Add the user to the group based on the `role` attribute
-      console.log("userSub: ", userSub);
+      await this.addToGroup(username, role);
 
-      await this.addToGroup(userSub!, role);
       // Send user info to the `User Service`
       await axios.post(`${configs.userServiceUrl}/v1/users`, {
         sub: userInfo.Username,
@@ -248,8 +240,9 @@ class AuthService {
     } catch (error) {}
   }
 
-  loginWithGoogle(state: string = "user"): string {
-    // const state = crypto.randomBytes(16).toString("hex");
+  loginWithGoogle(state: string): string {
+    // const state = crypto.randomBytes(16).toString('hex')
+
     const params = new URLSearchParams({
       response_type: "code",
       client_id: configs.awsCognitoClientId,
@@ -259,10 +252,7 @@ class AuthService {
       state: state,
       prompt: "select_account",
     });
-    // console.log("params: ", params);
-
     const cognitoOAuthURL = `${configs.awsCognitoDomain}/oauth2/authorize?${params.toString()}`;
-    console.log(cognitoOAuthURL);
 
     return cognitoOAuthURL;
   }
@@ -304,7 +294,7 @@ class AuthService {
       // Step 1: Get the token from Cognito
       const res = await axios.post(
         `${configs.awsCognitoDomain}/oauth2/token`,
-        params.toString(),
+        params,
         {
           headers: {
             Authorization: authorizationHeader,
@@ -312,7 +302,6 @@ class AuthService {
           },
         }
       );
-      console.log(res.data);
 
       const token = {
         accessToken: res.data.access_token,
@@ -322,12 +311,8 @@ class AuthService {
 
       // Step 2: Get the user info from token
       const userInfo = this.getUserInfoFromToken(token.idToken);
-      console.log("userInfo: ", userInfo);
-
       // @ts-ignore
       const email = userInfo.email;
-      console.log("email: ", email);
-
       const existingUser = await this.getUserByEmail(email);
       console.log("existingUser: ", existingUser);
 
@@ -335,6 +320,7 @@ class AuthService {
 
       // Step 3: Case User is already signin with Email | Phone Number / Password, but they try to signin with Google | Facebook
       if (existingUser && existingUser.UserStatus !== "EXTERNAL_PROVIDER") {
+        console.log("link with existing accoint");
         const isLinked = existingUser.Attributes?.some(
           (attr) => attr.Name === "identities" && attr.Value?.includes("Google")
         );
@@ -372,19 +358,20 @@ class AuthService {
       }
       // Step 4: Case User is never signin with Google | Facebook
       else {
-        try {
+        try { 
+          console.log("doesnt need to link");
+
           const user = await axios.post(`${configs.userServiceUrl}/v1/users`, {
             googleSub: userInfo.sub,
             email,
             // @ts-ignore
-            username: userInfo["cognito:username"] || email,
+            username: userInfo.name,
             // @ts-ignore
             profile: userInfo.profile,
             role: state,
           });
-
+          console.log("new user from google:", user);
           // Step 4.1: Update user info in Cognito
-          //TODO: solve role
           await this.updateUserCongitoAttributes(userInfo.sub!, {
             "custom:role": state!,
           });
@@ -407,7 +394,10 @@ class AuthService {
 
       // Step 5: Check if the user is already in the group before adding
       const groupExists = await this.checkUserInGroup(userInfo.sub!, state!);
+      console.log("before group exist", groupExists);
       if (!groupExists) {
+        console.log("group exist");
+
         await this.addToGroup(userInfo.sub!, state!);
         console.log(`User ${userInfo.sub} added to group ${state}`);
       }
@@ -430,7 +420,7 @@ class AuthService {
     return decodedToken;
   }
 
-  async addToGroup(username: string, groupName: string = "user") {
+  async addToGroup(username: string, groupName: string) {
     const params = {
       GroupName: groupName,
       Username: username,
@@ -466,18 +456,15 @@ class AuthService {
   }
 
   async getUserByEmail(email: string): Promise<UserType | undefined> {
-    const params: ListUsersCommandInput = {
-      // AttributesToGet: ["email", "sub"],
+    const params = {
       Filter: `email = "${email}"`,
       UserPoolId: configs.awsCognitoUserPoolId,
-      Limit: 3,
+      Limit: 1,
     };
 
     try {
-      const command = new ListUsersCommand(params);
-      const response = await client.send(command);
-      console.log("res: ", response);
-
+      const listUsersCommand = new ListUsersCommand(params);
+      const response = await client.send(listUsersCommand);
       return response.Users && response.Users[0];
     } catch (error) {
       console.error("AuthService getUserByEmail() method error:", error);
@@ -489,7 +476,7 @@ class AuthService {
     username: string,
     attributes: { [key: string]: string }
   ): Promise<void> {
-    const params: AdminUpdateUserAttributesCommandInput = {
+    const params = {
       Username: username,
       UserPoolId: configs.awsCognitoUserPoolId,
       UserAttributes: Object.entries(attributes).map(([key, value]) => ({
@@ -497,8 +484,6 @@ class AuthService {
         Value: value,
       })),
     };
-
-    console.log("param: ", params);
 
     try {
       const command = new AdminUpdateUserAttributesCommand(params);
@@ -609,3 +594,4 @@ class AuthService {
 }
 
 export default new AuthService();
+

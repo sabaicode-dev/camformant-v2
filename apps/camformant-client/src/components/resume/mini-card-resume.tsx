@@ -5,9 +5,11 @@ import { SwipeableHandlers, useSwipeable } from "react-swipeable";
 import Skeleton from "react-loading-skeleton";
 import { MdOutlineKeyboardDoubleArrowLeft } from "react-icons/md";
 import { BsPersonVcard } from "react-icons/bs";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 
 interface typeMiniCard {
   name: string;
+  cvId?:string
   index: number;
   next: boolean;
   setNext: (next: boolean) => void;
@@ -19,6 +21,7 @@ interface typeMiniCard {
 
 const MiniCardResume: React.FC<typeMiniCard> = ({
   name = "#",
+  cvId,
   index,
   next,
   setNext,
@@ -33,19 +36,12 @@ const MiniCardResume: React.FC<typeMiniCard> = ({
     onSwipedRight: () => setIsSwiped(false),
     preventScrollOnSwipe: true,
     trackMouse: true,
-  });
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-  };
+  })
   const handleDelete = async () => {
     try {
       setNext(true);
       const res = await axios.delete(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/user/cv/?index=${index}`,
-        config
+        `${API_ENDPOINTS.USER_SERVICE_CV_FILE}/${cvId}`,
       );
       if (res.status === 200) {
         console.log("CV deleted successfully");
