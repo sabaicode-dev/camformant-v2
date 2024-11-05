@@ -11,7 +11,7 @@ export interface CreateConversationParams {
   companyId: string;
   companyProfile: string;
   companyName: string;
-  userId?: string;
+  userId: string;
   username: string;
   userProfile: string;
 }
@@ -34,12 +34,12 @@ export class ConversationController extends Controller {
     try {
       const userId = request.cookies["user_id"];
 
-      const conversations =
+      const conversationsId: IConversation[] =
         await this.conversationService.getConversations(userId);
 
       return sendResponse<IConversation[]>({
         message: "Conversation room was created successfully!",
-        data: conversations,
+        data: conversationsId,
       });
     } catch (error) {
       console.error(

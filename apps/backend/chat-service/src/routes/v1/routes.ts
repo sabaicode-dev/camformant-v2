@@ -35,7 +35,7 @@ const models: TsoaRoute.Models = {
             "companyId": {"dataType":"string","required":true},
             "companyProfile": {"dataType":"string","required":true},
             "companyName": {"dataType":"string","required":true},
-            "userId": {"dataType":"string"},
+            "userId": {"dataType":"string","required":true},
             "username": {"dataType":"string","required":true},
             "userProfile": {"dataType":"string","required":true},
         },

@@ -75,6 +75,7 @@
 					"companyId",
 					"companyProfile",
 					"companyName",
+					"userId",
 					"username",
 					"userProfile"
 				],
