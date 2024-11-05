@@ -167,6 +167,33 @@ async changeProfilePic(photo:string,userId:string):Promise<IUser>{
       throw err
     }
   }
+  async getCvFiles(userId:string){
+    try{
+      const response=await UserRepository.getCvFile(userId)
+      return response
+    }
+    catch(err){
+      throw err
+    }
+  }
+  async insertCvFile(userId:string,url:string){
+    try{
+      const response=await UserRepository.insertCvFile(userId,url)
+      return response
+    }
+    catch(err){
+      throw err
+    }
+  }
+  async deleteCvFile(userId:string,cvId:string){
+   try{
+    const response=await UserRepository.deleteCvFile(userId,cvId)
+    return response
+   }
+   catch(err){
+    throw err
+   }
+  }
   async getCvStyle(style:string):Promise<CvStyleParams>{
     try{
       const response:CvStyleParams=await UserRepository.getCvStyle(style)

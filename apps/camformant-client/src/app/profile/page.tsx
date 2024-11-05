@@ -17,6 +17,7 @@ import { useAuth } from "@/context/auth";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { uploadToS3 } from "@/utils/functions/upload-to-s3";
 
 const SkeletonLoader = ({
   width = "w-32",
@@ -76,25 +77,6 @@ const Page: React.FC = () => {
       };
     }
   }
-  async function uploadToS3(file: File) {
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const response: { data: string } = await axiosInstance.post(
-        API_ENDPOINTS.USER_PROFILE_UPLOADF_FILE,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      setPic(response.data);
-      changeProfile(response.data);
-    } catch (err) {
-      console.log("error", err);
-    }
-  }
 
   async function changeProfile(photo: string) {
     try {
@@ -126,7 +108,11 @@ const Page: React.FC = () => {
       setUpload(file);
       const imagePreviewUrl = URL.createObjectURL(file); // Generate URL for display
       setIsCropping(false);
-      await uploadToS3(file);
+      const image = await uploadToS3(file);
+      if (image) {
+        setPic(image);
+        changeProfile(image);
+      }
     } catch (error) {
       console.error("Failed to crop image", error);
       addNotification("Failed to crop image", "error");

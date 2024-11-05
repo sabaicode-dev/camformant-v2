@@ -15,7 +15,7 @@ import {
   prettyObject,
   ResourceConflictError,
 } from "@sabaicode-dev/camformant-libs";
-import { CvStyleModel } from "../models/userCv.model";
+import { CvFileModel, CvStyleModel } from "../models/userCv.model";
 import { CvStyleParams } from "@/src/controllers/types/user-cv-controller.type";
 import {
   IUserProfile,
@@ -308,6 +308,8 @@ class UserRepository {
         categoryData = await UserProfileDetailModel.find({ userId }).select(
           `${category} -_id`
         );
+      if (!categoryData.length)
+        throw new NotFoundError("user profile not found");
       return categoryData[0];
     } catch (err) {
       throw err;
@@ -343,9 +345,54 @@ class UserRepository {
       throw err;
     }
   }
+  async getCvFile(userId: string) {
+    try {
+      const response = await CvFileModel.findById(userId);
+      if (!response) throw new NotFoundError("userid not found");
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  async insertCvFile(userId: string, url: string) {
+    try {
+      const response = await CvFileModel.findByIdAndUpdate(
+        new mongoose.Types.ObjectId(userId),
+        { $push: { cv: { url } } },
+        { new: true }
+      );
+      if (!response) {
+        const newCvFile = CvFileModel.create({
+          userId: new mongoose.Types.ObjectId(userId),
+          cv: [{ url: url }],
+        });
+        return newCvFile;
+      }
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  async deleteCvFile(userId: string, cvId: string) {
+    try {
+      const cvIdObj = new mongoose.Types.ObjectId(cvId);
+      const response = await CvFileModel.findByIdAndUpdate(
+        userId,
+        { $pull: { cv: { _id: cvIdObj } } },
+        { new: true }
+      );
+      if (!response)
+        throw new NotFoundError("cv cannot delete due to ot found cvId");
+      // Pull the array element where _id matches the elementId
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
   async getCvStyle(style: string): Promise<CvStyleParams> {
     try {
       const cvData: CvStyleParams[] = await CvStyleModel.find({ style });
+      if (cvData.length > 0) throw new NotFoundError("CvStyle not found");
       return cvData[0];
     } catch (err) {
       throw err;

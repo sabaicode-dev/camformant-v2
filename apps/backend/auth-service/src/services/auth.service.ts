@@ -358,7 +358,7 @@ class AuthService {
       }
       // Step 4: Case User is never signin with Google | Facebook
       else {
-        try {
+        try { 
           console.log("doesnt need to link");
 
           const user = await axios.post(`${configs.userServiceUrl}/v1/users`, {

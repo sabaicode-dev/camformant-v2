@@ -33,7 +33,7 @@ const HeaderBasic: React.FC<typeofHeader> = ({
           if (next) {
             console.log("sth chnmaged");
           }
-          nextRoute && nextRoute && router.push(nextRoute);
+          // nextRoute && nextRoute && router.push(nextRoute);
         }}
         className="text-orange-500 text-lg pr-3 "
       >

@@ -10,6 +10,8 @@ export const API_ENDPOINTS = {
   USER_PROFILE: `${process.env.NEXT_PUBLIC_USER_ENDPOINT}/me`,
   USER_PROFILE_DETAIL: `${process.env.NEXT_PUBLIC_USER_ENDPOINT}/profile-detail`,
   USER_PROFILE_UPLOADF_FILE: `${process.env.NEXT_PUBLIC_USER_ENDPOINT}/uploadFile`,
+  //for cv
+  USER_SERVICE_CV_FILE: `${process.env.NEXT_PUBLIC_USER_ENDPOINT}/cv`,
   // PUSH NOTIFICATION SERVICE
   SUBSCRIBE: `${process.env.NEXT_PUBLIC_PUSH_NOTIFICATION_ENDPOINT}/subscribe`,
 

@@ -136,13 +136,13 @@ const ROUTE_PATHS: RoutesConfig = {
         },
         nestedRoutes: [
           {
-            path:"/photo",
-            methods:{
-              PUT:{
+            path: "/photo",
+            methods: {
+              PUT: {
                 authRequired: true,
                 roles: ["user", "admin"],
-              }
-            }
+              },
+            },
           },
           {
             path: "/favorites",
@@ -193,15 +193,38 @@ const ROUTE_PATHS: RoutesConfig = {
         },
       },
       {
+        path: "/cv",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+          POST: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+        },
+        nestedRoutes: [
+          {
+            path: "/:cvId",
+            methods: {
+              DELETE: {
+                authRequired: true,
+                roles: ["user", "admin"],
+              },
+            },
+          },
+        ],
+      },
+      {
         path: "/cvstyle/:style",
         methods: {
           GET: {
-            authRequired: false,
-           
+            authRequired: true,
+            roles: ["user", "admin"],
           },
-          
         },
-      }
+      },
     ],
   },
   JOB_SERVICE: {

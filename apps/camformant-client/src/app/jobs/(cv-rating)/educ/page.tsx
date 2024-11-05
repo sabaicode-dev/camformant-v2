@@ -75,7 +75,7 @@ const Page = () => {
       const dataValue = {
         educations: educationEntries,
       };
-
+      console.log("data value",dataValue);
       const response = await axiosInstance.put(
         `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
         { ...dataValue }

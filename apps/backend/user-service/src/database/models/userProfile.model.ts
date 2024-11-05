@@ -122,7 +122,6 @@ const UserProfileSchema = new mongoose.Schema(
     toObject: {
       transform: function (_doc, ret) {
         delete ret.__v;
-        ret._id = ret._id.toString();
       },
     },
   }

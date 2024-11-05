@@ -43,7 +43,7 @@ const Page = () => {
       const dataValue = {
         certificates: filesEntries,
       };
-      console.log("Data", dataValue);
+      console.log("Data", { ...dataValue });
       setLoading(true);
       const response = await axiosInstance.put(
         `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
@@ -52,7 +52,7 @@ const Page = () => {
       console.log("response", response);
       return response;
     } catch (error) {
-      console.log;
+      console.log("post err", error);
     } finally {
       setLoading(false);
     }

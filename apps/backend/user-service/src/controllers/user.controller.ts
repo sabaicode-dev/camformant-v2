@@ -31,8 +31,13 @@ import { Request as ExpressRequest } from "express";
 import agenda from "@/src/utils/agenda";
 import { SCHEDULE_JOBS } from "@/src/jobs";
 import { uploadToS3 } from "../utils/s3";
-import { IUserProfile, UnionProfileType } from "./types/userprofile.type";
-import { CvStyleParams } from "./types/user-cv-controller.type";
+import {
+  IUserProfile,
+  UnionProfileType,
+} from "@/src/controllers/types/userprofile.type";
+import {
+  CvStyleParams,
+} from "@/src/controllers/types/user-cv-controller.type";
 // import { unionProfileType } from "./types/userprofile.type";
 
 @Route("v1/users")
@@ -82,7 +87,6 @@ export class UsersController extends Controller {
       );
 
       this.setStatus(201); // set return status 201
-      return sendResponse<IUser>({ message: "success", data: response });
       return sendResponse<IUser>({ message: "success", data: response });
     } catch (error) {
       console.error(
@@ -186,7 +190,6 @@ export class UsersController extends Controller {
       throw error;
     }
   }
-
   @Delete("/me/favorites/{jobId}")
   public async removeFavorite(
     @Request() request: ExpressRequest,
@@ -227,7 +230,6 @@ export class UsersController extends Controller {
       console.log("userId: ", userId);
       const response = await UserService.getUserBySub(userId);
 
-      return sendResponse<IUser>({ message: "success", data: response });
       return sendResponse<IUser>({ message: "success", data: response });
     } catch (error) {
       console.error(
@@ -329,6 +331,57 @@ export class UsersController extends Controller {
   }
 
   //cv endpoint
+  @Get("/cv")
+  public async getCvFiles(@Request() request: ExpressRequest): Promise<any> {
+    try {
+      const userId: string = request.cookies["user_id"];
+      const data = await UserService.getCvFiles(userId);
+      return sendResponse<any>({
+        message: "Fetch is successful",
+        data,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+  @Post("/cv")
+  public async updateCvFiles(
+    @Request() request: ExpressRequest,
+    @Body() bodyData: { url: string }
+  ) {
+    try {
+      const userId = request.cookies["user_id"];
+      if (!bodyData.url) throw new Error("Invalid URL format");
+      const data = await UserService.insertCvFile(userId, bodyData.url);
+      return sendResponse<any>({
+        message: "Insert is successful",
+        data,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+  @Delete("/cv/:cvId")
+  public async deleteCvFile(
+    @Request() request: ExpressRequest,
+    @Path() cvId: string
+  ) {
+    try {
+      const userId = request.cookies["user_id"];
+      const data = await UserService.deleteCvFile(userId, cvId);
+      if (!data) {
+        throw new Error("CV file not found or could not be deleted.");
+      }
+      return sendResponse<any>({
+        message: "Delete is successful",
+        data,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  //for cv generate
   @Get("/cvstyle/:style")
   public async getCVStyle(@Path() style: string) {
     try {

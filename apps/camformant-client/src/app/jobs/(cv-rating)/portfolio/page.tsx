@@ -38,9 +38,7 @@ const Page = () => {
           return null;
         }
         const data = response.data.data.portfolio;
-        data.length&&setPortfoEntries(
-          data
-        );
+        data.length && setPortfoEntries(data);
       } catch (error) {
       } finally {
         setNext(false);
@@ -59,6 +57,7 @@ const Page = () => {
         `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
         { ...dataValue }
       );
+      console.log("response", response);
       return response;
     } catch (error) {
       console.error(error);
