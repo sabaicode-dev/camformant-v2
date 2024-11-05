@@ -33,7 +33,10 @@ const SearchHomePage: React.FC = () => {
 
   const [searchValue, setSearchValue] = useState<string>("");
   const [filterValues, setFilterValues] = useState(defaultFilterValue);
-
+  // console.log("filter::::::, ", filterValues);
+  const onChangeFilterValues = (value: FilterValueParams) => {
+    setFilterValues(value);
+  };
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [searchTrending, setSearchTrending] = useState<string[]>([]);
   const onChangeSearchValue = (value: string) => {
@@ -80,7 +83,7 @@ const SearchHomePage: React.FC = () => {
             focus={focusInput}
             buttonBack={true}
             setSearchValue={setSearchValue}
-            setCompleteFilter={setFilterValues}
+            onChangeFilterValues={onChangeFilterValues}
             isFilterDisplay={true}
             searchValue={searchValue}
           />

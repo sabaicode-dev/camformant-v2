@@ -385,6 +385,18 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"CertificateParams": {
+				"properties": {
+					"url": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"url"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"PortfolioParams": {
 				"properties": {
 					"name": {
@@ -445,6 +457,12 @@
 					"descriptions": {
 						"$ref": "#/components/schemas/DescriptionParams"
 					},
+					"certificates": {
+						"items": {
+							"$ref": "#/components/schemas/CertificateParams"
+						},
+						"type": "array"
+					},
 					"portfolio": {
 						"items": {
 							"$ref": "#/components/schemas/PortfolioParams"
@@ -470,18 +488,6 @@
 				"required": [
 					"_id",
 					"userId"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"CertificateParams": {
-				"properties": {
-					"url": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"url"
 				],
 				"type": "object",
 				"additionalProperties": false

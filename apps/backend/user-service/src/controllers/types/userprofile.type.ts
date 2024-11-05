@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export interface IUserProfile{
+export interface IUserProfile {
   basic?: BasicParams;
   skills?: SkillParams[];
   expertise?: ExpertiseParams[];
@@ -9,6 +9,7 @@ export interface IUserProfile{
   experiences?: ExperienceParams[];
   references?: ReferenceParams[];
   descriptions?: DescriptionParams;
+  certificates?: CertificateParams[];
   portfolio?: PortfolioParams[];
 }
 export interface BasicParams {
@@ -61,16 +62,15 @@ export interface PortfolioParams {
   url: string;
 }
 export interface CertificateParams {
-    url:string
- 
+  url: string;
 }
-interface IdParams{
- _id:mongoose.Types.ObjectId;
- userId:string 
+interface IdParams {
+  _id: mongoose.Types.ObjectId;
+  userId: string;
 }
 
 export type UnionProfileType =
-  IdParams
+  | IdParams
   | IUserProfile[]
   | BasicParams
   | SkillParams[]
@@ -81,6 +81,5 @@ export type UnionProfileType =
   | DescriptionParams
   | ReferenceParams[]
   | PortfolioParams[]
-  |CertificateParams[]
-  |null
-  ;
+  | CertificateParams[]
+  | null;

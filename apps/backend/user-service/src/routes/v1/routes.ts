@@ -190,6 +190,14 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CertificateParams": {
+        "dataType": "refObject",
+        "properties": {
+            "url": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "PortfolioParams": {
         "dataType": "refObject",
         "properties": {
@@ -210,6 +218,7 @@ const models: TsoaRoute.Models = {
             "experiences": {"dataType":"array","array":{"dataType":"refObject","ref":"ExperienceParams"}},
             "references": {"dataType":"array","array":{"dataType":"refObject","ref":"ReferenceParams"}},
             "descriptions": {"ref":"DescriptionParams"},
+            "certificates": {"dataType":"array","array":{"dataType":"refObject","ref":"CertificateParams"}},
             "portfolio": {"dataType":"array","array":{"dataType":"refObject","ref":"PortfolioParams"}},
         },
         "additionalProperties": false,
@@ -225,14 +234,6 @@ const models: TsoaRoute.Models = {
         "properties": {
             "_id": {"ref":"mongoose.Types.ObjectId","required":true},
             "userId": {"dataType":"string","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CertificateParams": {
-        "dataType": "refObject",
-        "properties": {
-            "url": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },

@@ -24,7 +24,7 @@ interface autoFocusd {
   buttonBack?: boolean;
   isFilterDisplay?: boolean;
   setSearchValue?: Dispatch<SetStateAction<string>>;
-  setCompleteFilter?: Dispatch<SetStateAction<FilterValueParams>>;
+  onChangeFilterValues?: (value: FilterValueParams) => void;
   searchValue?: string;
 }
 
@@ -33,14 +33,14 @@ export const Search: React.FC<autoFocusd> = ({
   buttonBack,
   isFilterDisplay = false,
   setSearchValue,
-  setCompleteFilter,
+  onChangeFilterValues,
   searchValue,
 }) => {
   const [isOpen, setOpen] = useState(false);
   const [filterValues, setFilterValues] = useState(defaultFilterValue);
 
   const handleCompleteFilter = () => {
-    setCompleteFilter!(filterValues);
+    onChangeFilterValues!(filterValues);
     setOpen(false);
   };
 
