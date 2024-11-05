@@ -112,10 +112,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
-        await fetch('http://localhost:4000/v1/auth/logout', {
-            method: 'POST',
-            credentials: 'include',
-        });
+        await axiosInstance.post(`${API_ENDPOINTS.SIGN_OUT}`);
+        setIsAuthenticated(false);
+        setUser(null);
+        router.push('/signin');
     } catch (error) {
         console.error('Logout failed:', error);
     } finally {
