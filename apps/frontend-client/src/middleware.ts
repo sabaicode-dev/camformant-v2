@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { API_ENDPOINTS } from "./utils/const/api-endpoints";
+import { signOutAndClearCookies } from "./utils/helper/signOutAndClearCookies";
 
 export async function middleware(request: NextRequest) {
     console.log("middleware.ts: request.url :::", request.url);
@@ -10,28 +10,7 @@ export async function middleware(request: NextRequest) {
     const allCookies = cookieStore.getAll().map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
     const access_token = allCookies.split('; ').find(cookie => cookie.startsWith('access_token='))?.split('=')[1];
 
-    // Helper function to clear cookies and redirect
-    const signOutAndClearCookies = async (req: NextRequest, redirectUrl: string) => {
-        try {
-            if (access_token) {
-                await fetch(API_ENDPOINTS.SIGN_OUT, {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${access_token}`,
-                    },
-                });
-            }
-        } catch (error) {
-            console.error("Failed to sign out:", error);
-        }
-        const response = NextResponse.redirect(new URL(redirectUrl, req.url));
-        req.cookies.getAll().forEach(cookie => {
-            response.cookies.set(cookie.name, '', { expires: new Date(0) });
-        });
-        return response;
-    };
-
-    // Get user info if access token exists
+    // Revalidate role and permissions on every request
     let userInfoResponse, userInfo;
     if (access_token) {
         userInfoResponse = await fetch(new URL("/api/userInfo", request.url), {
@@ -40,10 +19,11 @@ export async function middleware(request: NextRequest) {
                 Cookie: allCookies || "", // Pass request cookies to /api/userInfo
             },
         });
-        // If the user info request failed, clear cookies and redirect to /signin
+
         if (!userInfoResponse.ok) {
-            return signOutAndClearCookies(request, "/signin");
+            return signOutAndClearCookies(request, "/signin", access_token);
         }
+
         userInfo = await userInfoResponse.json();
     }
 
@@ -62,12 +42,9 @@ export async function middleware(request: NextRequest) {
         const role = userInfo?.data?.role;
         console.log("middleware.ts: role :::", role);
 
-        // If user is not authorized for the dashboard, clear cookies and redirect
-        if (role !== "admin") {
-            return await signOutAndClearCookies(request, "/signin");
-        } else {
-            console.log("middleware.ts: User is authorized for the dashboard");
-            return NextResponse.next();
+        // If user does not have the required role, sign out and redirect
+        if (role !== "company") {
+            return await signOutAndClearCookies(request, "/unAuthorized", access_token);
         }
     }
 
