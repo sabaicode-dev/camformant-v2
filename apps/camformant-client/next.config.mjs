@@ -11,7 +11,7 @@ const nextConfig = {
     missingSuspenseWithCSRBailout: false,
   },
   images: {
-    domains: ["sabaicode.com"],
+    domains: ["sabaicode.com", "cam-formant.s3.amazonaws.com"],
     remotePatterns: [
       {
         protocol: "https",
