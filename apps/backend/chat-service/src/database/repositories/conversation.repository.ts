@@ -30,6 +30,7 @@ export class ConversationRepository {
 
       // Sort the participants to ensure uniqueness regardless of order
       const participants = [userObjectId, companyObjectId].sort();
+      //BUG:::
       console.log("1:::");
 
       const conversation = await ConversationModel.findOneAndUpdate(

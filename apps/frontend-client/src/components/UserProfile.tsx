@@ -7,7 +7,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { SidebarMenuButton } from "./ui/sidebar";
+import { useAuth } from "@/context/AuthContext";
 interface UserProfileProps {
     avatarImage: string;
     fallback: string;
@@ -16,6 +16,14 @@ export const UserProfile: React.FC<UserProfileProps> = ({
     avatarImage,
     fallback,
 }) => {
+    const {signOut ,isLoading } = useAuth()
+    const handleSignOut = async () => {
+        try {
+            await signOut()
+        } catch (error) {
+            console.error('Sign out failed:', error);
+        }
+    }
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild className="cursor-pointer">
@@ -34,8 +42,8 @@ export const UserProfile: React.FC<UserProfileProps> = ({
                 <DropdownMenuItem>
                     <span>Billing</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                    <span>Sign out</span>
+                <DropdownMenuItem onClick={handleSignOut}>
+                { isLoading ? <span>Sign out.....</span>  : <span>Sign out</span> }
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

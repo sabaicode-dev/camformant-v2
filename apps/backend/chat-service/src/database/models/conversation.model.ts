@@ -13,7 +13,7 @@ export interface IConversation {
 
 const ConversationSchema: Schema = new Schema(
   {
-    participants: { type: [String], required: true, unique: false },
+    participants: { type: [String], required: true },
     roomId: { type: String, required: true, unique: true },
     username: String,
     userProfile: String,
@@ -24,7 +24,8 @@ const ConversationSchema: Schema = new Schema(
 );
 
 // Add a unique compound index for participants
-ConversationSchema.index({ participants: 1 }, { unique: true });
+// ConversationSchema.index({ participants: 1 }, { unique: true });
+// ConversationSchema.index({ roomId: 1, participants: 1 });
 
 const ConversationModel = mongoose.model<IConversation>(
   "Conversation",

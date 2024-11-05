@@ -57,6 +57,8 @@ export class ConversationController extends Controller {
   ): Promise<{ message: string; data: IConversation }> {
     try {
       const userId = request.cookies["user_id"];
+      // console.log("::::::userId:::", userId);
+      console.log("requestBody=======: requestBody", requestBody);
 
       const newRoom = await this.conversationService.getOrCreateConversation({
         ...requestBody,

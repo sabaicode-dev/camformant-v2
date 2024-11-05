@@ -7,9 +7,10 @@ import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
 interface Company {
+  _id: string;
   name: string;
   profile: string;
 }
@@ -22,70 +23,81 @@ export interface Job {
 const ChatPage = () => {
   const { user, isAuthenticated } = useAuth();
   const router = useRouter();
-  // if (!isAuthenticated) {
-  //   router.push("/login");
-  // }
+
   const params = useParams();
-  const companyId = params.id as string | undefined;
+  const jobId = params.id as string;
 
   const [job, setJob] = useState<Job>();
   const [error, setError] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
-
-  // Fetch job data
-  const fetchJob = useCallback(async () => {
-    try {
-      const response = await axiosInstance.get(
-        `${API_ENDPOINTS.JOBS}/${companyId}`
-      );
-
-      if (response.status === 200 && response.data.data) {
-        setJob(response.data.data);
-
-        // Once job data is fetched, call getConversationId
-        await getConversationId({
-          companyName: response.data.data.companyId.name,
-          companyProfile: response.data.data.companyId.profile,
-        });
-      } else {
-        setError("Job not found");
-      }
-    } catch (error) {
-      console.error("chat error: ", error);
-      setError("Failed to fetch job data");
-    }
-  }, [companyId, user]);
+  const [companyId, setCompanyId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (companyId) {
-      // console.log("fetch job");
+    // Fetch job data to get companyId
+    const fetchJob = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `${API_ENDPOINTS.JOBS}/${jobId}`
+        );
+
+        if (response.status === 200 && response.data.data) {
+          setCompanyId(response.data.data.companyId._id);
+          setJob(response.data.data);
+          console.log("response.data.data", response.data.data);
+        } else {
+          setError("Job not found");
+        }
+      } catch (error) {
+        console.error("chat error: ", error);
+        setError("Failed to fetch job data");
+      }
+    };
+    if (jobId) {
       fetchJob();
     }
-  }, [companyId, fetchJob]);
+  }, [jobId]);
 
+  console.log("jobs:", job);
   // Function to get conversation ID
   const getConversationId = async ({
     companyName,
     companyProfile,
+    userId,
+    companyId,
   }: {
     companyName: string;
     companyProfile: string;
+    userId?: string;
+    companyId: string;
   }) => {
     try {
-      const response = await axiosInstance.post(API_ENDPOINTS.CONVERSATIONS, {
+      const params = {
         companyId,
         companyProfile,
         companyName,
-        userId: user!._id,
+        userId,
         username: user!.username,
         userProfile: user!.profile,
-      });
+      };
 
-      setConversationId(response.data.data._id);
+      const response = await axiosInstance.post(
+        API_ENDPOINTS.CONVERSATIONS,
+        params
+      );
     } catch (error) {
       console.error("ChatPage getConversationId() error::: ", error);
     }
   };
+
+  useEffect(() => {
+    const params = {
+      companyName: "fdb",
+      companyProfile: "bvdb",
+      userId: user?._id,
+      companyId: companyId || "",
+    };
+    getConversationId(params);
+  }, [companyId]);
 
   if (error) {
     return (
@@ -125,7 +137,9 @@ const ChatPage = () => {
       </div>
     );
   }
-  return <Message conversationId={conversationId} job={job!} />;
+  return (
+    <Message conversationId={conversationId} job={job!} userId={user?._id} />
+  );
 };
 
 export default ChatPage;
