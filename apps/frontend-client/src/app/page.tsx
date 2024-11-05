@@ -17,5 +17,5 @@ export default function Home() {
         foo: "bar",
     });
 
-    return <DashboardPage />;
+    return<DashboardPage />
 }
