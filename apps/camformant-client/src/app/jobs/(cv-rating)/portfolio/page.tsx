@@ -32,7 +32,7 @@ const Page = () => {
         setNext(true);
         console.log("user", user);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=portfolio`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=portfolio`
         );
         if (!response) {
           return null;
@@ -52,9 +52,9 @@ const Page = () => {
       const dataValue = {
         portfolio: portfoEntries,
       };
-
+      console.log("data calue:::", dataValue);
       const response = await axiosInstance.put(
-        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
+        API_ENDPOINTS.USER_PROFILE_DETAIL,
         { ...dataValue }
       );
       console.log("response", response);

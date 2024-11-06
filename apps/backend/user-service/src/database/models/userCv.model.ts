@@ -13,9 +13,10 @@ const cvFileSchema = new mongoose.Schema(
     },
   }
 );
+
 const cvFileCollectionSchema = new mongoose.Schema(
   {
-    userId:{type:mongoose.Types.ObjectId,unique:true},
+    userId:{type:mongoose.Types.ObjectId ,required:true},
     cv: { type: [cvFileSchema] },
   },
   {
@@ -25,9 +26,9 @@ const cvFileCollectionSchema = new mongoose.Schema(
         ret._id = ret._id.toString();
       },
     },
-    _id:false
   }
 );
+
 export const CvFileModel = mongoose.model(
   "CvFiles",
   cvFileCollectionSchema,

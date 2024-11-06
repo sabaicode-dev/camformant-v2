@@ -20,7 +20,7 @@ export interface BasicParams {
   phonenumber?: string;
   dob?: string;
   address?: string;
-  status?: string;
+  martial?: string;
 }
 export interface ExperienceParams {
   position: string;

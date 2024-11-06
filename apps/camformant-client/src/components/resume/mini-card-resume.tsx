@@ -6,6 +6,7 @@ import Skeleton from "react-loading-skeleton";
 import { MdOutlineKeyboardDoubleArrowLeft } from "react-icons/md";
 import { BsPersonVcard } from "react-icons/bs";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import axiosInstance from "@/utils/axios";
 
 interface typeMiniCard {
   name: string;
@@ -40,7 +41,7 @@ const MiniCardResume: React.FC<typeMiniCard> = ({
   const handleDelete = async () => {
     try {
       setNext(true);
-      const res = await axios.delete(
+      const res = await axiosInstance.delete(
         `${API_ENDPOINTS.USER_SERVICE_CV_FILE}/${cvId}`,
       );
       if (res.status === 200) {

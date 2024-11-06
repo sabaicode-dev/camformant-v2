@@ -47,7 +47,7 @@ const Page: React.FC = () => {
         setNext(true);
         console.log("user id", user!._id);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=experiences`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=experiences`
         );
         const data = response.data.data.experiences;
         data.length&&setExperEntries(
@@ -73,7 +73,7 @@ const Page: React.FC = () => {
       };
 
       const response = await axiosInstance.put(
-        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
+        API_ENDPOINTS.USER_PROFILE_DETAIL,
         { ...dataValue }
       );
       return response;

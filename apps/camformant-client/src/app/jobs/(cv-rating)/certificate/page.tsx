@@ -23,7 +23,7 @@ const Page = () => {
     async function getData() {
       try {
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=certificates`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=certificates`
         );
         const data = response.data.data.certificates;
         console.log(data);
@@ -46,7 +46,7 @@ const Page = () => {
       console.log("Data", { ...dataValue });
       setLoading(true);
       const response = await axiosInstance.put(
-        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
+        API_ENDPOINTS.USER_PROFILE_DETAIL,
         { ...dataValue }
       );
       console.log("response", response);
