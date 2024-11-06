@@ -27,7 +27,7 @@
 					"role": {
 						"type": "string",
 						"enum": [
-							"admin",
+							"company",
 							"user"
 						]
 					}
