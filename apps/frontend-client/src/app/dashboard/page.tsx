@@ -1,8 +1,12 @@
-"use client";
-import React from "react";
+'use client';
 
-const DashboardPage = () => {
-    return <>DashboardPage</>;
-};
+import { useAuth } from '@/context/AuthContext';
 
-export default DashboardPage;
+export default function Dashboard() {
+    const { user } = useAuth();
+    return (<>
+            <h1>Dashboard</h1>
+            <p>Welcome {user?.username}</p>
+    </>
+    );
+}
