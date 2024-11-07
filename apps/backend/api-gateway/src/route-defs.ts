@@ -22,6 +22,14 @@ const ROUTE_PATHS: RoutesConfig = {
     target: configs.authServiceUrl,
     nestedRoutes: [
       {
+        path: "/checkAuth",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
+      },
+      {
         path: "/health",
         methods: {
           GET: {
@@ -66,6 +74,7 @@ const ROUTE_PATHS: RoutesConfig = {
         methods: {
           POST: {
             authRequired: true,
+            roles: ["user", "admin"],
           },
         },
       },
@@ -135,6 +144,15 @@ const ROUTE_PATHS: RoutesConfig = {
         },
         nestedRoutes: [
           {
+            path: "/photo",
+            methods: {
+              PUT: {
+                authRequired: true,
+                roles: ["user", "admin"],
+              },
+            },
+          },
+          {
             path: "/favorites",
             methods: {
               GET: {
@@ -159,6 +177,61 @@ const ROUTE_PATHS: RoutesConfig = {
             ],
           },
         ],
+      },
+      {
+        path: "/uploadFile",
+        methods: {
+          POST: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+        },
+      },
+      {
+        path: "/profile-detail/:userId",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+          PUT: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+        },
+      },
+      {
+        path: "/cv",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+          POST: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+        },
+        nestedRoutes: [
+          {
+            path: "/:cvId",
+            methods: {
+              DELETE: {
+                authRequired: true,
+                roles: ["user", "admin"],
+              },
+            },
+          },
+        ],
+      },
+      {
+        path: "/cvstyle/:style",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+        },
       },
     ],
   },

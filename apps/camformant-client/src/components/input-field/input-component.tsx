@@ -1,7 +1,7 @@
 import React from "react";
 
 interface ComponentsProps {
-  values: string;  // specify the expected type, e.g., string
+  values: string|number;  // specify the expected type, e.g., string
   setValues: (value: string) => void;
   setFocused: (value: string | null) => void;
   focused: string | null;
@@ -28,7 +28,9 @@ const InputComponent: React.FC<ComponentsProps> = ({
           }`}
           type={typeofInput}
           value={values}
-          onChange={(e) => setValues(e.target.value)}
+          onChange={(e) => {
+            setValues(e.target.value)
+          }}
           onFocus={() => setFocused(valuesFouce)}
           onBlur={() => setFocused(null)}
         />

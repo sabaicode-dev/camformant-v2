@@ -22,6 +22,7 @@ class JobService {
   }
 
   public async getAllJobs(queries: JobGetAllControllerParams, userId = null) {
+    
     try {
       const { page, limit, filter, sort, search, userFav } = queries;
       const searchUserFav = userFav?.split(",") || [];

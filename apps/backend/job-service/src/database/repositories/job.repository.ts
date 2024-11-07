@@ -25,7 +25,7 @@ class JobRepository {
   }
 
   public async getAllJobs(queries: JobGetAllRepoParams) {
-    const {
+    let {
       page = 1,
       filter = { position: "ALL" },
       sort = { createdAt: "desc" },
@@ -203,7 +203,7 @@ class JobRepository {
         path: "companyId",
         model: CompanyModel,
         select:
-          "name location bio profile email phone_number job_openings job_closings",
+          "_id name location bio profile email phone_number job_openings job_closings",
       });
 
       if (!result) {

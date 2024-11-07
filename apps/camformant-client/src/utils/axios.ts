@@ -15,7 +15,7 @@ const isServer = typeof window === 'undefined';
 
 async function getServerCookies(): Promise<string | undefined> {
   if (isServer) {
-    const { cookies } = (await import("next/headers"));
+    const { cookies } = (await import("next/headers"));// dynamically imports the "next/headers" module from Next.js
     const cookieStore = cookies();
     return cookieStore.getAll().map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
   }

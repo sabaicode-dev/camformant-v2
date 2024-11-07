@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+import { Domain } from "domain";
 import withPWA from "next-pwa";
 
 const nextConfig = {
@@ -11,7 +12,7 @@ const nextConfig = {
     missingSuspenseWithCSRBailout: false,
   },
   images: {
-    domains: ["sabaicode.com", "cam-formant.s3.amazonaws.com"],
+    domains: ["sabaicode.com"],
     remotePatterns: [
       {
         protocol: "https",
@@ -41,12 +42,22 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "cam-formant.s3.amazonaws.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "microservice-sample-resource.s3.amazonaws.com",
         pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "camformant.s3.ap-southeast-2.amazonaws.com",
         pathname: "/**",
       },
     ],

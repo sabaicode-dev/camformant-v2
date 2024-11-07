@@ -1,4 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
+import { signOutAndClearCookies } from "./utils/helper/signOutAndClearCookies";
 import { API_ENDPOINTS } from "./utils/const/api-endpoints";
 
 export async function middleware(request: NextRequest) {
@@ -72,7 +73,7 @@ export async function middleware(request: NextRequest) {
     console.log("middleware.ts: role :::", role);
 
     // If user is not authorized for the dashboard, clear cookies and redirect
-    if (role !== "company") {
+    if (role !== "admin") {
       return await signOutAndClearCookies(request, "/signin");
     } else {
       console.log("middleware.ts: User is authorized for the dashboard");

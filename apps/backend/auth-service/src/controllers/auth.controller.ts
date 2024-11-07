@@ -15,6 +15,7 @@ import {
   Get,
   Post,
   Queries,
+  Query,
   Request,
   Route,
   SuccessResponse,
@@ -99,10 +100,9 @@ export class AuthController extends Controller {
       throw error;
     }
   }
-
   @Get("/google")
-  public loginWithGoogle() {
-    const cognitoOAuthURL = AuthService.loginWithGoogle();
+  public loginWithGoogle(@Query() state: string) {
+    const cognitoOAuthURL = AuthService.loginWithGoogle(state);
 
     return sendResponse({
       message: "Login with Google successfully",
@@ -125,15 +125,6 @@ export class AuthController extends Controller {
     @Queries() query: GoogleCallbackRequest
   ) {
     try {
-      if (query.error) {
-        console.error(`OAuth Error: "Unknown error"}`);
-
-        // Redirect to frontend with the error message
-        return {
-          status: 302,
-          url: configs.clientUrl,
-        };
-      }
       const response = (request as any).res as Response;
       const tokens = await AuthService.getOAuthToken(query);
 
@@ -166,17 +157,29 @@ export class AuthController extends Controller {
       const refreshToken = request.cookies["refresh_token"];
       const username = request.cookies["username"];
 
-      const result = await AuthService.refreshToken({
-        refreshToken: body.refreshToken || refreshToken,
-        username: body.username || username,
-      });
+      if (refreshToken && username) {
+        const result = await AuthService.refreshToken({
+          refreshToken: body.refreshToken || refreshToken,
+          username: body.username || username,
+        });
 
-      setCookie(response, "id_token", result.idToken);
-      setCookie(response, "access_token", result.accessToken);
-
-      return sendResponse({ message: "Token refreshed successfully" });
+        if (result) {
+          setCookie(response, "id_token", result.idToken);
+          setCookie(response, "access_token", result.accessToken);
+          return sendResponse({ message: "Token refreshed successfully" });
+        }
+      }
+      return sendResponse({ message: "NO Token Found!" });
     } catch (error) {
       throw error;
     }
+  }
+  @Get("/checkAuth")
+  public async checkAuth(@Request() request: ExpressRequest) {
+    try {
+      if (!request.cookies["access_token"] || !request.cookies["id_token"])
+        return { message: "no authorized" };
+      return { message: "authorized" };
+    } catch (error) {}
   }
 }

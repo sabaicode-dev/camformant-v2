@@ -7,14 +7,20 @@ import {
   UserUpdateRepoParams,
 } from "@/src/database/repositories/types/user-repository.type";
 import mongoose, { SortOrder } from "mongoose";
+import UserProfileDetailModel from "@/src/database/models/userProfile.model";
 import {
-  // APP_ERROR_MESSAGE,
+  AUTH_MESSAGES,
   InvalidInputError,
   NotFoundError,
-  // ResourceConflictError,
   prettyObject,
+  ResourceConflictError,
 } from "@sabaicode-dev/camformant-libs";
-
+import { CvFileModel, CvStyleModel } from "../models/userCv.model";
+import { CvStyleParams } from "@/src/controllers/types/user-cv-controller.type";
+import {
+  IUserProfile,
+  UnionProfileType,
+} from "@/src/controllers/types/userprofile.type";
 class UserRepository {
   async getAll(queries: UserGetAllRepoParams) {
     const {
@@ -128,6 +134,23 @@ class UserRepository {
       throw error;
     }
   }
+  async updateProfilePic(photo: string, userId: string): Promise<IUser> {
+    try {
+      const user = await UserModel.findByIdAndUpdate(
+        userId,
+        {
+          profile: photo,
+        },
+        { new: true }
+      );
+      if (!user) {
+        throw new NotFoundError("User not found");
+      }
+      return user;
+    } catch (err) {
+      throw err;
+    }
+  }
 
   async create(newInfo: UserCreationRepoParams) {
     try {
@@ -142,8 +165,9 @@ class UserRepository {
 
       // Duplicate Email
       if ((error as MongoError).code === 11000) {
-        // throw new ResourceConflictError(APP_ERROR_MESSAGE.existedEmail);
-        throw new Error("Exist data");
+        throw new ResourceConflictError(
+          AUTH_MESSAGES.AUTHENTICATION.ACCOUNT_ALREADY_EXISTS
+        );
       }
 
       // Validation Error
@@ -266,6 +290,112 @@ class UserRepository {
         prettyObject(error as {})
       );
       throw error;
+    }
+  }
+  async getProfileByUserId(
+    userId: string,
+    category?: string
+  ): Promise<IUserProfile> {
+    try {
+      let categoryData: any = {};
+      if (!category) {
+        categoryData = await UserProfileDetailModel.find({ userId: userId });
+      } else if (category == "ability") {
+        categoryData = await UserProfileDetailModel.find({
+          userId: userId,
+        }).select("skills expertise languages -_id");
+      } else
+        categoryData = await UserProfileDetailModel.find({ userId }).select(
+          `${category} -_id`
+        );
+      if (!categoryData.length)
+        throw new NotFoundError("user profile not found");
+      return categoryData[0];
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateProfile(
+    userId: string,
+    updateBody: IUserProfile
+  ): Promise<UnionProfileType> {
+    try {
+      let existingUserId = await UserProfileDetailModel.find(
+        { userId: userId },
+        { userId: 1 }
+      );
+
+      if (existingUserId.length === 0) {
+        let response = await UserProfileDetailModel.create({
+          ...updateBody,
+          userId,
+        });
+        return response;
+      } else {
+        const updatedUser = await UserProfileDetailModel.findOneAndUpdate(
+          { userId },
+          { $set: { ...updateBody } },
+          { new: true, useFindAndModify: false }
+        );
+
+        return updatedUser;
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+  async getCvFile(userId: string) {
+    try {
+      const response = await CvFileModel.findById(userId);
+      if (!response) throw new NotFoundError("userid not found");
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  async insertCvFile(userId: string, url: string) {
+    try {
+      const response = await CvFileModel.findByIdAndUpdate(
+        new mongoose.Types.ObjectId(userId),
+        { $push: { cv: { url } } },
+        { new: true }
+      );
+      if (!response) {
+        const newCvFile = CvFileModel.create({
+          userId: new mongoose.Types.ObjectId(userId),
+          cv: [{ url: url }],
+        });
+        return newCvFile;
+      }
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  async deleteCvFile(userId: string, cvId: string) {
+    try {
+      const cvIdObj = new mongoose.Types.ObjectId(cvId);
+      const response = await CvFileModel.findByIdAndUpdate(
+        userId,
+        { $pull: { cv: { _id: cvIdObj } } },
+        { new: true }
+      );
+      if (!response)
+        throw new NotFoundError("cv cannot delete due to ot found cvId");
+      // Pull the array element where _id matches the elementId
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  async getCvStyle(style: string): Promise<CvStyleParams> {
+    try {
+      const cvData: CvStyleParams[] = await CvStyleModel.find({ style });
+      if (cvData.length > 0) throw new NotFoundError("CvStyle not found");
+      return cvData[0];
+    } catch (err) {
+      throw err;
     }
   }
 }

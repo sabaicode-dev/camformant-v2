@@ -82,10 +82,11 @@ const SearchHomePage: React.FC = () => {
           <Search
             focus={focusInput}
             buttonBack={true}
-            setSearchValue={setSearchValue}
+            // setSearchValue={setSearchValue}
             onChangeFilterValues={onChangeFilterValues}
             isFilterDisplay={true}
             searchValue={searchValue}
+            onChangeSearchValue={onChangeSearchValue}
           />
         </div>
 
@@ -143,7 +144,11 @@ const SearchHomePage: React.FC = () => {
 
         {/* Search Results */}
         <div className="w-full h-full">
-          <SearchCard searchValue={searchValue} filterValues={filterValues} />
+          <SearchCard
+            searchValue={searchValue}
+            filterValues={filterValues}
+            onChangeFilterValues={onChangeFilterValues}
+          />
         </div>
       </div>
     </div>

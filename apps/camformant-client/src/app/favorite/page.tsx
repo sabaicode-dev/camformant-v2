@@ -30,7 +30,9 @@ const Page: React.FC = () => {
 
     try {
       if (newFavoriteStatus) {
-        await axiosInstance.post(`${API_ENDPOINTS.FAVORITE}`, { jobId });
+        await axiosInstance.post(`${API_ENDPOINTS.FAVORITE}`, {
+          jobId,
+        });
       } else {
         await axiosInstance.delete(`${API_ENDPOINTS.FAVORITE}/${jobId}`);
         // Remove the job from the list if unfavorited
@@ -75,7 +77,6 @@ const Page: React.FC = () => {
           ...job,
           favorite: true,
         }));
-
         setJobData(jobsWithFavoriteStatus);
         setLoading(false);
       } catch (error) {

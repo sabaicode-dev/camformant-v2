@@ -2,15 +2,19 @@
 
 import React, { useEffect, useState } from "react";
 import Mypic from "../../../public/images/Croods User Interface.png";
-import AttachedCvs from "./attached-cv";
+import AttachedCvs from "@/components/resume/attached-cv";
 import Image from "next/image";
 import axios from "axios";
 import MiniCardResume from "./mini-card-resume";
+import axiosInstance from "@/utils/axios";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 
 interface CvData {
-  cv: string[]; // Adjust based on your actual data structure
+ cv:{
+  url:string
+  _id:string
+ }[]
 }
-
 const CardResume: React.FC = () => {
   const [show, setShow] = useState<boolean>(false);
   const [cvs, setCvs] = useState<CvData | null>(null);
@@ -27,13 +31,13 @@ const CardResume: React.FC = () => {
     const getCv = async () => {
       try {
         setLoading(true);
-        const check_cv = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/cv/`,
-          config
+        const check_cv = await axiosInstance.get(
+        API_ENDPOINTS.USER_SERVICE_CV_FILE
         );
+        console.log("cv data",check_cv);
 
         if (check_cv.status === 200) {
-          setCvs(check_cv.data); // Set the entire response data, which includes the 'cv' array
+          setCvs(check_cv.data.data); // Set the entire response data, which includes the 'cv' array
           setShow(check_cv.data.cv.length > 0); // Set show based on whether there are CVs
         } else {
           setShow(false);
@@ -94,10 +98,11 @@ const CardResume: React.FC = () => {
         <div className="flex flex-col items-center justify-center pt-5 pb-20">
           <h1 className="w-full pb-5 text-xl font-semibold">My Resume</h1>
           <div className="flex flex-col w-full gap-3 ">
-            {cvs?.cv?.map((item: string, index: number) => (
+            {cvs?.cv?.map((item: {url:string,_id:string}, index: number) => (
               <div key={index} className="relative w-full h-full">
                 <MiniCardResume
-                  name={item}
+                  name={item.url}
+                  cvId={item._id}
                   index={index}
                   next={next}
                   setNext={setNext}
