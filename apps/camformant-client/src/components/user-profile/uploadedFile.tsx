@@ -9,9 +9,12 @@ interface UploadedFile {
 
 const UploadedFile: React.FC<UploadedFile> = ({ files, removeFile }) => {
   return (
-    <div className="w-full grid grid-cols-2 container pt-10 gap-5">
+    <div className="container grid w-full grid-cols-2 gap-5 pt-10">
       {files!.map((file, index) => (
-        <div className=" flex justify-center items-center outline-none rounded-2xl shadow-md shadow-black-300 px-5 text-center">
+        <div
+          key={""}
+          className="flex items-center justify-center px-5 text-center shadow-md outline-none  rounded-2xl shadow-black-300"
+        >
           <Link
             href={file.url}
             onClick={(e) => {
@@ -22,13 +25,14 @@ const UploadedFile: React.FC<UploadedFile> = ({ files, removeFile }) => {
           >
             {file.url}
           </Link>
-         <span
-         className="text-red-500 hover:text-red-700 font-bold cursor-pointer"
-          onClick={() => {
-            removeFile(index);
-          }}>
-          x
-         </span>
+          <span
+            className="font-bold text-red-500 cursor-pointer hover:text-red-700"
+            onClick={() => {
+              removeFile(index);
+            }}
+          >
+            x
+          </span>
         </div>
       ))}
     </div>

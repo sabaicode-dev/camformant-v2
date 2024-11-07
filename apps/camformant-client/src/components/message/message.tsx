@@ -35,9 +35,16 @@ const SkeletonLoader = () => (
 );
 
 const Message = React.memo(
-  ({ conversationId, job }: { conversationId: string | null; job: Job }) => {
+  ({
+    conversationId,
+    job,
+    userId,
+  }: {
+    conversationId: string | null;
+    job: Job;
+    userId?: string;
+  }) => {
     const params = useParams();
-    const { user } = useAuth();
     const router = useRouter();
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
     const [isSend, setIsSend] = useState(false);
@@ -135,11 +142,11 @@ const Message = React.memo(
     const sendMessage = async () => {
       if (inputMessage.trim() === "") return;
 
-      console.log("userId", user!._id);
+      console.log("userId", userId);
 
       const newMessage: Message = {
         text: inputMessage,
-        senderId: user!._id,
+        senderId: userId!,
         recipientId: id!,
         conversationId: conversationId!,
       };
@@ -217,11 +224,11 @@ const Message = React.memo(
                 messages.map((message, idx) => (
                   <div
                     key={message._id}
-                    className={`${messages.length - 1 === idx ? "mb-8" : "mb-2"} flex ${message.senderId === user?._id ? "justify-end" : "justify-start"}`}
+                    className={`${messages.length - 1 === idx ? "mb-8" : "mb-2"} flex ${message.senderId === userId ? "justify-end" : "justify-start"}`}
                   >
                     <div
                       className={`p-3 rounded-lg max-w-xs break-words ${
-                        message.senderId === user?._id
+                        message.senderId === userId
                           ? "bg-blue-600 text-white"
                           : "bg-gray-200 text-gray-900"
                       }`}
@@ -229,7 +236,7 @@ const Message = React.memo(
                       {message.text}
                       <div
                         className={`text-xs ${
-                          message.senderId === user?._id
+                          message.senderId === userId
                             ? "text-left text-gray-400"
                             : "text-right text-gray-300"
                         } mt-1`}

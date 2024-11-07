@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+import { Domain } from "domain";
 import withPWA from "next-pwa";
 
 const nextConfig = {
@@ -11,6 +12,7 @@ const nextConfig = {
     missingSuspenseWithCSRBailout: false,
   },
   images: {
+    domains: ["sabaicode.com"],
     remotePatterns: [
       {
         protocol: "https",

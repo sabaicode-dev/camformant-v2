@@ -22,6 +22,14 @@ const ROUTE_PATHS: RoutesConfig = {
     target: configs.authServiceUrl,
     nestedRoutes: [
       {
+        path: "/checkAuth",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
+      },
+      {
         path: "/health",
         methods: {
           GET: {

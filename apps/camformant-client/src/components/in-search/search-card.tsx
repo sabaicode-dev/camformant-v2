@@ -1,4 +1,10 @@
-import React, { Suspense, useCallback, useEffect, useState } from "react";
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Card } from "../card/card";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
@@ -12,9 +18,11 @@ import Image from "next/image";
 const SearchCard = ({
   searchValue,
   filterValues,
+  onChangeFilterValues,
 }: {
   searchValue: string;
   filterValues: FilterValueParams;
+  onChangeFilterValues: (value: FilterValueParams) => void;
 }) => {
   const { user } = useAuth();
   const [jobData, setJobData] = useState<any[]>([]);
@@ -23,9 +31,9 @@ const SearchCard = ({
   const [love, setLove] = useState<boolean>(true);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
-  // Debounced search value (waits 1s after the user stops typing)
-  const debouncedSearchValue = useDebounce(searchValue, 1000);
 
+  const debouncedSearchValue = useDebounce(searchValue, 1200);
+  const newValue = debouncedSearchValue;
   // const toggleFavorite = (jobId: string) => {
   //   setJobData((prevData: any) =>
   //     prevData.map((job: any) =>
@@ -33,6 +41,7 @@ const SearchCard = ({
   //     )
   //   );
   // };
+
   const toggleFavorite = async (jobId: string) => {
     const jobIndex = jobData.findIndex((job) => job._id === jobId);
     if (jobIndex === -1) return;
@@ -60,70 +69,81 @@ const SearchCard = ({
     }
   };
   const loadMoreData = useCallback(async () => {
-    // console.log("page::: ", page);
-
     if (!hasMore || loading) return; // Prevent fetching if no more data or already loading
 
     setLoading(true);
-    setPage((curr) => curr + 1);
-    const salary = {
-      min_salary:
-        filterValues.minSalary > 0 ? filterValues.minSalary : undefined,
-      max_salary:
-        filterValues.maxSalary > 0 ? filterValues.maxSalary : undefined,
-    };
-
-    const cleanedSalary = Object.fromEntries(
-      Object.entries(salary).filter(([_, value]) => value !== undefined)
-    );
-    const filterSalary =
-      Object.keys(cleanedSalary).length > 0 ? cleanedSalary : undefined;
-
-    const filter = {
-      schedule: filterValues.schedule || undefined,
-      type: filterValues.type || undefined,
-      workMode: filterValues.workMode || undefined,
-      required_experience: filterValues.required_experience || undefined,
-      salary: filterSalary,
-    };
-
-    const params: Record<string, any> = {
-      limit: 5,
-      sort: JSON.stringify({ createdAt: "desc" }),
-      filter: JSON.stringify(filter),
-      page: page,
-    };
-
-    if (debouncedSearchValue) {
-      params.search = debouncedSearchValue;
-    }
     try {
-      const query = buildQuery(page);
-      const res = await axiosInstance.get(`${API_ENDPOINTS.JOBS}`, { params });
-      // console.log("jobs:::", res.data.data);
+      const nextPage = page + 1;
+      const salary = {
+        min_salary: filterValues.minSalary > 0 ? filterValues.minSalary : 0,
+        max_salary: filterValues.maxSalary > 0 ? filterValues.maxSalary : 5000,
+      };
+
+      const cleanedSalary = Object.fromEntries(
+        Object.entries(salary).filter(([_, value]) => value !== undefined)
+      );
+      const filterSalary =
+        Object.keys(cleanedSalary).length > 0 ? cleanedSalary : undefined;
+
+      const filter = {
+        schedule: filterValues.schedule || undefined,
+        type: filterValues.type || undefined,
+        workMode: filterValues.workMode || undefined,
+        required_experience: filterValues.required_experience || undefined,
+        salary: filterSalary,
+      };
+      const query = buildQuery(nextPage, filter, newValue);
+      const res = await axiosInstance.get(`${API_ENDPOINTS.JOBS}${query}`);
 
       const { jobs, totalPages, currentPage } = res.data.data; // Adjust based on your actual response structure
 
-      if (jobs.length === 0 || currentPage === totalPages) {
-        setHasMore(false); // No more data to fetch
-      }
-      // setJobData((job) => [...job, ...jobs]);
       const jobsWithFavoriteStatus = jobs.map((job: IJob) => ({
         ...job,
         favorite: user?.favorites.includes(job._id!) || false,
       }));
 
       setJobData((prevJobs) => [...prevJobs, ...jobsWithFavoriteStatus]);
+      setPage(nextPage);
+      if (jobs.length === 0 || currentPage === totalPages) {
+        setHasMore(false); // No more data to fetch
+      }
     } catch (error) {
       console.error("Error fetching more jobs:", error);
       setError("Failed to load more jobs. Please try again later.");
     } finally {
       setLoading(false);
     }
-  }, [hasMore, loading, page]);
+    console.log("job load::: ", jobData);
+  }, [
+    hasMore,
+    loading,
+    page,
+    user?.favorites,
+    filterValues.workMode,
+    filterValues.maxSalary,
+    filterValues.minSalary,
+    filterValues.required_experience,
+    filterValues.schedule,
+    filterValues.type,
+    newValue,
+    jobData,
+  ]);
   const onScroll = useCallback(async () => {
+    // console.log("===document.body.offsetHeight===", document.body.offsetHeight);
+    // console.log("===window.scrollY===", window.scrollY);
+    // const height = heighRef.current?.clientHeight;
+    // console.log("===height===", height);
+    // console.log(
+    //   "===document.body.scrollHeight;===",
+    //   document.body.scrollHeight
+    // );
+
+    // console.log(
+    //   "===window.innerHeight + window.scrollY===",
+    //   window.innerHeight + window.scrollY
+    // );
     if (
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 1 &&
+      window.innerHeight + window.scrollY >= document.body.scrollHeight - 200 &&
       hasMore &&
       !loading &&
       jobData.length > 0
@@ -136,87 +156,67 @@ const SearchCard = ({
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, [onScroll]);
+  console.log("filter in search card:::", filterValues);
 
   useEffect(() => {
-    // console.log(filterValues);
-    // console.log(searchValue);
+    const fetchJobs = async () => {
+      setLoading(true);
+      setError(null);
+      setJobData([]);
+      setPage(1);
+      setHasMore(true); // Reset hasMore when category changes
+      //=====filter======
+      const salary = {
+        min_salary: filterValues.minSalary > 0 ? filterValues.minSalary : 0,
+        max_salary: filterValues.maxSalary > 0 ? filterValues.maxSalary : 5000,
+      };
 
-    const fetchJobData = async () => {
-      if (!debouncedSearchValue && isFilterEmpty(filterValues)) return;
-      // console.log("refetch::::");
-      // console.log("filterValues::: ", filterValues);
+      const cleanedSalary = Object.fromEntries(
+        Object.entries(salary).filter(([_, value]) => value !== undefined)
+      );
+      const filterSalary =
+        Object.keys(cleanedSalary).length > 0 ? cleanedSalary : undefined;
+
+      const filter = {
+        schedule: filterValues.schedule || undefined,
+        type: filterValues.type || undefined,
+        workMode: filterValues.workMode || undefined,
+        required_experience: filterValues.required_experience || undefined,
+        salary: filterSalary,
+      };
 
       try {
-        setLoading(true);
-        setError(null);
-        setJobData([]);
-        setPage(1);
-        setHasMore(true);
-
-        const salary = {
-          min_salary:
-            filterValues.minSalary > 0 ? filterValues.minSalary : undefined,
-          max_salary:
-            filterValues.maxSalary > 0 ? filterValues.maxSalary : undefined,
-        };
-
-        const cleanedSalary = Object.fromEntries(
-          Object.entries(salary).filter(([_, value]) => value !== undefined)
+        const query = buildQuery(1, filter, newValue);
+        const jobResponse = await axiosInstance.get(
+          `${API_ENDPOINTS.JOBS}${query}`
         );
-        const filterSalary =
-          Object.keys(cleanedSalary).length > 0 ? cleanedSalary : undefined;
 
-        const filter = {
-          schedule: filterValues.schedule || undefined,
-          type: filterValues.type || undefined,
-          workMode: filterValues.workMode || undefined,
-          required_experience: filterValues.required_experience || undefined,
-          salary: filterSalary,
-        };
+        const { jobs, totalPages, currentPage } = jobResponse.data.data; // Adjust based on your actual response structure
 
-        const params: Record<string, any> = {
-          limit: 5,
-          sort: JSON.stringify({ createdAt: "desc" }),
-          filter: JSON.stringify(filter),
-          page: page,
-        };
-
-        if (debouncedSearchValue) {
-          params.search = debouncedSearchValue;
-        }
-
-        const jobResponse = await axiosInstance.get(`${API_ENDPOINTS.JOBS}`, {
-          params,
-        });
-        const jobs: IJob[] = jobResponse?.data?.data?.jobs || [];
-        if (
-          jobResponse?.data?.data?.totalPages >
-          jobResponse?.data?.data?.currentPage
-        ) {
-          setHasMore(true);
-          ///BUG:
-          setPage(jobResponse?.data?.data?.currentPage + 1);
-        }
-        // console.log("obResponse?.data? ", jobResponse?.data);
-
-        // setJobData(jobs);
+        // Merge favorite status into jobs
         const jobsWithFavoriteStatus = jobs.map((job: IJob) => ({
           ...job,
           favorite: user?.favorites.includes(job._id!) || false,
         }));
 
         setJobData(jobsWithFavoriteStatus);
+        if (jobs.length === 0 || currentPage === totalPages) {
+          setHasMore(false);
+        }
+        console.log("jobs::::, ", jobs);
       } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("Failed to fetch job data");
+        console.error("Error fetching jobs:", error);
+        setError("Failed to fetch jobs. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchJobData();
-  }, [debouncedSearchValue, filterValues, searchValue, user?.favorites]);
+    fetchJobs();
+  }, [user, filterValues, newValue]);
   // console.log("filter::: inner", filterValues);
+  console.log("totalJobs:::", jobData);
+  console.log("filterValue kon:::", filterValues);
 
   const isFilterEmpty = (filterValues: FilterValueParams) => {
     return (
@@ -235,7 +235,10 @@ const SearchCard = ({
 
   return (
     <Suspense>
-      <div className="flex flex-col w-full h-full gap-4 pt-6 pb-20">
+      <div
+        className="flex flex-col w-full h-full gap-4 pt-6 pb-20"
+        // ref={heighRef}
+      >
         {!loading && jobData.length === 0 ? (
           // Display this section when no jobs are found
           <div className="flex flex-col items-center justify-center">
@@ -261,7 +264,7 @@ const SearchCard = ({
                 _id={job._id}
                 title={job.title}
                 position={job.position}
-                profile={job?.companyId?.profile || "defaultProfileUrl"}
+                profile={job?.companyId?.profile}
                 min_salary={job.min_salary}
                 max_salary={job.max_salary}
                 job_opening={job.job_opening}
@@ -290,6 +293,11 @@ const SearchCard = ({
 };
 
 export default SearchCard;
-function buildQuery(page: number) {
-  return `?&page=${page}&limit=5`;
+function buildQuery(page: number, filter?: {}, debouncedSearchValue?: string) {
+  const lastFilter = filter && JSON.stringify(filter);
+  console.log("=====lastFilter=====", lastFilter);
+  let query = `?&page=${page}&limit=5`;
+  if (debouncedSearchValue) query += `&search=${debouncedSearchValue}`;
+  if (lastFilter) query += `&filter=${lastFilter}`;
+  return query;
 }

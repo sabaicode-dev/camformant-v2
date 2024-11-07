@@ -12,6 +12,7 @@ import {
   GlobalSignOutCommandOutput,
   InitiateAuthCommand,
   InitiateAuthCommandInput,
+  InitiateAuthCommandOutput,
   ListUsersCommand,
   SignUpCommand,
   SignUpCommandInput,
@@ -358,7 +359,7 @@ class AuthService {
       }
       // Step 4: Case User is never signin with Google | Facebook
       else {
-        try { 
+        try {
           console.log("doesnt need to link");
 
           const user = await axios.post(`${configs.userServiceUrl}/v1/users`, {
@@ -564,7 +565,7 @@ class AuthService {
       throw new AuthenticationError();
     }
 
-    const params = {
+    const params: InitiateAuthCommandInput = {
       AuthFlow: AuthFlowType.REFRESH_TOKEN_AUTH,
       ClientId: configs.awsCognitoClientId,
       AuthParameters: {
@@ -575,8 +576,7 @@ class AuthService {
 
     try {
       const command = new InitiateAuthCommand(params);
-      const result = await client.send(command);
-
+      const result: InitiateAuthCommandOutput = await client.send(command);
       return {
         accessToken: result.AuthenticationResult?.AccessToken!,
         idToken: result.AuthenticationResult?.IdToken!,
@@ -594,4 +594,3 @@ class AuthService {
 }
 
 export default new AuthService();
-

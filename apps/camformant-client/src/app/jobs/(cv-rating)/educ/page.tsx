@@ -71,7 +71,7 @@ const Page = () => {
       }
     }
     GetData();
-  }, []);
+  }, [startYear, user]);
 
   async function PostData() {
     try {
@@ -102,7 +102,7 @@ const Page = () => {
       />
       {next && <SkeletonLoader text="Loading ..." />}
       {educationEntries.map((entry, index) => (
-        <div>
+        <div key={""}>
           {Object.entries(entry).map(([key, value]) => {
             return key != "year" ? (
               <InputComponent

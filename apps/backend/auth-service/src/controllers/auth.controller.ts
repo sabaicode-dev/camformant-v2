@@ -157,17 +157,29 @@ export class AuthController extends Controller {
       const refreshToken = request.cookies["refresh_token"];
       const username = request.cookies["username"];
 
-      const result = await AuthService.refreshToken({
-        refreshToken: body.refreshToken || refreshToken,
-        username: body.username || username,
-      });
+      if (refreshToken && username) {
+        const result = await AuthService.refreshToken({
+          refreshToken: body.refreshToken || refreshToken,
+          username: body.username || username,
+        });
 
-      setCookie(response, "id_token", result.idToken);
-      setCookie(response, "access_token", result.accessToken);
-
-      return sendResponse({ message: "Token refreshed successfully" });
+        if (result) {
+          setCookie(response, "id_token", result.idToken);
+          setCookie(response, "access_token", result.accessToken);
+          return sendResponse({ message: "Token refreshed successfully" });
+        }
+      }
+      return sendResponse({ message: "NO Token Found!" });
     } catch (error) {
       throw error;
     }
+  }
+  @Get("/checkAuth")
+  public async checkAuth(@Request() request: ExpressRequest) {
+    try {
+      if (!request.cookies["access_token"] || !request.cookies["id_token"])
+        return { message: "no authorized" };
+      return { message: "authorized" };
+    } catch (error) {}
   }
 }

@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   api-gateway:
     container_name: api_gateway_service_container
@@ -12,10 +12,10 @@ services:
     environment:
       - DOCKER_ENV=true
       - AUTH_SERVICE_URL=http://auth:4001
-      - USER_SERVICE_URL=http://user:4002
+      - USER_SERVICE_URL=http://user:4005
       - JOB_SERVICE_URL=http://job:4003
-      - CHAT_SERVICE_URL=http://chat:4004
-      - NOTIFICATION_SERVICE_URL=http://notification:4009
+      - CHAT_SERVICE_URL=http://chat:4002
+      - NOTIFICATION_SERVICE_URL=http://notification:4004
     volumes:
       - ./api-gateway/src:/app/src # HOT RELOADING
   auth:
@@ -29,7 +29,7 @@ services:
     env_file: ./auth-service/src/configs/.env.development
     environment:
       - DOCKER_ENV=true
-      - USER_SERVICE_URL=http://user:4002
+      - USER_SERVICE_URL=http://user:4005
     volumes:
       - ./auth-service/src:/app/src # HOT RELOADING
   user:
@@ -39,11 +39,11 @@ services:
       dockerfile: Dockerfile.dev
     restart: always
     ports:
-      - 4002:4002
+      - 4005:4005
     env_file: ./user-service/src/configs/.env.development
     environment:
       - DOCKER_ENV=true
-      - NOTIFICATION_SERVICE_URL=http://notification:4009
+      - NOTIFICATION_SERVICE_URL=http://notification:4004
     volumes:
       - ./user-service/src:/app/src # HOT RELOADING
   job:
@@ -66,7 +66,7 @@ services:
       dockerfile: Dockerfile.dev
     restart: always
     ports:
-      - 4009:4009
+      - 4004:4004
     env_file: ./notification-service/src/configs/.env.development
     environment:
       - DOCKER_ENV=true
@@ -79,11 +79,10 @@ services:
       dockerfile: Dockerfile.dev
     restart: always
     ports:
-      - 4004:4004
+      - 4002:4002
     env_file: ./chat-service/src/configs/.env.development
     environment:
       - DOCKER_ENV=true
     volumes:
       - ./chat-service/src:/app/src # HOT RELOADING
-      
-  
+

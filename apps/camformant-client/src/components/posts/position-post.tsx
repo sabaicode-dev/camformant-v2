@@ -90,7 +90,7 @@ export const PositionPost: React.FC = () => {
 
   const onScroll = useCallback(async () => {
     if (
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 1 &&
+      window.innerHeight + window.scrollY >= document.body.scrollHeight - 200 &&
       hasMore &&
       !isLoading &&
       jobData.length > 0

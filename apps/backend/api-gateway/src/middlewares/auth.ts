@@ -47,10 +47,11 @@ const authenticateToken = async (
   try {
     const { methodConfig } = req;
 
-    // console.log("req cookie:::", req.cookies);
-
-    // Step 1
     if (methodConfig.authRequired) {
+      // console.log("req cookie:::", req.cookies);
+
+      // Step 1
+      console.log("need authicated");
       // Step 2
       const token = req.cookies?.["access_token"];
       if (!token) {

@@ -83,7 +83,7 @@ const Page = () => {
       />
       {next && <SkeletonLoader text="Loading ..." />}
       {refEntries.map((entry, index) => (
-        <div>
+        <div key={""}>
           {Object.entries(entry).map(([key, value]) => (
             <InputComponent
               key={key}

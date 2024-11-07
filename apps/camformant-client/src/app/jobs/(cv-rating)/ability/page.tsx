@@ -104,7 +104,7 @@ const Page: React.FC = () => {
       {next && <SkeletonLoader text="Loading ..." />}
       <CustomLabel text={"Skills"} />
       {skillEntries.map((entry, index) => (
-        <div>
+        <div key={""}>
           {Object.entries(entry).map(([key, value]) => (
             <InputComponent
               key={key}
@@ -143,7 +143,7 @@ const Page: React.FC = () => {
       />
       <CustomLabel text={"Expertise"} />
       {expertiseEntries.map((entry, index) => (
-        <div>
+        <div key={""}>
           {Object.entries(entry).map(([key, value]) =>
             key != "proficiency" ? (
               <InputComponent
@@ -153,21 +153,21 @@ const Page: React.FC = () => {
                 focused={focusedField}
                 txt={key} // Helper function to get label text if needed
                 typeofInput={key.includes("date") ? "date" : "text"} // Set type based on key
-                setValues={(newValue) =>{
+                setValues={(newValue) => {
                   handleInputChange(
                     setExpertiseEntries,
                     expertiseEntries,
                     index,
                     key,
                     newValue
-                  )
+                  );
                   newValue == value || setIsPut(true);
-                }
-                }
+                }}
                 valuesFouce={`expertise-${key}-${index}`}
               />
             ) : (
               <DropDownMenu
+                key={""}
                 setValue={(newValue) => {
                   handleInputChange(
                     setExpertiseEntries,
@@ -180,7 +180,7 @@ const Page: React.FC = () => {
                 }}
                 currentText={value}
                 title={"proficiency"}
-                arrText={["","Beginner", "Intermediate", "Advanced"]}
+                arrText={["", "Beginner", "Intermediate", "Advanced"]}
               />
             )
           )}
@@ -202,7 +202,7 @@ const Page: React.FC = () => {
       <CustomLabel text={"Langauges"} />
 
       {languageEntries.map((entry, index) => (
-        <div>
+        <div key={""}>
           {Object.entries(entry).map(([key, value]) =>
             key != "proficiency" ? (
               <InputComponent
@@ -226,6 +226,7 @@ const Page: React.FC = () => {
               />
             ) : (
               <DropDownMenu
+                key={""}
                 setValue={(newValue) => {
                   handleInputChange(
                     setLanguageEntries,
@@ -238,7 +239,7 @@ const Page: React.FC = () => {
                 }}
                 currentText={value}
                 title={"proficiency"}
-                arrText={["","Beginner", "Native", "Fluent"]}
+                arrText={["", "Beginner", "Native", "Fluent"]}
               />
             )
           )}
