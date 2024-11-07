@@ -12,7 +12,7 @@ interface typeUploads {
   setNext: (next: boolean) => void;
 }
 
-const AttachedCvs: React.FC<typeUploads> = ({ next, setNext }) => {
+const AttachedCvs: React.FC<typeUploads> = ({ next, setNext}) => {
   const [file, setFile] = useState<string | null>(null);
   const UploadsRef = useRef<HTMLInputElement | null>(null);
 
@@ -22,10 +22,12 @@ const AttachedCvs: React.FC<typeUploads> = ({ next, setNext }) => {
   }
 
   async function handleSelectFile(event: React.ChangeEvent<HTMLInputElement>) {
+    console.log("inside handleSelect");
     const cv = event.target.files?.[0];
     const file = await uploadToS3(cv!);
     console.log("file from s3", file);
     if (file) {
+      console.log("inside if");
       setFile(file);
     }
   }

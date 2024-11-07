@@ -49,7 +49,7 @@ const SelfDescription: React.FC = () => {
       try {
         setNext(true);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=descriptions`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=descriptions`
         );
         if (!response) {
           return null;
@@ -76,7 +76,7 @@ const SelfDescription: React.FC = () => {
       };
 
       const response = await axiosInstance.put(
-        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
+        API_ENDPOINTS.USER_PROFILE_DETAIL,
         { descriptions: { ...dataValue } }
       );
       return response;

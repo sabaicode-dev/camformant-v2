@@ -188,7 +188,7 @@ const ROUTE_PATHS: RoutesConfig = {
         },
       },
       {
-        path: "/profile-detail/:userId",
+        path: "/profile-detail",
         methods: {
           GET: {
             authRequired: true,

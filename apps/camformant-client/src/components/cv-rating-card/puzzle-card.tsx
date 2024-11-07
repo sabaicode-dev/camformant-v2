@@ -28,7 +28,7 @@ const PuzzleCard: React.FC<typePropsTotal> = ({ propTotal }) => {
       // const ip = 'http://192.168.3.167:3030'
       try {
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}`
+          API_ENDPOINTS.USER_PROFILE_DETAIL
         ); //get uer data
         if (!response) {
           return null;

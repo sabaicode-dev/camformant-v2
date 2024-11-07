@@ -13,6 +13,7 @@ export function globalErrorHandler(
   res: Response,
   _next: NextFunction
 ) {
+  console.log("error in user-service::: ", error);
   // Log the error with Sentry
   Sentry.captureException(error);
 

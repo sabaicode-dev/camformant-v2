@@ -18,6 +18,7 @@
     "start:product-service": "yarn workspace product-service dev",
     "start:auth-service": "yarn workspace auth-service dev",
     "start:chat-service": "yarn workspace chat-service dev",
+    "start:job-service": "yarn workspace job-service dev",
     "start:notification-service": "yarn workspace notification-service dev",
     "docker:dev": "docker-compose -f ./apps/backend/docker-compose.dev.yml up -d",
     "docker:local": "docker-compose -f ./apps/backend/docker-compose.local.yml up -d",

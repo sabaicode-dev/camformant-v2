@@ -347,22 +347,26 @@ class UserRepository {
   }
   async getCvFile(userId: string) {
     try {
-      const response = await CvFileModel.findById(userId);
-      if (!response) throw new NotFoundError("userid not found");
-      return response;
+      console.log("insode get ::::", userId);
+      const response = await CvFileModel.find();
+      console.log("response in get:::", response);
+      if (!response.length) throw new NotFoundError("userid not found");
+      return response[0];
     } catch (err) {
       throw err;
     }
   }
   async insertCvFile(userId: string, url: string) {
     try {
-      const response = await CvFileModel.findByIdAndUpdate(
-        new mongoose.Types.ObjectId(userId),
+      const response = await CvFileModel.findOneAndUpdate(
+        { userId: new mongoose.Types.ObjectId(userId) },
         { $push: { cv: { url } } },
         { new: true }
       );
+      console.log("response in insert", response);
       if (!response) {
-        const newCvFile = CvFileModel.create({
+        console.log("respnose::: ", response);
+        const newCvFile = await CvFileModel.create({
           userId: new mongoose.Types.ObjectId(userId),
           cv: [{ url: url }],
         });
@@ -370,14 +374,15 @@ class UserRepository {
       }
       return response;
     } catch (err) {
+      console.log("repo error", err);
       throw err;
     }
   }
   async deleteCvFile(userId: string, cvId: string) {
     try {
       const cvIdObj = new mongoose.Types.ObjectId(cvId);
-      const response = await CvFileModel.findByIdAndUpdate(
-        userId,
+      const response = await CvFileModel.findOneAndUpdate(
+        { userId: new mongoose.Types.ObjectId(userId) },
         { $pull: { cv: { _id: cvIdObj } } },
         { new: true }
       );

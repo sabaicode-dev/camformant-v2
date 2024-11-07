@@ -35,9 +35,7 @@ import {
   IUserProfile,
   UnionProfileType,
 } from "@/src/controllers/types/userprofile.type";
-import {
-  CvStyleParams,
-} from "@/src/controllers/types/user-cv-controller.type";
+import { CvStyleParams } from "@/src/controllers/types/user-cv-controller.type";
 // import { unionProfileType } from "./types/userprofile.type";
 
 @Route("v1/users")
@@ -49,7 +47,6 @@ export class UsersController extends Controller {
     try {
       const response = await UserService.getAllUsers(queries);
 
-      return sendResponse({ message: "success", data: response });
       return sendResponse({ message: "success", data: response });
     } catch (error) {
       console.error(
@@ -120,6 +117,54 @@ export class UsersController extends Controller {
         prettyObject(error as {})
       );
       throw error;
+    }
+  }
+  @Get("/cv")
+  public async getCvFiles(@Request() request: ExpressRequest): Promise<any> {
+    try {
+      console.log("inside get cv controller");
+      const userId = request.cookies["user_id"];
+      const data = await UserService.getCvFiles(userId);
+      return sendResponse<any>({
+        message: "Fetch is successful",
+        data,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Get("/profile-detail")
+  public async getProfileByID(
+    @Request() request: ExpressRequest,
+    @Query() category?: string
+  ) {
+    try {
+      const userId = request.cookies["user_id"];
+      const userProfile = await UserService.getProfileById(userId, category);
+      return sendResponse<IUserProfile>({
+        message: "success",
+        data: userProfile,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+  @Put("/profile-detail")
+  public async updateUserProfile(
+    @Body() updateBody: IUserProfile,
+    @Request() request: ExpressRequest
+  ) {
+    try {
+      const userId = request.cookies["user_id"];
+      const userData = await UserService.updateUserProfile(userId, updateBody);
+
+      return sendResponse<UnionProfileType>({
+        message: "Data is updated successfully",
+        data: userData,
+      });
+    } catch (err) {
+      throw err;
     }
   }
   @Put("/me/photo")
@@ -285,65 +330,26 @@ export class UsersController extends Controller {
     }
   }
 
-  @Get("/profile-detail/:userId")
-  public async getProfileByID(
-    @Path() userId: string,
-    @Query() category?: string
-  ) {
-    try {
-      const userProfile = await UserService.getProfileById(userId, category);
-      return sendResponse<IUserProfile>({
-        message: "success",
-        data: userProfile,
-      });
-    } catch (err) {
-      throw err;
-    }
-  }
-  @Put("/profile-detail/:userId")
-  public async updateUserProfile(
-    @Path() userId: string,
-    @Body() updateBody: IUserProfile
-  ) {
-    try {
-      const userData = await UserService.updateUserProfile(userId, updateBody);
-
-      return sendResponse<UnionProfileType>({
-        message: "Data is updated successfully",
-        data: userData,
-      });
-    } catch (err) {
-      throw err;
-    }
-  }
   @Post("/uploadFile")
   public async uploadFile(
     @UploadedFile() file: Express.Multer.File,
     @Request() request: ExpressRequest
-  ): Promise<string> {
+  ): Promise<string | undefined> {
     try {
       const userId = request.cookies["user_id"];
       const response: string = await uploadToS3(file, `user-service/${userId}`);
       return response;
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      if ((error as { code: string }).code == "LIMIT_FILE_SIZE") {
+        console.log("multer error");
+        throw new Error((error as { message: string }).message);
+      }
+      throw error;
     }
   }
 
   //cv endpoint
-  @Get("/cv")
-  public async getCvFiles(@Request() request: ExpressRequest): Promise<any> {
-    try {
-      const userId: string = request.cookies["user_id"];
-      const data = await UserService.getCvFiles(userId);
-      return sendResponse<any>({
-        message: "Fetch is successful",
-        data,
-      });
-    } catch (err) {
-      throw err;
-    }
-  }
+
   @Post("/cv")
   public async updateCvFiles(
     @Request() request: ExpressRequest,

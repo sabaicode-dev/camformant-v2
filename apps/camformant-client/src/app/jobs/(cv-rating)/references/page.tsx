@@ -43,7 +43,7 @@ const Page = () => {
       try {
         setNext(true);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=references`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=references`
         );
         const data = response.data.data.references;
         data.length && setRefEntries(data);
@@ -63,7 +63,7 @@ const Page = () => {
       };
 
       const response = await axiosInstance.put(
-        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
+        API_ENDPOINTS.USER_PROFILE_DETAIL,
         { ...dataValue }
       );
       return response;

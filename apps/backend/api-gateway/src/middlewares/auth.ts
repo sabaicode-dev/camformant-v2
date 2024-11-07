@@ -191,7 +191,7 @@ const routeConfigMiddleware = (
 ) => {
   const { path, method } = req;
 
-  console.log("path:::", path, " method:::", method);
+  console.log("path:::", path, " method1111111111:::", method);
 
   // Step 1
   let routeConfig = null;
@@ -200,7 +200,7 @@ const routeConfigMiddleware = (
     // console.log("routeConfig", routeConfig);
     if (routeConfig) break;
   }
-
+  console.log("routeConfig", routeConfig);
   if (!routeConfig) {
     return next(new NotFoundError("Route not found"));
   }
