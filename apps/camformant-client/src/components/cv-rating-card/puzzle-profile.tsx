@@ -12,7 +12,6 @@ interface ProfileRating {
 const PuzzleProfile: React.FC<ProfileRating> = ({ totalRating }) => {
   const {user}=useAuth()
   const [User, setUser] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
 
 
   return (
