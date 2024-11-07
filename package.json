@@ -9,7 +9,6 @@
     "apps/backend/*",
     "packages/*"
   ],
-
   "scripts": {
     "start": "concurrently \"yarn workspace ms-ui-components watch\" \"yarn workspace camformant-client dev\" \"yarn workspace frontend-dashboard dev\" \"yarn workspace user-service dev\" \"yarn workspace frontend-dashboard dev\" \"yarn workspace job-service dev\" \"yarn workspace chat-service dev\" \"yarn workspace api-gateway-service dev\" \"yarn workspace auth-service dev\"",
     "start:camformant-client": "yarn workspace camformant-client dev",
@@ -28,7 +27,5 @@
     "concurrently": "^8.2.2"
   },
   "packageManager": "yarn@1.22.22",
-  "dependencies": {
-    "@sabaicode-dev/camformant-libs": "^0.0.1"
-  }
+  "dependencies": {}
 }

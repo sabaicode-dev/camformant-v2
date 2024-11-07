@@ -16,6 +16,7 @@
     "db:dump": "ts-node src/database/scripts/dump-data"
   },
   "dependencies": {
+    "@sabaicode-dev/camformant-libs": "0.0.1",
     "@aws-sdk/client-cognito-identity-provider": "^3.620.0",
     "axios": "^1.7.2",
     "cookie-parser": "^1.4.6",

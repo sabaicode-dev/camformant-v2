@@ -40,8 +40,6 @@ const SearchHomePage: React.FC = () => {
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [searchTrending, setSearchTrending] = useState<string[]>([]);
   const onChangeSearchValue = (value: string) => {
-    focusInput.current?.focus;
-    focusInput.current!.value = value;
     setSearchValue(value);
   };
   useEffect(() => {
@@ -73,7 +71,9 @@ const SearchHomePage: React.FC = () => {
 
     fetchSearchTrending();
   }, []);
-
+  console.log("filterValues:::", filterValues);
+  const lastfilterValues = filterValues;
+  console.log("filterValues:::", lastfilterValues);
   return (
     <div className="pt-5">
       <div className="container px-4 mx-auto">
@@ -102,7 +102,7 @@ const SearchHomePage: React.FC = () => {
                   <CategoryPosition
                     text={item}
                     onClick={() => {
-                      setSearchValue(item);
+                      // setSearchValue(item);
                       onChangeSearchValue(item);
                     }}
                     className="px-4 py-2 transition duration-300 ease-in-out bg-gray-100 rounded-lg shadow cursor-pointer hover:bg-gray-200"
@@ -127,9 +127,8 @@ const SearchHomePage: React.FC = () => {
                   <CategoryPosition
                     text={item}
                     onClick={() => {
-                      setSearchValue(item);
-                      // focusInput.current?.focus;
-                      // focusInput.current!.value = searchValue;
+                      // setSearchValue(item);
+
                       onChangeSearchValue(item);
                     }}
                     className="px-4 py-2 transition duration-300 ease-in-out bg-gray-100 rounded-lg shadow cursor-pointer hover:bg-gray-200"
@@ -146,7 +145,7 @@ const SearchHomePage: React.FC = () => {
         <div className="w-full h-full">
           <SearchCard
             searchValue={searchValue}
-            filterValues={filterValues}
+            filterValues={lastfilterValues}
             onChangeFilterValues={onChangeFilterValues}
           />
         </div>

@@ -33,7 +33,6 @@ export const Search: React.FC<autoFocusd> = ({
   focus,
   buttonBack,
   isFilterDisplay = false,
-  // setSearchValue,
   onChangeFilterValues,
   searchValue,
   onChangeSearchValue,
@@ -56,7 +55,6 @@ export const Search: React.FC<autoFocusd> = ({
     setFilterValues(defaultFilterValue);
   }
   function handleInputOnChange(e: ChangeEvent<HTMLInputElement>) {
-    // setSearchValue!(e.target.value);
     onChangeSearchValue(e.target.value);
   }
 
@@ -83,6 +81,7 @@ export const Search: React.FC<autoFocusd> = ({
           </div>
           <input
             type="text"
+            value={searchValue}
             onChange={handleInputOnChange}
             ref={focus || undefined}
             placeholder="Search Job vacancy"

@@ -31,10 +31,9 @@ const SearchCard = ({
   const [love, setLove] = useState<boolean>(true);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
-  // const heighRef = useRef<HTMLDivElement | null>(null);
-  // Debounced search value (waits 1s after the user stops typing)
-  const debouncedSearchValue = useDebounce(searchValue, 1500);
 
+  const debouncedSearchValue = useDebounce(searchValue, 1200);
+  const newValue = debouncedSearchValue;
   // const toggleFavorite = (jobId: string) => {
   //   setJobData((prevData: any) =>
   //     prevData.map((job: any) =>
@@ -42,8 +41,6 @@ const SearchCard = ({
   //     )
   //   );
   // };
-  console.log("searchValue===", searchValue);
-  console.log("debouncedSearchValue===", debouncedSearchValue);
 
   const toggleFavorite = async (jobId: string) => {
     const jobIndex = jobData.findIndex((job) => job._id === jobId);
@@ -77,7 +74,25 @@ const SearchCard = ({
     setLoading(true);
     try {
       const nextPage = page + 1;
-      const query = buildQuery(nextPage);
+      const salary = {
+        min_salary: filterValues.minSalary > 0 ? filterValues.minSalary : 0,
+        max_salary: filterValues.maxSalary > 0 ? filterValues.maxSalary : 5000,
+      };
+
+      const cleanedSalary = Object.fromEntries(
+        Object.entries(salary).filter(([_, value]) => value !== undefined)
+      );
+      const filterSalary =
+        Object.keys(cleanedSalary).length > 0 ? cleanedSalary : undefined;
+
+      const filter = {
+        schedule: filterValues.schedule || undefined,
+        type: filterValues.type || undefined,
+        workMode: filterValues.workMode || undefined,
+        required_experience: filterValues.required_experience || undefined,
+        salary: filterSalary,
+      };
+      const query = buildQuery(nextPage, filter, newValue);
       const res = await axiosInstance.get(`${API_ENDPOINTS.JOBS}${query}`);
 
       const { jobs, totalPages, currentPage } = res.data.data; // Adjust based on your actual response structure
@@ -129,6 +144,7 @@ const SearchCard = ({
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, [onScroll]);
+  console.log("filter in search card:::", filterValues);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -137,10 +153,9 @@ const SearchCard = ({
       setJobData([]);
       setPage(1);
       setHasMore(true); // Reset hasMore when category changes
-      //filter======
+      //=====filter======
       const salary = {
-        min_salary:
-          filterValues.minSalary > 0 ? filterValues.minSalary : undefined,
+        min_salary: filterValues.minSalary > 0 ? filterValues.minSalary : 0,
         max_salary: filterValues.maxSalary > 0 ? filterValues.maxSalary : 5000,
       };
 
@@ -158,15 +173,8 @@ const SearchCard = ({
         salary: filterSalary,
       };
 
-      // const params: Record<string, any> = {
-      //   // limit: 5,
-      //   // sort: JSON.stringify({ createdAt: "desc" }),
-      //   filter: JSON.stringify(filter),
-      //   // page: page,
-      // };
-
       try {
-        const query = buildQuery(page, filter, debouncedSearchValue);
+        const query = buildQuery(1, filter, newValue);
         const jobResponse = await axiosInstance.get(
           `${API_ENDPOINTS.JOBS}${query}`
         );
@@ -193,9 +201,10 @@ const SearchCard = ({
     };
 
     fetchJobs();
-  }, [user, searchValue, filterValues]);
+  }, [user, filterValues, newValue]);
   // console.log("filter::: inner", filterValues);
   console.log("totalJobs:::", jobData);
+  console.log("filterValue kon:::", filterValues);
 
   const isFilterEmpty = (filterValues: FilterValueParams) => {
     return (
@@ -277,6 +286,6 @@ function buildQuery(page: number, filter?: {}, debouncedSearchValue?: string) {
   console.log("=====lastFilter=====", lastFilter);
   let query = `?&page=${page}&limit=5`;
   if (debouncedSearchValue) query += `&search=${debouncedSearchValue}`;
-  // if (lastFilter) query += `&filter=${lastFilter}`;
+  if (lastFilter) query += `&filter=${lastFilter}`;
   return query;
 }
