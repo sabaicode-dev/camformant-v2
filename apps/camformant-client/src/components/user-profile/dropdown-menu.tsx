@@ -5,14 +5,16 @@ const DropDownMenu: React.FC<{
   arrText: string[];
 }> = ({ setValue, currentText, title, arrText }) => {
   return (
-    <div className="w-full container pt-10">
+    <div className="container w-full pt-10">
       <select
-        className="min-w-5/6 h-16 w-full outline-none rounded-2xl p-5 shadow-md shadow-black-300 pl-7 text-black"
+        className="w-full h-16 p-5 text-black shadow-md outline-none min-w-5/6 rounded-2xl shadow-black-300 pl-7"
         value={currentText}
         onChange={(e) => setValue(e.target.value)}
       >
         {arrText.map((text: string) => (
-          <option value={text}>{text}</option>
+          <option key={""} value={text}>
+            {text}
+          </option>
         ))}
       </select>
     </div>

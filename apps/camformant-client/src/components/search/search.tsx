@@ -26,7 +26,7 @@ interface autoFocusd {
   // setSearchValue?: Dispatch<SetStateAction<string>>;
   onChangeFilterValues?: (value: FilterValueParams) => void;
   searchValue?: string;
-  onChangeSearchValue: (value: string) => void;
+  onChangeSearchValue?: (value: string) => void;
 }
 
 export const Search: React.FC<autoFocusd> = ({
@@ -55,7 +55,7 @@ export const Search: React.FC<autoFocusd> = ({
     setFilterValues(defaultFilterValue);
   }
   function handleInputOnChange(e: ChangeEvent<HTMLInputElement>) {
-    onChangeSearchValue(e.target.value);
+    onChangeSearchValue!(e.target.value);
   }
 
   return (

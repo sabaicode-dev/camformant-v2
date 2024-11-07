@@ -114,8 +114,20 @@ const SearchCard = ({
       setLoading(false);
     }
     console.log("job load::: ", jobData);
-  }, [hasMore, loading, page, user?.favorites]);
-
+  }, [
+    hasMore,
+    loading,
+    page,
+    user?.favorites,
+    filterValues.workMode,
+    filterValues.maxSalary,
+    filterValues.minSalary,
+    filterValues.required_experience,
+    filterValues.schedule,
+    filterValues.type,
+    newValue,
+    jobData,
+  ]);
   const onScroll = useCallback(async () => {
     // console.log("===document.body.offsetHeight===", document.body.offsetHeight);
     // console.log("===window.scrollY===", window.scrollY);

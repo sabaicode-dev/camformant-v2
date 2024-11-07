@@ -74,10 +74,17 @@ class JobRepository {
           console.log("salary::: ", filter[key]);
 
           const { min_salary = 0, max_salary = 5000 } = filter[key];
+          // mongoFilter.$and = [
+          //   { min_salary: { $gte: min_salary, $lte: max_salary } },
+          //   { max_salary: { $gte: min_salary, $lte: max_salary } },
+          // ];
           mongoFilter.$and = [
-            { min_salary: { $gte: min_salary, $lte: max_salary } },
-            { max_salary: { $gte: min_salary, $lte: max_salary } },
+            { min_salary: { $lte: max_salary } },
+            { max_salary: { $gte: min_salary } },
           ];
+
+          // mongoFilter.min_salary = { $gte: min_salary, $lte: max_salary };
+          // mongoFilter.max_salary = { $lte: max_salary };
 
           console.log("mongoFilter::: ", mongoFilter);
         } else if (

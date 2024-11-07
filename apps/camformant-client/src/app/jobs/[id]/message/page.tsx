@@ -7,7 +7,7 @@ import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
 interface Company {
   _id: string;
@@ -59,35 +59,38 @@ const ChatPage = () => {
 
   console.log("jobs:", job);
   // Function to get conversation ID
-  const getConversationId = async ({
-    companyName,
-    companyProfile,
-    userId,
-    companyId,
-  }: {
-    companyName: string;
-    companyProfile: string;
-    userId?: string;
-    companyId: string;
-  }) => {
-    try {
-      const params = {
-        companyId,
-        companyProfile,
-        companyName,
-        userId,
-        username: user!.username,
-        userProfile: user!.profile,
-      };
+  const getConversationId = useCallback(
+    async ({
+      companyName,
+      companyProfile,
+      userId,
+      companyId,
+    }: {
+      companyName: string;
+      companyProfile: string;
+      userId?: string;
+      companyId: string;
+    }) => {
+      try {
+        const params = {
+          companyId,
+          companyProfile,
+          companyName,
+          userId,
+          username: user!.username,
+          userProfile: user!.profile,
+        };
 
-      const response = await axiosInstance.post(
-        API_ENDPOINTS.CONVERSATIONS,
-        params
-      );
-    } catch (error) {
-      console.error("ChatPage getConversationId() error::: ", error);
-    }
-  };
+        const response = await axiosInstance.post(
+          API_ENDPOINTS.CONVERSATIONS,
+          params
+        );
+      } catch (error) {
+        console.error("ChatPage getConversationId() error::: ", error);
+      }
+    },
+    [user]
+  );
 
   useEffect(() => {
     const params = {
@@ -97,7 +100,7 @@ const ChatPage = () => {
       companyId: companyId || "",
     };
     getConversationId(params);
-  }, [companyId]);
+  }, [companyId, getConversationId, user?._id]);
 
   if (error) {
     return (

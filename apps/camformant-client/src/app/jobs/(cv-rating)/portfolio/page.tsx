@@ -45,7 +45,7 @@ const Page = () => {
       }
     }
     GetData();
-  }, []);
+  }, [user]);
   async function PostData() {
     try {
       setNext(true); // Trigger loading
@@ -74,7 +74,7 @@ const Page = () => {
       />
       {next && <SkeletonLoader text="Loading ..." />}
       {portfoEntries.map((entry, index) => (
-        <div>
+        <div key={""}>
           {Object.entries(entry).map(([key, value]) => (
             <InputComponent
               key={key}
