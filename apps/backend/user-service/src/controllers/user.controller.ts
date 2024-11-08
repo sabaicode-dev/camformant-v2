@@ -36,6 +36,7 @@ import {
   UnionProfileType,
 } from "@/src/controllers/types/userprofile.type";
 import { CvStyleParams } from "@/src/controllers/types/user-cv-controller.type";
+import { error } from "console";
 // import { unionProfileType } from "./types/userprofile.type";
 
 @Route("v1/users")
@@ -49,10 +50,6 @@ export class UsersController extends Controller {
 
       return sendResponse({ message: "success", data: response });
     } catch (error) {
-      console.error(
-        `UsersController - createUser() method error: `,
-        prettyObject(error as {})
-      );
       console.error(
         `UsersController - createUser() method error: `,
         prettyObject(error as {})
@@ -77,19 +74,10 @@ export class UsersController extends Controller {
         SCHEDULE_JOBS.NOTIFICATION_NEW_REGISTRATION,
         { userId: response._id }
       );
-      await agenda.schedule(
-        "in 1 minutes",
-        SCHEDULE_JOBS.NOTIFICATION_NEW_REGISTRATION,
-        { userId: response._id }
-      );
 
       this.setStatus(201); // set return status 201
       return sendResponse<IUser>({ message: "success", data: response });
     } catch (error) {
-      console.error(
-        `UsersController - createUser() method error: `,
-        prettyObject(error as {})
-      );
       console.error(
         `UsersController - createUser() method error: `,
         prettyObject(error as {})
@@ -108,10 +96,6 @@ export class UsersController extends Controller {
 
       return sendResponse<IUser>({ message: "success", data: response });
     } catch (error) {
-      console.error(
-        `UsersController - getUserProfile() method error: `,
-        prettyObject(error as {})
-      );
       console.error(
         `UsersController - getUserProfile() method error: `,
         prettyObject(error as {})
@@ -164,7 +148,7 @@ export class UsersController extends Controller {
         data: userData,
       });
     } catch (err) {
-      throw err;
+      throw error
     }
   }
   @Put("/me/photo")
@@ -205,10 +189,6 @@ export class UsersController extends Controller {
         `UsersController - addFavorite() method error: `,
         prettyObject(error as {})
       );
-      console.error(
-        `UsersController - addFavorite() method error: `,
-        prettyObject(error as {})
-      );
       throw error;
     }
   }
@@ -224,10 +204,6 @@ export class UsersController extends Controller {
 
       return sendResponse<string[]>({ message: "success", data: favorites });
     } catch (error) {
-      console.error(
-        `UsersController - getFavorites() method error: `,
-        prettyObject(error as {})
-      );
       console.error(
         `UsersController - getFavorites() method error: `,
         prettyObject(error as {})
@@ -249,15 +225,7 @@ export class UsersController extends Controller {
         message: "Favorite removed successfully",
         data: response,
       });
-      return sendResponse<IUser>({
-        message: "Favorite removed successfully",
-        data: response,
-      });
     } catch (error) {
-      console.error(
-        `UsersController - removeFavorite() method error: `,
-        prettyObject(error as {})
-      );
       console.error(
         `UsersController - removeFavorite() method error: `,
         prettyObject(error as {})
@@ -281,10 +249,6 @@ export class UsersController extends Controller {
         `UsersController - getUserProfile() method error: `,
         prettyObject(error as {})
       );
-      console.error(
-        `UsersController - getUserProfile() method error: `,
-        prettyObject(error as {})
-      );
       throw error;
     }
   }
@@ -304,10 +268,6 @@ export class UsersController extends Controller {
         `UsersController - createUser() method error: `,
         prettyObject(error as {})
       );
-      console.error(
-        `UsersController - createUser() method error: `,
-        prettyObject(error as {})
-      );
       throw error;
     }
   }
@@ -318,10 +278,6 @@ export class UsersController extends Controller {
     try {
       await UserService.deleteUserById(userId);
     } catch (error) {
-      console.error(
-        `UsersController - createUser() method error: `,
-        prettyObject(error as {})
-      );
       console.error(
         `UsersController - createUser() method error: `,
         prettyObject(error as {})

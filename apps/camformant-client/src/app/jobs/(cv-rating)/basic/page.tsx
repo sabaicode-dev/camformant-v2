@@ -39,8 +39,8 @@ const Page = () => {
         if (res.Length) return;
         console.log("datares:", res);
         setEmail(res.email);
-        setLastname(res.surname);
-        setSurname(res.lastname);
+        setLastname(res.lastname);
+        setSurname(res.surname);
         setCareer(res.career);
         setPhone(res.phonenumber);
         setDate(res.dob);
@@ -79,7 +79,7 @@ const Page = () => {
       console.log("response", response);
       return response;
     } catch (error) {
-      console.error(error);
+      console.error("error in post", error);
     } finally {
       setLoading(false);
     }
@@ -125,7 +125,7 @@ const Page = () => {
           txt="Career"
           setValues={(value) => {
             setCareer(value);
-            value== career || setIsPut(true);
+            value == career || setIsPut(true);
           }}
           valuesFouce="carer"
         />

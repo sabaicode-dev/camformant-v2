@@ -102,9 +102,8 @@ export const Navbar = ({
         </Hint>
         <Separator orientation="vertical" className="mx-2" />
         <div className="flex justify-between w-full">
-          <div className="flex items-center gap-x-2">
-            <BsCloudCheck className="size-[20px] text-muted-foreground" />
-            <div className="text-xs text-muted-foreground">Saved</div>
+          <div className="flex items-center cursor-pointer">
+            <div className="text-xs text-muted-foreground bg-orange-300 rounded px-3 py-2 border-red-300 ">Save</div>
           </div>
           <div className="flex items-center gap-x-4">
             <DropdownMenu modal={false}>

@@ -5,6 +5,7 @@ import {
   FONT_SIZE,
   FONT_WEIGHT,
 } from "@/features/editor/types";
+import { fabric } from "fabric";
 import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -18,6 +19,7 @@ import {
   ArrowUp,
   ChevronDown,
   Copy,
+  ImageIcon,
   Trash,
 } from "lucide-react";
 import { ImFontSize } from "react-icons/im";
@@ -32,6 +34,7 @@ import FontIcon from "./icons/svg components/FontIcon";
 import TextColor from "./icons/svg components/textColor";
 import { NudgePosition } from "./move-nudge";
 import NudgeIcon from "./icons/svg components/nudge";
+import { FaCropSimple } from "react-icons/fa6";
 //TODO: add picker moving work
 interface ToolbarProps {
   editor: Editor | undefined;
@@ -46,8 +49,20 @@ export const Toolbar = ({
 }: ToolbarProps) => {
   const selectedObject = editor?.selectedObjects[0];
   const selectedObjectType = editor?.selectedObjects[0]?.type;
+  const selectImageInsideShape = (() => {
+    const pattern = editor?.selectedObjects[0]?.fill as fabric.Pattern;
+
+    // Check if the fill is a fabric.Pattern object
+    if (pattern instanceof fabric.Pattern) {
+      return pattern.source instanceof HTMLImageElement && "image";
+    }
+
+    return null;
+  })();
+  const isImage =
+    selectedObjectType === "image" || selectImageInsideShape === "image";
   const isText = isTextType(selectedObjectType);
-  const isImage = selectedObjectType === "image";
+
   const isShape = selectedObjectType === "shape";
 
   const initialFillColor = editor?.getActiveFillColor();
@@ -216,7 +231,6 @@ export const Toolbar = ({
           </Hint>
         </div>
       )}
-
       {isText && (
         <div className="flex items-center justify-center h-full">
           <Hint label="Font" side="top" sideOffset={5}>
@@ -275,7 +289,6 @@ export const Toolbar = ({
           </Hint>
         </div>
       }
-
       {isText && activeTool === "format" && (
         <div className="flex absolute bottom-[108px] z-[40] left-20 bg-white p-1">
           <div className="flex items-center justify-center h-full">
@@ -330,7 +343,6 @@ export const Toolbar = ({
           </div>
         </div>
       )}
-
       {isText && (
         <div className="flex items-center justify-center h-full">
           <Hint label="Align left" side="top" sideOffset={5}>
@@ -394,7 +406,6 @@ export const Toolbar = ({
           </div>
         </div>
       )}
-
       {isImage && (
         <div className="flex items-center justify-center h-full">
           <Hint label="Filters" side="top" sideOffset={5}>
@@ -409,6 +420,36 @@ export const Toolbar = ({
           </Hint>
         </div>
       )}
+      {isImage && (
+        <div className="flex items-center h-full justify-center">
+          <Hint label="Replace Image" side="top" sideOffset={5}>
+            <Button
+              onClick={() => {
+                onChangeActiveTool("imageReplace");
+              }}
+              size="icon"
+              variant="ghost"
+            >
+              <ImageIcon className="size-4" />
+            </Button>
+          </Hint>
+        </div>
+      )}
+      {isImage && (
+        <div className="flex items-center h-full justify-center">
+          <Hint label="CropD Image" side="top" sideOffset={5}>
+            <Button
+              onClick={() => {
+                editor?.enableCropping();
+              }}
+              size="icon"
+              variant="ghost"
+            >
+              <FaCropSimple className="size-4" />
+            </Button>
+          </Hint>
+        </div>
+      )}{" "}
       <div className="flex items-center justify-center h-full">
         <Hint label="Bring Forward" side="top" sideOffset={5}>
           <Button

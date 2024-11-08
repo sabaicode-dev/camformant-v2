@@ -65,7 +65,11 @@ const Page = () => {
         nextRoute="/jobs/portfolio"
       />
       {isLoading && <SkeletonLoader text="Loading ..." />}
-      <InputFile setFiles={setFilesEntries} setIsPost={setIsPost} />
+      <InputFile
+        setFiles={setFilesEntries}
+        setIsPost={setIsPost}
+        setLoading={setLoading}
+      />
       <UploadedFile files={filesEntries} removeFile={removeFile} />
     </div>
   );

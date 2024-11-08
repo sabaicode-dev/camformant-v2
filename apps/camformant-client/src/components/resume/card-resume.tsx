@@ -8,6 +8,7 @@ import axios from "axios";
 import MiniCardResume from "./mini-card-resume";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
 
 interface CvData {
   cv: {
@@ -46,7 +47,7 @@ const CardResume: React.FC = () => {
 
   return (
     <div className="h-[400px] ">
-      <AttachedCvs next={next} setNext={setNext}  />
+      <AttachedCvs next={next} setNext={setNext}  setLoading={setLoading}/>
 
       {!show&&(
         <div className="flex flex-col items-center justify-center pt-5">
@@ -66,24 +67,7 @@ const CardResume: React.FC = () => {
       )}
 
       {loading && (
-        <div className="flex flex-col items-center justify-center pt-5 pb-20">
-          <h1 className="w-full pb-5 text-xl font-semibold">My Resume</h1>
-          <div className="flex flex-col w-full gap-3">
-            {Array(5)
-              .fill(0)
-              .map((_, index) => (
-                <div key={index} className="mb-5 rounded-xl drop-shadow-md">
-                  <MiniCardResume
-                    isLoading={true}
-                    name={""}
-                    index={index}
-                    next={next}
-                    setNext={setNext}
-                  />
-                </div>
-              ))}
-          </div>
-        </div>
+        <SkeletonLoader text="Loading..."/>
       )}
 
       {show && (
@@ -112,3 +96,23 @@ const CardResume: React.FC = () => {
 };
 
 export default CardResume;
+
+//incase we need this(skeletal of cv)
+// <div className="flex flex-col items-center justify-center pt-5 pb-20">
+// <h1 className="w-full pb-5 text-xl font-semibold">My Resume</h1>
+// <div className="flex flex-col w-full gap-3">
+//   {Array(5)
+//     .fill(0)
+//     .map((_, index) => (
+//       <div key={index} className="mb-5 rounded-xl drop-shadow-md">
+//         <MiniCardResume
+//           isLoading={true}
+//           name={""}
+//           index={index}
+//           next={next}
+//           setNext={setNext}
+//         />
+//       </div>
+//     ))}
+// </div>
+// </div>
