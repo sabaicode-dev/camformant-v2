@@ -75,10 +75,6 @@ export class AuthController extends Controller {
   @Post("/signout")
   public async signout(@Request() request: Express.Request) {
     try {
-      // const input: GlobalSignOutCommandInput = {
-      //   AccessToken: "",
-      // };
-      // const result = await AuthService.signout(body);
       //@ts-ignore
       const tokens = request.cookies;
       const response = (request as any).res as Response;

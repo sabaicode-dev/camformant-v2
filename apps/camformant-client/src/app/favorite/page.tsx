@@ -12,7 +12,7 @@ import { IJob } from "@/components/type-data/TypeofData";
 import Image from "next/image";
 
 const Page: React.FC = () => {
-  const { user } = useAuth();
+  const { user, setUserState } = useAuth();
   const [jobData, setJobData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

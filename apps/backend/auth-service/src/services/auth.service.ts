@@ -14,6 +14,7 @@ import {
   InitiateAuthCommandInput,
   InitiateAuthCommandOutput,
   ListUsersCommand,
+  ListUsersCommandInput,
   SignUpCommand,
   SignUpCommandInput,
   UserType,
@@ -309,13 +310,14 @@ class AuthService {
         idToken: res.data.id_token,
         refreshToken: res.data.refresh_token,
       };
+      // console.log("token::", token);
 
       // Step 2: Get the user info from token
       const userInfo = this.getUserInfoFromToken(token.idToken);
       // @ts-ignore
       const email = userInfo.email;
       const existingUser = await this.getUserByEmail(email);
-      console.log("existingUser: ", existingUser);
+      // console.log("existingUser: ", existingUser);
 
       let userId: string;
 
@@ -394,7 +396,10 @@ class AuthService {
       }
 
       // Step 5: Check if the user is already in the group before adding
-      const groupExists = await this.checkUserInGroup(userInfo.sub!, state!);
+      const groupExists = await this.checkUserInGroup(
+        userInfo.sub!,
+        state || "user"
+      );
       console.log("before group exist", groupExists);
       if (!groupExists) {
         console.log("group exist");
@@ -417,7 +422,7 @@ class AuthService {
 
   getUserInfoFromToken(token: string) {
     const decodedToken = jwtDecode(token);
-    console.log("decodedToken: ", decodedToken);
+    // console.log("decodedToken: ", decodedToken);
     return decodedToken;
   }
 
@@ -457,10 +462,10 @@ class AuthService {
   }
 
   async getUserByEmail(email: string): Promise<UserType | undefined> {
-    const params = {
+    const params: ListUsersCommandInput = {
       Filter: `email = "${email}"`,
       UserPoolId: configs.awsCognitoUserPoolId,
-      Limit: 1,
+      Limit: 3,
     };
 
     try {

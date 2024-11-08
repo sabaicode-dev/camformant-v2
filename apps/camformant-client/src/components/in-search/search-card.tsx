@@ -78,7 +78,7 @@ const SearchCard = ({
         min_salary: filterValues.minSalary > 0 ? filterValues.minSalary : 0,
         max_salary: filterValues.maxSalary > 0 ? filterValues.maxSalary : 5000,
       };
-
+      //todo:transtack query
       const cleanedSalary = Object.fromEntries(
         Object.entries(salary).filter(([_, value]) => value !== undefined)
       );

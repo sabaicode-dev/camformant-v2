@@ -40,41 +40,41 @@ interface AuthContextType {
   }: SignupRequest) => Promise<void>;
   verify: ({ email, phone_number, code }: VerifyUserRequest) => Promise<void>;
   siginWithGoogle: () => Promise<void>;
+  userState: User | null;
+  setUserState: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [userState, setUserState] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  //todo: make fetch /me only when logged in
+
+  // const lastUser = user;
+  //todo: make fetch /me only when logged in and refetch on toggle favorite
+  const checkAuthStatus = async () => {
+    try {
+      setLoading(true);
+
+      // ///TODO: mean cookie ot => expired? !=expired => fetch
+
+      const res2 = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
+      setUser(res2.data?.data);
+      setIsAuthenticated(true);
+      // }
+    } catch (error) {
+      setIsAuthenticated(false);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        setLoading(true);
-        // const authChecker = await axiosInstance.get(
-        //   API_ENDPOINTS.USER_AUTH_CHECKER
-        // );
-        // ///TODO: mean cookie ot => expired? !=expired => fetch
-        // // console.log("res1::::", res1.data);
-        // if (
-        //   authChecker.status === 200 &&
-        //   authChecker.data.message === "authorized"
-        // ) {
-        const res2 = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
-        setUser(res2.data?.data);
-        setIsAuthenticated(true);
-        // }
-      } catch (error) {
-        setIsAuthenticated(false);
-      } finally {
-        setLoading(false);
-      }
-    };
     checkAuthStatus();
-  }, []);
+  }, [userState]);
+  //lastUser?.favorites
 
   const login = async ({ email, phone_number, password }: LoginRequest) => {
     setLoading(true);
@@ -189,6 +189,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         signup,
         verify,
         siginWithGoogle,
+        userState,
+        setUserState,
       }}
     >
       {children}
