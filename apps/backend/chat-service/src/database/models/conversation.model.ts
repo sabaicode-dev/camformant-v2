@@ -14,7 +14,7 @@ export interface IConversation {
 const ConversationSchema: Schema = new Schema(
   {
     participants: { type: [String], required: true },
-    roomId: { type: String, required: true, unique: true },
+    roomId: { type: String, required: true, ref: "ChatRoom" },
     username: String,
     userProfile: String,
     companyName: String,

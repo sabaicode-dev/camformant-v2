@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        setIsLoading(true); 
+        setIsLoading(true);
         const response = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
         setUser(response.data.data);
         setIsAuthenticated(true);

@@ -18,6 +18,11 @@ const multer = require('multer');
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+    "mongoose.Types.ObjectId": {
+        "dataType": "refAlias",
+        "type": {"dataType":"string","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "WorkMode": {
         "dataType": "refEnum",
         "enums": ["Remote","On-Site","Hybrid"],
@@ -37,17 +42,16 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "_id": {"dataType":"string"},
-            "companyId": {"dataType":"string"},
+            "companyId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"ref":"mongoose.Types.ObjectId"}]},
             "title": {"dataType":"string"},
             "position": {"dataType":"array","array":{"dataType":"string"}},
             "workMode": {"dataType":"array","array":{"dataType":"refEnum","ref":"WorkMode"}},
             "location": {"dataType":"string"},
             "requirement": {"dataType":"string"},
-            "address": {"dataType":"string"},
             "description": {"dataType":"string"},
+            "address": {"dataType":"string"},
             "min_salary": {"dataType":"double"},
             "max_salary": {"dataType":"double"},
-            "deadline": {"dataType":"datetime"},
             "job_opening": {"dataType":"double"},
             "type": {"dataType":"array","array":{"dataType":"refEnum","ref":"EmploymentType"}},
             "schedule": {"dataType":"array","array":{"dataType":"refEnum","ref":"EmploymentSchedule"}},
@@ -55,6 +59,7 @@ const models: TsoaRoute.Models = {
             "benefit": {"dataType":"array","array":{"dataType":"string"}},
             "createdAt": {"dataType":"datetime"},
             "updatedAt": {"dataType":"datetime"},
+            "deadline": {"dataType":"datetime"},
         },
         "additionalProperties": false,
     },
@@ -71,16 +76,16 @@ const models: TsoaRoute.Models = {
     "JobParams": {
         "dataType": "refObject",
         "properties": {
-            "companyId": {"dataType":"string"},
-            "title": {"dataType":"string"},
-            "position": {"dataType":"array","array":{"dataType":"string"}},
-            "workMode": {"dataType":"array","array":{"dataType":"refEnum","ref":"WorkMode"}},
-            "location": {"dataType":"string"},
-            "requirement": {"dataType":"string"},
+            "companyId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"ref":"mongoose.Types.ObjectId"}],"required":true},
+            "title": {"dataType":"string","required":true},
+            "position": {"dataType":"array","array":{"dataType":"string"},"required":true},
+            "workMode": {"dataType":"array","array":{"dataType":"refEnum","ref":"WorkMode"},"required":true},
+            "location": {"dataType":"string","required":true},
+            "requirement": {"dataType":"string","required":true},
             "description": {"dataType":"string"},
-            "address": {"dataType":"string"},
-            "min_salary": {"dataType":"double"},
-            "max_salary": {"dataType":"double"},
+            "address": {"dataType":"string","required":true},
+            "min_salary": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[0]}],"required":true},
+            "max_salary": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[5000]}],"required":true},
             "job_opening": {"dataType":"double"},
             "type": {"dataType":"array","array":{"dataType":"refEnum","ref":"EmploymentType"}},
             "schedule": {"dataType":"array","array":{"dataType":"refEnum","ref":"EmploymentSchedule"}},

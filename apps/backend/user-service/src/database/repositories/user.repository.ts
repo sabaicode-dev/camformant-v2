@@ -191,11 +191,11 @@ class UserRepository {
 
   async updateBySub(updateInfo: UserUpdateRepoParams) {
     try {
-      const { id, ...newUpdateInfo } = updateInfo;
+      const { _id, ...newUpdateInfo } = updateInfo;
 
       const result = await UserModel.findOneAndUpdate(
         {
-          $or: [{ userId: id }, { googleSub: id }, { facebookSub: id }],
+          $or: [{ sub: _id }, { googleSub: _id }, { facebookSub: _id }],
         },
         newUpdateInfo,
         { new: true }
@@ -204,6 +204,7 @@ class UserRepository {
       if (!result) {
         throw new NotFoundError();
       }
+      console.log("repo passed:::");
 
       return result;
     } catch (error) {
@@ -278,12 +279,13 @@ class UserRepository {
   async getUserFavorites(userId: string): Promise<string[]> {
     try {
       const user = await UserModel.findById(userId).select("favorites");
+      console.log("user::::", user);
 
       if (!user) {
         throw new NotFoundError("User not found");
       }
 
-      return user.favorites;
+      return user.favorites.map((favorite) => favorite.toString());
     } catch (error) {
       console.error(
         `UserRepository - getUserFavorites() method error: `,

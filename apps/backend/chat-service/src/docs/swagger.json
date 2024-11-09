@@ -82,34 +82,80 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"mongoose.Types.ObjectId": {
+				"type": "string"
+			},
 			"IMessage": {
 				"properties": {
-					"text": {
-						"type": "string"
+					"chatId": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 					},
 					"senderId": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"content": {
 						"type": "string"
 					},
-					"recipientId": {
+					"messageType": {
+						"type": "string",
+						"enum": [
+							"text",
+							"image",
+							"video",
+							"file",
+							"audio",
+							"poll",
+							"location"
+						]
+					},
+					"mediaUrl": {
 						"type": "string"
 					},
-					"conversationId": {
-						"type": "string"
+					"reactions": {
+						"items": {
+							"properties": {
+								"userId": {
+									"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+								},
+								"emoji": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"userId",
+								"emoji"
+							],
+							"type": "object"
+						},
+						"type": "array"
 					},
-					"createdAt": {
+					"replyToMessageId": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"forwardedFrom": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"sentAt": {
 						"type": "string",
 						"format": "date-time"
 					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
+					"readBy": {
+						"items": {
+							"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+						},
+						"type": "array"
+					},
+					"encryptedContent": {
+						"type": "string"
 					}
 				},
 				"required": [
-					"text",
+					"chatId",
 					"senderId",
-					"recipientId",
-					"conversationId"
+					"messageType",
+					"reactions",
+					"sentAt",
+					"readBy"
 				],
 				"type": "object",
 				"additionalProperties": false

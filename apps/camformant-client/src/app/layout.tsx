@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 // import { NavigationBar } from "@/components/navigation-bar/navigation-bar";
 import { AuthProvider } from "@/context/auth";
+import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,10 +34,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = cookies();
+  const userCookie = cookieStore.get("id_token");
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider>
+        <AuthProvider isLogin={!!userCookie}>
           {/* <NavigationBar /> */}
           {children}
         </AuthProvider>

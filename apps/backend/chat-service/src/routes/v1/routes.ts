@@ -42,15 +42,25 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "mongoose.Types.ObjectId": {
+        "dataType": "refAlias",
+        "type": {"dataType":"string","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "IMessage": {
         "dataType": "refObject",
         "properties": {
-            "text": {"dataType":"string","required":true},
-            "senderId": {"dataType":"string","required":true},
-            "recipientId": {"dataType":"string","required":true},
-            "conversationId": {"dataType":"string","required":true},
-            "createdAt": {"dataType":"datetime"},
-            "updatedAt": {"dataType":"datetime"},
+            "chatId": {"ref":"mongoose.Types.ObjectId","required":true},
+            "senderId": {"ref":"mongoose.Types.ObjectId","required":true},
+            "content": {"dataType":"string"},
+            "messageType": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["text"]},{"dataType":"enum","enums":["image"]},{"dataType":"enum","enums":["video"]},{"dataType":"enum","enums":["file"]},{"dataType":"enum","enums":["audio"]},{"dataType":"enum","enums":["poll"]},{"dataType":"enum","enums":["location"]}],"required":true},
+            "mediaUrl": {"dataType":"string"},
+            "reactions": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"userId":{"ref":"mongoose.Types.ObjectId","required":true},"emoji":{"dataType":"string","required":true}}},"required":true},
+            "replyToMessageId": {"ref":"mongoose.Types.ObjectId"},
+            "forwardedFrom": {"ref":"mongoose.Types.ObjectId"},
+            "sentAt": {"dataType":"datetime","required":true},
+            "readBy": {"dataType":"array","array":{"dataType":"refAlias","ref":"mongoose.Types.ObjectId"},"required":true},
+            "encryptedContent": {"dataType":"string"},
         },
         "additionalProperties": false,
     },

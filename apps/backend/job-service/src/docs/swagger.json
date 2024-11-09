@@ -7,6 +7,9 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"mongoose.Types.ObjectId": {
+				"type": "string"
+			},
 			"WorkMode": {
 				"enum": [
 					"Remote",
@@ -37,7 +40,14 @@
 						"type": "string"
 					},
 					"companyId": {
-						"type": "string"
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+							}
+						]
 					},
 					"title": {
 						"type": "string"
@@ -60,10 +70,10 @@
 					"requirement": {
 						"type": "string"
 					},
-					"address": {
+					"description": {
 						"type": "string"
 					},
-					"description": {
+					"address": {
 						"type": "string"
 					},
 					"min_salary": {
@@ -73,10 +83,6 @@
 					"max_salary": {
 						"type": "number",
 						"format": "double"
-					},
-					"deadline": {
-						"type": "string",
-						"format": "date-time"
 					},
 					"job_opening": {
 						"type": "number",
@@ -113,6 +119,10 @@
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time"
+					},
+					"deadline": {
+						"type": "string",
+						"format": "date-time"
 					}
 				},
 				"type": "object",
@@ -136,7 +146,14 @@
 			"JobParams": {
 				"properties": {
 					"companyId": {
-						"type": "string"
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+							}
+						]
 					},
 					"title": {
 						"type": "string"
@@ -166,12 +183,32 @@
 						"type": "string"
 					},
 					"min_salary": {
-						"type": "number",
-						"format": "double"
+						"anyOf": [
+							{
+								"type": "number",
+								"format": "double"
+							},
+							{
+								"type": "number",
+								"enum": [
+									0
+								]
+							}
+						]
 					},
 					"max_salary": {
-						"type": "number",
-						"format": "double"
+						"anyOf": [
+							{
+								"type": "number",
+								"format": "double"
+							},
+							{
+								"type": "number",
+								"enum": [
+									5000
+								]
+							}
+						]
 					},
 					"job_opening": {
 						"type": "number",
@@ -206,6 +243,17 @@
 						"format": "date-time"
 					}
 				},
+				"required": [
+					"companyId",
+					"title",
+					"position",
+					"workMode",
+					"location",
+					"requirement",
+					"address",
+					"min_salary",
+					"max_salary"
+				],
 				"type": "object",
 				"additionalProperties": false
 			},

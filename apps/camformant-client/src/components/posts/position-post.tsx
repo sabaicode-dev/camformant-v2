@@ -213,14 +213,6 @@ export const PositionPost: React.FC = () => {
             />
           </div>
         ))
-      ) : isLoading ? (
-        Array(3)
-          .fill(0)
-          .map((_, index) => (
-            <div key={index} className="mb-4 rounded-xl drop-shadow-md">
-              <SkeletonCard />
-            </div>
-          ))
       ) : jobData.length === 0 ? (
         <div className="flex flex-col items-center w-full">
           <Image
@@ -236,9 +228,13 @@ export const PositionPost: React.FC = () => {
         ""
       )}
 
-      {isLoading && hasMore && (
-        <p className="text-center text-gray-500">Loading more jobs...</p>
-      )}
+      {isLoading &&
+        hasMore &&
+        Array.from({ length: 3 }).map((_, index) => (
+          <div className="p-1 mb-2" key={index}>
+            <SkeletonCard />
+          </div>
+        ))}
       {!hasMore && jobData.length > 0 && (
         <p className="my-10 text-center text-gray-500">
           You have seen all jobs.

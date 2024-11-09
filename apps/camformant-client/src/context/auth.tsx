@@ -40,30 +40,47 @@ interface AuthContextType {
   }: SignupRequest) => Promise<void>;
   verify: ({ email, phone_number, code }: VerifyUserRequest) => Promise<void>;
   siginWithGoogle: () => Promise<void>;
-  userState: User | null;
-  setUserState: React.Dispatch<React.SetStateAction<User | null>>;
+  onChangeUser: (jobId: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider = ({
+  children,
+  isLogin,
+}: {
+  children: ReactNode;
+  isLogin: boolean;
+}) => {
   const [user, setUser] = useState<User | null>(null);
-  const [userState, setUserState] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  // const lastUser = user;
+  const [lastUser, setLastUser] = useState<User | null>(user);
+  const onChangeUser = (jobId: string) => {
+    if (user) {
+      setLastUser({
+        _id: user._id,
+        email: user.email,
+        profile: user.profile,
+        role: user.role,
+        username: user.username,
+        favorites: user?.favorites.filter((favId) => favId !== jobId),
+      });
+      setUser(lastUser);
+    }
+  };
   //todo: make fetch /me only when logged in and refetch on toggle favorite
   const checkAuthStatus = async () => {
     try {
       setLoading(true);
 
-      // ///TODO: mean cookie ot => expired? !=expired => fetch
+      ///TODO: mean cookie ot => expired? !=expired => fetch
 
       const res2 = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
       setUser(res2.data?.data);
       setIsAuthenticated(true);
+      // setUserState(res2.data?.data);
       // }
     } catch (error) {
       setIsAuthenticated(false);
@@ -72,8 +89,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
   useEffect(() => {
-    checkAuthStatus();
-  }, [userState]);
+    if (isLogin) {
+      checkAuthStatus();
+    }
+  }, []);
   //lastUser?.favorites
 
   const login = async ({ email, phone_number, password }: LoginRequest) => {
@@ -189,8 +208,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         signup,
         verify,
         siginWithGoogle,
-        userState,
-        setUserState,
+        onChangeUser,
       }}
     >
       {children}

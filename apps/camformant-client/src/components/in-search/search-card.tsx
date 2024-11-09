@@ -129,19 +129,6 @@ const SearchCard = ({
     jobData,
   ]);
   const onScroll = useCallback(async () => {
-    // console.log("===document.body.offsetHeight===", document.body.offsetHeight);
-    // console.log("===window.scrollY===", window.scrollY);
-    // const height = heighRef.current?.clientHeight;
-    // console.log("===height===", height);
-    // console.log(
-    //   "===document.body.scrollHeight;===",
-    //   document.body.scrollHeight
-    // );
-
-    // console.log(
-    //   "===window.innerHeight + window.scrollY===",
-    //   window.innerHeight + window.scrollY
-    // );
     if (
       window.innerHeight + window.scrollY >= document.body.scrollHeight - 200 &&
       hasMore &&
