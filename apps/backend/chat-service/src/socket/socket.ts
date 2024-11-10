@@ -1,10 +1,10 @@
 import { Server, Socket } from "socket.io";
-import { MessageService } from "../services/message.service";
+// import { MessageService } from "../services/message.service";
 
 const onlineUsers = new Map<string, Set<string>>();
 
 const setupSocketIO = (io: Server) => {
-  const messageService = new MessageService();
+  // const messageService = new MessageService();
 
   io.on("connection", (socket: Socket) => {
     // Check if the cookies exist in the socket handshake headers
@@ -46,14 +46,13 @@ const setupSocketIO = (io: Server) => {
     socket.on("sendMessage", async (data) => {
       console.log("data::: ", data);
       try {
-        const savedMessage = await messageService.saveMessage({
-          text: data.text,
-          senderId: data.senderId,
-          recipientId: data.recipientId,
-          conversationId: data.conversationId,
-        });
-
-        io.to(data.conversationId).emit("receiveMessage", savedMessage);
+        // const savedMessage = await messageService.saveMessage({
+        //   text: data.text,
+        //   senderId: data.senderId,
+        //   recipientId: data.recipientId,
+        //   conversationId: data.conversationId,
+        // });
+        // io.to(data.conversationId).emit("receiveMessage", savedMessage);
       } catch (error) {
         console.error("Error handling message:", error);
         socket.emit("error", "Failed to process message");

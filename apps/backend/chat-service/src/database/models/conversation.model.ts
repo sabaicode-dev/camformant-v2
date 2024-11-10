@@ -1,35 +1,45 @@
-import mongoose, { Schema } from "mongoose";
-
-export interface IConversation {
-  participants: string[];
-  roomId: string;
-  username: string;
-  userProfile: string;
-  companyName: string;
-  companyProfile: string;
+import mongoose, { Document } from "mongoose";
+export interface Conversation extends Document {
+  participants: mongoose.Schema.Types.ObjectId[];
+  messages: mongoose.Schema.Types.ObjectId[];
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-const ConversationSchema: Schema = new Schema(
+const conversationSchema = new mongoose.Schema<Conversation>(
   {
-    participants: { type: [String], required: true },
-    roomId: { type: String, required: true, ref: "ChatRoom" },
-    username: String,
-    userProfile: String,
-    companyName: String,
-    companyProfile: String,
+    participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    messages: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Message",
+        default: [],
+      },
+    ],
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toObject: {
+      transform: function (_doc, ret) {
+        delete ret.__v;
+        ret._id = ret._id.toString();
+      },
+    },
+    versionKey: false,
+  }
 );
 
-// Add a unique compound index for participants
-// ConversationSchema.index({ participants: 1 }, { unique: true });
-// ConversationSchema.index({ roomId: 1, participants: 1 });
+conversationSchema.pre("save", function (next) {
+  // Sort participants to enforce order consistency
+  this.participants = this.participants.sort();
+  next();
+});
 
-const ConversationModel = mongoose.model<IConversation>(
+// Unique index on participants array to prevent duplicates
+conversationSchema.index({ participants: 1 }, { unique: true });
+
+const ConversationModel = mongoose.model<Conversation>(
   "Conversation",
-  ConversationSchema
+  conversationSchema
 );
-
 export default ConversationModel;
