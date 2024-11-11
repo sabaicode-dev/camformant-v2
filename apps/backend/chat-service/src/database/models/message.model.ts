@@ -3,8 +3,9 @@ interface IMessage {
   senderId: mongoose.Schema.Types.ObjectId;
   receiverId: mongoose.Schema.Types.ObjectId;
   message: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+  // conversationId: mongoose.Schema.Types.ObjectId;
 }
 
 const messageSchema = new mongoose.Schema<IMessage>(
@@ -13,16 +14,22 @@ const messageSchema = new mongoose.Schema<IMessage>(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       require: true,
+      unique: false,
     },
     receiverId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       require: true,
+      unique: false,
     },
     message: {
       type: String,
       require: true,
     },
+    // conversationId: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Conversation",
+    // },
   },
   //createAt,updateAt
   {

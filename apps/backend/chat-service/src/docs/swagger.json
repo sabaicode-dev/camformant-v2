@@ -64,6 +64,9 @@
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time"
+					},
+					"roomId": {
+						"type": "string"
 					}
 				},
 				"required": [
@@ -71,7 +74,8 @@
 					"participants",
 					"messages",
 					"createdAt",
-					"updatedAt"
+					"updatedAt",
+					"roomId"
 				],
 				"type": "object",
 				"additionalProperties": false

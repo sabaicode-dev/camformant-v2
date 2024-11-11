@@ -1,14 +1,25 @@
 import mongoose, { Document } from "mongoose";
 export interface Conversation extends Document {
-  participants: mongoose.Schema.Types.ObjectId[];
+  participants: [mongoose.Schema.Types.ObjectId];
   messages: mongoose.Schema.Types.ObjectId[];
   createdAt?: Date;
   updatedAt?: Date;
+  roomId: string;
 }
 
 const conversationSchema = new mongoose.Schema<Conversation>(
   {
-    participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    participants: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "User",
+      validate: {
+        validator: function (value: mongoose.Types.ObjectId[]) {
+          return value.length === 2; // Ensure exactly 2 participants
+        },
+        message: "A pair must have exactly two participants.",
+      },
+      required: true,
+    },
     messages: [
       {
         type: mongoose.Schema.ObjectId,
@@ -16,6 +27,11 @@ const conversationSchema = new mongoose.Schema<Conversation>(
         default: [],
       },
     ],
+    roomId: {
+      type: String,
+      unique: true,
+      required: true,
+    },
   },
   {
     timestamps: true,
@@ -28,16 +44,7 @@ const conversationSchema = new mongoose.Schema<Conversation>(
     versionKey: false,
   }
 );
-
-conversationSchema.pre("save", function (next) {
-  // Sort participants to enforce order consistency
-  this.participants = this.participants.sort();
-  next();
-});
-
-// Unique index on participants array to prevent duplicates
-conversationSchema.index({ participants: 1 }, { unique: true });
-
+//
 const ConversationModel = mongoose.model<Conversation>(
   "Conversation",
   conversationSchema

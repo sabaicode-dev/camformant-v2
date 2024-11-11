@@ -15,9 +15,11 @@ interface conversation {
     message: string;
     createdAt: Date;
     updatedAt: Date;
+    // conversationId: mongoose.Types.ObjectId;
   }[];
   createdAt: Date;
   updatedAt: Date;
+  roomId: string;
 }
 
 @Route("v1/messages")
@@ -30,29 +32,58 @@ export class MessageController extends Controller {
   ): Promise<{ message: string; data: any }> {
     try {
       const { message } = reqBody;
-      //   console.log(id);
       const cookieHeader = request.headers.cookie;
-
       const cookies = deCookies(cookieHeader);
       const senderId = cookies.userId;
-      console.log("1:::");
-      console.log("receiverId:::", receiverId);
+      console.log(senderId);
 
-      let conversation = await ConversationModel.findOne({
-        participants: { $all: [senderId, receiverId] },
-      });
+      console.log(new mongoose.Types.ObjectId(senderId));
+
+      const participants = [senderId, receiverId].sort();
+      const roomId = participants.join("_");
+      // console.log(roomId);
+      console.log(participants);
+      console.log("participants Obj:", [
+        new mongoose.Types.ObjectId(senderId),
+        new mongoose.Types.ObjectId(receiverId),
+      ]);
+      let conversation = await ConversationModel.findOneAndUpdate(
+        { roomId },
+        { $setOnInsert: { participants, roomId } },
+        { new: true, upsert: true }
+      );
+      // let conversation = await ConversationModel.findOne({
+      //   participants: { $all: [senderId, receiverId] },
+      // });
+      console.log("conversation:::", conversation);
+
+      // if (!conversation) {
+      //   conversation = await ConversationModel.create({
+      //     participants: [senderId, receiverId],
+      //     // roomId,
+      //   });
+      // }
+      // Check if a conversation with this roomId already exists
+      // let conversation = await ConversationModel.findOne({ roomId });
+      // console.log(conversation);
+
+      // // If no conversation exists, create a new one
+      // if (!conversation) {
+      //   //BUG:duplicated
+      //   conversation = await ConversationModel.create({
+      //     participants,
+      //     roomId,
+      //   });
+      // }
+      //
+
       console.log("2:::");
-      //BUG:
-      if (!conversation) {
-        conversation = await ConversationModel.create({
-          participants: [senderId, receiverId],
-        });
-        console.log("3:::");
-      }
+
       const newMessage = await new MessageModel({
         senderId,
         receiverId,
         message,
+        // conversationId: conversation._id,
       });
       console.log("4:::");
       console.log(newMessage);
