@@ -10,10 +10,42 @@
 			"mongoose.Types.ObjectId": {
 				"type": "string"
 			},
+			"messages": {
+				"properties": {
+					"_id": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"senderId": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"receiverId": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"message": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"_id",
+					"senderId",
+					"receiverId",
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"conversation": {
 				"properties": {
 					"_id": {
-						"type": "string"
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 					},
 					"participants": {
 						"items": {
@@ -42,12 +74,10 @@
 									"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 								},
 								"_id": {
-									"type": "string"
+									"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 								}
 							},
 							"required": [
-								"updatedAt",
-								"createdAt",
 								"message",
 								"receiverId",
 								"senderId",
@@ -102,7 +132,9 @@
 							"application/json": {
 								"schema": {
 									"properties": {
-										"data": {},
+										"data": {
+											"$ref": "#/components/schemas/messages"
+										},
 										"message": {
 											"type": "string"
 										}
@@ -148,7 +180,7 @@
 				}
 			}
 		},
-		"/v1/messages/{Id}": {
+		"/v1/messages/{userToChatId}": {
 			"get": {
 				"operationId": "GetMessages",
 				"responses": {
@@ -157,12 +189,19 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
+									"properties": {
+										"data": {
 											"$ref": "#/components/schemas/conversation"
+										},
+										"message": {
+											"type": "string"
 										}
+									},
+									"required": [
+										"data",
+										"message"
 									],
-									"nullable": true
+									"type": "object"
 								}
 							}
 						}
@@ -172,7 +211,7 @@
 				"parameters": [
 					{
 						"in": "path",
-						"name": "Id",
+						"name": "userToChatId",
 						"required": true,
 						"schema": {
 							"type": "string"
