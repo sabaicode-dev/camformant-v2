@@ -16,3 +16,8 @@ export interface conversation {
   updatedAt: Date;
   roomId: string;
 }
+
+export interface query {
+  page?: number;
+  limit?: number;
+}

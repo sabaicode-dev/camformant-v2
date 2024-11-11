@@ -1,6 +1,6 @@
 import express from "express";
 import { MessageRepository } from "../database/repositories/message.repository";
-import { conversation, messages } from "./types/messages.service.types";
+import { messages, query } from "./types/messages.service.types";
 
 export class MessageService {
   MessageRepository = new MessageRepository();
@@ -29,17 +29,19 @@ export class MessageService {
   }
   async getMessage(
     userToChatId: string,
-    cookieHeader: string
-  ): Promise<{ message: string; data: conversation }> {
+    cookieHeader: string,
+    query: query
+  ): Promise<any> {
     try {
       const cookies = deCookies(cookieHeader);
       const senderId = cookies.userId;
       const result = await this.MessageRepository.getMessage(
         userToChatId,
-        senderId
+        senderId,
+        query
       );
 
-      return { message: "Messages", data: result as unknown as conversation };
+      return result;
     } catch (error) {
       console.error("error:::", error);
       throw error;

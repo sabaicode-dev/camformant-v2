@@ -5,7 +5,7 @@ interface IMessage {
   message: string;
   createdAt?: Date;
   updatedAt?: Date;
-  // conversationId: mongoose.Schema.Types.ObjectId;
+  conversationId: mongoose.Schema.Types.ObjectId;
 }
 
 const messageSchema = new mongoose.Schema<IMessage>(
@@ -26,10 +26,10 @@ const messageSchema = new mongoose.Schema<IMessage>(
       type: String,
       require: true,
     },
-    // conversationId: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Conversation",
-    // },
+    conversationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Conversation",
+    },
   },
   //createAt,updateAt
   {

@@ -314,21 +314,20 @@ const ROUTE_PATHS: RoutesConfig = {
     },
   },
   CONVERSATION: {
-    path: "/v1/conversations",
+    path: "v1/messages",
     target: configs.chatServiceUrl,
-    methods: {
-      POST: {
-        authRequired: true,
-        roles: ["user", "company"],
-      },
-      GET: {
-        authRequired: true,
-        roles: ["user", "company"],
-      },
-    },
     nestedRoutes: [
       {
-        path: "/:id/messages",
+        path: "/send/:receiverId",
+        methods: {
+          POST: {
+            authRequired: true,
+            roles: ["user", "company"],
+          },
+        },
+      },
+      {
+        path: "/:userToChatId",
         methods: {
           GET: {
             authRequired: true,

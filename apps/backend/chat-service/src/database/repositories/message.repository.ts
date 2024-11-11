@@ -3,8 +3,10 @@ import ConversationModel from "../models/conversation.model";
 import MessageModel from "../models/message.model";
 import {
   conversation,
+  conversationRespond,
   createdMessage,
-} from "./types/messages.controller.types";
+  query,
+} from "./types/messages.repository.types";
 
 export class MessageRepository {
   async sendMessage(makeMessage: {
@@ -28,7 +30,7 @@ export class MessageRepository {
         senderId,
         receiverId,
         message,
-        // conversationId: conversation._id,
+        conversationId: conversation._id,
       });
 
       if (newMessage) {
@@ -49,20 +51,41 @@ export class MessageRepository {
   }
   async getMessage(
     userToChatId: string,
-    senderId: string
-  ): Promise<conversation | null> {
+    senderId: string,
+    query: query
+  ): Promise<null | conversationRespond> {
+    //conversation |
+    const { limit = 7, page = 1 } = query;
+
+    const skip = (page - 1) * limit;
     try {
       const conversation = await ConversationModel.findOne({
         participants: { $all: [senderId, userToChatId] },
       }).populate({
         path: "messages",
+        options: { limit, skip, sort: { createdAt: 1 } },
         // model: MessageModel,
         // select: "_id senderId receiverId message createdAt updatedAt",
       });
-      //   console.log("conversation:::", JSON.stringify(conversation));
 
+      let totalMessages = 0;
       if (conversation) {
-        return conversation as unknown as conversation;
+        // Step 2: Count total messages for the conversation separately
+        totalMessages = await MessageModel.countDocuments({
+          conversationId: conversation._id,
+        });
+      }
+
+      const totalPage = Math.ceil(totalMessages / limit);
+      if (conversation) {
+        return {
+          conversation: conversation as unknown as conversation,
+          currentPage: page,
+          totalMessages,
+          totalPage,
+          limit,
+          skip,
+        };
       }
 
       return null;

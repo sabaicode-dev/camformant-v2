@@ -10,7 +10,7 @@ export interface conversation {
     message: string;
     createdAt?: Date;
     updatedAt?: Date;
-    // conversationId: mongoose.Types.ObjectId;
+    conversationId: mongoose.Types.ObjectId;
   }[];
   createdAt: Date;
   updatedAt: Date;
@@ -24,5 +24,10 @@ export interface messages {
   message: string;
   createdAt?: Date;
   updatedAt?: Date;
+  conversationId: mongoose.Types.ObjectId;
   // conversationId: mongoose.Types.ObjectId;
+}
+export interface query {
+  page?: number;
+  limit?: number;
 }

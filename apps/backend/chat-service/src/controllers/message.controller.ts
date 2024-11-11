@@ -1,6 +1,16 @@
-import { Body, Controller, Get, Path, Post, Request, Route } from "tsoa";
+import {
+  Body,
+  Controller,
+  Get,
+  Path,
+  Post,
+  Queries,
+  Request,
+  Route,
+} from "tsoa";
 import express from "express";
 import { MessageService } from "../services/message.service";
+import { query } from "./types/message.controller.types";
 
 @Route("v1/messages")
 export class MessageController extends Controller {
@@ -31,13 +41,15 @@ export class MessageController extends Controller {
   @Get("{userToChatId}")
   public async getMessages(
     @Path() userToChatId: string,
-    @Request() request: express.Request
+    @Request() request: express.Request,
+    @Queries() query: query
   ) {
     try {
       const cookieHeader = request.headers.cookie;
       const result = await this.MessageService.getMessage(
         userToChatId,
-        cookieHeader!
+        cookieHeader!,
+        query
       );
 
       return result;

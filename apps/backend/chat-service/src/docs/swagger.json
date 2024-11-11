@@ -31,13 +31,17 @@
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time"
+					},
+					"conversationId": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 					}
 				},
 				"required": [
 					"_id",
 					"senderId",
 					"receiverId",
-					"message"
+					"message",
+					"conversationId"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -56,6 +60,9 @@
 					"messages": {
 						"items": {
 							"properties": {
+								"conversationId": {
+									"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+								},
 								"updatedAt": {
 									"type": "string",
 									"format": "date-time"
@@ -78,6 +85,7 @@
 								}
 							},
 							"required": [
+								"conversationId",
 								"message",
 								"receiverId",
 								"senderId",
@@ -107,6 +115,20 @@
 					"updatedAt",
 					"roomId"
 				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"query": {
+				"properties": {
+					"page": {
+						"type": "number",
+						"format": "double"
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					}
+				},
 				"type": "object",
 				"additionalProperties": false
 			}
@@ -215,6 +237,24 @@
 						"required": true,
 						"schema": {
 							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "page",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
 						}
 					}
 				]
