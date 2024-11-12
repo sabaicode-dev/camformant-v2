@@ -36,8 +36,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const checkAuthStatus = async () => {
       try {
         setIsLoading(true); 
-        const response = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
-        setUser(response.data.data);
+        const res = await axiosInstance.get(API_ENDPOINTS.CORPARATE_USER_PROFILE);
+        setUser(res.data.data.user);
         setIsAuthenticated(true);
       } catch (error) {
         console.error("Check auth status failed:", error);
@@ -47,18 +47,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(false); 
       }
     };
-
-    if (isAuthenticated) {
-      checkAuthStatus();
-    } else {
-      setIsLoading(false); 
-    }
-  }, [isAuthenticated]);
+    checkAuthStatus()
+    // if (isAuthenticated) {
+    //   checkAuthStatus();
+    // } else {
+    //   setIsLoading(false); 
+    // }
+  }, []);
 
   const signUp = async (data: SignUpData) => {
     setIsLoading(true);
     try {
-      await axiosInstance.post(`${API_ENDPOINTS.SIGN_UP}`, {
+      await axiosInstance.post(`${API_ENDPOINTS.CORPARATE_SIGNUP}`, {
         sur_name: data.sur_name,
         last_name: data.last_name,
         email: data.email,
@@ -78,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const verifyCode = async (data: VerifyCodeData) => {
     setIsLoading(true);
     try {
-      await axiosInstance.post(API_ENDPOINTS.VERIFY, {
+      await axiosInstance.post(API_ENDPOINTS.CORPARATE_VERIFY, {
         [data.email ? "email" : "phone_number"]: data.email || data.phone_number,
         code: data.code,
       });
@@ -95,11 +95,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signIn = async (data: SignInData) => {
     setIsLoading(true);
     try {
-      await axiosInstance.post(API_ENDPOINTS.SIGN_IN, data);
+      await axiosInstance.post(API_ENDPOINTS.CORPARATE_SIGNIN, data);
 
       // Fetch user info after successful sign-in
-      const res = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
-      setUser(res.data.data);
+      const res = await axiosInstance.get(API_ENDPOINTS.CORPARATE_USER_PROFILE);
+      console.log("res:::::::::::::::::::::::::;", res.data.data.user);
+      setUser(res.data.data.user);
       setIsAuthenticated(true); // Trigger useEffect by updating isAuthenticated state
       router.push("/dashboard");
     } catch (error) {

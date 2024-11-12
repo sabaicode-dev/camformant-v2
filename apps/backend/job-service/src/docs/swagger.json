@@ -300,6 +300,142 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"ICorporateProfile": {
+				"properties": {
+					"company_name": {
+						"type": "string"
+					},
+					"profile": {
+						"type": "string"
+					},
+					"location": {
+						"properties": {
+							"country": {
+								"type": "string"
+							},
+							"city": {
+								"type": "string"
+							},
+							"address": {
+								"type": "string"
+							}
+						},
+						"type": "object"
+					},
+					"contact": {
+						"properties": {
+							"website": {
+								"type": "string"
+							},
+							"phone_number": {
+								"type": "string"
+							},
+							"email": {
+								"type": "string"
+							}
+						},
+						"type": "object"
+					},
+					"description": {
+						"type": "string"
+					},
+					"social_links": {
+						"properties": {
+							"facebook": {
+								"type": "string"
+							},
+							"twitter": {
+								"type": "string"
+							},
+							"linkedin": {
+								"type": "string"
+							}
+						},
+						"type": "object"
+					},
+					"industry": {
+						"type": "string"
+					},
+					"employee_count": {
+						"type": "number",
+						"format": "double"
+					},
+					"job_openings_count": {
+						"type": "number",
+						"format": "double"
+					},
+					"job_closings_count": {
+						"type": "number",
+						"format": "double"
+					},
+					"timestamps": {
+						"properties": {
+							"updated_at": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"created_at": {
+								"type": "string",
+								"format": "date-time"
+							}
+						},
+						"type": "object"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"APIResponse_ICorporateProfile_": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/ICorporateProfile"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"JobOpeningRequest": {
+				"properties": {
+					"title": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"requirements": {
+						"type": "string"
+					},
+					"location": {
+						"properties": {
+							"country": {
+								"type": "string"
+							},
+							"city": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"country",
+							"city"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"title",
+					"description",
+					"requirements",
+					"location"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ICompany": {
 				"properties": {
 					"_id": {
@@ -667,6 +803,170 @@
 				],
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/v1/corporate/profile": {
+			"post": {
+				"operationId": "CreateCorporateProfile",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIResponse_ICorporateProfile_"
+								}
+							}
+						}
+					}
+				},
+				"description": "Creates a new Corporate Profile",
+				"tags": [
+					"corporate"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ICorporateProfile"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetCorporateProfiles",
+				"responses": {
+					"200": {
+						"description": "A list of Corporate Profiles",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"items": {
+												"$ref": "#/components/schemas/ICorporateProfile"
+											},
+											"type": "array"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all Corporate Profiles",
+				"tags": [
+					"corporate"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/v1/corporate/{companyId}/job": {
+			"post": {
+				"operationId": "PostJobOpening",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"$ref": "#/components/schemas/ICorporateProfile"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"description": "Post a new job opening",
+				"tags": [
+					"corporate"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Corporate Profile ID",
+						"in": "path",
+						"name": "companyId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/JobOpeningRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/corporate/{companyId}": {
+			"get": {
+				"operationId": "GetCorporateProfileWithJobs",
+				"responses": {
+					"200": {
+						"description": "Corporate Profile with Jobs",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Get Corporate Profile with Jobs",
+				"tags": [
+					"corporate"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Corporate Profile ID",
+						"in": "path",
+						"name": "companyId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "recentJobsLimit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		},
 		"/v1/companies": {

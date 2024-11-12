@@ -39,7 +39,7 @@ export async function middleware(request: NextRequest) {
 
     // 3. Check user role for /dashboard access if authenticated
     if (pathname.startsWith("/dashboard")) {
-        const role = userInfo?.data?.role;
+        const role = userInfo.data.user.role;
         console.log("middleware.ts: role :::", role);
 
         // If user does not have the required role, sign out and redirect

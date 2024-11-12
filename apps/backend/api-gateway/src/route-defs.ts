@@ -101,7 +101,54 @@ const ROUTE_PATHS: RoutesConfig = {
           },
         },
       },
+      {
+        path: "/corporate/login",
+        methods: {
+          POST: {
+            authRequired: false,
+          },
+        },
+      },
+      {
+        path: "/corporate/signup",
+        methods: {
+          POST: {
+            authRequired: false,
+          },
+        },
+      }, {
+        path: "/corporate/verify",
+        methods: {
+          POST: {
+            authRequired: false,
+          },
+        },
+      }
     ],
+  },
+  CORPORATE_SERVICE: {
+    path: "/v1/corporate",
+    target: configs.userServiceUrl,
+    methods: {
+      GET: {
+        authRequired: false,
+        // roles: ["company"],
+      },
+      POST: {
+        authRequired: true,
+        roles: ["company"],
+      },
+    },
+    nestedRoutes: [
+      {
+        path: "/profile/me",
+        methods: {
+          GET: {
+            authRequired: false,
+            // roles: ["company"],
+          },
+        },
+      }]
   },
   USER_SERVICE: {
     path: "/v1/users",
