@@ -1,6 +1,9 @@
 import mongoose, { Document } from "mongoose";
 export interface Conversation extends Document {
-  participants: [mongoose.Schema.Types.ObjectId];
+  participants: {
+    participantId: mongoose.Schema.Types.ObjectId;
+    participantType: string;
+  };
   messages: mongoose.Schema.Types.ObjectId[];
   createdAt?: Date;
   updatedAt?: Date;
@@ -9,17 +12,20 @@ export interface Conversation extends Document {
 
 const conversationSchema = new mongoose.Schema<Conversation>(
   {
-    participants: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "User",
-      validate: {
-        validator: function (value: mongoose.Types.ObjectId[]) {
-          return value.length === 2; // Ensure exactly 2 participants
+    participants: [
+      {
+        participantType: {
+          type: String,
+          required: true,
+          enum: ["User", "Company"], // Allowed collections for participants
         },
-        message: "A pair must have exactly two participants.",
+        participantId: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          refPath: "participants.participantType", // Dynamically reference User or Company based on participantType
+        },
       },
-      required: true,
-    },
+    ],
     messages: [
       {
         type: mongoose.Schema.ObjectId,

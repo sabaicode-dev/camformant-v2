@@ -24,7 +24,11 @@ export interface conversation {
     updatedAt: Date;
     conversationId: mongoose.Types.ObjectId;
   }[];
-  participants: mongoose.Types.ObjectId[];
+  participants: {
+    participantType: "User" | "Company";
+    participantId: string;
+  }[];
+  //mongoose.Types.ObjectId[];//
   updatedAt: Date;
 }
 export interface conversationRespond {

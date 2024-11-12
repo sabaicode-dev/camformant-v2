@@ -13,13 +13,16 @@ export class MessageRepository {
     senderId: string;
     receiverId: string;
     message: string;
-    participants: string[];
+    participants: {
+      participantType: string;
+      participantId: string;
+    }[];
     roomId: string;
   }): Promise<createdMessage> {
     try {
       const { senderId, receiverId, message, participants, roomId } =
         makeMessage;
-
+      //find or create
       let conversation = await ConversationModel.findOneAndUpdate(
         { roomId },
         { $setOnInsert: { participants, roomId } },
@@ -52,21 +55,32 @@ export class MessageRepository {
   async getMessage(
     userToChatId: string,
     senderId: string,
-    query: query
+    query: query,
+    _participants: {
+      participantType: string;
+      participantId: string;
+    }[]
   ): Promise<null | conversationRespond> {
     //conversation |
     const { limit = 7, page = 1 } = query;
 
     const skip = (page - 1) * limit;
+
     try {
       const conversation = await ConversationModel.findOne({
-        participants: { $all: [senderId, userToChatId] },
+        participants: {
+          $all: [
+            { $elemMatch: { participantId: senderId } },
+            { $elemMatch: { participantId: userToChatId } },
+          ],
+        },
       }).populate({
         path: "messages",
         options: { limit, skip, sort: { createdAt: 1 } },
         // model: MessageModel,
         // select: "_id senderId receiverId message createdAt updatedAt",
       });
+      console.log("conversation:::", conversation);
 
       let totalMessages = 0;
       if (conversation) {

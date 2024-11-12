@@ -53,7 +53,23 @@
 					},
 					"participants": {
 						"items": {
-							"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+							"properties": {
+								"participantId": {
+									"type": "string"
+								},
+								"participantType": {
+									"type": "string",
+									"enum": [
+										"User",
+										"Company"
+									]
+								}
+							},
+							"required": [
+								"participantId",
+								"participantType"
+							],
+							"type": "object"
 						},
 						"type": "array"
 					},
@@ -118,6 +134,43 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"GetMessageRespond": {
+				"properties": {
+					"conversation": {
+						"$ref": "#/components/schemas/conversation"
+					},
+					"currentPage": {
+						"type": "number",
+						"format": "double"
+					},
+					"totalMessages": {
+						"type": "number",
+						"format": "double"
+					},
+					"totalPage": {
+						"type": "number",
+						"format": "double"
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					},
+					"skip": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"conversation",
+					"currentPage",
+					"totalMessages",
+					"totalPage",
+					"limit",
+					"skip"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"query": {
 				"properties": {
 					"page": {
@@ -155,7 +208,14 @@
 								"schema": {
 									"properties": {
 										"data": {
-											"$ref": "#/components/schemas/messages"
+											"anyOf": [
+												{
+													"type": "string"
+												},
+												{
+													"$ref": "#/components/schemas/messages"
+												}
+											]
 										},
 										"message": {
 											"type": "string"
@@ -211,19 +271,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"properties": {
-										"data": {
-											"$ref": "#/components/schemas/conversation"
-										},
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"data",
-										"message"
-									],
-									"type": "object"
+									"$ref": "#/components/schemas/GetMessageRespond"
 								}
 							}
 						}

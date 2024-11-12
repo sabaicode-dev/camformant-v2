@@ -97,6 +97,8 @@ const authenticateToken = async (
         role,
       };
     }
+    console.log("req.currentUser", req.currentUser);
+
     // Step 4
     next();
   } catch (error) {

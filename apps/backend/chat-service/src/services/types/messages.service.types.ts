@@ -2,7 +2,10 @@ import mongoose from "mongoose";
 
 export interface conversation {
   _id: mongoose.Types.ObjectId;
-  participants: mongoose.Types.ObjectId[];
+  participants: {
+    participantType: "User" | "Company";
+    participantId: string;
+  }[];
   messages: {
     _id: mongoose.Types.ObjectId;
     senderId: mongoose.Types.ObjectId;
@@ -30,4 +33,12 @@ export interface messages {
 export interface query {
   page?: number;
   limit?: number;
+}
+export interface GetMessageRespond {
+  conversation: conversation;
+  currentPage: number;
+  totalMessages: number;
+  totalPage: number;
+  limit: number;
+  skip: number;
 }
