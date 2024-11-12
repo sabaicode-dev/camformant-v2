@@ -35,15 +35,15 @@ export const FontSidebar = ({
       {/* Header Sidebar */}
       {/* <ToolSidebarHeader title="Fonts" description="Change Font to your text" /> */}
       <ScrollArea>
-        <div className="p-4 space-x-3 border-b flex overflow-x-auto">
+        <div className="flex p-4 space-x-3 overflow-x-auto border-b">
           {fonts.map((font) => (
             <Button
               key={font}
               variant="secondary"
               size="sm"
               className={cn(
-                "h-10 justify-start text-left",
-                value === font && "border-2 border-blue-500"
+                "h-10 justify-start text-left border border-slate-200",
+                value === font && "border-2 border-orange-400"
               )}
               style={{
                 fontFamily: font,

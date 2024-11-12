@@ -206,6 +206,136 @@
 				},
 				"type": "object",
 				"additionalProperties": false
+			},
+			"ICorporateModel": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"sub": {
+						"type": "string"
+					},
+					"username": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"profile": {
+						"type": "string"
+					},
+					"role": {
+						"type": "string",
+						"enum": [
+							"company"
+						],
+						"nullable": false
+					},
+					"corporateProfileId": {
+						"type": "string"
+					},
+					"favorites": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"_id",
+					"sub",
+					"username",
+					"email",
+					"profile",
+					"role",
+					"favorites",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CorporateProfileResponseCreate": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/ICorporateModel"
+					}
+				},
+				"required": [
+					"message",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CorporateProfileResquestParams": {
+				"properties": {
+					"sub": {
+						"type": "string"
+					},
+					"corporateProfileId": {
+						"type": "string"
+					},
+					"username": {
+						"type": "string"
+					},
+					"profile": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"role": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"username"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CorporateProfileResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"properties": {
+							"jobs": {
+								"items": {
+									"type": "string"
+								},
+								"type": "array"
+							},
+							"user": {
+								"$ref": "#/components/schemas/ICorporateModel"
+							}
+						},
+						"required": [
+							"jobs",
+							"user"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"message",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -522,6 +652,111 @@
 						}
 					}
 				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/v1/corporate": {
+			"post": {
+				"operationId": "CreateCorporate",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CorporateProfileResponseCreate"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporate"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CorporateProfileResquestParams"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetAllCorporates",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CorporateProfileResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporate"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/v1/corporate/{corporateId}": {
+			"get": {
+				"operationId": "GetCorporateBySub",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CorporateProfileResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporate"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "corporateId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v1/corporate/profile/me": {
+			"get": {
+				"operationId": "GetCorporateMe",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CorporateProfileResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporate"
+				],
 				"security": [],
 				"parameters": []
 			}

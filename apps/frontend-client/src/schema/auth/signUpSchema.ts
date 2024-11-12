@@ -6,4 +6,5 @@ export const FormSchema = z.object({
         .max(50)
         .email({ message: "This is not a valid email" }),
     password: z.string().min(8).max(50),
+    rememberMe: z.boolean().optional()
 });

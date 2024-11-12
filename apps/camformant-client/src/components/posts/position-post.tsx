@@ -10,6 +10,43 @@ import { Card } from "@/components/card/card";
 import { useAuth } from "@/context/auth";
 import { Job } from "@/app/jobs/[id]/message/page";
 import SkeletonCard from "@/components/skeleton/skeleton-card";
+import Image from "next/image";
+export enum EmploymentSchedule {
+  FULL_TIME = "Full-Time",
+  PART_TIME = "Part-Time",
+  FLEXIBLE_HOURS = "Flexible-Hours",
+  PROJECT_BASED = "Project-Based",
+}
+export enum EmploymentType {
+  CONTRACT = "Contract",
+  INTERNSHIP = "Internship",
+}
+export enum WorkMode {
+  REMOTE = "Remote",
+  ON_SITE = "On-Site",
+  HYBRID = "Hybrid",
+}
+interface IJob {
+  _id?: string;
+  companyId?: string;
+  title?: string; // name of the job that company looking for. Example: Java Developer
+  position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
+  workMode?: WorkMode[];
+  location?: string; // location could be phnom penh, kompong-cham, etc.
+  requirement?: string;
+  address?: string; // address could be the link address of the company (google link)
+  description?: string;
+  min_salary?: number;
+  max_salary?: number;
+  deadline?: Date;
+  job_opening?: number;
+  type?: EmploymentType[];
+  schedule?: EmploymentSchedule[];
+  required_experience?: string[];
+  benefit?: string[];
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 
 export const PositionPost: React.FC = () => {
   const { user } = useAuth();
@@ -54,13 +91,14 @@ export const PositionPost: React.FC = () => {
 
   const onScroll = useCallback(async () => {
     if (
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
+      window.innerHeight + window.scrollY >= document.body.offsetHeight - 1 &&
       hasMore &&
-      !isLoading
+      !isLoading &&
+      jobData.length > 0
     ) {
       await loadMoreData();
     }
-  }, [hasMore, isLoading, loadMoreData]);
+  }, [hasMore, isLoading, loadMoreData, jobData]);
 
   const handleSelectPosition = (category: string) => {
     setSelectedPosition(category);
@@ -115,11 +153,12 @@ export const PositionPost: React.FC = () => {
         if (jobs.length === 0 || 1 >= totalPages) {
           setHasMore(false);
         }
+        console.log("jobs::::, ", jobs);
 
         // Merge favorite status into jobs
-        const jobsWithFavoriteStatus = jobs.map((job: any) => ({
+        const jobsWithFavoriteStatus = jobs.map((job: IJob) => ({
           ...job,
-          favorite: user?.favorites.includes(job._id) || false,
+          favorite: user?.favorites.includes(job._id!) || false,
         }));
 
         setJobData(jobsWithFavoriteStatus);
@@ -140,7 +179,7 @@ export const PositionPost: React.FC = () => {
   }, [onScroll]);
 
   return (
-    <div className="container mt-5 pb-14">
+    <div className="container mt-5 pb-28">
       <Heading title="Positions" subTitle="You can find more positions here" />
 
       <div className="flex items-center justify-start gap-5 p-1 mt-4 mb-8 overflow-x-auto">
@@ -176,17 +215,26 @@ export const PositionPost: React.FC = () => {
           </div>
         ))
       ) : isLoading ? (
-        Array(5)
+        Array(3)
           .fill(0)
           .map((_, index) => (
             <div key={index} className="mb-4 rounded-xl drop-shadow-md">
               <SkeletonCard />
             </div>
           ))
+      ) : jobData.length === 0 ? (
+        <div className="flex flex-col items-center w-full">
+          <Image
+            src={"/images/unavailable.png"}
+            alt=""
+            width={1280}
+            height={1280}
+            className="w-full lg:w-1/2"
+          />
+          <p className="mb-10 ">No jobs available</p>
+        </div>
       ) : (
-        <p className="flex items-center justify-center w-full h-56 mb-20">
-          No jobs available
-        </p>
+        ""
       )}
 
       {isLoading && hasMore && (

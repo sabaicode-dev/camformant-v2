@@ -5,9 +5,10 @@ import Message from "@/components/message/message";
 import { useAuth } from "@/context/auth";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
-import { useParams } from "next/navigation";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-
+import { IoArrowBack } from "react-icons/io5";
 interface Company {
   name: string;
   profile: string;
@@ -19,7 +20,11 @@ export interface Job {
 }
 
 const ChatPage = () => {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  const router = useRouter();
+  // if (!isAuthenticated) {
+  //   router.push("/login");
+  // }
   const params = useParams();
   const companyId = params.id as string | undefined;
 
@@ -98,7 +103,27 @@ const ChatPage = () => {
       </div>
     );
   }
+  if (!isAuthenticated) {
+    return (
+      <div className="flex flex-col items-center justify-center px-8 gap-y-10">
+        <div className="flex items-center justify-start w-full mt-20 text-xl">
+          <span
+            className="p-2 text-3xl text-white rounded-lg hover:cursor-pointer bg-primaryCam"
+            onClick={() => router.back()}
+          >
+            <IoArrowBack />
+          </span>
+        </div>
+        <h1 className="text-xl text-center text-primaryCam">
+          Please Login to your Account
+        </h1>
 
+        <Link href="/login" className="p-3 text-white rounded-xl bg-primaryCam">
+          Login
+        </Link>
+      </div>
+    );
+  }
   return <Message conversationId={conversationId} job={job!} />;
 };
 

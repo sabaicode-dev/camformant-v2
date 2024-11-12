@@ -14,8 +14,8 @@ export const NavigationBar: React.FC = () => {
     <div className="fixed bottom-0 z-30 w-full bg-white border-t border-gray-100 ">
       <div className="flex justify-around p-4 gap-x-8 text-secondaryCam">
         <Link
-          href="/"
-          className={`flex flex-col items-center  ${pathname === "/" || pathname === "/search" ? "text-primaryCam" : ""}`}
+          href="/home"
+          className={`flex flex-col items-center  ${pathname === "/home" || pathname === "/search" ? "text-primaryCam" : ""}`}
         >
           <HiHome className="text-xl" />
           <div className="text-xs">Home</div>
