@@ -1,6 +1,7 @@
 import { Document, Schema, model } from "mongoose";
 
 export interface JobOpening extends Document {
+    _id: string;
     title: string;
     description: string;
     requirements: string;

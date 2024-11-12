@@ -136,6 +136,7 @@ const models: TsoaRoute.Models = {
     "ICorporateProfile": {
         "dataType": "refObject",
         "properties": {
+            "_id": {"dataType":"string"},
             "company_name": {"dataType":"string"},
             "profile": {"dataType":"string"},
             "location": {"dataType":"nestedObjectLiteral","nestedProperties":{"country":{"dataType":"string"},"city":{"dataType":"string"},"address":{"dataType":"string"}}},
@@ -462,6 +463,7 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
 
             async function CorporateController_createCorporateProfile(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
                     body: {"in":"body","name":"body","required":true,"ref":"ICorporateProfile"},
             };
 

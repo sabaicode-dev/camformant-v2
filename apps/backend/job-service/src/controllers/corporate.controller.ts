@@ -10,11 +10,15 @@ import {
     Body,
     Path,
     Query,
+    Request,
 } from "tsoa";
 import CorporateService from "../services/corporate.service";
 import jobOpeningService from "../services/jobOpening.service";
 import corporateService from "../services/corporate.service";
 import { ICorporateProfile } from "../database/models/corporateProfile.model";
+import { JobOpening } from "../database/models/jobOpening.model";
+import axios from "axios";
+import { Request as ExpressRequest } from "express";
 
 interface JobOpeningRequest {
     title: string;
@@ -39,10 +43,27 @@ export class CorporateController extends Controller {
     @SuccessResponse("201", "Created")
     @Post("/profile")
     public async createCorporateProfile(
+        @Request() request: ExpressRequest,
         @Body() body: ICorporateProfile
     ): Promise<APIResponse<ICorporateProfile>> {
         try {
+            const corporateId = request.cookies["user_id"];
+            console.log("Request user id :::::::::::::::", corporateId);
+            if (!corporateId) {
+                throw new Error("Job:: User ID is missing")
+            }
+
+            console.log("Request user id :::::::::::::::", corporateId);
             const newCompany = await CorporateService.createProfile(body);
+            console.log("CorporateJobController() createCorporateProfile:::::::::::", newCompany._id);
+
+            const corporateProfileId = newCompany._id;
+
+            if (!corporateProfileId) {
+                throw new Error("Corporate Profile ID is missing")
+            }
+
+            await axios.put(`http://localhost:4005/v1/corporate/profile/${corporateId}`, { corporateProfileId }, { headers: { "Authorization": "application/json" }, withCredentials: true });
 
             return sendResponse<ICorporateProfile>({
                 message: "Company was created successfully!",
@@ -77,11 +98,11 @@ export class CorporateController extends Controller {
     public async postJobOpening(
         companyId: string,
         @Body() body: JobOpeningRequest
-    ) {
+    ): Promise<any> {
         try {
             const newJob = await jobOpeningService.createJob(companyId, body);
 
-            return sendResponse<ICorporateProfile>({
+            return sendResponse<JobOpening>({
                 message: "Job was created successfully!",
                 data: newJob,
             });

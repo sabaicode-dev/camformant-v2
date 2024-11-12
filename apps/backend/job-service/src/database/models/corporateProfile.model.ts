@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 
 export interface ICorporateProfile {
+    _id?: string
     company_name?: string;
     profile?: string;
     location?: {

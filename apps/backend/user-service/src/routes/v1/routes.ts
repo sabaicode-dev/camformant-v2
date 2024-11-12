@@ -567,7 +567,7 @@ export function RegisterRoutes(app: Router) {
 
             async function CorporateController_updateCorporateProfile(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    corporateId: {"in":"path","name":"corporateId","required":true,"dataType":"string"},
                     requestBody: {"in":"body","name":"requestBody","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"corporateProfileId":{"dataType":"string","required":true}}},
             };
 

@@ -80,13 +80,13 @@ export class CorporateController extends Controller {
         }
     }
 
-    @Put("profile/{corporateId}")
+    @Put("/profile/{corporateId}")
     public async updateCorporateProfile(
-        @Request() request: ExpressRequest,
+        @Path() corporateId: string,
         @Body() requestBody: { corporateProfileId: string }
     ): Promise<CorporateProfileResponseCreate> {
         try {
-            const corporateId = request.cookies["user_id"];
+            // const corporateId = request.cookies["user_id"];
             if (!corporateId) {
                 console.error("Corporate ID not found in cookies");
                 throw new Error("Authentication error: Corporate ID not found in cookies");

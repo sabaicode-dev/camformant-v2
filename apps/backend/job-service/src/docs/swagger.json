@@ -302,6 +302,9 @@
 			},
 			"ICorporateProfile": {
 				"properties": {
+					"_id": {
+						"type": "string"
+					},
 					"company_name": {
 						"type": "string"
 					},
@@ -882,21 +885,7 @@
 						"description": "Created",
 						"content": {
 							"application/json": {
-								"schema": {
-									"properties": {
-										"data": {
-											"$ref": "#/components/schemas/ICorporateProfile"
-										},
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"data",
-										"message"
-									],
-									"type": "object"
-								}
+								"schema": {}
 							}
 						}
 					}
