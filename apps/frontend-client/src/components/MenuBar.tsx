@@ -9,8 +9,10 @@ import { ToolTip } from "./ToolTip";
 import { UserProfile } from "./UserProfile";
 import SabaiROkLogo from "../../public/logoSabaiRok.svg";
 import Image from "next/image";
+import { useAuth } from "@/context/AuthContext";
 
 export const MenuBar = () => {
+  const {user}=useAuth()
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSearch = () => {
@@ -20,7 +22,7 @@ export const MenuBar = () => {
   };
 
   return (
-    <Menubar className="w-full py-8">
+    <Menubar className="w-full py-8 z-40">
       {/* logo */}
       <div className="w-1/6 flex items-center">
         <SidebarGroup>
@@ -40,8 +42,8 @@ export const MenuBar = () => {
             onClick={handleSearch}
             className="cursor-pointer"
           />
-          <div className="h-full border w-[319px] border-gray-300  dark:border dark:border-gray-100 rounded-md">
-            <Input ref={inputRef} placeholder="Search..." />
+          <div className="h-[40px] border w-[319px] border-gray-300  dark:border dark:border-gray-100 rounded-md">
+            <Input ref={inputRef} placeholder="Search..." className="h-full" />
           </div>
         </div>
         <div className="flex justify-between w-[200px]">
@@ -53,8 +55,8 @@ export const MenuBar = () => {
             <ToolTip icon={<Mail />} text="Inbox" />
           </div>
           <UserProfile
-            avatarImage="https://github.com/shadcn.png"
-            fallback="yo"
+            avatarImage={user?.profile||"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCO2sR3EtGqpIpIa-GTVnvdrDHu0WxuzpA8g&s"}
+            fallback={user?.username}
           />
         </div>
       </div>

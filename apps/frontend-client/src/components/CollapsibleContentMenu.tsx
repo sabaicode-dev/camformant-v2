@@ -92,7 +92,7 @@ const CollapsibleContentMenu: React.FC<CollapsibleContentMenuProps> = ({
                                 <Link
                                     href={item[0].url}
                                     className={cn("flex items-center", {
-                                        "active-class": isActive,
+                                        "bg-orange-100 text-black dark:bg-gray-700 dark:text-white ": isActive,
                                     })}
                                 >
                                     <span className="size-7">

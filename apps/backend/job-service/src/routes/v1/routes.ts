@@ -118,6 +118,7 @@ const models: TsoaRoute.Models = {
             "filter": {"dataType":"string"},
             "sort": {"dataType":"string"},
             "search": {"dataType":"string"},
+            "userFav": {"dataType":"string"},
         },
         "additionalProperties": false,
     },

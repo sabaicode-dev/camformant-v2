@@ -2,19 +2,19 @@
 import React from "react";
 import { usePathname } from "next/navigation";
 import DynamicBreadcrumb from "@/components/DynamicBreadcrumb";
-import InputForm from "./input-form";
+import ProfilePage from "./profile";
 
 
 
-const Post = () => {
+const SettingPage = () => {
   const pathname = usePathname();
   return (
     <>
       <DynamicBreadcrumb />
       {pathname}
-      <InputForm/>
+      <ProfilePage/>
     </>
   );
 };
 
-export default Post;
+export default SettingPage;

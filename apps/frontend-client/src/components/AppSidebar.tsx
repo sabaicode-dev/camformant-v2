@@ -5,7 +5,6 @@ import {
   Sidebar,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -26,17 +25,19 @@ export function AppSidebar() {
   return (
     <Sidebar className="absolute top-5">
       {/* add this tonight */}
-      <SidebarGroup className=" mt-[45px]">
-        {itemsMenu.map((item, index) => (
-          <CollapsibleContentMenu
-            key={index}
-            item={item.item}
-            triggerName={item.triggerName}
-            iconTrigger={<item.iconTrigger />}
-            isCollapsibleOpen={item.isCollapsibleOpen}
-          />
-        ))}
-      </SidebarGroup>
+      <ScrollArea className="h-full pr-2">
+        <SidebarGroup className=" mt-[45px]">
+          {itemsMenu.map((item, index) => (
+            <CollapsibleContentMenu
+              key={index}
+              item={item.item}
+              triggerName={item.triggerName}
+              iconTrigger={<item.iconTrigger />}
+              isCollapsibleOpen={item.isCollapsibleOpen}
+            />
+          ))}
+        </SidebarGroup>
+      </ScrollArea>
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>

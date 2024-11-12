@@ -47,6 +47,7 @@ export interface JobGetAllControllerParams {
   filter?: string;
   sort?: string;
   search?: string;
+  userFav?: string;
 }
 
 export interface JobGetAllRepoParams {
@@ -55,4 +56,5 @@ export interface JobGetAllRepoParams {
   filter?: JobsFilterParams;
   sort?: JobSortParams;
   search?: string;
+  userFav?: string[];
 }

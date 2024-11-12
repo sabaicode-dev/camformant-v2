@@ -62,26 +62,16 @@ const Page: React.FC = () => {
           setLoading(false);
           return;
         }
+        const userFav = user?.favorites.join(",");
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.JOBS}?limit=*`
+          `${API_ENDPOINTS.JOBS}?userFav=${userFav}`
         );
-        console.log(response.data.data);
-
-        // console.log(response.data);
 
         const jobs: IJob[] = response.data.data.jobs;
+        console.log("jobs:::, ", jobs);
 
-        const filteredJob = jobs.filter((job) => {
-          for (let i = 0; i < favoriteJobIds.length; i++) {
-            if (job._id === favoriteJobIds[i]) return job;
-          }
-        });
-
-        console.log(filteredJob);
-
-        //TODO:todo
         // Set favorite status to true for these jobs
-        const jobsWithFavoriteStatus = filteredJob.map((job) => ({
+        const jobsWithFavoriteStatus = jobs.map((job) => ({
           ...job,
           favorite: true,
         }));

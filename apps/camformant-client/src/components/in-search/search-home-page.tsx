@@ -33,6 +33,7 @@ const SearchHomePage: React.FC = () => {
 
   const [searchValue, setSearchValue] = useState<string>("");
   const [filterValues, setFilterValues] = useState(defaultFilterValue);
+  console.log("filter::::::, ", filterValues);
 
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [searchTrending, setSearchTrending] = useState<string[]>([]);

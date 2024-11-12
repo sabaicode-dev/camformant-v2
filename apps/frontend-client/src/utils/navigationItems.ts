@@ -1,5 +1,5 @@
 import { PersonIcon } from "@radix-ui/react-icons";
-import {LayoutDashboard,Sheet,LetterText, Calendar, ChartNetwork, UserPen, List, MessageSquare, Settings, Users2 } from "lucide-react";
+import {LayoutDashboard,Sheet,LetterText, Calendar, ChartNetwork, UserPen, List, MessageSquare, Settings, Users2, User } from "lucide-react";
 
 
 
@@ -15,17 +15,17 @@ const dashboard = [
 ];
 
 // Menu jobs.
-const jobs = [
+const Applicant = [
     {
         title: "View Applicant",
         url: "/dashboard/jobs",
         icon: Sheet,
     },
-    {
-        title: "Lists",
-        url: "/dashboard/search",
-        icon: List,
-    },
+    // {
+    //     title: "Lists",
+    //     url: "/dashboard/search",
+    //     icon: List,
+    // },
 ];
 
 // Menu Posts
@@ -36,11 +36,11 @@ const posts = [
         url: "/dashboard/posts",
         icon: LetterText,
     },
-    {
-        title: "List",
-        url: "/dashboard/posts/list",
-        icon: List,
-    },
+    // {
+    //     title: "List",
+    //     url: "/dashboard/posts/list",
+    //     icon: List,
+    // },
 ];
 
 // Menu users.
@@ -56,11 +56,11 @@ const users = [
         url: "/dashboard/users/profile",
         icon: UserPen,
     },
-    {
-        title: "List",
-        url: "/dashboard/users/list",
-        icon: List,
-    },
+    // {
+    //     title: "List",
+    //     url: "/dashboard/users/list",
+    //     icon: List,
+    // },
 ];
 
 // Menu Calendar.
@@ -80,6 +80,13 @@ const chart = [
         title: "Chart",
         url: "/dashboard/chart",
         icon: ChartNetwork,
+    },
+];
+const profile = [
+    {
+        title: "Profile",
+        url: "/dashboard/profile",
+        icon: User,
     },
 ];
 
@@ -114,19 +121,25 @@ export const itemsMenu = [
         item: users,
         triggerName: "Users",
         iconTrigger: Users2,
-        isCollapsibleOpen: true,
+        isCollapsibleOpen: false,
     },
     {
-        item: jobs,
-        triggerName: "View Applicant",
-        iconTrigger: Sheet,
-        isCollapsibleOpen: true,
+        item: profile,
+        triggerName: "Profile",
+        iconTrigger: User,
+        isCollapsibleOpen: false,
     },
     {
         item: posts,
         triggerName: "Posts",
         iconTrigger: LetterText,
-        isCollapsibleOpen: true,
+        isCollapsibleOpen: false,
+    },
+    {
+        item: Applicant,
+        triggerName: "View Applicant",
+        iconTrigger: Sheet,
+        isCollapsibleOpen: false,
     },
     {
         item: calendar,
@@ -135,15 +148,15 @@ export const itemsMenu = [
         isCollapsibleOpen: false,
     },
     {
-        item: chart,
-        triggerName: "Chart",
-        iconTrigger: ChartNetwork,
+        item: chat,
+        triggerName: "Chat",
+        iconTrigger: User,
         isCollapsibleOpen: false,
     },
     {
-        item: chat,
-        triggerName: "Chat",
-        iconTrigger: MessageSquare,
+        item: chart,
+        triggerName: "Chart",
+        iconTrigger: ChartNetwork,
         isCollapsibleOpen: false,
     },
     {

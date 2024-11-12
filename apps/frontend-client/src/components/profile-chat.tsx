@@ -12,7 +12,7 @@ const ProfileChat = ({message, profileImage }: ProfileChatProp) => {
           <Avatar className="w-[30px] h-[30px]">
             <AvatarImage className="w-full h-full object-cover rounded-3xl" src={profileImage} alt={message} />
           </Avatar>
-          <div className="font-medium dark:text-white">
+          <div className=" dark:text-white">
             <div>{message}</div>
           </div>
         </div>
@@ -20,7 +20,7 @@ const ProfileChat = ({message, profileImage }: ProfileChatProp) => {
           <Avatar className="w-[30px] h-[30px]">
             <AvatarImage className="w-full h-full object-cover rounded-3xl" src={profileImage} alt={message} />
           </Avatar>
-          <div className="font-medium dark:text-white">
+          <div className=" dark:text-white">
             <div>{message}</div>
           </div>
         </div>
@@ -28,7 +28,7 @@ const ProfileChat = ({message, profileImage }: ProfileChatProp) => {
           <Avatar className="w-[30px] h-[30px]">
             <AvatarImage className="w-full h-full object-cover rounded-3xl" src={profileImage} alt={message} />
           </Avatar>
-          <div className="font-medium dark:text-white">
+          <div className=" dark:text-white">
             <div>{message}</div>
           </div>
         </div>
@@ -36,7 +36,7 @@ const ProfileChat = ({message, profileImage }: ProfileChatProp) => {
           <Avatar className="w-[30px] h-[30px]">
             <AvatarImage className="w-full h-full object-cover rounded-3xl" src={profileImage} alt={message} />
           </Avatar>
-          <div className="font-medium dark:text-white">
+          <div className=" dark:text-white">
             <div>{message}</div>
           </div>
         </div>
@@ -44,7 +44,7 @@ const ProfileChat = ({message, profileImage }: ProfileChatProp) => {
           <Avatar className="w-[30px] h-[30px]">
             <AvatarImage className="w-full h-full object-cover rounded-3xl" src={profileImage} alt={message} />
           </Avatar>
-          <div className="font-medium dark:text-white">
+          <div className=" dark:text-white">
             <div>{message}</div>
           </div>
         </div>
@@ -52,7 +52,7 @@ const ProfileChat = ({message, profileImage }: ProfileChatProp) => {
           <Avatar className="w-[30px] h-[30px]">
             <AvatarImage className="w-full h-full object-cover rounded-3xl" src={profileImage} alt={message} />
           </Avatar>
-          <div className="font-medium dark:text-white">
+          <div className=" dark:text-white">
             <div>{message}</div>
           </div>
         </div>
@@ -60,7 +60,7 @@ const ProfileChat = ({message, profileImage }: ProfileChatProp) => {
           <Avatar className="w-[30px] h-[30px]">
             <AvatarImage className="w-full h-full object-cover rounded-3xl" src={profileImage} alt={message} />
           </Avatar>
-          <div className="font-medium dark:text-white">
+          <div className=" dark:text-white">
             <div>{message}</div>
           </div>
         </div>
@@ -68,7 +68,7 @@ const ProfileChat = ({message, profileImage }: ProfileChatProp) => {
           <Avatar className="w-[30px] h-[30px]">
             <AvatarImage className="w-full h-full object-cover rounded-3xl" src={profileImage} alt={message} />
           </Avatar>
-          <div className="font-medium dark:text-white">
+          <div className=" dark:text-white">
             <div>{message}</div>
           </div>
         </div>
@@ -76,7 +76,7 @@ const ProfileChat = ({message, profileImage }: ProfileChatProp) => {
           <Avatar className="w-[30px] h-[30px]">
             <AvatarImage className="w-full h-full object-cover rounded-3xl" src={profileImage} alt={message} />
           </Avatar>
-          <div className="font-medium dark:text-white">
+          <div className=" dark:text-white">
             <div>{message}</div>
           </div>
         </div>
@@ -84,7 +84,7 @@ const ProfileChat = ({message, profileImage }: ProfileChatProp) => {
           <Avatar className="w-[30px] h-[30px]">
             <AvatarImage className="w-full h-full object-cover rounded-3xl" src={profileImage} alt={message} />
           </Avatar>
-          <div className="font-medium dark:text-white">
+          <div className=" dark:text-white">
             <div>{message}</div>
           </div>
         </div>

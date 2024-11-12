@@ -1,8 +1,8 @@
 import ChatProfile from "@/components/user-profile";
 import ProfileChat from "@/components/profile-chat";
 import { Input } from "@/components/ui/input";
-import ButtonSend from "@/components/button-send";
 import { Image } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const ChatPage = () => {
   return (
@@ -33,7 +33,7 @@ const ChatPage = () => {
             placeholder="type message"
             className="w-2/5 h-full bg-orange-100 focus:outline-none "
           />
-          <ButtonSend />
+         <Button variant={"orange"}>send</Button>
         </div>
       </div>
     </div>
