@@ -80,6 +80,30 @@ class CorporateRepository {
     }
 
 
+    async updateCorporateProfile(corporateId: string, corporateProfileId: string) {
+        try {
+            const updatedCorporate = await CorporateModel.updateOne(
+                { _id: new mongoose.Types.ObjectId(corporateId) },
+                { "$set": { corporateProfileId: corporateProfileId } }
+            );
+
+            console.log("CorporateRepository() updatedCorporate::::::::::::::::::::::::", updatedCorporate);
+
+            if (!updatedCorporate) {
+                throw Error("CorporateRepository() Corporate not found");
+            }
+
+            return updatedCorporate;
+        } catch (error) {
+            console.error(
+                `CorporateRepository - updateCorporateProfile() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
+
     async getCorporateById(corporateId: string) {
         try {
             const corporate = await CorporateModel.findById(corporateId);

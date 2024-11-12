@@ -40,6 +40,24 @@ class CorporateService {
         }
     }
 
+    async updateCorporateProfile(corporateId: string, corporateProfileId: string) {
+        try {
+            const updatedCorporate = await CorporateRepository.updateCorporateProfile(corporateId, corporateProfileId);
+            console.log("CorporateSerivce() updatedCorporate::::::::::::::::::::::::", updatedCorporate);
+            if (!updatedCorporate) {
+                throw Error("CorporateSerivce() not found");
+            }
+
+            return updatedCorporate;
+        } catch (error) {
+            console.error(
+                `CorporateService - updateCorporateProfile() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
     async getCorporateBySub(sub: string) {
         try {
             console.log("Fetching corporate profile by sub:", sub);

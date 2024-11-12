@@ -561,6 +561,37 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/v1/corporate/profile/:corporateId',
+            ...(fetchMiddlewares<RequestHandler>(CorporateController)),
+            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.updateCorporateProfile)),
+
+            async function CorporateController_updateCorporateProfile(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    requestBody: {"in":"body","name":"requestBody","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"corporateProfileId":{"dataType":"string","required":true}}},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new CorporateController();
+
+              await templateService.apiHandler({
+                methodName: 'updateCorporateProfile',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/v1/corporate/profile/me',
             ...(fetchMiddlewares<RequestHandler>(CorporateController)),
             ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.getCorporateMe)),

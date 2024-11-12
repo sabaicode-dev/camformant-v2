@@ -9,6 +9,7 @@ import {
     Middlewares,
     Request,
     Tags,
+    Put,
 } from "tsoa";
 import CorporateService from "@/src/services/corporate.service";
 import sendResponse from "@/src/utils/send-response";
@@ -25,6 +26,7 @@ import corporateJoiSchema from "../schemas/corporate.schema";
 @Tags("Corporate")
 @Route("v1/corporate")
 export class CorporateController extends Controller {
+
     @SuccessResponse("201", "Created")
     @Post()
     @Middlewares(validateRequest(corporateJoiSchema))
@@ -72,6 +74,30 @@ export class CorporateController extends Controller {
         } catch (error) {
             console.error(
                 `CorporateController - getCorporateById() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
+    @Put("profile/{corporateId}")
+    public async updateCorporateProfile(
+        @Request() request: ExpressRequest,
+        @Body() requestBody: { corporateProfileId: string }
+    ): Promise<CorporateProfileResponseCreate> {
+        try {
+            const corporateId = request.cookies["user_id"];
+            if (!corporateId) {
+                console.error("Corporate ID not found in cookies");
+                throw new Error("Authentication error: Corporate ID not found in cookies");
+            }
+            console.log("updateCorporateProfile called with corporateId: ", corporateId);
+            const { corporateProfileId } = requestBody;
+            const response = await CorporateService.updateCorporateProfile(corporateId, corporateProfileId);
+            return sendResponse({ message: "success", data: response }) as unknown as CorporateProfileResponseCreate;
+        } catch (error) {
+            console.error(
+                `CorporateController - updateCorporateProfile() method error: `,
                 prettyObject(error as {})
             );
             throw error;

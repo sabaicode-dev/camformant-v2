@@ -739,6 +739,46 @@
 				]
 			}
 		},
+		"/v1/corporate/profile/{corporateId}": {
+			"put": {
+				"operationId": "UpdateCorporateProfile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CorporateProfileResponseCreate"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporate"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"corporateProfileId": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"corporateProfileId"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/v1/corporate/profile/me": {
 			"get": {
 				"operationId": "GetCorporateMe",
