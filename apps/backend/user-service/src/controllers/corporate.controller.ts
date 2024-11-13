@@ -1,23 +1,8 @@
-import {
-    Controller,
-    Get,
-    Post,
-    Path,
-    Route,
-    SuccessResponse,
-    Body,
-    Middlewares,
-    Request,
-    Tags,
-    Put,
-} from "tsoa";
+import { Controller, Get, Post, Path, Route, SuccessResponse, Body, Middlewares, Request, Tags, Put } from "tsoa";
 import CorporateService from "@/src/services/corporate.service";
 import sendResponse from "@/src/utils/send-response";
 import validateRequest from "@/src/middewares/validate-input";
-import {
-    NotFoundError,
-    prettyObject,
-} from "@sabaicode-dev/camformant-libs";
+import { prettyObject } from "@sabaicode-dev/camformant-libs";
 import { Request as ExpressRequest } from "express";
 import axios from "axios";
 import { CorporateProfileResponse, CorporateProfileResponseCreate, CorporateProfileResquestParams } from "./types/corporate-controller.type";
@@ -86,7 +71,6 @@ export class CorporateController extends Controller {
         @Body() requestBody: { corporateProfileId: string }
     ): Promise<CorporateProfileResponseCreate> {
         try {
-            // const corporateId = request.cookies["user_id"];
             if (!corporateId) {
                 console.error("Corporate ID not found in cookies");
                 throw new Error("Authentication error: Corporate ID not found in cookies");
@@ -107,37 +91,42 @@ export class CorporateController extends Controller {
     @Get("/profile/me")
     public async getCorporateMe(@Request() request: ExpressRequest): Promise<CorporateProfileResponse> {
         try {
-            console.log("getCorporateMe called::::::::::::::::::::::::::");
             const sub = request.cookies["username"];
             const access_token = request.cookies["access_token"];
-
-            console.log("sub::::::::::::::::::::::::", sub);
             if (!sub) {
                 console.error("Username not found in cookies");
                 throw new Error("Authentication error: Username not found in cookies");
             }
-
-            const userProfile = await CorporateService.getCorporateBySub(sub); // now passes `username`
-
+            const userProfile = await CorporateService.getCorporateBySub(sub);
             if (!userProfile) {
-                throw new NotFoundError("User profile not found");
+                console.log("CorporateController - getCorporateMe() : User profile not found");
+                return sendResponse({
+                    message: "Corporate profile fetched successfully",
+                    data: {
+                        user: {} as any,
+                        jobs: []
+                    }
+                }) as CorporateProfileResponse;;
             }
-            console.log("user");
-
             const companyJobs = await axios.get(
                 `http://localhost:4003/v1/corporate/${userProfile.corporateProfileId}`,
                 {
                     headers: {
-                        Authorization: `Bearer ${access_token}`
-                    }
+                        Authorization: `Bearer ${access_token}`, Cookie: `username=${sub}; access_token=${access_token}`
+                    },
+                    withCredentials: true
                 }
             );
-            console.log("user");
-
             if (!companyJobs.data) {
-                throw new Error("Company jobs not found");
+                console.log("CorporateController - getCorporateMe() : Company jobs not found");
+                return sendResponse({
+                    message: "Corporate profile fetched successfully",
+                    data: {
+                        user: userProfile,
+                        jobs: []
+                    }
+                }) as CorporateProfileResponse;
             }
-
             return sendResponse({
                 message: "Corporate profile fetched successfully",
                 data: {

@@ -693,28 +693,20 @@ class AuthService {
         "AuthService corporateVerifyUser() method: User verified successfully"
       );
 
-      // Retrieve the user to get the `role` attribute
       const userInfo = await this.getUserByUsername(username);
       console.log("userInfo: ", userInfo);
 
-      const role =
-        userInfo.UserAttributes?.find((attr) => attr.Name === "company")
-          ?.Value || "company";
+      const role = userInfo.UserAttributes?.find((attr) => attr.Name === "company")?.Value || "company";
 
-      const userSub = userInfo.UserAttributes?.filter(
-        (Name) => Name.Name === "sub"
-      )[0].Value;
-      // Add the user to the group based on the `role` attribute
-      // console.log("userSub: ", userSub);
+      const userSub = userInfo.UserAttributes?.filter((Name) => Name.Name === "sub")[0].Value;
 
       await this.addToGroup(userSub!, role);
-      // Send user info to the `User Service`
       await axios.post(`${configs.userServiceUrl}/v1/users/corporate`, {
         sub: userInfo.Username,
         email: body.email,
         username: userInfo.UserAttributes?.find((attr) => attr.Name === "name")
           ?.Value,
-        corporateProfileId: "673016ba19fe093e953af539",
+        corporateProfileId: "",
         role,
       });
     } catch (error) {

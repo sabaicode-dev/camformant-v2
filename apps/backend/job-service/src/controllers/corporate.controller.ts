@@ -1,17 +1,6 @@
 import sendResponse from "@/src/utils/send-response";
-import { APIResponse } from "@sabaicode-dev/camformant-libs";
-import {
-    Controller,
-    Get,
-    Post,
-    Route,
-    SuccessResponse,
-    Tags,
-    Body,
-    Path,
-    Query,
-    Request,
-} from "tsoa";
+import { APIResponse, prettyObject } from "@sabaicode-dev/camformant-libs";
+import { Controller, Get, Post, Route, SuccessResponse, Tags, Body, Query, Request } from "tsoa";
 import CorporateService from "../services/corporate.service";
 import jobOpeningService from "../services/jobOpening.service";
 import corporateService from "../services/corporate.service";
@@ -19,22 +8,13 @@ import { ICorporateProfile } from "../database/models/corporateProfile.model";
 import { JobOpening } from "../database/models/jobOpening.model";
 import axios from "axios";
 import { Request as ExpressRequest } from "express";
+import { JobOpeningRequest } from "./types/corporate-controller.types";
 
-interface JobOpeningRequest {
-    title: string;
-    description: string;
-    requirements: string;
-    location: {
-        city: string;
-        country: string;
-    };
-}
 
 
 @Route("/v1/corporate")
 @Tags("corporate")
 export class CorporateController extends Controller {
-
     /**
     * Creates a new Corporate Profile
     * @param requestBody Corporate profile information
@@ -48,28 +28,29 @@ export class CorporateController extends Controller {
     ): Promise<APIResponse<ICorporateProfile>> {
         try {
             const corporateId = request.cookies["user_id"];
-            console.log("Request user id :::::::::::::::", corporateId);
             if (!corporateId) {
-                throw new Error("Job:: User ID is missing")
+                throw new Error("CorporateController - createCorporateProfile() method error : Corporate ID is missing")
             }
-
-            console.log("Request user id :::::::::::::::", corporateId);
             const newCompany = await CorporateService.createProfile(body);
-            console.log("CorporateJobController() createCorporateProfile:::::::::::", newCompany._id);
-
             const corporateProfileId = newCompany._id;
-
             if (!corporateProfileId) {
-                throw new Error("Corporate Profile ID is missing")
+                throw new Error("CorporateController - createCorporateProfile() method error : Corporate Profile ID is missing")
             }
-
-            await axios.put(`http://localhost:4005/v1/corporate/profile/${corporateId}`, { corporateProfileId }, { headers: { "Authorization": "application/json" }, withCredentials: true });
-
+            await axios.put(`http://localhost:4005/v1/corporate/profile/${corporateId}`,
+                { corporateProfileId },
+                {
+                    headers: { "Authorization": "application/json" },
+                    withCredentials: true
+                });
             return sendResponse<ICorporateProfile>({
                 message: "Company was created successfully!",
                 data: newCompany,
             });
         } catch (error) {
+            console.error(
+                `CorporateController - createCorporateProfile() method error: `,
+                prettyObject(error as {})
+            );
             throw error;
         }
     }
@@ -82,10 +63,17 @@ export class CorporateController extends Controller {
     public async getCorporateProfiles(): Promise<{ message: string; data: ICorporateProfile[]; }> {
         try {
             const result = await CorporateService.getAllProfiles();
+            if (!result) {
+                throw new Error("CorporateController - getCorporateProfiles() method error : No corporate profiles found.");
+            }
             return sendResponse<ICorporateProfile[]>({ message: "success", data: result });
         } catch (error) {
+            console.error(
+                `CorporateController - getCorporateProfiles() method error: `,
+                prettyObject(error as {})
+            );
             throw error;
-        }
+        } 3
     }
 
     /**
@@ -94,19 +82,39 @@ export class CorporateController extends Controller {
      * @param requestBody Job opening information
      */
     @SuccessResponse("201", "Created")
-    @Post("/{companyId}/job")
+    @Post("/job")
     public async postJobOpening(
-        companyId: string,
+        @Request() request: ExpressRequest,
         @Body() body: JobOpeningRequest
     ): Promise<any> {
         try {
-            const newJob = await jobOpeningService.createJob(companyId, body);
+            const corporateSub = request.cookies["username"];
+            if (!corporateSub) {
+                console.log("CorporateController - getCorporateProfileWithJobs() method error : Corporate ID is missing");
+                return null;
+            }
+            const getCorporateProfileId = await axios.get(`http://localhost:4005/v1/corporate/${corporateSub}`,);
+            const corporateProfileId = getCorporateProfileId.data.data.corporateProfileId;
 
+            if (!getCorporateProfileId || !corporateProfileId) {
+                console.log("CorporateController - getCorporateProfileWithJobs() method error : Corporate Profile ID is missing");
+                return null;
+            }
+
+            const newJob = await jobOpeningService.createJob(corporateProfileId, body);
+            if (!newJob) {
+                console.log("CorporateController - postJobOpening() method error : Job creation failed.");
+                return {} as any;
+            }
             return sendResponse<JobOpening>({
                 message: "Job was created successfully!",
                 data: newJob,
             });
         } catch (error) {
+            console.error(
+                `CorporateController - postJobOpening() method error: `,
+                prettyObject(error as {})
+            );
             throw error;
         }
     }
@@ -118,11 +126,49 @@ export class CorporateController extends Controller {
      */
     @Get('{companyId}')
     public async getCorporateProfileWithJobs(
-        @Path() companyId: string,
+        @Request() request: ExpressRequest,
         @Query() recentJobsLimit?: number
     ) {
-        const limit = recentJobsLimit || 2;
-        return corporateService.getProfileWithJobs(companyId, limit);
+        try {
+            const corporateSub = request.cookies["username"];
+            const access_token = request.cookies["access_token"];
+
+            if (!corporateSub || !access_token) {
+                console.log("CorporateController - getCorporateProfileWithJobs() method error : Authorization is missing");
+                return null;
+            }
+
+            if (!corporateSub) {
+                console.log("CorporateController - getCorporateProfileWithJobs() method error : corporateSub is missing");
+                return null;
+            }
+            const getCorporateProfileId = await axios.get(`http://localhost:4005/v1/corporate/${corporateSub}`,
+                {
+                    headers: { Authorization: "application/json", Cookie: `username=${corporateSub}; access_token=${access_token}` },
+                    withCredentials: true
+                });
+            const corporateProfileId = getCorporateProfileId.data.data.corporateProfileId;
+            if (!getCorporateProfileId || !corporateProfileId) {
+                console.log("CorporateController - getCorporateProfileWithJobs() method error : Corporate Profile ID is missing");
+                return null;
+            }
+
+            const limit = recentJobsLimit || 2;
+            const corporateProfileWithJobs = await corporateService.getProfileWithJobs(corporateProfileId, limit);
+            if (!corporateProfileWithJobs) {
+                console.log("No corporate profile found.");
+                return {} as any;
+            }
+            return sendResponse<ICorporateProfile>({
+                message: "success", data: corporateProfileWithJobs
+            });
+        } catch (error) {
+            console.error(
+                `CorporateController - getCorporateProfileWithJobs() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
     }
 
 }

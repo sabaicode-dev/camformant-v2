@@ -5,11 +5,10 @@ export interface ICorporateModel {
     sub: string;
     username: string;
     email: string;
-    profile: string;
-    role: "company"; // Replace with other roles if they exist
-    corporateProfileId?: string; // Optional if role is not "company"
+    role: "company";
+    corporateProfileId?: string;
     favorites: string[];
-    createdAt: Date; // Or `Date` if it will be converted to a Date object
+    createdAt: Date;
     updatedAt: Date;
 }
 
@@ -17,7 +16,6 @@ const corporateSchema = new Schema<ICorporateModel>({
     sub: { type: String },
     username: { type: String, required: true },
     email: { type: String, unique: true },
-    profile: { type: String, default: "https://microservice-sample-resource.s3.amazonaws.com/default_pic.jpg" },
     role: { type: String, default: "company" },
     corporateProfileId: { type: String },
     favorites: { type: [String], default: [] },

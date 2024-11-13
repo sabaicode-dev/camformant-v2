@@ -112,7 +112,6 @@ const models: TsoaRoute.Models = {
             "sub": {"dataType":"string","required":true},
             "username": {"dataType":"string","required":true},
             "email": {"dataType":"string","required":true},
-            "profile": {"dataType":"string","required":true},
             "role": {"dataType":"enum","enums":["company"],"required":true},
             "corporateProfileId": {"dataType":"string"},
             "favorites": {"dataType":"array","array":{"dataType":"string"},"required":true},

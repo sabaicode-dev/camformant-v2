@@ -517,13 +517,13 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/v1/corporate/:companyId/job',
+        app.post('/v1/corporate/job',
             ...(fetchMiddlewares<RequestHandler>(CorporateController)),
             ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.postJobOpening)),
 
             async function CorporateController_postJobOpening(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    companyId: {"in":"path","name":"companyId","required":true,"dataType":"string"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
                     body: {"in":"body","name":"body","required":true,"ref":"JobOpeningRequest"},
             };
 
@@ -554,7 +554,7 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
 
             async function CorporateController_getCorporateProfileWithJobs(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    companyId: {"in":"path","name":"companyId","required":true,"dataType":"string"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
                     recentJobsLimit: {"in":"query","name":"recentJobsLimit","dataType":"double"},
             };
 

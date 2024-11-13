@@ -221,9 +221,6 @@
 					"email": {
 						"type": "string"
 					},
-					"profile": {
-						"type": "string"
-					},
 					"role": {
 						"type": "string",
 						"enum": [
@@ -254,7 +251,6 @@
 					"sub",
 					"username",
 					"email",
-					"profile",
 					"role",
 					"favorites",
 					"createdAt",

@@ -1,35 +1,106 @@
+import { prettyObject } from "@sabaicode-dev/camformant-libs";
 import { JobOpening, JobOpeningModel } from "../models/jobOpening.model";
 
 class JobOpeningRepository {
 
-    // Count jobs by company
     public async countJobsByCompanyId(companyId: string): Promise<number> {
-        return JobOpeningModel.countDocuments({ company_id: companyId });
+        try {
+            const result = await JobOpeningModel.countDocuments({ company_id: companyId });
+            if (!result) {
+                console.log("JobOpeningRepository - countJobsByCompanyId() method error : No jobs found for the company.");
+                return {} as any;
+            }
+            return result;
+        } catch (error) {
+            console.error(
+                `JobOpeningReposotory - countJobsByCompanyId() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
     }
 
-    // Count jobs by company and status
     public async countJobsByStatus(companyId: string, status: string): Promise<number> {
-        return JobOpeningModel.countDocuments({ company_id: companyId, status });
+        try {
+            const result = await JobOpeningModel.countDocuments({ company_id: companyId, status });
+            if (!result) {
+                return 0;
+            }
+            return result;
+        } catch (error) {
+            console.error(
+                `JobOpeningReposotory - countJobsByStatus() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
     }
 
-    // Fetch recent jobs, sorted by creation date
     public async findRecentJobsByCompanyId(companyId: string, limit: number) {
-        return JobOpeningModel.find({ company_id: companyId })
-            .sort({ created_at: -1 }) // Sort by creation date (newest first)
-            .limit(limit);
+        try {
+            const result = await JobOpeningModel.find({ company_id: companyId })
+                .sort({ created_at: -1 }).limit(limit);
+            if (!result) {
+                return 0
+            }
+            return result;
+        } catch (error) {
+            console.error(
+                `JobOpeningReposotory - findRecentJobsByCompanyId() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
     }
 
     public async createJob(jobData: Partial<JobOpening>): Promise<JobOpening> {
-        const job = new JobOpeningModel(jobData);
-        return job.save();
+        try {
+            const job = new JobOpeningModel(jobData);
+            if (!job) {
+                throw new Error("Job creation failed.");
+            }
+            return job.save();
+        } catch (error) {
+            console.error(
+                `JobOpeningReposotory - createJob() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
     }
 
     public async findJobsByCompanyId(companyId: string): Promise<JobOpening[]> {
-        return JobOpeningModel.find({ company_id: companyId, status: 'open' });
+        try {
+            const result = await JobOpeningModel.find({ company_id: companyId, status: 'open' });
+            if (!result) {
+                console.log("JobOpeningRepository - findJobsByCompanyId() method error : No jobs found for the company.");
+                return [] as any;
+            }
+            return result;
+        } catch (error) {
+            console.error(
+                `JobOpeningReposotory - findJobsByCompanyId() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
     }
 
     public async closeJob(jobId: string): Promise<JobOpening | null> {
-        return JobOpeningModel.findByIdAndUpdate(jobId, { status: 'closed' }, { new: true });
+        try {
+            const job = await JobOpeningModel.findByIdAndUpdate(jobId, { status: 'closed' }, { new: true });
+            if (!job) {
+                console.log("JobOpeningRepository - closeJob() method error : Job not found.");
+                return null;
+            }
+            return job;
+        } catch (error) {
+            console.error(
+                `JobOpeningReposotory - closeJob() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
     }
 
 }
