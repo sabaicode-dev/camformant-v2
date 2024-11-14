@@ -216,6 +216,8 @@ const applyProxy = (app: express.Application) => {
   Object.keys(proxyConfigs).forEach((context: string) => {
     // Apply the proxy middleware
     if (context === ROUTE_PATHS.CHAT_SERVICE.path) {
+      console.log("context:::", context);
+
       app.use(createProxyMiddleware(proxyConfigs[context]));
     } else {
       app.use(context, createProxyMiddleware(proxyConfigs[context]));

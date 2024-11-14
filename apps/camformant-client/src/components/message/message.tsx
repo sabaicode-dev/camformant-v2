@@ -15,10 +15,10 @@ import Image from "next/image";
 
 interface Message {
   _id?: string;
-  text: string;
-  senderId: string;
-  recipientId: string;
-  conversationId: string;
+  text?: string;
+  senderId?: string;
+  recipientId?: string;
+  conversationId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

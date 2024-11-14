@@ -16,6 +16,7 @@ import {
   UploadedFile,
   Response,
   Example,
+  Queries,
 } from "tsoa";
 
 @Route("/v1/companies")
@@ -131,7 +132,20 @@ export class CompanyController extends Controller {
       throw error;
     }
   }
-
+  //TODO: type
+  @Get("/getMulti/Profile")
+  public async getMultiProfileCompany(
+    @Queries() query: { companiesId?: string }
+  ) {
+    try {
+      const res = await companyService.getMultiProfileCompany(
+        query.companiesId!
+      );
+      return res;
+    } catch (error) {
+      throw error;
+    }
+  }
   @Get("{companyId}")
   public async findCompanyById(
     @Path() companyId: string

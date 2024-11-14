@@ -66,7 +66,53 @@ class CompanyRepository {
       throw error;
     }
   }
+  //TODO: type
+  public async getMultiProfileCompany(arrCompaniesId: string[]): Promise<
+    {
+      _id: string | undefined;
+      profile: string | undefined;
+      name: string | undefined;
+    }[]
+  > {
+    try {
+      type Filter = {
+        _id?: {
+          $in: mongoose.Types.ObjectId[];
+        };
+      };
+      const filter: Filter = {};
 
+      if (arrCompaniesId?.length === 0) {
+        return [];
+      } else if (arrCompaniesId?.length !== 0) {
+        filter._id = {
+          $in: arrCompaniesId.map((id) => new mongoose.Types.ObjectId(id)),
+        };
+      }
+
+      const result = await CompanyModel.find(filter);
+      if (!result) {
+        throw new NotFoundError();
+      }
+
+      const companiesData = result.map((com: ICompany) => {
+        const companyData = {
+          _id: com._id,
+          profile: com.profile,
+          name: com.name,
+        };
+        return companyData;
+      });
+
+      return companiesData;
+    } catch (error) {
+      console.error(
+        `CompanyRepository getMultiProfileCompany() method error:`,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
   public async findCompanyById(companyId: string): Promise<ICompany> {
     try {
       const result = await CompanyModel.findById(companyId);

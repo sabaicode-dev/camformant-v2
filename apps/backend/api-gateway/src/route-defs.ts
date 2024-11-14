@@ -335,6 +335,15 @@ const ROUTE_PATHS: RoutesConfig = {
           },
         },
       },
+      {
+        path: "/get/conversations",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["user", "company"],
+          },
+        },
+      },
     ],
   },
 };

@@ -42,3 +42,23 @@ export interface GetMessageRespond {
   limit: number;
   skip: number;
 }
+
+export interface AllConversations {
+  _id: string;
+  receiver: string;
+  messages: string[];
+  updatedAt: Date;
+}
+[];
+export interface RespondGetConversations {
+  conversations: AllConversations;
+  totalConversation: number;
+  currentPage: number;
+  totalPage: number;
+  limit: number;
+  skip: number;
+}
+export interface QueryGetUserConversations {
+  page?: number;
+  limit?: number;
+}

@@ -26,6 +26,7 @@ export const API_ENDPOINTS = {
 
   // CHAT SERVICE
   CONVERSATIONS: `${process.env.NEXT_PUBLIC_CONVERSATION_ENDPOINT}`,
+  GET_CONVERSATIONS: `${process.env.NEXT_PUBLIC_CONVERSATION_ENDPOINT}/get/conversations`,
 };
 
 export const API_ENDPOINTS_SERVER = {

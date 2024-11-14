@@ -43,3 +43,39 @@ export interface query {
   page?: number;
   limit?: number;
 }
+export interface GetConversation {
+  _id: string;
+  roomId: string;
+  createdAt: Date;
+  messages: string[];
+  participants: {
+    participantType: "User" | "Company";
+    participantId: string;
+  }[];
+  //mongoose.Types.ObjectId[];//
+  updatedAt: Date;
+}
+export interface AllConversations {
+  _id: string;
+  receiver: string;
+  messages: string[];
+  updatedAt: Date;
+  role: "User" | "Company";
+}
+[];
+export interface RespondGetConversationsPagination {
+  conversations: AllConversations;
+  totalConversation: number;
+  currentPage: number;
+  totalPage: number;
+  limit: number;
+  skip: number;
+}
+export interface RespondGetConversations {
+  _id: string;
+  receiver: string;
+  messages: string[];
+  updatedAt: Date;
+  role: "User" | "Company";
+}
+[];

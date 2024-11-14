@@ -4,6 +4,8 @@ import {
   GetMessageRespond,
   messages,
   query,
+  QueryGetUserConversations,
+  RespondGetConversations,
 } from "./types/messages.service.types";
 
 // type ParticipantsType = [
@@ -91,6 +93,39 @@ export class MessageService {
       return result as unknown as GetMessageRespond;
     } catch (error) {
       console.error("error:::", error);
+      throw error;
+    }
+  }
+  //todo::Type of return
+  async getConversationById(conversationId: string): Promise<any> {
+    try {
+      const result =
+        await this.MessageRepository.getConversationById(conversationId);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getUserConversations(
+    cookieHeader: string,
+    currentUser: { username?: string; role?: string[] },
+    query: QueryGetUserConversations
+  ): Promise<RespondGetConversations> {
+    const { page = 1, limit = 8 } = query;
+    const skip = (page - 1) * limit;
+    try {
+      const cookies = deCookies(cookieHeader);
+      const senderId = cookies.user_id;
+      const senderRole = currentUser.role![0] === "user" ? "User" : "Company";
+      const result = await this.MessageRepository.getUserConversations(
+        senderId,
+        senderRole,
+        page,
+        limit,
+        skip
+      );
+      return result as unknown as RespondGetConversations;
+    } catch (error) {
       throw error;
     }
   }

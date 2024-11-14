@@ -184,6 +184,85 @@
 				},
 				"type": "object",
 				"additionalProperties": false
+			},
+			"AllConversations": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"receiver": {
+						"type": "string"
+					},
+					"messages": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"_id",
+					"receiver",
+					"messages",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"RespondGetConversations": {
+				"properties": {
+					"conversations": {
+						"$ref": "#/components/schemas/AllConversations"
+					},
+					"totalConversation": {
+						"type": "number",
+						"format": "double"
+					},
+					"currentPage": {
+						"type": "number",
+						"format": "double"
+					},
+					"totalPage": {
+						"type": "number",
+						"format": "double"
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					},
+					"skip": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"conversations",
+					"totalConversation",
+					"currentPage",
+					"totalPage",
+					"limit",
+					"skip"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"QueryGetUserConversations": {
+				"properties": {
+					"page": {
+						"type": "number",
+						"format": "double"
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -287,6 +366,70 @@
 							"type": "string"
 						}
 					},
+					{
+						"in": "query",
+						"name": "page",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/v1/messages/conversation/{conversationId}": {
+			"get": {
+				"operationId": "GetConversationById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "conversationId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v1/messages/get/conversations": {
+			"get": {
+				"operationId": "GetUserConversations",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RespondGetConversations"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
 					{
 						"in": "query",
 						"name": "page",

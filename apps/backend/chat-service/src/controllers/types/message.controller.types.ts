@@ -21,3 +21,7 @@ export interface query {
   page?: number;
   limit?: number;
 }
+export interface QueryGetUserConversations {
+  page?: number;
+  limit?: number;
+}

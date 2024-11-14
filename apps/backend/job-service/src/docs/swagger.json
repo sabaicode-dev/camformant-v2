@@ -915,6 +915,64 @@
 				"parameters": []
 			}
 		},
+		"/v1/companies/getMulti/Profile": {
+			"get": {
+				"operationId": "GetMultiProfileCompany",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"companiesProfile": {
+											"items": {
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"profile": {
+														"type": "string"
+													},
+													"_id": {
+														"type": "string"
+													}
+												},
+												"required": [
+													"name",
+													"profile",
+													"_id"
+												],
+												"type": "object"
+											},
+											"type": "array"
+										}
+									},
+									"required": [
+										"companiesProfile"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Company"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "companiesId",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
 		"/v1/companies/{companyId}": {
 			"get": {
 				"operationId": "FindCompanyById",
