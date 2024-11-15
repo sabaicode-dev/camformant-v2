@@ -27,6 +27,8 @@ export interface conversation {
   participants: {
     participantType: "User" | "Company";
     participantId: string;
+    name?: string;
+    profile?: string;
   }[];
   //mongoose.Types.ObjectId[];//
   updatedAt: Date;

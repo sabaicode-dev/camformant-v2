@@ -37,7 +37,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "_id": {"ref":"mongoose.Types.ObjectId","required":true},
-            "participants": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"participantId":{"dataType":"string","required":true},"participantType":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["User"]},{"dataType":"enum","enums":["Company"]}],"required":true}}},"required":true},
+            "participants": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"name":{"dataType":"string"},"profile":{"dataType":"string"},"participantId":{"dataType":"string","required":true},"participantType":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["User"]},{"dataType":"enum","enums":["Company"]}],"required":true}}},"required":true},
             "messages": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"conversationId":{"ref":"mongoose.Types.ObjectId","required":true},"updatedAt":{"dataType":"datetime"},"createdAt":{"dataType":"datetime"},"message":{"dataType":"string","required":true},"receiverId":{"ref":"mongoose.Types.ObjectId","required":true},"senderId":{"ref":"mongoose.Types.ObjectId","required":true},"_id":{"ref":"mongoose.Types.ObjectId","required":true}}},"required":true},
             "createdAt": {"dataType":"datetime","required":true},
             "updatedAt": {"dataType":"datetime","required":true},

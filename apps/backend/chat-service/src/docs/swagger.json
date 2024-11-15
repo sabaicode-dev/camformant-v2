@@ -54,6 +54,12 @@
 					"participants": {
 						"items": {
 							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"profile": {
+									"type": "string"
+								},
 								"participantId": {
 									"type": "string"
 								},

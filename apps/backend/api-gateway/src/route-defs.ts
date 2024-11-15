@@ -279,6 +279,33 @@ const ROUTE_PATHS: RoutesConfig = {
       },
     ],
   },
+  COMPANY_SERVICE: {
+    path: "/v1/companies",
+    target: configs.jobServiceUrl,
+    methods: {
+      GET: {
+        authRequired: false,
+      },
+    },
+    nestedRoutes: [
+      {
+        path: "/:id",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
+      },
+      {
+        path: "/getMulti/Profile",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
+      },
+    ],
+  },
   NOTIFICATION_SERVICE: {
     path: "/v1/notifications",
     target: configs.notificationServiceUrl,

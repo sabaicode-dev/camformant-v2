@@ -5,59 +5,85 @@ import Message from "@/components/message/message";
 import { useAuth } from "@/context/auth";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
+import BackButton from "@/components/back/BackButton";
+import socket from "@/utils/socketClient";
 
+interface conversation {
+  _id: string;
+  roomId: string;
+  createdAt: Date;
+  messages:
+    | {
+        _id: string;
+        senderId: string;
+        receiverId: string;
+        message: string;
+        createdAt: Date;
+        updatedAt: Date;
+        conversationId: string;
+      }[]
+    | [];
+  participants:
+    | {
+        participantType: "User" | "Company";
+        participantId: string;
+        name?: string;
+        profile?: string;
+      }[]
+    | [];
+  updatedAt: Date;
+}
 const MessagePage = () => {
   const { user, isAuthenticated } = useAuth();
   const router = useRouter();
-  const [paginationMessage, setPaginationMessage] = useState({
-    currentPage: 0,
-    totalPage: 0,
-    limit: 0,
-    skip: 0,
-    totalMessages: 0,
+
+  //participant profile
+  const [participantProfile, setParticipantProfile] = useState<{
+    _id: string;
+    name: string;
+    profile: string;
+  }>({
+    _id: "",
+    name: "",
+    profile: "https://sabaicode.com/sabaicode.jpg",
   });
+  const [error, setError] = useState<string | null>(null);
+  const handleError = (text: string) => {
+    setError(text);
+  };
+
   const params = useParams();
   const receiverId = params.receiverId;
-  console.log("receiverId:::", receiverId);
 
-  const [error, setError] = useState<string | null>(null);
-  // const [companyId, setCompanyId] = useState<string | null>(null);
-
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+  //fetch profile
   useEffect(() => {
-    // Fetch job data to get companyId
-    const fetchJob = async () => {
+    const getParticipantProfile = async () => {
       try {
         const response = await axiosInstance.get(
-          `http://localhost:4000/v1/messages/${receiverId}`
+          `http://localhost:4000/v1/companies/getMulti/Profile?companiesId=${receiverId}`
         );
-        const data = response.data;
-        if (response.status === 200 && data) {
-          console.log("dataaaaaa:::::::", response.data);
-          setPaginationMessage({
-            currentPage: data.currentPage,
-            totalPage: data.totalPage,
-            limit: data.limit,
-            skip: data.skip,
-            totalMessages: data.totalMessages,
+        const data = await response.data;
+        const companiesProfile = data.companiesProfile[0];
+        if (response.status === 200 && data && companiesProfile) {
+          setParticipantProfile({
+            _id: receiverId as string,
+            name: companiesProfile.name,
+            profile: companiesProfile.profile,
           });
-        } else {
-          setError("Message not found");
         }
       } catch (error) {
         console.error("chat error: ", error);
-        setError("Failed to fetch job data");
+        setError("Failed to fetch participant profile data");
       }
     };
-    if (receiverId) {
-      fetchJob();
-    }
+    getParticipantProfile();
   }, [receiverId]);
-  console.log("pagination", paginationMessage);
-  // console.log("pagination",);
 
   // Function to get conversation ID
   const getConversationId = useCallback(
@@ -92,24 +118,41 @@ const MessagePage = () => {
     },
     [user]
   );
+  // Check Online & Offline Users
+  useEffect(() => {
+    // Listen for userOnline and userOffline events
+    socket.on("userOnline", (userId: string) => {
+      setOnlineUsers((prevUsers) => [...prevUsers, userId]);
+    });
 
-  if (error) {
-    return (
-      <div className="flex flex-col h-screen">
-        <Background>
-          <div className="flex flex-col items-center justify-center h-full">
-            <p className="text-xl text-red-500">{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 mt-4 text-white bg-blue-500 rounded"
-            >
-              Retry
-            </button>
-          </div>
-        </Background>
-      </div>
-    );
-  }
+    socket.on("userOffline", (userId: string) => {
+      setOnlineUsers((prevUsers) => prevUsers.filter((id) => id !== userId));
+    });
+
+    // Clean up
+    return () => {
+      socket.off("userOnline");
+      socket.off("userOffline");
+    };
+  }, []);
+
+  // if (error) {
+  //   return (
+  //     <div className="flex flex-col h-screen">
+  //       <Background>
+  //         <div className="flex flex-col items-center justify-center h-full">
+  //           <p className="text-xl text-red-500">{error}</p>
+  //           <button
+  //             onClick={() => window.location.reload()}
+  //             className="px-4 py-2 mt-4 text-white bg-blue-500 rounded"
+  //           >
+  //             Retry
+  //           </button>
+  //         </div>
+  //       </Background>
+  //     </div>
+  //   );
+  // }
   if (!isAuthenticated) {
     return (
       <div className="flex flex-col items-center justify-center px-8 gap-y-10">
@@ -132,18 +175,71 @@ const MessagePage = () => {
     );
   }
   return (
-    <Message
-      conversationId={""}
-      job={{
-        _id: "string",
-        companyId: {
-          _id: "string",
-          name: "string",
-          profile: "string",
-        },
-      }}
-      userId={user?._id}
-    />
+    <div className="relative flex flex-col w-screen h-screen">
+      {/* Background component */}
+      <Background>
+        {/* Header section: company profile */}
+        <div className="flex items-center justify-between w-full h-32 bg-white rounded-t-3xl">
+          {participantProfile && (
+            <div
+              key={participantProfile._id}
+              className=" absolute mt-[-250px] ml-36 gap-8 flex items-center justify-center"
+            >
+              {/* Back displayed in front */}
+              <div className="z-10 -ml-32 ">
+                <button onClick={() => router.back()}>
+                  <BackButton />
+                </button>
+              </div>
+
+              {/* Company profile image */}
+              {participantProfile.profile && (
+                <div className="relative w-20 h-20 -ml-5 overflow-hidden rounded-full">
+                  <Image
+                    src={participantProfile.profile}
+                    alt={`${participantProfile.name} profile`}
+                    width={200}
+                    height={200}
+                    className="object-cover w-full h-full rounded-full"
+                  />
+                </div>
+              )}
+
+              {/* Company name and online status */}
+              <div className="flex flex-col -ml-5 text-center">
+                <p className="font-mono text-xl font-bold text-white xl:text-3xl">
+                  {participantProfile.name}
+                </p>
+                <p className="mt-2 text-sm text-gray-700 ">
+                  {onlineUsers.includes(participantProfile._id)
+                    ? "online 🟢"
+                    : "offline"}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+        {error && (
+          <div className="flex flex-col items-center justify-center">
+            <p className="text-xl text-red-500">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 mt-4 text-white bg-blue-500 rounded"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+        {!error && (
+          <Message
+            handleError={handleError}
+            error={error}
+            userId={user?._id}
+            receiverId={receiverId as string}
+          />
+        )}
+      </Background>
+    </div>
   );
 };
 

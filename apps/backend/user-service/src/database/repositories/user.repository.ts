@@ -232,6 +232,54 @@ class UserRepository {
     }
   }
 
+  //TODO: type
+  public async getMultiProfileUser(arrUsersId: string[]): Promise<
+    {
+      _id: string | undefined;
+      profile: string | undefined;
+      name: string | undefined;
+    }[]
+  > {
+    try {
+      type Filter = {
+        _id?: {
+          $in: mongoose.Types.ObjectId[];
+        };
+      };
+      const filter: Filter = {};
+
+      if (arrUsersId?.length === 0) {
+        return [];
+      } else if (arrUsersId?.length !== 0) {
+        filter._id = {
+          $in: arrUsersId.map((id) => new mongoose.Types.ObjectId(id)),
+        };
+      }
+
+      const result = await UserModel.find(filter);
+      if (!result) {
+        throw new NotFoundError();
+      }
+
+      const usersData = result.map((user) => {
+        const userData = {
+          _id: user._id,
+          profile: user.profile,
+          name: user.username,
+        };
+        return userData;
+      });
+
+      return usersData;
+    } catch (error) {
+      console.error(
+        `UserRepository - getMultiProfileUser() method error:`,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
+
   async addFavorite(userId: string, jobId: string): Promise<IUser> {
     try {
       const user = await UserModel.findByIdAndUpdate(

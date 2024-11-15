@@ -103,6 +103,36 @@ const proxyConfigs: ProxyConfig = {
       },
     },
   },
+  [ROUTE_PATHS.COMPANY_SERVICE.path]: {
+    target: ROUTE_PATHS.COMPANY_SERVICE.target,
+    pathRewrite: (path, _req) => `${ROUTE_PATHS.COMPANY_SERVICE.path}${path}`,
+    on: {
+      proxyReq: (
+        _proxyReq: ClientRequest,
+        _req: IncomingMessage,
+        _res: Response
+      ) => {
+        // @ts-ignore
+        // logRequest(gatewayLogger, proxyReq, {
+        //   protocol: proxyReq.protocol,
+        //   host: proxyReq.getHeader("host"),
+        //   path: proxyReq.path,
+        // });
+      },
+      proxyRes: (_proxyRes, _req, res) => {
+        res.setHeader("Access-Control-Allow-Origin", corsOptions.origin);
+        res.setHeader("Access-Control-Allow-Credentials", "true");
+        res.setHeader(
+          "Access-Control-Allow-Methods",
+          corsOptions.methods.join(", ")
+        );
+        res.setHeader(
+          "Access-Control-Allow-Headers",
+          "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+        );
+      },
+    },
+  },
   [ROUTE_PATHS.NOTIFICATION_SERVICE.path]: {
     target: ROUTE_PATHS.NOTIFICATION_SERVICE.target,
     pathRewrite: (_path, _req) => {

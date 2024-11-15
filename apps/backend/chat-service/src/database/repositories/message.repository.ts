@@ -10,6 +10,7 @@ import {
   RespondGetConversations,
   RespondGetConversationsPagination,
 } from "./types/messages.repository.types";
+import { NotFoundError } from "@sabaicode-dev/camformant-libs";
 
 export class MessageRepository {
   async sendMessage(makeMessage: {
@@ -55,16 +56,15 @@ export class MessageRepository {
       throw error;
     }
   }
+  //todo: reduce / structure type
   async getMessage(
     userToChatId: string,
     senderId: string,
     query: query,
-    _participants: {
-      participantType: string;
-      participantId: string;
-    }[]
+    _senderRole: string,
+    receiverRole: string
   ): Promise<null | conversationRespond> {
-    //conversation |
+    //conversation
     const { limit = 7, page = 1 } = query;
 
     const skip = (page - 1) * limit;
@@ -83,8 +83,9 @@ export class MessageRepository {
         // model: MessageModel,
         // select: "_id senderId receiverId message createdAt updatedAt",
       });
-      console.log("conversation:::", conversation);
-
+      if (!conversation) {
+        throw new NotFoundError("No Conversation Found!");
+      }
       let totalMessages = 0;
       if (conversation) {
         // Step 2: Count total messages for the conversation separately
@@ -92,11 +93,62 @@ export class MessageRepository {
           conversationId: conversation._id,
         });
       }
+      let api_endpoint: string = "";
+      if (receiverRole.toLowerCase() === "Company".toLowerCase()) {
+        api_endpoint = `http://localhost:4003/v1/companies/getMulti/Profile?companiesId=${userToChatId}`;
+      } else {
+        api_endpoint = `http://localhost:4005/v1/users/getMulti/Profile?usersId=${userToChatId}`;
+      }
+      const res = await fetch(api_endpoint);
+      const data = await res.json();
 
+      const profile: {
+        _id: string;
+        profile: string;
+        name: string;
+      } = data.companiesProfile[0] || data.usersProfile[0];
+      console.log("profile::", profile);
+      let newParticipants: {
+        participantType: "User" | "Company";
+        participantId: string;
+        name?: string;
+        profile?: string;
+      }[] = [];
+      if (profile) {
+        if (Array.isArray(conversation.participants)) {
+          newParticipants = conversation.participants.map((part) => {
+            if (
+              part.participantId.toString() ===
+              new mongoose.Types.ObjectId(userToChatId).toString()
+            ) {
+              return {
+                participantType: part.participantType,
+                participantId: part.participantId,
+                name: profile.name,
+                profile: profile.profile,
+              };
+            }
+            return part;
+          });
+          // conversation.participants = newParticipant;
+        }
+      } else if (data?.usersProfile) {
+      }
+      const latestConversation = {
+        _id: conversation._id,
+        roomId: conversation.roomId,
+        createdAt: conversation.createdAt,
+        messages: conversation.messages,
+        participants: newParticipants,
+        updatedAt: conversation.updatedAt,
+      };
+      //
+
+      //mongoose.Types.ObjectId[];//
       const totalPage = Math.ceil(totalMessages / limit);
       if (conversation) {
         return {
-          conversation: conversation as unknown as conversation,
+          conversation: latestConversation as unknown as conversation,
           currentPage: page,
           totalMessages,
           totalPage,
@@ -144,7 +196,7 @@ export class MessageRepository {
         .limit(limit)
         .skip(skip);
       //count conversation
-      const totalConversation = await ConversationModel.countDocuments({
+      const totalConversations = await ConversationModel.countDocuments({
         participants: {
           $all: [
             {
@@ -231,14 +283,14 @@ export class MessageRepository {
         }
       }
       //
-      const totalPage = Math.ceil(totalConversation / limit);
+      const totalPage = Math.ceil(totalConversations / limit);
       const paginationConversations: RespondGetConversationsPagination = {
         conversations:
           returnConversations as unknown as RespondGetConversations,
         currentPage: page,
         limit: limit,
         skip: skip,
-        totalConversation: totalConversation,
+        totalConversation: totalConversations,
         totalPage: totalPage,
       };
       //

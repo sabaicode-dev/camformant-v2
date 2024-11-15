@@ -70,24 +70,17 @@ export class MessageService {
 
       const cookies = deCookies(cookieHeader);
       const senderId = cookies.user_id;
-      const senderRole = currentUser.role![0] === "user" ? "User" : "Company";
-      const receiverRole = currentUser.role![0] === "user" ? "Company" : "User";
+      const senderRole =
+        currentUser.role![0] === "company" ? "Company" : "User";
+      const receiverRole = senderRole === "User" ? "Company" : "User";
       console.log("2:::::");
-
-      const participants = [
-        {
-          participantType: senderRole,
-          participantId: senderId,
-        },
-        { participantType: receiverRole, participantId: userToChatId },
-      ];
-      console.log("3:::::", participants);
 
       const result = await this.MessageRepository.getMessage(
         userToChatId,
         senderId,
         query,
-        participants
+        senderRole,
+        receiverRole
       );
 
       return result as unknown as GetMessageRespond;
@@ -116,7 +109,8 @@ export class MessageService {
     try {
       const cookies = deCookies(cookieHeader);
       const senderId = cookies.user_id;
-      const senderRole = currentUser.role![0] === "user" ? "User" : "Company";
+      const senderRole =
+        currentUser.role![0] === "company" ? "Company" : "User";
       const result = await this.MessageRepository.getUserConversations(
         senderId,
         senderRole,

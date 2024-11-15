@@ -311,7 +311,17 @@ export class UsersController extends Controller {
       throw error;
     }
   }
-
+  //TODO: type
+  @Get("/getMulti/Profile")
+  public async getMultiProfileUser(@Queries() query: { usersId?: string }) {
+    try {
+      const res = await UserService.getMultiProfileUser(query.usersId!);
+      return res;
+    } catch (error) {
+      throw error;
+    }
+  }
+  //
   @Post("/uploadFile")
   public async uploadFile(
     @UploadedFile() file: Express.Multer.File,
