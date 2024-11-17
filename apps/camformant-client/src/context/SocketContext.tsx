@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./auth";
 import socket from "@/utils/socketClient";
+import { Socket } from "socket.io-client";
 // interface SocketContextType {
 //   onlineUsers: any[];
 //   socket: any;
@@ -16,8 +17,7 @@ export const SocketContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  //todo: type
-  const [sockets, setSockets] = useState<any>(null);
+  const [sockets, setSockets] = useState<Socket | null>(null);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const { user } = useAuth();
   const userId = user?._id;
