@@ -9,6 +9,7 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import Image from "next/image";
 import { useAuth } from "@/context/auth";
 import Link from "next/link";
+import { useSocketContext } from "@/context/SocketContext";
 
 interface AllConversations {
   _id: string;
@@ -42,9 +43,7 @@ const Chat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<any>(null);
   const { isAuthenticated } = useAuth();
-  useEffect(() => {
-    getConversations();
-  }, []);
+  const { onlineUsers } = useSocketContext();
 
   const getConversations = async () => {
     try {
@@ -66,13 +65,14 @@ const Chat = () => {
       setIsLoading(false);
     }
   };
+  useEffect(() => {
+    getConversations();
+  }, []);
 
   const handleConversationClick = (conId: string) => {
     router.push(`/chat/${conId}`);
   };
-  console.log("conversations::", conversations);
-  console.log("pagination::", pagination);
-
+  //todo: scroll for more conversations
   return (
     <div className="relative h-screen">
       <Background>
@@ -117,15 +117,22 @@ const Chat = () => {
                   className="flex items-center gap-8 p-4 cursor-pointer hover:bg-gray-200"
                   onClick={() => handleConversationClick(con.receiver)}
                 >
-                  {con.profile && (
-                    <Image
-                      src={con.profile}
-                      alt={`${con.name} profile`}
-                      width={7087}
-                      height={7087}
-                      className="object-cover rounded-full size-16"
-                    />
-                  )}
+                  {/* Container for image and status */}
+                  <div className="relative">
+                    {Array.isArray(onlineUsers) &&
+                      onlineUsers.includes(con.receiver) && (
+                        <span className="absolute bottom-0 right-0 bg-green-500 border-2 border-white rounded-full size-4"></span>
+                      )}
+                    {con.profile && (
+                      <Image
+                        src={con.profile}
+                        alt={`${con.name} profile`}
+                        width={7087}
+                        height={7087}
+                        className="object-cover rounded-full size-16"
+                      />
+                    )}
+                  </div>
                   <p>{con.name}</p>
                 </div>
               ))

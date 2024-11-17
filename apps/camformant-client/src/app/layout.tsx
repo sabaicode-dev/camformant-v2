@@ -4,6 +4,7 @@ import "./globals.css";
 // import { NavigationBar } from "@/components/navigation-bar/navigation-bar";
 import { AuthProvider } from "@/context/auth";
 import { cookies } from "next/headers";
+import { SocketContextProvider } from "@/context/SocketContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -41,7 +42,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider isLogin={!!userCookie}>
           {/* <NavigationBar /> */}
-          {children}
+          <SocketContextProvider>{children}</SocketContextProvider>
         </AuthProvider>
       </body>
     </html>

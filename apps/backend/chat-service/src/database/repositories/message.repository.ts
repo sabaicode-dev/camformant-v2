@@ -10,7 +10,6 @@ import {
   RespondGetConversations,
   RespondGetConversationsPagination,
 } from "./types/messages.repository.types";
-import { NotFoundError } from "@sabaicode-dev/camformant-libs";
 
 export class MessageRepository {
   async sendMessage(makeMessage: {
@@ -61,8 +60,8 @@ export class MessageRepository {
     userToChatId: string,
     senderId: string,
     query: query,
-    _senderRole: string,
-    receiverRole: string
+    senderRole: "User" | "Company",
+    receiverRole: "User" | "Company"
   ): Promise<null | conversationRespond> {
     //conversation
     const { limit = 7, page = 1 } = query;
@@ -84,89 +83,60 @@ export class MessageRepository {
         // select: "_id senderId receiverId message createdAt updatedAt",
       });
       if (!conversation) {
-        throw new NotFoundError("No Conversation Found!");
-      }
-      let totalMessages = 0;
-      if (conversation) {
-        // Step 2: Count total messages for the conversation separately
-        totalMessages = await MessageModel.countDocuments({
-          conversationId: conversation._id,
-        });
-      }
-      let api_endpoint: string = "";
-      if (receiverRole.toLowerCase() === "Company".toLowerCase()) {
-        api_endpoint = `http://localhost:4003/v1/companies/getMulti/Profile?companiesId=${userToChatId}`;
-      } else {
-        api_endpoint = `http://localhost:4005/v1/users/getMulti/Profile?usersId=${userToChatId}`;
-      }
-      const res = await fetch(api_endpoint);
-      const data = await res.json();
+        const roomId = [senderId, userToChatId].sort().join("_");
+        const participants = [
+          {
+            participantType: senderRole,
+            participantId: senderId,
+          },
+          {
+            participantType: receiverRole,
+            participantId: userToChatId,
+          },
+        ].sort();
 
-      const profile: {
-        _id: string;
-        profile: string;
-        name: string;
-      } = data.companiesProfile[0] || data.usersProfile[0];
-      console.log("profile::", profile);
-      let newParticipants: {
-        participantType: "User" | "Company";
-        participantId: string;
-        name?: string;
-        profile?: string;
-      }[] = [];
-      if (profile) {
-        if (Array.isArray(conversation.participants)) {
-          newParticipants = conversation.participants.map((part) => {
-            if (
-              part.participantId.toString() ===
-              new mongoose.Types.ObjectId(userToChatId).toString()
-            ) {
-              return {
-                participantType: part.participantType,
-                participantId: part.participantId,
-                name: profile.name,
-                profile: profile.profile,
-              };
-            }
-            return part;
-          });
-          // conversation.participants = newParticipant;
-        }
-      } else if (data?.usersProfile) {
-      }
-      const latestConversation = {
-        _id: conversation._id,
-        roomId: conversation.roomId,
-        createdAt: conversation.createdAt,
-        messages: conversation.messages,
-        participants: newParticipants,
-        updatedAt: conversation.updatedAt,
-      };
-      //
+        const conversation = await ConversationModel.findOneAndUpdate(
+          { roomId },
+          { $setOnInsert: { participants, roomId } },
+          { new: true, upsert: true }
+        );
 
-      //mongoose.Types.ObjectId[];//
-      const totalPage = Math.ceil(totalMessages / limit);
-      if (conversation) {
+        await Promise.all([conversation.save()]); //save new conversation to DB
         return {
-          conversation: latestConversation as unknown as conversation,
+          conversation: conversation as unknown as conversation,
           currentPage: page,
-          totalMessages,
-          totalPage,
-          limit,
-          skip,
+          totalMessages: 0,
+          totalPage: 1,
+          limit: limit,
+          skip: skip,
         };
       }
 
-      return null;
+      // Step 2: Count total messages for the conversation separately
+      const totalMessages = await MessageModel.countDocuments({
+        conversationId: conversation._id,
+      });
+
+      const totalPage = Math.ceil(totalMessages / limit);
+
+      return {
+        conversation: conversation as unknown as conversation,
+        currentPage: page,
+        totalMessages,
+        totalPage,
+        limit,
+        skip,
+      };
     } catch (error) {
       console.error("getMessage() message.service error:::", error);
       throw error;
     }
   }
-  async getConversationById(conversationId: string): Promise<any> {
+  async getConversationById(conversationId: string): Promise<conversation> {
     try {
       const conversation = await ConversationModel.findById(conversationId);
-      return conversation;
+
+      return conversation as unknown as conversation;
     } catch (error) {
       throw error;
     }

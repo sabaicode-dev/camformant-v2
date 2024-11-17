@@ -73,7 +73,7 @@ const Message = React.memo(
 
     const [messages, setMessages] = useState<Message[] | []>();
     const [inputMessage, setInputMessage] = useState<string>("");
-
+    const [conversationId, setConversationId] = useState<string>("");
     // Ref to track message container for scrolling
     const messageContainerRef = useRef<HTMLDivElement>(null);
     //
@@ -124,6 +124,7 @@ const Message = React.memo(
           const data = await response.data;
           if (response.status === 200 && data) {
             const conversation = data.conversation;
+            setConversationId(conversation._id);
             setConversations(conversation);
 
             setPaginationMessage({
@@ -134,18 +135,20 @@ const Message = React.memo(
               totalMessages: data.totalMessages,
             });
             setMessages(conversation.messages);
-          } else {
+          } else if (response.status === 404) {
+            console.log("res::", response);
+
             handleError("Message not found");
           }
         } catch (error) {
           console.error("chat error: ", error);
-          handleError("Failed to fetch conversation data");
+          handleError("Failed to fetch messages data");
         }
       };
       if (receiverId) {
         fetchConversations();
       }
-    }, [receiverId]);
+    }, [receiverId, handleError]);
     // Join the room of conversation
     // useEffect(() => {
     //   if (!conversationId) return;
@@ -192,6 +195,7 @@ const Message = React.memo(
     // useEffect(() => {
     //   scrollToBottom();
     // }, [messages, scrollToBottom]);
+    console.log(conversationId);
 
     const sendMessage = async () => {
       if (inputMessage.trim() === "") return;
@@ -230,6 +234,11 @@ const Message = React.memo(
             className="overflow-auto w-screen h-[70vh] p-4 rounded-md xl:h-[60vh] pb-10"
             ref={messageContainerRef} // Add ref here
           >
+            {messages?.length === 0 && (
+              <p className="text-lg font-semibold text-center text-gray-600">
+                {"Please Send Message to Start"}
+              </p>
+            )}
             {messages &&
               messages.map((message, idx) => (
                 <div
@@ -239,16 +248,16 @@ const Message = React.memo(
                   <div
                     className={`p-3 rounded-lg max-w-xs break-words ${
                       message.senderId === userId
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-200 text-gray-900"
+                        ? "bg-orange-400 text-gray-900"
+                        : "bg-gray-200 text-gray-800"
                     }`}
                   >
                     {message.message}
                     <div
                       className={`text-xs ${
                         message.senderId === userId
-                          ? "text-left text-gray-400"
-                          : "text-right text-gray-300"
+                          ? "text-left text-gray-600"
+                          : "text-right text-gray-500"
                       } mt-1`}
                     >
                       {formatDistanceToNow(new Date(message.createdAt!), {

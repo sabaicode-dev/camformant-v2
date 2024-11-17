@@ -54,12 +54,6 @@
 					"participants": {
 						"items": {
 							"properties": {
-								"name": {
-									"type": "string"
-								},
-								"profile": {
-									"type": "string"
-								},
 								"participantId": {
 									"type": "string"
 								},
@@ -293,14 +287,7 @@
 								"schema": {
 									"properties": {
 										"data": {
-											"anyOf": [
-												{
-													"type": "string"
-												},
-												{
-													"$ref": "#/components/schemas/messages"
-												}
-											]
+											"$ref": "#/components/schemas/messages"
 										},
 										"message": {
 											"type": "string"

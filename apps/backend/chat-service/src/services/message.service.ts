@@ -22,12 +22,10 @@ export class MessageService {
       username?: string;
       role?: string[];
     }
-  ): Promise<{ message: string; data: messages | string }> {
+  ): Promise<{ message: string; data: messages }> {
     try {
       const cookies = deCookies(cookieHeader);
       const senderId = cookies.user_id;
-      console.log("senderId:::", senderId);
-      console.log("currentUser:::", currentUser.role);
       const senderRole = currentUser.role![0] === "user" ? "User" : "Company";
       const receiverRole = currentUser.role![0] === "user" ? "Company" : "User";
 
@@ -38,10 +36,8 @@ export class MessageService {
         },
         { participantType: receiverRole, participantId: receiverId },
       ];
-      console.log("participants:::", participants);
 
       const roomId = [senderId, receiverId].sort().join("_");
-      console.log("RoomId", roomId);
 
       const result = await this.MessageRepository.sendMessage({
         senderId,
@@ -66,14 +62,11 @@ export class MessageService {
     }
   ): Promise<GetMessageRespond | undefined> {
     try {
-      console.log("1:::::");
-
       const cookies = deCookies(cookieHeader);
       const senderId = cookies.user_id;
       const senderRole =
         currentUser.role![0] === "company" ? "Company" : "User";
       const receiverRole = senderRole === "User" ? "Company" : "User";
-      console.log("2:::::");
 
       const result = await this.MessageRepository.getMessage(
         userToChatId,

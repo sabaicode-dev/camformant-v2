@@ -24,6 +24,7 @@ const conversationSchema = new mongoose.Schema<Conversation>(
           required: true,
           refPath: "participants.participantType", // Dynamically reference User or Company based on participantType
         },
+        _id: false,
       },
     ],
     messages: [

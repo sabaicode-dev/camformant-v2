@@ -620,16 +620,7 @@
 					"username": {
 						"type": "string"
 					},
-					"email": {
-						"type": "string"
-					},
-					"phone_number": {
-						"type": "string"
-					},
 					"profile": {
-						"type": "string"
-					},
-					"role": {
 						"type": "string"
 					},
 					"gender": {
@@ -639,91 +630,8 @@
 						"type": "number",
 						"format": "double"
 					},
-					"favorites": {
-						"items": {
-							"$ref": "#/components/schemas/mongoose.Types.ObjectId"
-						},
-						"type": "array"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"lastActive": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"lastSeen": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"sessions": {
-						"items": {
-							"properties": {
-								"lastLogin": {
-									"type": "string",
-									"format": "date-time"
-								},
-								"ipAddress": {
-									"type": "string"
-								},
-								"deviceId": {
-									"type": "string"
-								}
-							},
-							"required": [
-								"lastLogin",
-								"ipAddress",
-								"deviceId"
-							],
-							"type": "object"
-						},
-						"type": "array"
-					},
-					"privacySettings": {
-						"properties": {
-							"profilePhotoVisibleTo": {
-								"type": "string",
-								"enum": [
-									"everyone",
-									"contacts",
-									"nobody"
-								]
-							},
-							"lastSeenVisibleTo": {
-								"type": "string",
-								"enum": [
-									"everyone",
-									"contacts",
-									"nobody"
-								]
-							}
-						},
-						"required": [
-							"profilePhotoVisibleTo",
-							"lastSeenVisibleTo"
-						],
-						"type": "object"
-					},
-					"contacts": {
-						"anyOf": [
-							{
-								"items": {
-									"$ref": "#/components/schemas/mongoose.Types.ObjectId"
-								},
-								"type": "array"
-							},
-							{
-								"items": {
-									"type": "string"
-								},
-								"type": "array"
-							}
-						]
+					"role": {
+						"type": "string"
 					}
 				},
 				"type": "object",

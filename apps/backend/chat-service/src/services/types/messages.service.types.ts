@@ -5,8 +5,6 @@ export interface conversation {
   participants: {
     participantType: "User" | "Company";
     participantId: string;
-    profile?: string;
-    name?: string;
   }[];
   messages: {
     _id: mongoose.Types.ObjectId;

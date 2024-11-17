@@ -8,10 +8,11 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
 import BackButton from "@/components/back/BackButton";
-import socket from "@/utils/socketClient";
+import { useSocketContext } from "@/context/SocketContext";
+// import socket from "@/utils/socketClient";
 
 interface conversation {
   _id: string;
@@ -41,7 +42,7 @@ interface conversation {
 const MessagePage = () => {
   const { user, isAuthenticated } = useAuth();
   const router = useRouter();
-
+  const { onlineUsers } = useSocketContext();
   //participant profile
   const [participantProfile, setParticipantProfile] = useState<{
     _id: string;
@@ -60,11 +61,11 @@ const MessagePage = () => {
   const params = useParams();
   const receiverId = params.receiverId;
 
-  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   //fetch profile
   useEffect(() => {
     const getParticipantProfile = async () => {
       try {
+        //todo: endpoint in var
         const response = await axiosInstance.get(
           `http://localhost:4000/v1/companies/getMulti/Profile?companiesId=${receiverId}`
         );
@@ -119,22 +120,22 @@ const MessagePage = () => {
     [user]
   );
   // Check Online & Offline Users
-  useEffect(() => {
-    // Listen for userOnline and userOffline events
-    socket.on("userOnline", (userId: string) => {
-      setOnlineUsers((prevUsers) => [...prevUsers, userId]);
-    });
+  // useEffect(() => {
+  //   // Listen for userOnline and userOffline events
+  //   socket.on("userOnline", (userId: string) => {
+  //     setOnlineUsers((prevUsers) => [...prevUsers, userId]);
+  //   });
 
-    socket.on("userOffline", (userId: string) => {
-      setOnlineUsers((prevUsers) => prevUsers.filter((id) => id !== userId));
-    });
+  //   socket.on("userOffline", (userId: string) => {
+  //     setOnlineUsers((prevUsers) => prevUsers.filter((id) => id !== userId));
+  //   });
 
-    // Clean up
-    return () => {
-      socket.off("userOnline");
-      socket.off("userOffline");
-    };
-  }, []);
+  //   // Clean up
+  //   return () => {
+  //     socket.off("userOnline");
+  //     socket.off("userOffline");
+  //   };
+  // }, []);
 
   // if (error) {
   //   return (
@@ -194,14 +195,21 @@ const MessagePage = () => {
 
               {/* Company profile image */}
               {participantProfile.profile && (
-                <div className="relative w-20 h-20 -ml-5 overflow-hidden rounded-full">
+                <div className="relative w-20 h-20 -ml-5 rounded-full">
                   <Image
-                    src={participantProfile.profile}
+                    src={
+                      participantProfile.profile ||
+                      "https://sabaicode.com/sabaicode.jpg"
+                    }
                     alt={`${participantProfile.name} profile`}
                     width={200}
                     height={200}
                     className="object-cover w-full h-full rounded-full"
                   />
+                  {Array.isArray(onlineUsers) &&
+                    onlineUsers.includes(participantProfile._id) && (
+                      <span className="absolute right-0 bg-green-500 border-2 border-white rounded-full bottom-2 size-4"></span>
+                    )}
                 </div>
               )}
 
@@ -210,11 +218,11 @@ const MessagePage = () => {
                 <p className="font-mono text-xl font-bold text-white xl:text-3xl">
                   {participantProfile.name}
                 </p>
-                <p className="mt-2 text-sm text-gray-700 ">
+                {/* <p className="mt-2 text-sm text-gray-700 ">
                   {onlineUsers.includes(participantProfile._id)
                     ? "online 🟢"
-                    : "offline"}
-                </p>
+                    : "offline 🔴"}
+                </p> */}
               </div>
             </div>
           )}
