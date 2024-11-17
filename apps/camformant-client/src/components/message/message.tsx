@@ -7,6 +7,7 @@ import axiosInstance from "@/utils/axios";
 // import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { formatDistanceToNow } from "date-fns";
 import React from "react";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 // import { Job } from "@/app/jobs/[id]/message/page";
 
 interface conversation {
@@ -74,6 +75,7 @@ const Message = React.memo(
     const [messages, setMessages] = useState<Message[] | []>();
     const [inputMessage, setInputMessage] = useState<string>("");
     const [conversationId, setConversationId] = useState<string>("");
+    const [page, setPage] = useState<number>(1);
     // Ref to track message container for scrolling
     const messageContainerRef = useRef<HTMLDivElement>(null);
     //
@@ -113,13 +115,14 @@ const Message = React.memo(
         container.scrollTop = container.scrollHeight;
       }
     }, []);
-    //todo:
+    //todo: scrolling
     useEffect(() => {
       // Fetch messages
       const fetchConversations = async () => {
         try {
+          //NEXT_PUBLIC_CONVERSATION_ENDPOINT
           const response = await axiosInstance.get(
-            `http://localhost:4000/v1/messages/${receiverId}?page=1`
+            `${API_ENDPOINTS.GET_MESSAGE}/${receiverId}?page=${page}`
           );
           const data = await response.data;
           if (response.status === 200 && data) {
@@ -195,8 +198,19 @@ const Message = React.memo(
     // useEffect(() => {
     //   scrollToBottom();
     // }, [messages, scrollToBottom]);
-    console.log(conversationId);
+    useEffect(() => {
+      // Listen for real-time messages
+      socket.on("receiveMessage", (newMessage: Message) => {
+        setMessages([...messages!, newMessage]);
+        console.log("message called");
 
+        // scrollToBottom();
+      });
+
+      return () => {
+        socket.off("receiveMessage");
+      };
+    }, [messages, setMessages, socket]);
     const sendMessage = async () => {
       if (inputMessage.trim() === "") return;
       //todo: send message
@@ -205,11 +219,13 @@ const Message = React.memo(
         senderId: userId!,
         receiverId: receiverId,
         conversationId: conversationId!,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       // Emit the message to the server
       socket.emit("sendMessage", newMessage);
-
+      setMessages([...messages!, newMessage]);
       // Play the sending sound & Clear the input
       playNotificationSound();
       setInputMessage("");
@@ -242,7 +258,7 @@ const Message = React.memo(
             {messages &&
               messages.map((message, idx) => (
                 <div
-                  key={message._id}
+                  key={message._id || message.receiverId}
                   className={`${messages.length - 1 === idx ? "mb-8" : "mb-2"} flex ${message.senderId === userId ? "justify-end" : "justify-start"}`}
                 >
                   <div

@@ -1,7 +1,18 @@
 import { Server, Socket } from "socket.io";
 // import { MessageService } from "../services/message.service";
+import axios from "axios";
+import configs from "../config";
 // import axios from "axios";
 // const onlineUsers = new Map<string, Set<string>>(); //type of string or set string
+interface Message {
+  _id?: string;
+  senderId: string;
+  receiverId: string;
+  message: string;
+  conversationId?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 
 const userSocketMap: { [key: string]: string } = {}; //{userId:value}
 
@@ -15,7 +26,6 @@ const setupSocketIO = (io: Server) => {
     //todo: forward current user role from request to here
     // Check if the cookies exist in the socket handshake headers
     const cookies = socket.handshake.headers["cookie"];
-    // console.log("header:::", socket.handshake.headers);
     // console.log("cookies:::", cookies);
 
     if (cookies) {
@@ -47,27 +57,44 @@ const setupSocketIO = (io: Server) => {
       console.log("user is online:::", online);
     }
 
-    //todo: send message with endpoint
+    //todo: send message
     // Handle incoming messages
-    // socket.on("sendMessage", async (data) => {
-    //   console.log("data::: ", data);
-    //   try {
-    //     const sendMessage = new MessageService();
-    //     const savedMessage = await sendMessage.sendMessaage(
-    //       data.text,
-    //       cookies!,
-    //       data.recipientId,
-    //       {
-    //         username: "",
-    //         role: [""],
-    //       }
-    //     );
-    //     io.to(data.conversationId).emit("receiveMessage", savedMessage);
-    //   } catch (error) {
-    //     console.error("Error handling message:", error);
-    //     socket.emit("error", "Failed to process message");
-    //   }
-    // });
+    socket.on("sendMessage", async (data: Message) => {
+      const cookies = socket.handshake.headers["cookie"];
+      try {
+        if (cookies) {
+          const response = await axios.post(
+            `${configs.MessageUrl}/send/${data.receiverId}`,
+            {
+              message: data.message,
+            },
+            {
+              withCredentials: true, // Include credentials (e.g., cookies, authentication headers)
+              headers: {
+                "Content-Type": "application/json",
+                Cookie: cookies,
+              },
+            }
+          );
+
+          const savedMessage = response.data.data;
+          console.log("new message:::", savedMessage);
+          //todo: realtime message (wait for dashboard chat to test)
+          const receiverSocketId = userSocketMap[data.receiverId];
+          console.log("receverid::", receiverSocketId);
+
+          if (savedMessage && receiverSocketId) {
+            console.log("Message delivered to:", receiverSocketId);
+            io.to(receiverSocketId).emit("receiveMessage", savedMessage);
+          }
+          //test received done
+          // socket.broadcast.emit("receiveMessage", savedMessage);
+        }
+      } catch (error) {
+        console.error("Error handling message:", error);
+        socket.emit("error", "Failed to process message");
+      }
+    });
 
     socket.on("disconnect", () => {
       if (userId) {

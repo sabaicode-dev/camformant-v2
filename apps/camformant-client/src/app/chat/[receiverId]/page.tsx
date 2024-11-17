@@ -66,9 +66,8 @@ const MessagePage = () => {
   useEffect(() => {
     const getParticipantProfile = async () => {
       try {
-        //todo: endpoint in var
         const response = await axiosInstance.get(
-          `http://localhost:4000/v1/companies/getMulti/Profile?companiesId=${receiverId}`
+          `${API_ENDPOINTS.GET_PROFILE_COMPANY}?companiesId=${receiverId}`
         );
         const data = await response.data;
         const companiesProfile = data.companiesProfile[0];
