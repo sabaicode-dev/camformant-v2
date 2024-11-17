@@ -36,7 +36,7 @@
 					"_id": {
 						"type": "string"
 					},
-					"companyId": {
+					"company_id": {
 						"type": "string"
 					},
 					"title": {
@@ -399,42 +399,6 @@
 				},
 				"required": [
 					"message"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"JobOpeningRequest": {
-				"properties": {
-					"title": {
-						"type": "string"
-					},
-					"description": {
-						"type": "string"
-					},
-					"requirements": {
-						"type": "string"
-					},
-					"location": {
-						"properties": {
-							"country": {
-								"type": "string"
-							},
-							"city": {
-								"type": "string"
-							}
-						},
-						"required": [
-							"country",
-							"city"
-						],
-						"type": "object"
-					}
-				},
-				"required": [
-					"title",
-					"description",
-					"requirements",
-					"location"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -808,6 +772,100 @@
 				"parameters": []
 			}
 		},
+		"/v1/corporate/job": {
+			"get": {
+				"operationId": "GetAllJobs",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIResponse_PaginationResponse_IJob__"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"corporate"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "page",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "filter",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "sort",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "search",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "PostIJob",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIResponse_IJob_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"corporate"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/IJob"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/v1/corporate/profile": {
 			"post": {
 				"operationId": "CreateCorporateProfile",
@@ -823,7 +881,6 @@
 						}
 					}
 				},
-				"description": "Creates a new Corporate Profile",
 				"tags": [
 					"corporate"
 				],
@@ -844,7 +901,7 @@
 				"operationId": "GetCorporateProfiles",
 				"responses": {
 					"200": {
-						"description": "A list of Corporate Profiles",
+						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -869,7 +926,6 @@
 						}
 					}
 				},
-				"description": "Get all Corporate Profiles",
 				"tags": [
 					"corporate"
 				],
@@ -877,43 +933,12 @@
 				"parameters": []
 			}
 		},
-		"/v1/corporate/job": {
-			"post": {
-				"operationId": "PostJobOpening",
-				"responses": {
-					"201": {
-						"description": "Created",
-						"content": {
-							"application/json": {
-								"schema": {}
-							}
-						}
-					}
-				},
-				"description": "Post a new job opening",
-				"tags": [
-					"corporate"
-				],
-				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/JobOpeningRequest"
-							}
-						}
-					}
-				}
-			}
-		},
-		"/v1/corporate/{companyId}": {
+		"/v1/corporate": {
 			"get": {
 				"operationId": "GetCorporateProfileWithJobs",
 				"responses": {
 					"200": {
-						"description": "Corporate Profile with Jobs",
+						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {}
@@ -921,7 +946,6 @@
 						}
 					}
 				},
-				"description": "Get Corporate Profile with Jobs",
 				"tags": [
 					"corporate"
 				],

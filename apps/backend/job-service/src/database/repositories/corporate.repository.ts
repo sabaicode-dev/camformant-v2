@@ -1,27 +1,79 @@
 // companyJob.repository.ts
-
+import { prettyObject } from "@sabaicode-dev/camformant-libs";
 import CorporateProfileModel, { ICorporateProfile } from "../models/corporateProfile.model";
 
 class CompanyJobRepository {
 
     public async createProfile(profileData: ICorporateProfile): Promise<ICorporateProfile> {
-        const profile = new CorporateProfileModel(profileData);
-        return profile.save();
+        try {
+            const profile = new CorporateProfileModel(profileData);
+            if (!profile) {
+                console.log('CompanyJobRepository - createProfile() method error: Profile not created');
+                throw new Error('CompanyJobRepository - createProfile() method error: Profile not created');
+            }
+            return profile.save();
+        } catch (error) {
+            console.error(
+                `CompanyJobRepository - createProfile() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
     }
 
     public async findProfileById(companyId: string): Promise<ICorporateProfile | null> {
-        return CorporateProfileModel.findById(companyId);
+        try {
+            const profile = CorporateProfileModel.findById(companyId);
+            if (!profile) {
+                console.log('CompanyJobRepository - findProfileById() method error: Profile not found');
+                return null;
+            }
+            return profile;
+        } catch (error) {
+            console.error(
+                `CompanyJobRepository - findProfileById() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
     }
 
     public async updateProfileById(
         id: string,
         profileData: ICorporateProfile
     ): Promise<ICorporateProfile | null> {
-        return CorporateProfileModel.findByIdAndUpdate(id, profileData, { new: true }).exec();
+        try {
+            const profile = CorporateProfileModel.findByIdAndUpdate(id, profileData, { new: true }).exec();
+            if (!profile) {
+                console.log('CompanyJobRepository - updateProfileById() method error: Profile not found');
+                return null;
+            }
+            return profile;
+        } catch (error) {
+            console.error(
+                `CompanyJobRepository - updateProfileById() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+
+        }
     }
 
     public async getAllProfiles(): Promise<ICorporateProfile[]> {
-        return CorporateProfileModel.find().exec();
+        try {
+            const profiles = CorporateProfileModel.find().exec();
+            if (!profiles) {
+                console.log('CompanyJobRepository - getAllProfiles() method error: No profiles found');
+                return [];
+            }
+            return profiles;
+        } catch (error) {
+            console.error(
+                `CompanyJobRepository - getAllProfiles() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
     }
 }
 

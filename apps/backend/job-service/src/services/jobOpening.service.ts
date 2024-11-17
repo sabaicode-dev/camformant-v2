@@ -1,8 +1,38 @@
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
 import JobOpeningRepository from "../database/repositories/jobOpening.repository";
+import { JobGetAllControllerParams } from "../controllers/types/job-controller.type";
+import searchService from "./search.service";
 
 
 class JobOpeningService {
+
+    public async getAllJobs(queries: JobGetAllControllerParams, userId = null) {
+        try {
+            const { page, limit, filter, sort, search } = queries;
+
+            const newQueries = {
+                page,
+                limit,
+                filter: filter && JSON.parse(filter),
+                sort: sort && JSON.parse(sort),
+                search,
+            };
+
+            const result = await JobOpeningRepository.getAllJobs(newQueries);
+
+            if (search) {
+                await searchService.saveSearchHistory(userId, search);
+            }
+
+            return result;
+        } catch (error) {
+            console.error(
+                `JobService getAllJobs() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
 
     public async createJob(companyId: string, jobData: any) {
         try {

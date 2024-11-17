@@ -39,7 +39,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "_id": {"dataType":"string"},
-            "companyId": {"dataType":"string"},
+            "company_id": {"dataType":"string"},
             "title": {"dataType":"string"},
             "position": {"dataType":"array","array":{"dataType":"string"}},
             "workMode": {"dataType":"array","array":{"dataType":"refEnum","ref":"WorkMode"}},
@@ -157,17 +157,6 @@ const models: TsoaRoute.Models = {
         "properties": {
             "message": {"dataType":"string","required":true},
             "data": {"ref":"ICorporateProfile"},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "JobOpeningRequest": {
-        "dataType": "refObject",
-        "properties": {
-            "title": {"dataType":"string","required":true},
-            "description": {"dataType":"string","required":true},
-            "requirements": {"dataType":"string","required":true},
-            "location": {"dataType":"nestedObjectLiteral","nestedProperties":{"country":{"dataType":"string","required":true},"city":{"dataType":"string","required":true}},"required":true},
         },
         "additionalProperties": false,
     },
@@ -457,6 +446,68 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/v1/corporate/job',
+            ...(fetchMiddlewares<RequestHandler>(CorporateController)),
+            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.getAllJobs)),
+
+            async function CorporateController_getAllJobs(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    queries: {"in":"queries","name":"queries","required":true,"ref":"JobGetAllControllerParams"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new CorporateController();
+
+              await templateService.apiHandler({
+                methodName: 'getAllJobs',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/v1/corporate/job',
+            ...(fetchMiddlewares<RequestHandler>(CorporateController)),
+            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.postIJob)),
+
+            async function CorporateController_postIJob(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    body: {"in":"body","name":"body","required":true,"ref":"IJob"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new CorporateController();
+
+              await templateService.apiHandler({
+                methodName: 'postIJob',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 201,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/v1/corporate/profile',
             ...(fetchMiddlewares<RequestHandler>(CorporateController)),
             ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.createCorporateProfile)),
@@ -517,38 +568,7 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/v1/corporate/job',
-            ...(fetchMiddlewares<RequestHandler>(CorporateController)),
-            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.postJobOpening)),
-
-            async function CorporateController_postJobOpening(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-                    body: {"in":"body","name":"body","required":true,"ref":"JobOpeningRequest"},
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
-
-                const controller = new CorporateController();
-
-              await templateService.apiHandler({
-                methodName: 'postJobOpening',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: 201,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/v1/corporate/:companyId',
+        app.get('/v1/corporate',
             ...(fetchMiddlewares<RequestHandler>(CorporateController)),
             ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.getCorporateProfileWithJobs)),
 

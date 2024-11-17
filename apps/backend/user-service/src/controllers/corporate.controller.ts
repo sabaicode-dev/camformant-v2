@@ -109,7 +109,7 @@ export class CorporateController extends Controller {
                 }) as CorporateProfileResponse;;
             }
             const companyJobs = await axios.get(
-                `http://localhost:4003/v1/corporate/${userProfile.corporateProfileId}`,
+                `http://localhost:4003/v1/corporate`,
                 {
                     headers: {
                         Authorization: `Bearer ${access_token}`, Cookie: `username=${sub}; access_token=${access_token}`
