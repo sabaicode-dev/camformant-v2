@@ -42,7 +42,8 @@ interface conversation {
 const MessagePage = () => {
   const { user, isAuthenticated } = useAuth();
   const router = useRouter();
-  const { onlineUsers } = useSocketContext();
+  const socketContext = useSocketContext();
+  const onlineUsers = socketContext ? socketContext.onlineUsers : [];
   //participant profile
   const [participantProfile, setParticipantProfile] = useState<{
     _id: string;

@@ -3,12 +3,11 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./auth";
 import socket from "@/utils/socketClient";
 import { Socket } from "socket.io-client";
-// interface SocketContextType {
-//   onlineUsers: any[];
-//   socket: any;
-// }
-//SocketContextType | undefined
-const SocketContext = createContext<any>(undefined);
+interface SocketContextType {
+  onlineUsers: string[];
+  socket: Socket;
+}
+const SocketContext = createContext<SocketContextType | null>(null);
 
 export const useSocketContext = () => useContext(SocketContext);
 
@@ -43,7 +42,7 @@ export const SocketContextProvider = ({
   console.log("online:::", onlineUsers);
 
   return (
-    <SocketContext.Provider value={{ sockets, onlineUsers }}>
+    <SocketContext.Provider value={{ socket: sockets!, onlineUsers }}>
       {children}
     </SocketContext.Provider>
   );

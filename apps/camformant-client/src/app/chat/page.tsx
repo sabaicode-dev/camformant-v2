@@ -43,7 +43,8 @@ const Chat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<any>(null);
   const { isAuthenticated } = useAuth();
-  const { onlineUsers } = useSocketContext();
+  const socketContext = useSocketContext();
+  const onlineUsers = socketContext ? socketContext.onlineUsers : [];
 
   const getConversations = async () => {
     try {
