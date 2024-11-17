@@ -1,4 +1,4 @@
-import { prettyObject } from "@sabaicode-dev/camformant-libs";
+import { NotFoundError, prettyObject } from "@sabaicode-dev/camformant-libs";
 import { JobGetAllRepoParams, JobSortParams } from "@/src/controllers/types/job-controller.type";
 import { SortOrder } from "mongoose";
 import CorporateProfileModel from "../models/corporateProfile.model";
@@ -236,6 +236,68 @@ class IJobRepository {
             throw error;
         }
     }
+
+    public async findJobById(jobId: string) {
+        try {
+            const result = await JobModel.findById(jobId).populate({
+                path: "company_id",
+                model: CorporateProfileModel,
+                select:
+                    "name location bio profile email phone_number job_openings job_closings",
+            });
+
+            if (!result) {
+                throw new NotFoundError("The requested job was not found.");
+            }
+
+            return result;
+        } catch (error) {
+            console.error(
+                `IJobRepository - findJobById() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
+    public async updateJobById(updateJob: IJob): Promise<IJob> {
+        try {
+            const { _id, ...updateNewJob } = updateJob;
+            const result = await JobModel.findByIdAndUpdate(_id, updateNewJob, {
+                new: true,
+            });
+            if (!result) {
+                throw new NotFoundError("The requested job was not found.");
+            }
+
+            return result;
+        } catch (error) {
+            console.error(
+                `IJobRepository - updateJobById() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
+    public async deleteJobById(jobId: string) {
+        try {
+            const result = await JobModel.findByIdAndDelete(jobId);
+
+            if (!result) {
+                throw new NotFoundError("Job was not found!");
+            }
+
+            return result;
+        } catch (error) {
+            console.error(
+                `IJobRepository - deleteJobById() method error:`,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
 
     public async findJobsByCompanyId(companyId: string): Promise<IJob[]> {
         try {

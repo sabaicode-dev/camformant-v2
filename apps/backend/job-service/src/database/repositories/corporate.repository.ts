@@ -1,5 +1,5 @@
 // companyJob.repository.ts
-import { prettyObject } from "@sabaicode-dev/camformant-libs";
+import { NotFoundError, prettyObject } from "@sabaicode-dev/camformant-libs";
 import CorporateProfileModel, { ICorporateProfile } from "../models/corporateProfile.model";
 
 class CompanyJobRepository {
@@ -32,6 +32,41 @@ class CompanyJobRepository {
         } catch (error) {
             console.error(
                 `CompanyJobRepository - findProfileById() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
+    public async updateCorporateProfile(companyId: string, profileData: ICorporateProfile): Promise<ICorporateProfile | null> {
+        try {
+            const profile = CorporateProfileModel.findByIdAndUpdate(companyId, profileData, { new: true }).exec();
+            if (!profile) {
+                console.log('CompanyJobRepository - updateCorporateProfile() method error: Profile not found');
+                return null;
+            }
+            return profile;
+        } catch (error) {
+            console.error(
+                `CompanyJobRepository - updateCorporateProfile() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
+    public async deleteCorporateProfile(companyId: string): Promise<ICorporateProfile | null> {
+        try {
+            const result = await CorporateProfileModel.findByIdAndDelete(companyId);
+
+            if (!result) {
+                throw new NotFoundError("Job was not found!");
+            }
+
+            return result;
+        } catch (error) {
+            console.error(
+                `CompanyJobRepository - deleteCorporateProfile() method error: `,
                 prettyObject(error as {})
             );
             throw error;

@@ -1,7 +1,7 @@
 import axios from "axios";
-import { Controller, Get, Post, Route, SuccessResponse, Tags, Body, Query, Request, Queries } from "tsoa";
+import { Controller, Get, Post, Route, SuccessResponse, Tags, Body, Query, Request, Queries, Path, Put, Delete } from "tsoa";
 import { APIResponse, PaginationResponse, prettyObject } from "@sabaicode-dev/camformant-libs";
-import { JobGetAllControllerParams } from "./types/job-controller.type";
+import { JobGetAllControllerParams, JobParams } from "./types/job-controller.type";
 import sendResponse from "@/src/utils/send-response";
 import CorporateService from "../services/corporate.service";
 import corporateService from "../services/corporate.service";
@@ -13,22 +13,6 @@ import jobOpeningService from "../services/jobOpening.service";
 @Route("/v1/corporate")
 @Tags("corporate")
 export class CorporateController extends Controller {
-    @Get("/job")
-    public async getAllJobs(
-        @Request() request: ExpressRequest,
-        @Queries() queries: JobGetAllControllerParams
-    ): Promise<APIResponse<PaginationResponse<IJob>>> {
-        try {
-            const userId = request.cookies["user_id"] || null;
-            const response = await jobOpeningService.getAllJobs(queries, userId);
-            return sendResponse<PaginationResponse<IJob>>({
-                message: "success",
-                data: response,
-            });
-        } catch (error) {
-            throw error;
-        }
-    }
 
     @SuccessResponse("201", "Created")
     @Post("/job")
@@ -74,6 +58,61 @@ export class CorporateController extends Controller {
         }
     }
 
+    @Get("/job")
+    public async getAllJobs(
+        @Request() request: ExpressRequest,
+        @Queries() queries: JobGetAllControllerParams
+    ): Promise<APIResponse<PaginationResponse<IJob>>> {
+        try {
+            const userId = request.cookies["user_id"] || null;
+            const response = await jobOpeningService.getAllJobs(queries, userId);
+            return sendResponse<PaginationResponse<IJob>>({ message: "success", data: response });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    @Get("/job/{jobId}")
+    public async getJobById(@Path() jobId: string) {
+        try {
+            const getJob = await jobOpeningService.getJobById(jobId);
+            if (!getJob) {
+                console.log("CorporateController - getJobById() method error : Job not found");
+                return sendResponse<IJob>({ message: "Job not found", data: {} as IJob });
+            }
+            return sendResponse<IJob>({ message: "success", data: getJob });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    @Put("/job/{jobId}")
+    public async updateJobById(@Path() jobId: string, @Body() updateDatJob: JobParams) {
+        try {
+            const updateJob = await jobOpeningService.updateJobById(jobId, updateDatJob);
+            return sendResponse<IJob>({ message: "success", data: updateJob });
+        } catch (error) {
+            console.error(
+                `jobController updateJobById() method error: `,
+                prettyObject(error as {})
+            );
+        }
+    }
+
+    @Delete("/job/{jobId}")
+    public async deleteJobById(@Path() jobId: string): Promise<{ message: string }> {
+        try {
+            await jobOpeningService.deleteJobById(jobId);
+            return { message: "Job was deleted successfully" };
+        } catch (error) {
+            console.error(
+                `CompanyController deleteJobById() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
     @SuccessResponse("201", "Created")
     @Post("/profile")
     public async createCorporateProfile(
@@ -109,6 +148,7 @@ export class CorporateController extends Controller {
         }
     }
 
+    @SuccessResponse("200", "Success")
     @Get("/profile")
     public async getCorporateProfiles(): Promise<{ message: string; data: ICorporateProfile[]; }> {
         try {
@@ -125,6 +165,56 @@ export class CorporateController extends Controller {
             );
             throw error;
         } 3
+    }
+
+    @SuccessResponse("200", "Success")
+    @Get("/profile/{corporateId}")
+    public async getCorporateProfilesById(@Path() corporateId: string) {
+        try {
+            const corporateProfile = await CorporateService.getProfileById(corporateId)
+            if (!corporateProfile) {
+                console.log("CorporateController - getCorporateProfilesById() method error : Job not found");
+                return sendResponse({ message: "corporateProfile not found", data: [] });
+
+            }
+            return sendResponse({ message: "Find corporateProfile successfully", data: corporateProfile });
+        } catch (error) {
+            console.error(
+                `CorporateController - getCorporateProfilesById() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
+    @SuccessResponse("204", "Updated Successfully")
+    @Put("/profile/{corporateId}")
+    public async updateCorporateProfile(@Path() corporateId: string, @Body() updateDataCorporateProfile: ICorporateProfile) {
+        try {
+            const updateCorporateProfile = await CorporateService.updateCorporateProfile(corporateId, updateDataCorporateProfile)
+            return sendResponse({ message: "success", data: updateCorporateProfile });
+        } catch (error) {
+            console.error(
+                `CorporateController - updateCorporateProfile() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+    @SuccessResponse("200", "Delete Successfully")
+    @Delete("/profile/{corporateId}")
+    public async deleteCorporateProfile(@Path() corporateId: string): Promise<{ message: string }> {
+        try {
+
+            await CorporateService.deleteCorporateProfile(corporateId);
+            return { message: "Corporate Profile was deleted successfully" };
+        } catch (error) {
+            console.error(
+                `CorporateController - deleteCorporateProfile() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
     }
 
     @Get()

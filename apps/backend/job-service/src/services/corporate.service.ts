@@ -41,6 +41,60 @@ class CorporateService {
         }
     }
 
+    public async getProfileById(id: string): Promise<ICorporateProfile | null> {
+        try {
+            const corporateProfile = await companyJobRepository.findProfileById(id);
+            if (!corporateProfile) {
+                console.log('CorporateService - getProfileById() method error: No corporate profile found');
+                return null;
+            }
+            return corporateProfile;
+
+        } catch (error) {
+            console.error(
+                `CorporateService - getProfileById() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+
+        }
+    }
+
+    public async updateCorporateProfile(corporateId: string, profileData: ICorporateProfile) {
+        try {
+            const profile = await companyJobRepository.updateCorporateProfile(corporateId, profileData);
+            if (!profile) {
+                console.log('CorporateService - updateCorporateProfile() method error: Profile not updated');
+                throw new Error('CorporateService - updateCorporateProfile() method error: Profile not updated');
+            }
+            return profile;
+        } catch (error) {
+            console.error(
+                `CorporateService - updateCorporateProfile() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
+    public async deleteCorporateProfile(corporateId: string) {
+        try {
+            const profile = await companyJobRepository.deleteCorporateProfile(corporateId);
+            if (!profile) {
+                console.log('CorporateService - deleteCorporateProfile() method error: Profile not deleted');
+                throw new Error('CorporateService - deleteCorporateProfile() method error: Profile not deleted');
+            }
+            return profile;
+        } catch (error) {
+            console.error(
+                `CorporateService - deleteCorporateProfile() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
+
     public async getProfileWithJobs(companyId: string, recentJobsLimit: number = 5) {
 
         const profile = await companyJobRepository.findProfileById(companyId);
@@ -64,24 +118,6 @@ class CorporateService {
         return { ...profileObject, jobStats };
     }
 
-    public async getProfileById(id: string): Promise<ICorporateProfile | null> {
-        try {
-            const corporateProfile = await companyJobRepository.findProfileById(id);
-            if (!corporateProfile) {
-                console.log('CorporateService - getProfileById() method error: No corporate profile found');
-                return null;
-            }
-            return corporateProfile;
-
-        } catch (error) {
-            console.error(
-                `CorporateService - getProfileById() method error: `,
-                prettyObject(error as {})
-            );
-            throw error;
-
-        }
-    }
 
 }
 

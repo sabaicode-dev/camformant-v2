@@ -1,7 +1,8 @@
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
 import JobOpeningRepository from "../database/repositories/jobOpening.repository";
-import { JobGetAllControllerParams } from "../controllers/types/job-controller.type";
+import { JobGetAllControllerParams, JobParams } from "../controllers/types/job-controller.type";
 import searchService from "./search.service";
+import { IJob } from "../database/models/job.model";
 
 
 class JobOpeningService {
@@ -28,6 +29,51 @@ class JobOpeningService {
         } catch (error) {
             console.error(
                 `JobService getAllJobs() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
+    public async getJobById(jobId: string): Promise<IJob> {
+        try {
+            const result = await JobOpeningRepository.findJobById(jobId);
+            if (!result) {
+                throw new Error("JobOpeningService - getJobById() method error: Job not found");
+            }
+            return result;
+        } catch (error) {
+            console.error(
+                `JobOpeningService - getJobById() method error:`,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
+    public async updateJobById(jobId: string, updateJob: JobParams): Promise<IJob> {
+        try {
+            const newJob = await JobOpeningRepository.updateJobById({
+                _id: jobId,
+                ...updateJob,
+            });
+
+            return newJob;
+        } catch (error) {
+            console.error(
+                `JobOpeningService - updateJobById() method error:`,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
+    public async deleteJobById(jobId: string) {
+        try {
+            await JobOpeningRepository.deleteJobById(jobId);
+        } catch (error) {
+            console.error(
+                `JobOpeningService - deleteJobById() method error:`,
                 prettyObject(error as {})
             );
             throw error;
