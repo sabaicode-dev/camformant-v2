@@ -807,7 +807,7 @@
 				"operationId": "GetAllJobs",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "Success",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -871,7 +871,7 @@
 				"operationId": "GetJobById",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "Success",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -911,8 +911,8 @@
 			"put": {
 				"operationId": "UpdateJobById",
 				"responses": {
-					"200": {
-						"description": "Ok",
+					"204": {
+						"description": "Updated Successfully",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -963,7 +963,7 @@
 				"operationId": "DeleteJobById",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "Delete Successfully",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1032,7 +1032,7 @@
 				"operationId": "GetCorporateProfiles",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "Success",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1069,7 +1069,7 @@
 				"operationId": "GetCorporateProfilesById",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "Success",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1129,8 +1129,8 @@
 			"put": {
 				"operationId": "UpdateCorporateProfile",
 				"responses": {
-					"200": {
-						"description": "Ok",
+					"204": {
+						"description": "Updated Successfully",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1181,7 +1181,7 @@
 				"operationId": "DeleteCorporateProfile",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "Delete Successfully",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1220,7 +1220,7 @@
 				"operationId": "GetCorporateProfileWithJobs",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "Success",
 						"content": {
 							"application/json": {
 								"schema": {}

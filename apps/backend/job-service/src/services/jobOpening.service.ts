@@ -35,6 +35,22 @@ class JobOpeningService {
         }
     }
 
+    public async createJob(companyId: string, jobData: any) {
+        try {
+            const newJob = await JobOpeningRepository.createJob({ ...jobData, company_id: companyId });
+            if (!newJob) {
+                throw new Error("Job creation failed.");
+            }
+            return newJob;
+        } catch (error) {
+            console.error(
+                `JobOpeningService - createJob() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
     public async getJobById(jobId: string): Promise<IJob> {
         try {
             const result = await JobOpeningRepository.findJobById(jobId);
@@ -74,22 +90,6 @@ class JobOpeningService {
         } catch (error) {
             console.error(
                 `JobOpeningService - deleteJobById() method error:`,
-                prettyObject(error as {})
-            );
-            throw error;
-        }
-    }
-
-    public async createJob(companyId: string, jobData: any) {
-        try {
-            const newJob = await JobOpeningRepository.createJob({ ...jobData, company_id: companyId });
-            if (!newJob) {
-                throw new Error("Job creation failed.");
-            }
-            return newJob;
-        } catch (error) {
-            console.error(
-                `JobOpeningService - createJob() method error: `,
                 prettyObject(error as {})
             );
             throw error;

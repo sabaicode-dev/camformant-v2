@@ -4,6 +4,23 @@ import CorporateProfileModel, { ICorporateProfile } from "../models/corporatePro
 
 class CompanyJobRepository {
 
+    public async getAllProfiles(): Promise<ICorporateProfile[]> {
+        try {
+            const profiles = CorporateProfileModel.find().exec();
+            if (!profiles) {
+                console.log('CompanyJobRepository - getAllProfiles() method error: No profiles found');
+                return [];
+            }
+            return profiles;
+        } catch (error) {
+            console.error(
+                `CompanyJobRepository - getAllProfiles() method error: `,
+                prettyObject(error as {})
+            );
+            throw error;
+        }
+    }
+
     public async createProfile(profileData: ICorporateProfile): Promise<ICorporateProfile> {
         try {
             const profile = new CorporateProfileModel(profileData);
@@ -94,22 +111,6 @@ class CompanyJobRepository {
         }
     }
 
-    public async getAllProfiles(): Promise<ICorporateProfile[]> {
-        try {
-            const profiles = CorporateProfileModel.find().exec();
-            if (!profiles) {
-                console.log('CompanyJobRepository - getAllProfiles() method error: No profiles found');
-                return [];
-            }
-            return profiles;
-        } catch (error) {
-            console.error(
-                `CompanyJobRepository - getAllProfiles() method error: `,
-                prettyObject(error as {})
-            );
-            throw error;
-        }
-    }
 }
 
 export default new CompanyJobRepository();

@@ -58,6 +58,7 @@ export class CorporateController extends Controller {
         }
     }
 
+    @SuccessResponse("200", "Success")
     @Get("/job")
     public async getAllJobs(
         @Request() request: ExpressRequest,
@@ -72,6 +73,7 @@ export class CorporateController extends Controller {
         }
     }
 
+    @SuccessResponse("200", "Success")
     @Get("/job/{jobId}")
     public async getJobById(@Path() jobId: string) {
         try {
@@ -86,6 +88,7 @@ export class CorporateController extends Controller {
         }
     }
 
+    @SuccessResponse("204", "Updated Successfully")
     @Put("/job/{jobId}")
     public async updateJobById(@Path() jobId: string, @Body() updateDatJob: JobParams) {
         try {
@@ -99,6 +102,7 @@ export class CorporateController extends Controller {
         }
     }
 
+    @SuccessResponse("200", "Delete Successfully")
     @Delete("/job/{jobId}")
     public async deleteJobById(@Path() jobId: string): Promise<{ message: string }> {
         try {
@@ -217,6 +221,7 @@ export class CorporateController extends Controller {
         }
     }
 
+    @SuccessResponse("200", "Success")
     @Get()
     public async getCorporateProfileWithJobs(
         @Request() request: ExpressRequest,

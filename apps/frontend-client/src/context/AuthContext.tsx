@@ -14,10 +14,68 @@ interface User {
   favorites: string[];
 }
 
+interface JobListing {
+  _id: string;
+  company_id: string;
+  title: string;
+  position: string[];
+  workMode: string[];
+  requirement: string;
+  location: string;
+  job_opening: number;
+  max_salary: number;
+  min_salary: number;
+  description: string;
+  address: string;
+  type: string[];
+  schedule: string[];
+  required_experience: string[];
+  benefit: string[];
+  deadline: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface CorporateProfile {
+  _id: string;
+  company_name: string;
+  profile: string;
+  description: string;
+  industry: string;
+  employee_count: number;
+  job_openings_count: number;
+  job_closings_count: number;
+  location: {
+      address: string;
+      city: string;
+      country: string;
+  };
+  contact: {
+      email: string;
+      phone_number: string;
+      website: string;
+  };
+  social_links: {
+      linkedin: string;
+      twitter: string;
+      facebook: string;
+  };
+  jobStats: {
+      recentJobs: JobListing[];
+      total: number;
+  };
+  timestamps: {
+      created_at: string;
+      updated_at: string;
+  };
+}
+
+
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   user: User | null;
+  jobs: CorporateProfile | null;
   signUp: ({ sur_name , last_name , email , phone_number , password }: SignUpData) => Promise<void>;
   verifyCode: ({ email , phone_number , code }: VerifyCodeData) => Promise<void>;
   signIn: ({ email , phone_number , password }: SignInData) => Promise<void>;
@@ -29,6 +87,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [jobs , setJobs] = useState<CorporateProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true); 
   const router = useRouter();
 
@@ -37,7 +96,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         setIsLoading(true); 
         const res = await axiosInstance.get(API_ENDPOINTS.CORPARATE_USER_PROFILE);
-        setUser(res.data.data.user);
+        setUser(res.data.data);
+        setJobs(res.data.data.jobs.data);
         setIsAuthenticated(true);
       } catch (error) {
         console.error("Check auth status failed:", error);
@@ -134,6 +194,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAuthenticated,
         isLoading,
         user,
+        jobs,
         signUp,
         verifyCode,
         signIn,

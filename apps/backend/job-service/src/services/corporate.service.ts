@@ -94,7 +94,6 @@ class CorporateService {
         }
     }
 
-
     public async getProfileWithJobs(companyId: string, recentJobsLimit: number = 5) {
 
         const profile = await companyJobRepository.findProfileById(companyId);
@@ -117,7 +116,6 @@ class CorporateService {
 
         return { ...profileObject, jobStats };
     }
-
 
 }
 
