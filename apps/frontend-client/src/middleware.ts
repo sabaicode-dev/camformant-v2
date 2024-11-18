@@ -67,10 +67,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/signin", request.url));
   }
 
-  // 3. Check user role for /dashboard access if authenticated
-  if (pathname.startsWith("/dashboard")) {
-    const role = userInfo?.data?.role;
-    console.log("middleware.ts: role :::", role);
+    // 3. Check user role for /dashboard access if authenticated
+    if (pathname.startsWith("/dashboard")) {
+        const role = userInfo.data.user.role;
+        console.log("middleware.ts: role :::", role);
 
     // If user is not authorized for the dashboard, clear cookies and redirect
     if (role !== "admin") {

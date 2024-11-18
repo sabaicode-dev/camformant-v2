@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request) {
     try {
         // Call the external `auth/users/me` endpoint
-        const response = await fetch("http://localhost:4000/v1/users/me", {
+        const response = await fetch("http://localhost:4005/v1/corporate/profile/me", {
             method: "GET",
             credentials: "include", // Ensures cookies are sent with the request
             headers: {
@@ -19,7 +19,7 @@ export async function GET(req: Request) {
 
         const data = await response.json();
         console.log("========================================")
-        console.log("route :::::::::::::::::::::", data);
+        // console.log("route :::::::::::::::::::::", data.data.user);
         return NextResponse.json(data, { status: 200 });
     } catch (error: any) {
         return NextResponse.json(

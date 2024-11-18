@@ -20,7 +20,7 @@ export enum WorkMode {
 
 export interface IJob {
   _id?: string;
-  companyId?: string | mongoose.Types.ObjectId;
+  company_id?: string | mongoose.Types.ObjectId;
   title?: string; // name of the job that company looking for. Example: Java Developer
   position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
   workMode?: WorkMode[];
@@ -42,11 +42,7 @@ export interface IJob {
 
 const JobSchema: Schema = new Schema(
   {
-    companyId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "Company",
-    },
+    company_id: { type: String, required: true },
     title: { type: String, required: true },
     position: { type: [String], required: true },
     workMode: { type: [String], required: true, enum: Object.values(WorkMode) },

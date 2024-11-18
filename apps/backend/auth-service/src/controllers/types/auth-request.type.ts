@@ -24,3 +24,13 @@ export interface GoogleCallbackRequest {
   state?: string;
   error?: string;
 }
+export interface CorporateSignupRequest {
+  sur_name?: string;
+  last_name?: string;
+  email?: string;
+  phone_number?: string;
+  password?: string;
+  role?: "company";
+}
+
+

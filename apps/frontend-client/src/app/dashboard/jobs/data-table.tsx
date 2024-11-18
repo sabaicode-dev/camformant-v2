@@ -45,8 +45,8 @@ export function DataTable<TData, TValue>({
     const pathname = usePathname();
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
-        searchParams.get("name")
-            ? [{ id: "name", value: searchParams.get("name") }]
+        searchParams.get("title")
+            ? [{ id: "title", value: searchParams.get("title") }]
             : []
     );
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
@@ -77,10 +77,10 @@ export function DataTable<TData, TValue>({
         const params = new URLSearchParams(window.location.search);
         if (columnFilters.length > 0 && columnFilters[0].value) {
             const filterValue = columnFilters[0].value as string;
-            params.set("name", filterValue);
+            params.set("title", filterValue);
             router.replace(`${pathname}?${params.toString()}`);
         } else {
-            params.delete("name");
+            params.delete("title");
             router.replace(`${pathname}?${params.toString()}`);
         }
     }, [columnFilters, pathname, router]);
@@ -90,15 +90,15 @@ export function DataTable<TData, TValue>({
             <div className="flex justify-start items-center">
                 <div className="flex items-center py-4 bg">
                     <Input
-                        placeholder="Filter name..."
+                        placeholder="Filter title..."
                         value={
                             (table
-                                .getColumn("name")
+                                .getColumn("title")
                                 ?.getFilterValue() as string) ?? ""
                         }
                         onChange={(event) =>
                             table
-                                .getColumn("name")
+                                .getColumn("title")
                                 ?.setFilterValue(event.target.value)
                         }
                         className="max-w-sm"
@@ -140,14 +140,8 @@ export function DataTable<TData, TValue>({
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableHead key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                      header.column.columnDef
-                                                          .header,
-                                                      header.getContext()
-                                                  )}
+                                        <TableHead key={header.id} className="text-center">
+                                            {header.isPlaceholder? null : flexRender(header.column.columnDef.header,header.getContext())}
                                         </TableHead>
                                     );
                                 })}
@@ -157,18 +151,10 @@ export function DataTable<TData, TValue>({
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={
-                                        row.getIsSelected() && "selected"
-                                    }
-                                >
+                                <TableRow key={row.id}data-state={row.getIsSelected() && "selected"}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
+                                        <TableCell key={cell.id} className="text-center">
+                                            {flexRender(cell.column.columnDef.cell,cell.getContext())}
                                         </TableCell>
                                     ))}
                                 </TableRow>
@@ -176,9 +162,7 @@ export function DataTable<TData, TValue>({
                         ) : (
                             <TableRow>
                                 <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 text-center"
-                                >
+                                    colSpan={columns.length} className="h-24 text-center">
                                     No results.
                                 </TableCell>
                             </TableRow>

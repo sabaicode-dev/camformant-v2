@@ -13,15 +13,27 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export type Jobs = {
     _id: string;
-    profile: string;
-    name: string;
-    email: string;
-    job_openings: number;
-    job_closings: number;
+    company_id: string;
+    title: string;
+    position: string[];
+    workMode: string[];
+    requirement: string;
+    location: string;
+    job_opening: number;
+    max_salary: number;
+    min_salary: number;
+    description: string;
+    address: string;
+    type: string[];
+    schedule: string[];
+    required_experience: string[];
+    benefit: string[];
+    deadline: string;
+    createdAt: string;
+    updatedAt: string;
 };
 
 export const columns: ColumnDef<Jobs>[] = [
@@ -50,21 +62,7 @@ export const columns: ColumnDef<Jobs>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "profile",
-        cell: ({ row }) => {
-            const userProfile = row.original;
-            return (
-                <Avatar>
-                    <AvatarImage src={userProfile.profile} />
-                    <AvatarFallback>{userProfile.name}</AvatarFallback>
-                </Avatar>
-            );
-        },
-        enableSorting: false,
-        enableHiding: false,
-    },
-    {
-        accessorKey: "name",
+        accessorKey: "title",
         header: ({ column }) => {
             return (
                 <Button
@@ -73,14 +71,14 @@ export const columns: ColumnDef<Jobs>[] = [
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    Name
+                    Title
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             );
         },
     },
     {
-        accessorKey: "job_openings",
+        accessorKey: "location",
         header: ({ column }) => {
             return (
                 <Button
@@ -89,14 +87,14 @@ export const columns: ColumnDef<Jobs>[] = [
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    job_openings
+                    Location
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             );
         },
     },
     {
-        accessorKey: "job_closings",
+        accessorKey: "workMode",
         header: ({ column }) => {
             return (
                 <Button
@@ -105,7 +103,71 @@ export const columns: ColumnDef<Jobs>[] = [
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    job_closings
+                    Work Mode
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+    },
+    {
+        accessorKey: "type",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Type
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+    },
+    {
+        accessorKey: "job_opening",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Job Opening
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+    },
+    {
+        accessorKey: "deadline",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Deadline
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+    },
+    {
+        accessorKey: "createdAt",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Post At
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             );
