@@ -77,6 +77,7 @@ class JobService {
       const newJob = await jobRepository.updateJobById({
         _id: jobId,
         ...updateJob,
+        companyId: new mongoose.Types.ObjectId(updateJob.companyId),
       });
 
       return newJob;

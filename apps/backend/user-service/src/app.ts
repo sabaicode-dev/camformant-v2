@@ -6,7 +6,7 @@ import swaggerUi from "swagger-ui-express";
 import { RegisterRoutes } from "@/src/routes/v1/routes";
 import fs from "fs";
 import path from "path";
-import { globalErrorHandler } from "@/src/middewares/global-error";
+// import { globalErrorHandler } from "@/src/middewares/global-error";
 import cookieParser from "cookie-parser";
 import * as Sentry from "@sentry/node";
 // import cors from "cors";
@@ -56,6 +56,6 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // ERROR Handler
 // ========================
 Sentry.setupExpressErrorHandler(app);
-app.use(globalErrorHandler);
+// app.use(globalErrorHandler);
 
 export default app;

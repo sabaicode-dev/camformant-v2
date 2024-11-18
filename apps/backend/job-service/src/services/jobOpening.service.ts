@@ -3,6 +3,7 @@ import JobOpeningRepository from "../database/repositories/jobOpening.repository
 import { JobGetAllControllerParams, JobParams } from "../controllers/types/job-controller.type";
 import searchService from "./search.service";
 import { IJob } from "../database/models/job.model";
+import { Types } from "mongoose";
 
 
 class JobOpeningService {
@@ -37,7 +38,7 @@ class JobOpeningService {
 
     public async createJob(companyId: string, jobData: any) {
         try {
-            const newJob = await JobOpeningRepository.createJob({ ...jobData, company_id: companyId });
+            const newJob = await JobOpeningRepository.createJob({ ...jobData, companyId: companyId });
             if (!newJob) {
                 throw new Error("Job creation failed.");
             }
@@ -72,6 +73,7 @@ class JobOpeningService {
             const newJob = await JobOpeningRepository.updateJobById({
                 _id: jobId,
                 ...updateJob,
+                companyId: new Types.ObjectId(updateJob.companyId),
             });
 
             return newJob;

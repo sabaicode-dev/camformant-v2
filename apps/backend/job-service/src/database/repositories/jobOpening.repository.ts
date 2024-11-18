@@ -118,7 +118,7 @@ class IJobRepository {
                 $or: [
                     { title: { $regex: search, $options: "i" } },
                     { position: { $regex: search, $options: "i" } },
-                    { "company_id.name": { $regex: search, $options: "i" } },
+                    { "companyId.name": { $regex: search, $options: "i" } },
                 ],
             }
             : {};
@@ -134,7 +134,7 @@ class IJobRepository {
                     .sort(sortFields)
                     .skip(skip)
                     .populate({
-                        path: "company_id",
+                        path: "companyId",
                         model: CorporateProfileModel,
                         select:
                             "name location bio profile email phone_number job_openings job_closings",
@@ -145,7 +145,7 @@ class IJobRepository {
                     .skip(skip)
                     .limit(limit)
                     .populate({
-                        path: "company_id",
+                        path: "companyId",
                         model: CorporateProfileModel,
                         select:
                             "name location bio profile email phone_number job_openings job_closings",
@@ -173,7 +173,7 @@ class IJobRepository {
 
     public async countJobsByCompanyId(companyId: string): Promise<number> {
         try {
-            const result = await JobModel.countDocuments({ company_id: companyId });
+            const result = await JobModel.countDocuments({ companyId: companyId });
             if (!result) {
                 console.log("IJobRepository - countJobsByCompanyId() method error : No jobs found for the company.");
                 return {} as any;
@@ -190,7 +190,7 @@ class IJobRepository {
 
     public async countJobsByStatus(companyId: string, status: string): Promise<number> {
         try {
-            const result = await JobModel.countDocuments({ company_id: companyId, status });
+            const result = await JobModel.countDocuments({ companyId: companyId, status });
             if (!result) {
                 return 0;
             }
@@ -206,7 +206,7 @@ class IJobRepository {
 
     public async findRecentJobsByCompanyId(companyId: string, limit: number) {
         try {
-            const result = await JobModel.find({ company_id: companyId })
+            const result = await JobModel.find({ companyId: companyId })
                 .sort({ created_at: -1 }).limit(limit);
             if (!result) {
                 return 0
@@ -240,7 +240,7 @@ class IJobRepository {
     public async findJobById(jobId: string) {
         try {
             const result = await JobModel.findById(jobId).populate({
-                path: "company_id",
+                path: "companyId",
                 model: CorporateProfileModel,
                 select:
                     "name location bio profile email phone_number job_openings job_closings",
@@ -301,7 +301,7 @@ class IJobRepository {
 
     public async findJobsByCompanyId(companyId: string): Promise<IJob[]> {
         try {
-            const result = await JobModel.find({ company_id: companyId, status: 'open' });
+            const result = await JobModel.find({ companyId: companyId, status: 'open' });
             if (!result) {
                 console.log("IJobRepository - findJobsByCompanyId() method error : No jobs found for the company.");
                 return [] as any;

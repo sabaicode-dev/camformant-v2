@@ -39,15 +39,8 @@
 					"_id": {
 						"type": "string"
 					},
-					"company_id": {
-						"anyOf": [
-							{
-								"type": "string"
-							},
-							{
-								"$ref": "#/components/schemas/mongoose.Types.ObjectId"
-							}
-						]
+					"companyId": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 					},
 					"title": {
 						"type": "string"
