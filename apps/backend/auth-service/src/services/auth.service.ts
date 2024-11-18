@@ -695,9 +695,7 @@ class AuthService {
         sub: userInfo.Username,
         email: body.email,
         username: userInfo.UserAttributes?.find((attr) => attr.Name === "name")
-          ?.Value,
-        corporateProfileId: "",
-        role,
+          ?.Value
       });
     } catch (error) {
       console.error("AuthService corporateVerifyUser() method error:", error);
