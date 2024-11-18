@@ -8,7 +8,6 @@ import axiosInstance from "@/utils/axios";
 import { formatDistanceToNow } from "date-fns";
 import React from "react";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
-// import { Job } from "@/app/jobs/[id]/message/page";
 
 interface conversation {
   _id: string;

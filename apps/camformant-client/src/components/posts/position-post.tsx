@@ -9,7 +9,15 @@ import { Card } from "@/components/card/card";
 import { useAuth } from "@/context/auth";
 import SkeletonCard from "@/components/skeleton/skeleton-card";
 import Image from "next/image";
-import { Job } from "@/app/jobs/[id]/message/page";
+
+interface Company {
+  name: string;
+  profile: string;
+}
+export interface Job {
+  _id: string;
+  companyId: Company;
+}
 export enum EmploymentSchedule {
   FULL_TIME = "Full-Time",
   PART_TIME = "Part-Time",
@@ -152,7 +160,6 @@ export const PositionPost: React.FC = () => {
         if (jobs.length === 0 || 1 >= totalPages) {
           setHasMore(false);
         }
-        console.log("jobs::::, ", jobs);
 
         // Merge favorite status into jobs
         const jobsWithFavoriteStatus = jobs.map((job: IJob) => ({

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Background from "@/components/background/background";
 import SkeletonCard from "@/components/message/SkeletonCard"; // Import SkeletonCard
@@ -45,30 +45,90 @@ const Chat = () => {
   const { isAuthenticated } = useAuth();
   const socketContext = useSocketContext();
   const onlineUsers = socketContext ? socketContext.onlineUsers : [];
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
+  const divRef = useRef<HTMLDivElement>(null);
+  //todo: scroll conversations
+  const loadMoreData = useCallback(async () => {
+    if (!hasMore || isLoading) return; // Prevent fetching if no more data or already loading
 
-  const getConversations = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      const res = await axiosInstance.get(API_ENDPOINTS.GET_CONVERSATIONS);
-      const conversations: RespondGetConversations = res.data;
-      setPagination({
-        totalConversation: conversations.totalConversation,
-        currentPage: conversations.currentPage,
-        totalPage: conversations.totalPage,
-        limit: conversations.limit,
-        skip: conversations.skip,
-      });
-      setConversations(conversations.conversations);
+      const nextPage = page + 1;
+      // const query = buildQuery(nextPage, selectedPosition);
+      const query = `?page=${nextPage}`;
+      const res = await axiosInstance.get(
+        `${API_ENDPOINTS.GET_CONVERSATIONS}${query}`
+      );
+
+      const data = res.data; // Adjust based on your actual response structure
+      const { conversations, totalConversation, currentPage, totalPage } = data;
+
+      if (conversations.length === 0 || nextPage >= totalPage) {
+        setHasMore(false); // No more data to fetch
+      }
+
+      setConversations((prevCons) => [...prevCons, ...conversations]);
+      setPage(nextPage);
     } catch (error) {
-      console.error("Error:", error);
-      setError(error);
+      console.error("Error fetching more conversations:", error);
+      setError("Failed to load more conversations. Please try again later.");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [hasMore, isLoading, page]);
+
+  const onScroll = useCallback(async () => {
+    if (
+      divRef.current?.clientHeight! + window.scrollY >=
+        divRef.current?.clientHeight! &&
+      hasMore &&
+      !isLoading &&
+      conversations.length > 0
+    ) {
+      console.log("hi");
+
+      await loadMoreData();
+    }
+  }, [hasMore, isLoading, loadMoreData, conversations]);
+
   useEffect(() => {
+    const getConversations = async () => {
+      try {
+        setIsLoading(true);
+        setHasMore(true);
+        setPage(1);
+        setConversations([]);
+        const res = await axiosInstance.get(API_ENDPOINTS.GET_CONVERSATIONS);
+        const conversations: RespondGetConversations = res.data;
+        setPagination({
+          totalConversation: conversations.totalConversation,
+          currentPage: conversations.currentPage,
+          totalPage: conversations.totalPage,
+          limit: conversations.limit,
+          skip: conversations.skip,
+        });
+        setConversations(conversations.conversations);
+        if (
+          conversations.totalPage <= 1 ||
+          conversations.conversations.length === 0
+        ) {
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setError(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     getConversations();
   }, []);
+  console.log("hasmore", hasMore);
+  console.log("height", divRef.current?.clientHeight);
+  console.log("window::", window.innerHeight);
+  console.log("window.scrollY::", window.scrollY);
+  console.log("document.body.scrollHeight::", document.body.scrollHeight);
 
   const handleConversationClick = (conId: string) => {
     router.push(`/chat/${conId}`);
@@ -78,7 +138,7 @@ const Chat = () => {
     <div className="relative h-screen">
       <Background>
         <div className="absolute inset-0 flex flex-col bg-slate-50/75 mt-28 rounded-3xl xl:mt-32">
-          <div className="flex-1 p-4 overflow-auto">
+          <div className="flex-1 p-4 pb-20 overflow-auto" ref={divRef}>
             <p className="absolute mt-[-80px] text-white font-mono text-3xl font-bold">
               Contact
             </p>

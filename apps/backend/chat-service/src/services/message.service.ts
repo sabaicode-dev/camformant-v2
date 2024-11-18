@@ -97,7 +97,7 @@ export class MessageService {
     currentUser: { username?: string; role?: string[] },
     query: QueryGetUserConversations
   ): Promise<RespondGetConversations> {
-    const { page = 1, limit = 8 } = query;
+    const { page = 1, limit = 12 } = query;
     const skip = (page - 1) * limit;
     try {
       const cookies = deCookies(cookieHeader);
