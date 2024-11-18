@@ -637,7 +637,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-<<<<<<< HEAD
 			"CvStyleParams": {
 				"properties": {
 					"_id": {
@@ -659,7 +658,18 @@
 						"required": [
 							"objects",
 							"version"
-=======
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"_id",
+					"style",
+					"json"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ICorporateModel": {
 				"properties": {
 					"_id": {
@@ -775,20 +785,13 @@
 						"required": [
 							"jobs",
 							"user"
->>>>>>> 56776b04a649f5cd63c98ae045b1afc784c87023
 						],
 						"type": "object"
 					}
 				},
 				"required": [
-<<<<<<< HEAD
-					"_id",
-					"style",
-					"json"
-=======
 					"message",
 					"data"
->>>>>>> 56776b04a649f5cd63c98ae045b1afc784c87023
 				],
 				"type": "object",
 				"additionalProperties": false

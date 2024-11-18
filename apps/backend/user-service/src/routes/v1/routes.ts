@@ -255,14 +255,16 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-<<<<<<< HEAD
     "CvStyleParams": {
         "dataType": "refObject",
         "properties": {
             "_id": {"ref":"mongoose.Types.ObjectId","required":true},
             "style": {"dataType":"string","required":true},
             "json": {"dataType":"nestedObjectLiteral","nestedProperties":{"objects":{"dataType":"array","array":{"dataType":"any"},"required":true},"version":{"dataType":"string","required":true}},"required":true},
-=======
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ICorporateModel": {
         "dataType": "refObject",
         "properties": {
@@ -306,7 +308,6 @@ const models: TsoaRoute.Models = {
         "properties": {
             "message": {"dataType":"string","required":true},
             "data": {"dataType":"nestedObjectLiteral","nestedProperties":{"jobs":{"dataType":"array","array":{"dataType":"string"},"required":true},"user":{"ref":"ICorporateModel","required":true}},"required":true},
->>>>>>> 56776b04a649f5cd63c98ae045b1afc784c87023
         },
         "additionalProperties": false,
     },

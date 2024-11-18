@@ -44,11 +44,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "_id": {"dataType":"string"},
-<<<<<<< HEAD
-            "companyId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"ref":"mongoose.Types.ObjectId"}]},
-=======
-            "company_id": {"dataType":"string"},
->>>>>>> 56776b04a649f5cd63c98ae045b1afc784c87023
+            "company_id": {"dataType":"union","subSchemas":[{"dataType":"string"},{"ref":"mongoose.Types.ObjectId"}]},
             "title": {"dataType":"string"},
             "position": {"dataType":"array","array":{"dataType":"string"}},
             "workMode": {"dataType":"array","array":{"dataType":"refEnum","ref":"WorkMode"}},

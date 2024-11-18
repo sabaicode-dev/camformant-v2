@@ -39,8 +39,7 @@
 					"_id": {
 						"type": "string"
 					},
-<<<<<<< HEAD
-					"companyId": {
+					"company_id": {
 						"anyOf": [
 							{
 								"type": "string"
@@ -49,10 +48,6 @@
 								"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 							}
 						]
-=======
-					"company_id": {
-						"type": "string"
->>>>>>> 56776b04a649f5cd63c98ae045b1afc784c87023
 					},
 					"title": {
 						"type": "string"
@@ -922,6 +917,14 @@
 					{
 						"in": "query",
 						"name": "search",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "userFav",
 						"required": false,
 						"schema": {
 							"type": "string"
