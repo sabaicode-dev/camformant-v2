@@ -1,5 +1,4 @@
 "use client";
-
 import { useCallback, useEffect, useState } from "react";
 import categoryPosition from "@/data/data.json";
 import { Heading } from "@/components/heading/heading";
@@ -8,9 +7,9 @@ import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { Card } from "@/components/card/card";
 import { useAuth } from "@/context/auth";
-import { Job } from "@/app/jobs/[id]/message/page";
 import SkeletonCard from "@/components/skeleton/skeleton-card";
 import Image from "next/image";
+import { Job } from "@/app/jobs/[id]/message/page";
 export enum EmploymentSchedule {
   FULL_TIME = "Full-Time",
   PART_TIME = "Part-Time",

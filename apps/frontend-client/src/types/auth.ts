@@ -15,8 +15,8 @@ export interface UserData {
 export interface SignUpData {
     sur_name: string;
     last_name: string;
-    email: string;
-    phone_number: string;
+    email?: string;
+    phone_number?: string;
     password: string;
 }
 

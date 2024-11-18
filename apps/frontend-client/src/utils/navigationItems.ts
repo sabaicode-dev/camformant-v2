@@ -15,33 +15,33 @@ const dashboard = [
 ];
 
 // Menu jobs.
-const Applicant = [
+const Jobs = [
     {
         title: "View Applicant",
         url: "/dashboard/jobs",
         icon: Sheet,
     },
-    // {
-    //     title: "Lists",
-    //     url: "/dashboard/search",
-    //     icon: List,
-    // },
+    {
+        title: "New Job",
+        url: "/dashboard/posts",
+        icon: List,
+    },
 ];
 
 // Menu Posts
 
-const posts = [
-    {
-        title: "Posts",
-        url: "/dashboard/posts",
-        icon: LetterText,
-    },
-    // {
-    //     title: "List",
-    //     url: "/dashboard/posts/list",
-    //     icon: List,
-    // },
-];
+// const posts = [
+//     {
+//         title: "Posts",
+//         url: "/dashboard/posts",
+//         icon: LetterText,
+//     },
+//     {
+//         title: "List",
+//         url: "/dashboard/posts/list",
+//         icon: List,
+//     },
+// ];
 
 // Menu users.
 
@@ -136,10 +136,10 @@ export const itemsMenu = [
         isCollapsibleOpen: false,
     },
     {
-        item: Applicant,
+        item: Jobs,
         triggerName: "View Applicant",
         iconTrigger: Sheet,
-        isCollapsibleOpen: false,
+        isCollapsibleOpen: true,
     },
     {
         item: calendar,

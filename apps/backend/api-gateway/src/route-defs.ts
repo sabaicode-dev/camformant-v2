@@ -66,6 +66,7 @@ const ROUTE_PATHS: RoutesConfig = {
         methods: {
           POST: {
             authRequired: true,
+            roles: ["user", "admin"],
           },
         },
       },
@@ -109,11 +110,11 @@ const ROUTE_PATHS: RoutesConfig = {
     methods: {
       GET: {
         authRequired: true,
-        roles: ["user", "admin"],
+        roles: ["user", "company"],
       },
       POST: {
         authRequired: true,
-        roles: ["user", "admin"],
+        roles: ["user", "company"],
       },
     },
     nestedRoutes: [
@@ -130,20 +131,29 @@ const ROUTE_PATHS: RoutesConfig = {
         methods: {
           GET: {
             authRequired: true,
-            roles: ["user", "admin"],
+            roles: ["user", "company"],
           },
         },
         nestedRoutes: [
+          {
+            path: "/photo",
+            methods: {
+              PUT: {
+                authRequired: true,
+                roles: ["user", "admin"],
+              },
+            },
+          },
           {
             path: "/favorites",
             methods: {
               GET: {
                 authRequired: true,
-                roles: ["user", "admin"],
+                roles: ["user", "company"],
               },
               POST: {
                 authRequired: true,
-                roles: ["user", "admin"],
+                roles: ["user", "company"],
               },
             },
             nestedRoutes: [
@@ -152,13 +162,68 @@ const ROUTE_PATHS: RoutesConfig = {
                 methods: {
                   DELETE: {
                     authRequired: true,
-                    roles: ["user", "admin"],
+                    roles: ["user", "company"],
                   },
                 },
               },
             ],
           },
         ],
+      },
+      {
+        path: "/uploadFile",
+        methods: {
+          POST: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+        },
+      },
+      {
+        path: "/profile-detail/:userId",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+          PUT: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+        },
+      },
+      {
+        path: "/cv",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+          POST: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+        },
+        nestedRoutes: [
+          {
+            path: "/:cvId",
+            methods: {
+              DELETE: {
+                authRequired: true,
+                roles: ["user", "admin"],
+              },
+            },
+          },
+        ],
+      },
+      {
+        path: "/cvstyle/:style",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+        },
       },
     ],
   },

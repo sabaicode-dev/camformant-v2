@@ -1,7 +1,7 @@
 "use client";
 import axiosInstance from "@/utils/axios";
-import { createContext, useContext, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { createContext, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { SignInData, SignUpData, VerifyCodeData } from "@/types/auth";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 
@@ -28,29 +28,32 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true); 
   const router = useRouter();
 
-// checkAuthStatus function is used to verify the authentication status of the user
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        setIsLoading(true);
+        setIsLoading(true); 
         const response = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
         setUser(response.data.data);
         setIsAuthenticated(true);
       } catch (error) {
-        console.error('Check auth status failed:', error);
+        console.error("Check auth status failed:", error);
+        setIsAuthenticated(false);
+        setUser(null);
       } finally {
-        setIsLoading(false);
+        setIsLoading(false); 
       }
     };
 
-    checkAuthStatus();
-  }, []);
-
+    if (isAuthenticated) {
+      checkAuthStatus();
+    } else {
+      setIsLoading(false); 
+    }
+  }, [isAuthenticated]);
 
   const signUp = async (data: SignUpData) => {
     setIsLoading(true);
@@ -64,25 +67,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       router.push(`/verify?contact=${data.email || data.phone_number}&method=${data.email ? 'email' : 'phone_number'}`);
     } catch (error) {
-      console.error('Sign up failed:', error);
+      console.error("Sign up failed:", error);
       setIsAuthenticated(false);
       throw error;
-    }finally{
+    } finally {
       setIsLoading(false);
     }
   };
 
   const verifyCode = async (data: VerifyCodeData) => {
     setIsLoading(true);
-    console.log("Calling verifyCode function..."); // Debugging
     try {
-      await axiosInstance.post(`${API_ENDPOINTS.VERIFY}`, {
-        [data.email ? 'email' : 'phone_number']: data.email || data.phone_number,
+      await axiosInstance.post(API_ENDPOINTS.VERIFY, {
+        [data.email ? "email" : "phone_number"]: data.email || data.phone_number,
         code: data.code,
       });
-      router.push('/signin');
+      router.push("/signin");
     } catch (error) {
-      console.error('Verify code failed:', error);
+      console.error("Verify code failed:", error);
       setIsAuthenticated(false);
       throw error;
     } finally {
@@ -93,58 +95,59 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signIn = async (data: SignInData) => {
     setIsLoading(true);
     try {
-        await axiosInstance.post(`${API_ENDPOINTS.SIGN_IN}`, {
-            [data.email ? 'email' : 'phone_number']: data.email || data.phone_number,
-            password: data.password,
-        });      
+      await axiosInstance.post(API_ENDPOINTS.SIGN_IN, data);
 
+      // Fetch user info after successful sign-in
       const res = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
       setUser(res.data.data);
-      setIsAuthenticated(true);
-      router.push('/dashboard');
+      setIsAuthenticated(true); // Trigger useEffect by updating isAuthenticated state
+      router.push("/dashboard");
     } catch (error) {
-        console.error('Sign in failed:', error);
-        throw error;
+      console.error("Sign in failed:", error);
+      setIsAuthenticated(false);
+      throw error;
     } finally {
-        setIsLoading(false);
+      setIsLoading(false); 
     }
   };
 
   const signOut = async () => {
+    setIsLoading(true); 
     try {
-        await fetch('http://localhost:4000/v1/auth/logout', {
-            method: 'POST',
-            credentials: 'include',
-        });
+      await axiosInstance.post(API_ENDPOINTS.SIGN_OUT);
+      setIsAuthenticated(false); 
+      setUser(null); 
+      router.push("/signin");
     } catch (error) {
-        console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     } finally {
-        setIsAuthenticated(false);
-        setUser(null);
-        router.push('/signin');
+      setIsLoading(false);
+      setUser(null);
+      router.push("/signin");
     }
   };
 
-return (
-  <AuthContext.Provider value={{
-      isAuthenticated,
-      isLoading,
-      user,
-      signUp,
-      verifyCode,
-      signIn,
-      signOut,
-  }}>
+  return (
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        isLoading,
+        user,
+        signUp,
+        verifyCode,
+        signIn,
+        signOut,
+      }}
+    >
       {children}
-  </AuthContext.Provider>
-);
-
+    </AuthContext.Provider>
+  );
 }
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

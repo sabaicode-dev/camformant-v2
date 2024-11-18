@@ -51,6 +51,7 @@ const authenticateToken = async (
 
     // Step 1
     if (methodConfig.authRequired) {
+      console.log("need authicated");
       // Step 2
       const token = req.cookies?.["access_token"];
       if (!token) {
@@ -96,7 +97,6 @@ const authenticateToken = async (
         role,
       };
     }
-
     // Step 4
     next();
   } catch (error) {
@@ -206,6 +206,7 @@ const routeConfigMiddleware = (
   }
   // Step 2
   const methodConfig = routeConfig.methods?.[method];
+  console.log(methodConfig)
   if (!methodConfig) {
     return next(new NotFoundError("Method not allowed"));
   }

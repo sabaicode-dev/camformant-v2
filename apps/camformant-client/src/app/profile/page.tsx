@@ -15,6 +15,9 @@ import { useNotification } from "@/hooks/user-notification";
 import Notification from "@/components/notification/notification";
 import { useAuth } from "@/context/auth";
 import { useRouter } from "next/navigation";
+import axiosInstance from "@/utils/axios";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { uploadToS3 } from "@/utils/functions/upload-to-s3";
 
 const SkeletonLoader = ({
   width = "w-32",
@@ -45,7 +48,7 @@ const SkeletonLoader = ({
 
 const Page: React.FC = () => {
   const { addNotification, NotificationDisplay } = useNotification();
-  const { user, loading, logout, isAuthenticated, login } = useAuth();
+  const { user, loading, logout, isAuthenticated, setUser } = useAuth();
 
   const RefFile = useRef<HTMLInputElement | null>(null);
   const [pic, setPic] = useState<File | string | null>(null);
@@ -75,6 +78,22 @@ const Page: React.FC = () => {
     }
   }
 
+  async function changeProfile(photo: string) {
+    try {
+      const response = await axiosInstance.put(
+        `${API_ENDPOINTS.USER_PROFILE}/photo`,
+        { photo: photo }
+      );
+      setUser({
+        ...user!,
+        profile: response.data.data.profile,
+      });
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   const handleCropComplete = (_croppedArea: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
   };
@@ -90,6 +109,11 @@ const Page: React.FC = () => {
       const imagefile=URL.createObjectURL(file)
       setPic(imagefile)
       setIsCropping(false);
+      const image = await uploadToS3(file);
+      if (image) {
+        setPic(image);
+        changeProfile(image);
+      }
     } catch (error) {
       console.error("Failed to crop image", error);
       addNotification("Failed to crop image", "error");
@@ -113,7 +137,7 @@ const Page: React.FC = () => {
               >
                 <Image
                   className="object-cover"
-                  src={user?.profile! || "/images/def-user-profile.png"}
+                  src={user?.profile || "/images/def-user-profile.png"}
                   height={200}
                   width={200}
                   alt="Profile Picture"

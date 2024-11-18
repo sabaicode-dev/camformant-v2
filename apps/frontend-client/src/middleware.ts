@@ -1,29 +1,57 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
+import { signOutAndClearCookies } from "./utils/helper/signOutAndClearCookies";
 
 export async function middleware(request: NextRequest) {
     console.log("middleware.ts: request.url :::", request.url);
 
     const { pathname } = request.nextUrl;
-    const token = request.cookies.get("access_token");
+    const { cookies } = (await import("next/headers"));
+    const cookieStore = cookies();
+    const allCookies = cookieStore.getAll().map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
+    const access_token = allCookies.split('; ').find(cookie => cookie.startsWith('access_token='))?.split('=')[1];
 
-    console.log("middleware.ts: pathname :::", pathname);
+    // Revalidate role and permissions on every request
+    let userInfoResponse, userInfo;
+    if (access_token) {
+        userInfoResponse = await fetch(new URL("/api/userInfo", request.url), {
+            method: "GET",
+            headers: {
+                Cookie: allCookies || "", // Pass request cookies to /api/userInfo
+            },
+        });
 
-    // If the user is trying to access the login page and is already authenticated, redirect to the dashboard
-    if (pathname === "/signin" && token) {
+        if (!userInfoResponse.ok) {
+            return signOutAndClearCookies(request, "/signin", access_token);
+        }
+
+        userInfo = await userInfoResponse.json();
+    }
+
+    // 1. Redirect if user is already signed in and trying to access /signin
+    if (pathname === "/signin" && access_token) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
-    // If the user is trying to access a protected route and is not authenticated, redirect to the login page
-    if (pathname.startsWith("/dashboard") && !token) {
+    // 2. Redirect if trying to access /dashboard but user is not authenticated
+    if (pathname.startsWith("/dashboard") && !access_token) {
         return NextResponse.redirect(new URL("/signin", request.url));
     }
 
-    // If none of the above conditions are met, continue with the request
+    // 3. Check user role for /dashboard access if authenticated
+    if (pathname.startsWith("/dashboard")) {
+        const role = userInfo?.data?.role;
+        console.log("middleware.ts: role :::", role);
+
+        // If user does not have the required role, sign out and redirect
+        if (role !== "company") {
+            return await signOutAndClearCookies(request, "/unAuthorized", access_token);
+        }
+    }
+
+    console.log("middleware.ts: pathname :::", pathname);
     return NextResponse.next();
 }
 
-// Configure the middleware to run for specific routes
 export const config = {
-    matcher: ["/dashboard/:path*", "/signin"], // Adjust the matcher to your protected routes and login page
+    matcher: ["/dashboard/:path*", "/signin"],
 };
