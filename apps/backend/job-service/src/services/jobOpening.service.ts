@@ -7,7 +7,6 @@ import {
 import searchService from "./search.service";
 import { IJob } from "../database/models/job.model";
 import { Types } from "mongoose";
-import mongoose from "mongoose";
 
 class JobOpeningService {
   public async getAllJobs(queries: JobGetAllControllerParams, userId = null) {
@@ -44,7 +43,7 @@ class JobOpeningService {
     try {
       const newJob = await JobOpeningRepository.createJob({
         ...jobData,
-        companyId: new mongoose.Types.ObjectId(companyId),
+        companyId: companyId,
       });
       if (!newJob) {
         throw new Error("Job creation failed.");

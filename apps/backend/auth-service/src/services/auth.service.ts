@@ -668,6 +668,7 @@ class AuthService {
   async corporateVerifyUser(body: VerifyUserRequest): Promise<void> {
     const username = (body.email ||
       body.phone_number?.replace(/^\+/, "")) as string;
+    console.log("start verify service 1");
 
     const params = {
       ClientId: configs.awsCognitoClientId,
@@ -682,6 +683,7 @@ class AuthService {
       console.log(
         "AuthService corporateVerifyUser() method: User verified successfully"
       );
+      console.log("2::::");
 
       const userInfo = await this.getUserByUsername(username);
       console.log("userInfo: ", userInfo);
@@ -693,16 +695,20 @@ class AuthService {
       const userSub = userInfo.UserAttributes?.filter(
         (Name) => Name.Name === "sub"
       )[0].Value;
+      console.log("3:::::::");
 
       await this.addToGroup(userSub!, role);
+      console.log("4::::");
+
       await axios.post(`${configs.userServiceUrl}/v1/corporate`, {
         sub: userInfo.Username,
         email: body.email,
         username: userInfo.UserAttributes?.find((attr) => attr.Name === "name")
-          ?.Value
+          ?.Value,
       });
+      console.log("5::::");
     } catch (error) {
-      console.error("AuthService corporateVerifyUser() method error:", error);
+      console.log("AuthService corporateVerifyUser() method error:", error);
 
       // Mismatch Code
       if (typeof error === "object" && error !== null && "name" in error) {

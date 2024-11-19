@@ -3,7 +3,7 @@ import {
   JobGetAllRepoParams,
   JobSortParams,
 } from "@/src/controllers/types/job-controller.type";
-import mongoose, { SortOrder } from "mongoose";
+import { SortOrder } from "mongoose";
 import CorporateProfileModel from "../models/corporateProfile.model";
 import { IJob, JobModel } from "../models/job.model";
 
@@ -33,7 +33,8 @@ class IJobRepository {
       "workMode",
     ];
 
-    //
+    //todo: add userFav from the exist
+    console.log("userFav", userFav);
 
     // Convert sort from {'field': 'desc'} to {'field': -1}
     const sortFields = Object.keys(sort).reduce(
@@ -117,25 +118,12 @@ class IJobRepository {
         ],
       }
       : {};
-    type UserFavFilter = {
-      _id?: {
-        $in: mongoose.Types.ObjectId[];
-      };
-    };
-    const userFavFilter: UserFavFilter = {};
-    if (userFav?.length) {
-      userFavFilter._id = {
-        $in: userFav.map((id) => new mongoose.Types.ObjectId(id)),
-      };
-    }
 
     try {
       const mongoFilter = {
-        ...userFavFilter,
         ...buildFilter(filter),
         ...searchFilter,
       };
-
       let operation: IJob[] = [];
       if (queries.limit === "*") {
         operation = await JobModel.find(mongoFilter)

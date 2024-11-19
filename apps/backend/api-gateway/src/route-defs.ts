@@ -178,30 +178,7 @@ const ROUTE_PATHS: RoutesConfig = {
             authRequired: true,
             roles: ["company"],
           },
-          POST: {
-            authRequired: true,
-            roles: ["company"],
-          },
         },
-        nestedRoutes: [
-          {
-            path: "/:corporateId",
-            methods: {
-              GET: {
-                authRequired: false,
-                roles: ["company"],
-              },
-              PUT: {
-                authRequired: false,
-                roles: ["company"],
-              },
-              DELETE: {
-                authRequired: false,
-                roles: ["company"],
-              },
-            },
-          },
-        ],
       },
     ],
   },
