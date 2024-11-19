@@ -78,7 +78,7 @@ const SearchCard = ({
         min_salary: filterValues.minSalary > 0 ? filterValues.minSalary : 0,
         max_salary: filterValues.maxSalary > 0 ? filterValues.maxSalary : 5000,
       };
-
+      //todo:transtack query
       const cleanedSalary = Object.fromEntries(
         Object.entries(salary).filter(([_, value]) => value !== undefined)
       );
@@ -129,19 +129,6 @@ const SearchCard = ({
     jobData,
   ]);
   const onScroll = useCallback(async () => {
-    // console.log("===document.body.offsetHeight===", document.body.offsetHeight);
-    // console.log("===window.scrollY===", window.scrollY);
-    // const height = heighRef.current?.clientHeight;
-    // console.log("===height===", height);
-    // console.log(
-    //   "===document.body.scrollHeight;===",
-    //   document.body.scrollHeight
-    // );
-
-    // console.log(
-    //   "===window.innerHeight + window.scrollY===",
-    //   window.innerHeight + window.scrollY
-    // );
     if (
       window.innerHeight + window.scrollY >= document.body.scrollHeight - 200 &&
       hasMore &&

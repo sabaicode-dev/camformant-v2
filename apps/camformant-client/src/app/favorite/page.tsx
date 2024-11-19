@@ -12,7 +12,7 @@ import { IJob } from "@/components/type-data/TypeofData";
 import Image from "next/image";
 
 const Page: React.FC = () => {
-  const { user } = useAuth();
+  const { user, onChangeUser } = useAuth();
   const [jobData, setJobData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +33,7 @@ const Page: React.FC = () => {
         await axiosInstance.post(`${API_ENDPOINTS.FAVORITE}`, {
           jobId,
         });
+        onChangeUser(jobId);
       } else {
         await axiosInstance.delete(`${API_ENDPOINTS.FAVORITE}/${jobId}`);
         // Remove the job from the list if unfavorited
@@ -56,10 +57,8 @@ const Page: React.FC = () => {
 
         // Get the user's favorite job IDs
         const favoriteJobIds = user?.favorites || [];
-        // console.log("user: ", user);
-        // console.log("favoriteJobIds: ", favoriteJobIds);
 
-        if (favoriteJobIds.length === 0) {
+        if (!favoriteJobIds.length) {
           setJobData([]);
           setLoading(false);
           return;
@@ -70,7 +69,6 @@ const Page: React.FC = () => {
         );
 
         const jobs: IJob[] = response.data.data.jobs;
-        console.log("jobs:::, ", jobs);
 
         // Set favorite status to true for these jobs
         const jobsWithFavoriteStatus = jobs.map((job) => ({

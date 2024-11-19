@@ -35,13 +35,12 @@ export class JobController extends Controller {
   public async createJob(@Body() req: JobParams): Promise<APIResponse<IJob>> {
     try {
       const jobs = await jobService.createNewJob(req);
-      this.setStatus(201); // set return status 201
+      this.setStatus(201);
       return sendResponse<IJob>({ message: "success", data: jobs });
     } catch (error) {
       throw error;
     }
   }
-
   @Get("/")
   public async getAllJobs(
     @Request() request: ExpressRequest,

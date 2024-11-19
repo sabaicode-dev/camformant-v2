@@ -93,3 +93,10 @@ export interface MatchParams {
     typeName: string;
   };
 }
+
+export interface CvData {
+  cv: {
+    url: string;
+    _id: string;
+  }[];
+}

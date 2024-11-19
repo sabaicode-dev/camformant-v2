@@ -104,11 +104,11 @@ const buildEditor = ({
     const pdf = new jsPDF({
       orientation: "portrait",
       unit: "px",
-      format: [options.width!, options.height! - 100],
+      format: [options.width!, options.height!],
     });
-    const data = canvas.toDataURL();
+    const data = canvas.toDataURL({quality:1});
     // Scale the image to fit the PDF dimensions
-    pdf.addImage(data, "PNG", 0, -50, options.width! - 50, options.height!);
+    pdf.addImage(data, "PNG", 0, -50, options.width!, options.height!);
     //downloadFile(data, "pdf");
     pdf.save("canvas.pdf");
 

@@ -1,5 +1,6 @@
 import configs from "@/src/config";
 import {
+  CorporateSignupRequest,
   GoogleCallbackRequest,
   LoginRequest,
   SignupRequest,
@@ -60,7 +61,7 @@ export class AuthController extends Controller {
       setCookie(response, "refresh_token", result.refreshToken, {
         maxAge: 30 * 24 * 3600 * 1000,
       });
-      setCookie(response, "username", result.username!, {
+      setCookie(response, "username", result.sub!, {
         maxAge: 30 * 24 * 3600 * 1000,
       });
       setCookie(response, "user_id", result.userId!, {
@@ -75,10 +76,6 @@ export class AuthController extends Controller {
   @Post("/signout")
   public async signout(@Request() request: Express.Request) {
     try {
-      // const input: GlobalSignOutCommandInput = {
-      //   AccessToken: "",
-      // };
-      // const result = await AuthService.signout(body);
       //@ts-ignore
       const tokens = request.cookies;
       const response = (request as any).res as Response;
@@ -133,7 +130,7 @@ export class AuthController extends Controller {
       setCookie(response, "refresh_token", tokens.refreshToken, {
         maxAge: 30 * 24 * 3600 * 1000,
       });
-      setCookie(response, "username", tokens.username!, {
+      setCookie(response, "username", tokens.sub!, {
         maxAge: 30 * 24 * 3600 * 1000,
       });
       setCookie(response, "user_id", tokens.userId!, {
@@ -182,4 +179,52 @@ export class AuthController extends Controller {
       return { message: "authorized" };
     } catch (error) {}
   }
+
+  @Post("/corporate/signup")
+  public async corporateSignup(@Body() body: CorporateSignupRequest): Promise<{ message: string }> {
+    try {
+      const result = await AuthService.corporateSignup(body);
+
+      return sendResponse({ message: result });
+    } catch (error) {
+      throw error;
+    }
+  }
+  @Post("/corporate/verify")
+  public async corporateVerifyUser(@Body() body: VerifyUserRequest) {
+    try {
+      await AuthService.corporateVerifyUser(body);
+      return sendResponse({ message: `You've verified successfully` });
+    } catch (error) {
+      throw error;
+    }
+  }
+  @Post("/corporate/login")
+  public async corporateLogin(
+    @Request() request: Express.Request,
+    @Body() body: LoginRequest
+  ) {
+    try {
+      const response = (request as any).res as Response;
+      const result = await AuthService.corporateLogin(body);
+
+      setCookie(response, "id_token", result.idToken);
+      setCookie(response, "access_token", result.accessToken);
+      setCookie(response, "refresh_token", result.refreshToken, {
+        maxAge: 30 * 24 * 3600 * 1000,
+      });
+      setCookie(response, "username", result.sub!, {
+        maxAge: 30 * 24 * 3600 * 1000,
+      });
+      setCookie(response, "user_id", result.userId!, {
+        maxAge: 30 * 24 * 3600 * 1000,
+      });
+
+      return sendResponse({ message: "Login successfully" });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
 }

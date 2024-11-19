@@ -20,17 +20,16 @@ export enum WorkMode {
 
 export interface IJob {
   _id?: string;
-  companyId?: string;
+  companyId?: string | mongoose.Types.ObjectId;
   title?: string; // name of the job that company looking for. Example: Java Developer
   position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
   workMode?: WorkMode[];
   location?: string; // location could be phnom penh, kompong-cham, etc.
   requirement?: string;
-  address?: string; // address could be the link address of the company (google link)
   description?: string;
+  address?: string; // address could be the link address of the company (google link)
   min_salary?: number;
   max_salary?: number;
-  deadline?: Date;
   job_opening?: number;
   type?: EmploymentType[];
   schedule?: EmploymentSchedule[];
@@ -38,15 +37,12 @@ export interface IJob {
   benefit?: string[];
   createdAt?: Date;
   updatedAt?: Date;
+  deadline?: Date;
 }
 
 const JobSchema: Schema = new Schema(
   {
-    companyId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "Company",
-    },
+    companyId: { type: String, required: true },
     title: { type: String, required: true },
     position: { type: [String], required: true },
     workMode: { type: [String], required: true, enum: Object.values(WorkMode) },
@@ -84,6 +80,8 @@ const JobSchema: Schema = new Schema(
     required_experience: { type: [String], required: true },
     benefit: { type: [String], required: true },
     deadline: { type: Date, required: true },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
   },
   {
     timestamps: true,
@@ -93,6 +91,7 @@ const JobSchema: Schema = new Schema(
         ret._id = ret._id.toString();
       },
     },
+    versionKey: false,
   }
 );
 

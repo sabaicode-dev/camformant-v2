@@ -30,7 +30,7 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [apply, setApply] = useState<boolean>(false);
   const [selected, setSelected] = useState<boolean>(false);
-  const [cv, setCV] = useState<boolean>(false);
+  const [cv, setCV] = useState<string>("");
   const [next, setNext] = useState<boolean>(false);
   const [getIndexCv, setIndexCv] = useState<number>(0);
 
@@ -41,6 +41,8 @@ const Page: React.FC = () => {
         const response = await axiosInstance.get(`${API_ENDPOINTS.JOBS}/${id}`);
         if (response.status === 200 && response.data.data) {
           const job = response.data.data;
+          console.log("job after fetch:::", job);
+
           job.createdAt = new Date(job.createdAt);
           setJobData([job]);
           setLoading(false);
@@ -69,11 +71,11 @@ const Page: React.FC = () => {
       try {
         setNext(true);
 
-        const cv = await axiosInstance.get(
-          API_ENDPOINTS.USER_SERVICE_CV_FILE
+        const response = await axiosInstance.get(
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=cv`
         );
 
-        setCV(true);
+        setCV(response.data.data.cv);
       } catch (error) {
       } finally {
         setNext(false);
@@ -83,12 +85,10 @@ const Page: React.FC = () => {
   }, [user]);
 
   function popUpApply() {
-    setApply(true);
     if (!user) {
       router.push("/register");
-    } else if (!cv) {
-      router.push("/resume");
     }
+    setApply(true);
   }
 
   async function handleConfirm() {
@@ -193,10 +193,11 @@ const Page: React.FC = () => {
           Apply Now
         </button>
         <span className="p-3 text-xl bg-white text-primaryCam drop-shadow-2xl rounded-2xl">
-          <Link href={`${id}/message`}>
-            {" "}
+          <Link
+            href={`/chat/${jobData[0]?.companyId! ? jobData[0].companyId._id : ""}`}
+          >
             <MdMessage />
-          </Link>{" "}
+          </Link>
         </span>
       </div>
 
@@ -209,26 +210,28 @@ const Page: React.FC = () => {
         <Sheet.Container>
           <Sheet.Header />
           <Sheet.Content>
-            <div className="flex flex-col items-center justify-center w-full gap-5 pl-5 pr-5 h-ful ">
+            <div className="flex flex-col items-center justify-center w-full gap-5 pl-5 pr-5">
               <p className="w-full pl-5 text-gray-400 ">
                 Please select for apply{" "}
               </p>
-              <div
-                onClick={handleSelectCv}
-                className={` ${user ? "flex" : " hidden"} h-20 pl-5 w-full flex rounded-3xl
+              {cv && (
+                <div
+                  onClick={handleSelectCv}
+                  className={` ${user ? "flex" : " hidden"} h-20 pl-5 w-full flex rounded-3xl
                              items-center
                                drop-shadow-xl ${selected ? "bg-orange-500" : "bg-white"} `}
-              >
-                <h1 className="flex items-center gap-5">
-                  {" "}
-                  <span
-                    className={`${selected ? "text-black" : "text-primaryCam  "} text-2xl `}
-                  >
-                    <BsPersonVcard />
-                  </span>{" "}
-                  Your CV Default {getIndexCv + 1}{" "}
-                </h1>
-              </div>
+                >
+                  <h1 className="flex items-center gap-5">
+                    {" "}
+                    <span
+                      className={`${selected ? "text-black" : "text-primaryCam  "} text-2xl `}
+                    >
+                      <BsPersonVcard />
+                    </span>{" "}
+                    Your CV Default
+                  </h1>
+                </div>
+              )}
               <Link
                 href={"/cv"}
                 className="flex items-center w-full h-20 pl-5 bg-white rounded-3xl drop-shadow-xl "

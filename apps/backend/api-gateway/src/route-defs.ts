@@ -110,7 +110,54 @@ const ROUTE_PATHS: RoutesConfig = {
           },
         },
       },
+      {
+        path: "/corporate/login",
+        methods: {
+          POST: {
+            authRequired: false,
+          },
+        },
+      },
+      {
+        path: "/corporate/signup",
+        methods: {
+          POST: {
+            authRequired: false,
+          },
+        },
+      }, {
+        path: "/corporate/verify",
+        methods: {
+          POST: {
+            authRequired: false,
+          },
+        },
+      }
     ],
+  },
+  CORPORATE_SERVICE: {
+    path: "/v1/corporate",
+    target: configs.userServiceUrl,
+    methods: {
+      GET: {
+        authRequired: false,
+        // roles: ["company"],
+      },
+      POST: {
+        authRequired: true,
+        roles: ["company"],
+      },
+    },
+    nestedRoutes: [
+      {
+        path: "/profile/me",
+        methods: {
+          GET: {
+            authRequired: false,
+            // roles: ["company"],
+          },
+        },
+      }]
   },
   USER_SERVICE: {
     path: "/v1/users",
@@ -292,6 +339,33 @@ const ROUTE_PATHS: RoutesConfig = {
       },
     ],
   },
+  COMPANY_SERVICE: {
+    path: "/v1/companies",
+    target: configs.jobServiceUrl,
+    methods: {
+      GET: {
+        authRequired: false,
+      },
+    },
+    nestedRoutes: [
+      {
+        path: "/:id",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
+      },
+      {
+        path: "/getMulti/Profile",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
+      },
+    ],
+  },
   NOTIFICATION_SERVICE: {
     path: "/v1/notifications",
     target: configs.notificationServiceUrl,
@@ -327,21 +401,29 @@ const ROUTE_PATHS: RoutesConfig = {
     },
   },
   CONVERSATION: {
-    path: "/v1/conversations",
+    path: "v1/messages",
     target: configs.chatServiceUrl,
-    methods: {
-      POST: {
-        authRequired: true,
-        roles: ["user", "company"],
-      },
-      GET: {
-        authRequired: true,
-        roles: ["user", "company"],
-      },
-    },
     nestedRoutes: [
       {
-        path: "/:id/messages",
+        path: "/send/:receiverId",
+        methods: {
+          POST: {
+            authRequired: true,
+            roles: ["user", "company"],
+          },
+        },
+      },
+      {
+        path: "/:userToChatId",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["user", "company"],
+          },
+        },
+      },
+      {
+        path: "/get/conversations",
         methods: {
           GET: {
             authRequired: true,

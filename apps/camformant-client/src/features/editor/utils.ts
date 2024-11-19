@@ -10,7 +10,6 @@ import { uuid } from "uuidv4";
 import { CvContentParams, JSON_KEYS } from "./types";
 import { SetStateAction } from "react";
 
-
 export function transformText(objects: any) {
   if (!objects) return;
 
@@ -413,11 +412,19 @@ export const catchEditedData = (
       setDataForUpdate((previous: any) => {
         if (keyword.index) {
           if (!previous[keyword.key]) previous[keyword.key] = [];
-          if (!previous[keyword.key][keyword.index - 1])
-            previous[keyword.key].push({});
-          if (!previous[keyword.key][keyword.index - 1]["index"])
-            previous[keyword.key][keyword.index - 1]["index"] =
-              keyword.index - 1;
+          for (let i = 0; i < keyword.index; i++) {
+            if (!previous[keyword.key][i]) {
+              previous[keyword.key][i] = {};
+            }
+          }
+          if (
+            !previous[keyword.key][keyword.index - 1] ||
+            Object.keys(previous[keyword.key][keyword.index - 1]).length === 0
+          )
+            previous[keyword.key][keyword.index - 1] = {
+              index: keyword.index - 1,
+            };
+
           if (doubleKeyTextbox.key) {
             previous[keyword.key][keyword.index - 1][doubleKeyTextbox.key] =
               doubleKeyTextbox.value;

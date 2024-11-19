@@ -97,6 +97,8 @@ const authenticateToken = async (
         role,
       };
     }
+    console.log("req.currentUser", req.currentUser);
+
     // Step 4
     next();
   } catch (error) {
@@ -210,6 +212,8 @@ const routeConfigMiddleware = (
   if (!methodConfig) {
     return next(new NotFoundError("Method not allowed"));
   }
+
+  console.log("routeConfig", routeConfig);
 
   // Attach the route configuration and method config to the request object
   req.routeConfig = routeConfig;

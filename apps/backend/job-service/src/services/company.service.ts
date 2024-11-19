@@ -39,7 +39,32 @@ class CompanyService {
       throw error;
     }
   }
+  //TODO: type
+  public async getMultiProfileCompany(companiesId?: string): Promise<{
+    companiesProfile: {
+      _id: string | undefined;
+      profile: string | undefined;
+      name: string | undefined;
+    }[];
+  }> {
+    const arrCompaniesId = companiesId?.split(",") || [];
+    try {
+      const result = await companyRepository.getMultiProfileCompany(
+        arrCompaniesId!
+      );
 
+      if (!result) {
+        throw new NotFoundError();
+      }
+      return { companiesProfile: result };
+    } catch (error) {
+      console.error(
+        `CompanyService getMultiProfileCompany() method error:`,
+        error
+      );
+      throw error;
+    }
+  }
   public async findCompanyById(companyId: string): Promise<ICompany> {
     try {
       const result = await companyRepository.findCompanyById(companyId);

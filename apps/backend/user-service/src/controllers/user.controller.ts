@@ -21,7 +21,7 @@ import userJoiSchema from "@/src/schemas/user.schema";
 import {
   UsersPaginatedResponse,
   prettyObject,
-  UserCreationRequestParams,
+  // UserCreationRequestParams,
   UserProfileResponse,
   UserUpdateRequestParams,
   IUser,
@@ -45,7 +45,35 @@ import {
   UnionCustomCvResponse,
 } from "@/src/controllers/types/user-cv-controller.type";
 import { error } from "console";
+import { Types } from "mongoose";
 // import { unionProfileType } from "./types/userprofile.type";
+export interface UserCreationRequestParams2 {
+  sub?: string;
+  googleSub?: string;
+  facebookSub?: string;
+  username: string;
+  email?: string;
+  phone_number?: string;
+  profile?: string;
+  role?: string;
+  gender?: string;
+  age?: number;
+  favorites?: Types.ObjectId[];
+  createdAt?: Date;
+  updatedAt?: Date;
+  lastActive?: Date;
+  lastSeen?: Date;
+  sessions?: {
+    deviceId: string;
+    ipAddress: string;
+    lastLogin: Date;
+  }[];
+  privacySettings?: {
+    lastSeenVisibleTo: "everyone" | "contacts" | "nobody";
+    profilePhotoVisibleTo: "everyone" | "contacts" | "nobody";
+  };
+  contacts?: Types.ObjectId[];
+}
 
 @Route("v1/users")
 export class UsersController extends Controller {
@@ -70,7 +98,7 @@ export class UsersController extends Controller {
   @Post()
   @Middlewares(validateRequest(userJoiSchema))
   public async createUser(
-    @Body() requestBody: UserCreationRequestParams
+    @Body() requestBody: UserCreationRequestParams2
   ): Promise<UserProfileResponse> {
     try {
       // Create New User
@@ -308,8 +336,6 @@ export class UsersController extends Controller {
     @Path() userId: string
   ): Promise<UserProfileResponse> {
     try {
-      console.log("userId: ", userId);
-      console.log("userId: ", userId);
       const response = await UserService.getUserBySub(userId);
 
       return sendResponse<IUser>({ message: "success", data: response });
@@ -328,7 +354,7 @@ export class UsersController extends Controller {
     @Body() updateUserInfo: UserUpdateRequestParams
   ): Promise<UserProfileResponse> {
     try {
-      const newUpdateUserInfo = { id: userId, ...updateUserInfo };
+      const newUpdateUserInfo = { _id: userId, ...updateUserInfo };
       const response = await UserService.updateUserBySub(newUpdateUserInfo);
 
       return sendResponse<IUser>({ message: "success", data: response });
@@ -354,7 +380,17 @@ export class UsersController extends Controller {
       throw error;
     }
   }
-
+  //TODO: type
+  @Get("/getMulti/Profile")
+  public async getMultiProfileUser(@Queries() query: { usersId?: string }) {
+    try {
+      const res = await UserService.getMultiProfileUser(query.usersId!);
+      return res;
+    } catch (error) {
+      throw error;
+    }
+  }
+  //
   @Post("/uploadFile")
   public async uploadFile(
     @UploadedFile() file: Express.Multer.File,

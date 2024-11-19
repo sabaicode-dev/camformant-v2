@@ -116,6 +116,32 @@ class UserService {
     }
   }
 
+  //TODO: type
+  public async getMultiProfileUser(usersId?: string): Promise<{
+    usersProfile: {
+      _id?: string;
+      profile?: string;
+      name?: string;
+    }[];
+  }> {
+    const arrUsersId = usersId?.split(",") || [];
+    try {
+      const result = await UserRepository.getMultiProfileUser(arrUsersId!);
+
+      if (!result) {
+        // throw new NotFoundError();
+        throw new Error("No user Found!");
+      }
+      return { usersProfile: result };
+    } catch (error) {
+      console.error(
+        `UserService - getMultiProfileUser() method error:`,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
+
   async addFavorite(userId: string, jobId: string): Promise<IUser> {
     try {
       const user = await UserRepository.addFavorite(userId, jobId);

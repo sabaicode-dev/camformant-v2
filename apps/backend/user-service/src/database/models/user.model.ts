@@ -12,16 +12,29 @@ export interface IUser {
   profile: string;
   gender: string;
   age: number;
+  birthdate?: Date;
   role: string;
-  favorites: string[];
+  favorites: mongoose.Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
+  lastActive?: Date;
+  lastSeen?: Date;
+  sessions?: {
+    deviceId: string;
+    ipAddress: string;
+    lastLogin: Date;
+  }[];
+  privacySettings?: {
+    lastSeenVisibleTo: "everyone" | "contacts" | "nobody";
+    profilePhotoVisibleTo: "everyone" | "contacts" | "nobody";
+  };
+  contacts?: mongoose.Types.ObjectId[];
 }
 
 // Define the User schema
 const userSchema = new mongoose.Schema(
   {
-    sub: { type: String },
+    sub: { type: String, unique: true },
     googleSub: { type: String },
     facebookSub: { type: String },
     username: { type: String, required: true },
@@ -29,13 +42,33 @@ const userSchema = new mongoose.Schema(
     phone_number: { type: String },
     profile: {
       type: String,
-      default:
-        "https://microservice-sample-resource.s3.amazonaws.com/default_pic.jpg",
+      default: "https://sabaicode.com/sabaicode.jpg",
     },
     gender: { type: String },
     age: { type: Number },
     role: { type: String, default: "user" },
-    favorites: { type: [String], default: [] },
+    favorites: { type: [String], default: [], ref: "Job" },
+    lastActive: { type: Date, default: Date.now },
+    lastSeen: { type: Date },
+    sessions: [
+      {
+        deviceId: { type: String },
+        ipAddress: { type: String },
+        lastLogin: { type: Date },
+      },
+    ],
+    privacySettings: {
+      lastSeenVisibleTo: {
+        type: String,
+        enum: ["everyone", "contacts", "nobody"],
+      },
+      profilePhotoVisibleTo: {
+        type: String,
+        enum: ["everyone", "contacts", "nobody"],
+      },
+    },
+
+    contacts: [{ type: mongoose.Types.ObjectId, ref: "User" }],
   },
   {
     timestamps: true,
@@ -45,6 +78,7 @@ const userSchema = new mongoose.Schema(
         ret._id = ret._id.toString();
       },
     },
+    versionKey: false,
   }
 );
 
@@ -69,6 +103,5 @@ userSchema.path("phone_number").validate(function (value) {
 
 // Create a Mongoose model
 const UserModel = mongoose.model<IUser>("User", userSchema);
-
 
 export default UserModel;
