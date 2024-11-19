@@ -1,36 +1,28 @@
 "use client";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import MiniCardResume from "../resume/mini-card-resume";
-import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
 import { BackButton_md } from "../back/BackButton";
 import { ImCheckmark } from "react-icons/im";
+import axiosInstance from "@/utils/axios";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { CvData } from "@/utils/types/user-profile";
+import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
+import CallToAction from "../calltoaction/call-to-action";
 
-interface CvData {
-  cv: string[];
-}
 const SelectCV = () => {
   const [cvs, setCvs] = useState<CvData | null>(null);
   const [next, setNext] = useState<boolean>(false);
-  const [cvIndex, setCvIndex] = useState<number>(0);
   const [reFetch, setRefetch] = useState<boolean>(false);
 
   useEffect(() => {
     const getCv = async () => {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      };
       try {
         setRefetch(true);
-        const check_cv = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/cv/`,
-          config
+        const check_cv = await axiosInstance.get(
+          API_ENDPOINTS.USER_SERVICE_CV_FILE
         );
         if (check_cv.status === 200) {
-          setCvs(check_cv.data);
+          setCvs(check_cv.data.data);
         }
       } catch (error) {
       } finally {
@@ -40,11 +32,15 @@ const SelectCV = () => {
     getCv();
   }, [next]);
 
-  const handleSelectCV = (index: number) => {
+  const handleSelectCV = async (item: { url: string; _id: string }) => {
     try {
-      setCvIndex(index);
-      localStorage.setItem("selectedCvIndex", index.toString());
+      const response = await axiosInstance.put(
+        API_ENDPOINTS.USER_PROFILE_DETAIL,
+        { cv: item }
+      );
+      console.log("cv into user detial", response);
     } catch (error) {
+      console.log("error wirh upload cv to user profile detail", error);
     } finally {
       history.back();
     }
@@ -52,20 +48,28 @@ const SelectCV = () => {
 
   return (
     <div className="w-full ">
+      {reFetch && <SkeletonLoader text="loading..." />}
+      {cvs?.cv.length! <= 0 && (
+        <CallToAction
+          text="No Cv Please Upload"
+          buttonText="Upload Cv"
+          buttonLink="/resume"
+        />
+      )}
       <span onClick={() => history.back()}>
         {" "}
         <BackButton_md styles="absolute bg-white p-3 px-4 rounded-xl top-9 left-4 " />
       </span>
       <div className="flex flex-col w-full h-full gap-3 pb-20 overflow-scroll ">
-        {cvs?.cv?.map((item: string, index: number) => (
+        {cvs?.cv?.map((item: { url: string; _id: string }, index: number) => (
           <div
             className="relative h-full bg-white rounded-lg shadow-lg "
             key={index}
           >
             <MiniCardResume
-              handlePush={() => handleSelectCV(index)}
+              item={item}
+              handlePush={() => handleSelectCV(item)}
               ReactNode_Child={<ImCheckmark className="text-green-600" />}
-              name={item}
               index={index}
               next={next}
               setNext={setNext}

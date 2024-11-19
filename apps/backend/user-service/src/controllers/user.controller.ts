@@ -311,7 +311,6 @@ export class UsersController extends Controller {
       throw error;
     }
   }
-  //TODO: type
   @Get("/getMulti/Profile")
   public async getMultiProfileUser(@Queries() query: { usersId?: string }) {
     try {

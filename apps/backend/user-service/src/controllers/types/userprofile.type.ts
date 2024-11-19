@@ -11,6 +11,7 @@ export interface IUserProfile {
   descriptions?: DescriptionParams;
   certificates?: CertificateParams[];
   portfolio?: PortfolioParams[];
+  
 }
 export interface BasicParams {
   surname: string;

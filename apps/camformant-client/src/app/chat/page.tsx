@@ -129,6 +129,7 @@ const Chat = () => {
   console.log("window::", window.innerHeight);
   console.log("window.scrollY::", window.scrollY);
   console.log("document.body.scrollHeight::", document.body.scrollHeight);
+  console.log("conss", conversations);
 
   const handleConversationClick = (conId: string) => {
     router.push(`/chat/${conId}`);

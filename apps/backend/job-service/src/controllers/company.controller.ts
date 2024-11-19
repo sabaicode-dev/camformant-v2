@@ -132,7 +132,6 @@ export class CompanyController extends Controller {
       throw error;
     }
   }
-  //TODO: type
   @Get("/getMulti/Profile")
   public async getMultiProfileCompany(
     @Queries() query: { companiesId?: string }

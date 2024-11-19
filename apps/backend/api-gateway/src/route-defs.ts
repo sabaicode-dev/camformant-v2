@@ -141,21 +141,42 @@ const ROUTE_PATHS: RoutesConfig = {
     target: configs.userServiceUrl,
     methods: {
       GET: {
-        authRequired: false,
-        // roles: ["company"],
-      },
-      POST: {
         authRequired: true,
         roles: ["company"],
       },
     },
     nestedRoutes: [
       {
-        path: "/profile/me",
+        path: "/job",
         methods: {
           GET: {
             authRequired: false,
-            // roles: ["company"],
+          },
+          POST: {
+            authRequired: true,
+            roles: ["company"],
+          },
+        },
+        nestedRoutes: [
+          {
+            path: "/:jobId",
+            methods: {
+              GET: {
+                authRequired: false,
+              },
+              PUT: {
+                authRequired: false,
+              },
+            },
+          },
+        ],
+      },
+      {
+        path: "/profile",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["company"],
           },
         },
       },
