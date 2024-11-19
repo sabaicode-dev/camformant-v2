@@ -240,7 +240,7 @@ class AuthService {
       const result: GlobalSignOutCommandOutput = await client.send(command);
       console.log("result::: ", result);
       return "success cleared cookies from cignito";
-    } catch (error) { }
+    } catch (error) {}
   }
 
   loginWithGoogle(state: string): string {
@@ -598,7 +598,7 @@ class AuthService {
     }
   }
 
-  // corporate 
+  // corporate
   async corporateSignup(body: SignupRequest): Promise<string> {
     const existingUser = await this.getUserByEmail(
       (body.email || body.phone_number) as string
@@ -686,18 +686,20 @@ class AuthService {
       const userInfo = await this.getUserByUsername(username);
       console.log("userInfo: ", userInfo);
 
-      const role = userInfo.UserAttributes?.find((attr) => attr.Name === "company")?.Value || "company";
+      const role =
+        userInfo.UserAttributes?.find((attr) => attr.Name === "company")
+          ?.Value || "company";
 
-      const userSub = userInfo.UserAttributes?.filter((Name) => Name.Name === "sub")[0].Value;
+      const userSub = userInfo.UserAttributes?.filter(
+        (Name) => Name.Name === "sub"
+      )[0].Value;
 
       await this.addToGroup(userSub!, role);
-      await axios.post(`${configs.userServiceUrl}/v1/users/corporate`, {
+      await axios.post(`${configs.userServiceUrl}/v1/corporate`, {
         sub: userInfo.Username,
         email: body.email,
         username: userInfo.UserAttributes?.find((attr) => attr.Name === "name")
           ?.Value,
-        corporateProfileId: "",
-        role,
       });
     } catch (error) {
       console.error("AuthService corporateVerifyUser() method error:", error);
@@ -772,8 +774,6 @@ class AuthService {
       throw new Error(`Error verifying user: ${error}`);
     }
   }
-
-
 }
 
 export default new AuthService();

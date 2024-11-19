@@ -21,6 +21,7 @@ export const API_ENDPOINTS = {
 
   // JOB SERVICE
   JOBS: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}`,
+  // JOBS: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/job`,
   SEARCH_HISTORY: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/search-history`,
   SEARCH_TRENDING: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/search-trending`,
 

@@ -42,7 +42,11 @@ export interface IJob {
 
 const JobSchema: Schema = new Schema(
   {
-    companyId: { type: String, required: true },
+    companyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Company",
+    },
     title: { type: String, required: true },
     position: { type: [String], required: true },
     workMode: { type: [String], required: true, enum: Object.values(WorkMode) },
