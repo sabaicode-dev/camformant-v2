@@ -171,10 +171,21 @@ const proxyConfigs: ProxyConfig = {
     pathRewrite: (path, _req) => `${ROUTE_PATHS.CONVERSATION.path}${path}`,
     on: {
       proxyReq: (
-        _proxyReq: ClientRequest,
-        _req: IncomingMessage,
+        proxyReq: ClientRequest,
+        req: IncomingMessage & {
+          currentUser?: {
+            username?: string;
+            role: string[] | undefined;
+          };
+        },
         _res: Response
       ) => {
+        const { currentUser } = req;
+
+        if (currentUser) {
+          // Add headers to proxyReq for forwarding to the target service
+          proxyReq.setHeader("currentUser", JSON.stringify(currentUser)); // Another header as specified
+        }
         // @ts-ignore
         // logRequest(gatewayLogger, proxyReq, {
         //   protocol: proxyReq.protocol,
