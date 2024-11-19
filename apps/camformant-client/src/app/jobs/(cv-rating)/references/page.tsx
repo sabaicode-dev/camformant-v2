@@ -31,13 +31,6 @@ const Page = () => {
   const [isPut, setIsPut] = useState<boolean>(false);
 
   // const ip = 'http://localhost:3040'
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true, // Make sure cookies are handled properly
-  };
-
   useEffect(() => {
     async function GetData() {
       try {

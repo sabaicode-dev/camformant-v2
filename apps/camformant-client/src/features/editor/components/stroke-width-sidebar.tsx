@@ -44,13 +44,14 @@ export const StrokeWidthSidebar = ({
   return (
     <aside
       className={cn(
-        "bg-white relative border-r z-[40] h-full flex",
+        "bg-white relative z-[40] h-full flex items-center gap-4 mx-2",
         activeTool === "stroke-width" ? "visible" : "hidden"
       )}
     >
       <Slider
         value={[widthValue]}
         onValueChange={(values) => onChangeStrokeWidth(values[0])}
+        className="w-[300px] h-2 bg-gray-200 rounded-md"
       />
       <Button
         onClick={() => onChangeStrokeType([])}

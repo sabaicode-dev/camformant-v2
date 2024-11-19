@@ -3,9 +3,6 @@ import { cn } from "@/lib/utils";
 import { ActiveTool, Editor, FILL_COLOR } from "@/features/editor/types";
 import { ColorPicker } from "@/features/editor/components/color-picker";
 import { useEffect, useMemo, useState } from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 interface SettingsSidebarProps {
   editor: Editor | undefined;
@@ -45,7 +42,7 @@ export const SettingsSidebar = ({
   return (
     <aside
       className={cn(
-        " relative border-r z-[40] flex justify-center items-center overflow-y-auto max-h-[500px]",
+        "bg-white relative border-r z-[40] flex justify-center items-center overflow-y-auto max-h-[500px]",
         activeTool === "settings" ? "visible" : "hidden"
       )}
     >

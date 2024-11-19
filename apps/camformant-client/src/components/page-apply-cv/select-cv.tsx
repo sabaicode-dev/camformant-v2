@@ -5,6 +5,8 @@ import MiniCardResume from "../resume/mini-card-resume";
 import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
 import { BackButton_md } from "../back/BackButton";
 import { ImCheckmark } from "react-icons/im";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import axiosInstance from "@/utils/axios";
 
 interface CvData {
   cv: string[];
@@ -17,20 +19,13 @@ const SelectCV = () => {
 
   useEffect(() => {
     const getCv = async () => {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      };
       try {
         setRefetch(true);
-        const check_cv = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/cv/`,
-          config
+        const check_cv = await axiosInstance.get(
+          API_ENDPOINTS.USER_SERVICE_CV_FILE
         );
         if (check_cv.status === 200) {
-          setCvs(check_cv.data);
+          setCvs(check_cv.data.data);
         }
       } catch (error) {
       } finally {

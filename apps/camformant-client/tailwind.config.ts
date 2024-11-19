@@ -8,7 +8,7 @@ const config: Config = {
     "./src/components/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/ui/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/features/components/*.{js,ts,jsx,tsx,mdx}",
+    "./src/features/editor/components/*.{js,ts,jsx,tsx,mdx}",
     "./src/home/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/features/editor/components/*.{js,ts,jsx,tsx,mdx}",
     "../../node_modules/ms-ui-components/**/*.{js,ts,jsx,tsx}",

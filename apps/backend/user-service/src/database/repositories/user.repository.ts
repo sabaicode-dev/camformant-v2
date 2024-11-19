@@ -15,8 +15,17 @@ import {
   prettyObject,
   ResourceConflictError,
 } from "@sabaicode-dev/camformant-libs";
-import { CvFileModel, CvStyleModel } from "../models/userCv.model";
-import { CvStyleParams } from "@/src/controllers/types/user-cv-controller.type";
+import {
+  CvFileModel,
+  CvStyleModel,
+  UserCustomCv,
+} from "@/src/database/models/userCv.model";
+import {
+  CustomCvResponse,
+  CvFileParams,
+  CvStyleParams,
+  UnionCustomCvResponse,
+} from "@/src/controllers/types/user-cv-controller.type";
 import {
   IUserProfile,
   UnionProfileType,
@@ -292,7 +301,7 @@ class UserRepository {
       throw error;
     }
   }
-  async getProfileByUserId(
+  async getUserProfileByUserId(
     userId: string,
     category?: string
   ): Promise<IUserProfile> {
@@ -308,8 +317,7 @@ class UserRepository {
         categoryData = await UserProfileDetailModel.find({ userId }).select(
           `${category} -_id`
         );
-      if (!categoryData.length)
-        throw new NotFoundError("user profile not found");
+      if (!categoryData.length) return {};
       return categoryData[0];
     } catch (err) {
       throw err;
@@ -318,28 +326,68 @@ class UserRepository {
 
   async updateProfile(
     userId: string,
-    updateBody: IUserProfile
+    updateBody: IUserProfile,
+    query?: string
   ): Promise<UnionProfileType> {
     try {
-      let existingUserId = await UserProfileDetailModel.find(
-        { userId: userId },
-        { userId: 1 }
-      );
-
-      if (existingUserId.length === 0) {
-        let response = await UserProfileDetailModel.create({
-          ...updateBody,
-          userId,
-        });
-        return response;
-      } else {
+      //this for update on each user profile
+      if (!query) {
         const updatedUser = await UserProfileDetailModel.findOneAndUpdate(
           { userId },
           { $set: { ...updateBody } },
           { new: true, useFindAndModify: false }
         );
+        if (!updatedUser) {
+          let response = await UserProfileDetailModel.create({
+            ...updateBody,
+            userId,
+          });
+          return response;
+        }
 
         return updatedUser;
+      }
+      //this for canva update when we edit the object textbox
+      else {
+        console.log("inside queryyyyy:::");
+        let updateQuery: Record<string, string | number> = {};
+        for (const [key, value] of Object.entries(updateBody)) {
+          //case: data is array of object
+          if (typeof value === "object" && !Array.isArray(value)) {
+            console.log("inside not array:::");
+            for (const [nestedKey, nestedValue] of Object.entries(
+              value as Record<string, string | number>
+            )) {
+              updateQuery[`${key}.${nestedKey}`] = nestedValue;
+            }
+          }
+
+          // case: data is object without arr inside it
+          else if (Array.isArray(value)) {
+            console.log("inside array:::");
+            value.forEach((element, _index) => {
+              console.log("element", element);
+              if ("index" in element) {
+                const elementIndex = element.index;
+                delete element.index; // Remove the index key from element to prevent unnecessary updates
+
+                for (const [elemKey, elemValue] of Object.entries(
+                  element as Record<string, string | number>
+                )) {
+                  // Only add properties other than `index`
+                  updateQuery[`${key}.${elementIndex}.${elemKey}`] = elemValue;
+                }
+              }
+            });
+          }
+        }
+        console.log("update query:::", updateQuery);
+        const result = await UserProfileDetailModel.findOneAndUpdate(
+          { userId }, // Find the document by userId
+          { $set: updateQuery }, // Apply the dynamically constructed update query
+          { returnOriginal: false } // Return the updated document
+        );
+        return result;
       }
     } catch (err) {
       // if (err instanceof mongoose.Error.ValidationError) {
@@ -373,13 +421,15 @@ class UserRepository {
       throw err;
     }
   }
-  async getCvFile(userId: string) {
+  async getCvFile(userId: string) :Promise<CvFileParams>{
     try {
       console.log("insode get ::::", userId);
-      const response = await CvFileModel.find();
+      const response: CvFileParams | null = await CvFileModel.findOne({
+        userId: new mongoose.Types.ObjectId(userId),
+      });
       console.log("response in get:::", response);
-      if (!response.length) throw new NotFoundError("userid not found");
-      return response[0];
+      if (!response) throw new NotFoundError("userid not found");
+      return response;
     } catch (err) {
       throw err;
     }
@@ -422,11 +472,43 @@ class UserRepository {
       throw err;
     }
   }
-  async getCvStyle(style: string): Promise<CvStyleParams> {
+  async getCvStyle(): Promise<CvStyleParams[]> {
     try {
-      const cvData: CvStyleParams[] = await CvStyleModel.find({ style });
-      if (cvData.length > 0) throw new NotFoundError("CvStyle not found");
-      return cvData[0];
+      const cvData: CvStyleParams[] = await CvStyleModel.find();
+      if (cvData.length < 0) throw new NotFoundError("CvStyle not found");
+      return cvData;
+    } catch (err) {
+      throw err;
+    }
+  }
+  async getCustomCvByUserId(
+    userId: string
+  ): Promise<CustomCvResponse | null | undefined> {
+    try {
+      const response: CustomCvResponse | null =
+        await UserCustomCv.findById(userId);
+      if (!response) throw new NotFoundError("custom cv not found");
+
+      return response;
+    } catch (err) {}
+  }
+  async updateCustomCvByUserId(
+    userId: string,
+    cvData: any
+  ): Promise<UnionCustomCvResponse> {
+    try {
+      const response: CustomCvResponse | null =
+        await UserCustomCv.findByIdAndUpdate(userId, cvData, { new: true });
+      if (!response) {
+        const newInsertResponse: UnionCustomCvResponse =
+          await UserCustomCv.create({
+            _id: new mongoose.Types.ObjectId(userId),
+            style: cvData.style,
+            json: cvData.json,
+          });
+        return newInsertResponse;
+      }
+      return response;
     } catch (err) {
       throw err;
     }

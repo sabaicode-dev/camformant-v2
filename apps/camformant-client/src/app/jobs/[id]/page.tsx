@@ -69,8 +69,8 @@ const Page: React.FC = () => {
       try {
         setNext(true);
 
-        const cv = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/cv/`
+        const cv = await axiosInstance.get(
+          API_ENDPOINTS.USER_SERVICE_CV_FILE
         );
 
         setCV(true);

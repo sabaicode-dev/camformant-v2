@@ -24,24 +24,25 @@ export const useNotification = () => {
     if (!notification) return null;
 
     return (
-      <div className="absolute top-5 w-full z-50">
-        <AnimatedList>
-          <div
-            key={notification.id}
-            className={`p-4 rounded-2xl flex items-center ${notification.type === "success" ? "bg-green-500" :
-              notification.type === "info" ? "bg-blue-500" :
-                "bg-red-500"
-              } text-white`}
-          >
-            {notification.type === "success" && <FaCheckCircle className="mr-4" />}
-            {notification.type === "info" && <FaInfoCircle className="mr-4" />}
-            {notification.type === "error" && <FaExclamationCircle className="mr-4" />}
-            <span>
-              {notification.message}
-            </span>
-          </div>
-        </AnimatedList>
-      </div>
+      <div className="fixed top-5 left-1/2 transform -translate-x-1/2 w-full z-50">
+      <AnimatedList>
+        <div
+          key={notification.id}
+          className={`p-4 rounded-2xl flex items-center ${
+            notification.type === "success"
+              ? "bg-green-500"
+              : notification.type === "info"
+              ? "bg-blue-500"
+              : "bg-red-500"
+          } text-white`}
+        >
+          {notification.type === "success" && <FaCheckCircle className="mr-4" />}
+          {notification.type === "info" && <FaInfoCircle className="mr-4" />}
+          {notification.type === "error" && <FaExclamationCircle className="mr-4" />}
+          <span>{notification.message}</span>
+        </div>
+      </AnimatedList>
+    </div>
     );
   }, [notification]);
 

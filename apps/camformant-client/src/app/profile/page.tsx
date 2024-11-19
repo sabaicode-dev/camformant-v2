@@ -51,8 +51,6 @@ const Page: React.FC = () => {
   const { user, loading, logout, isAuthenticated, setUser } = useAuth();
 
   const RefFile = useRef<HTMLInputElement | null>(null);
-  const [pic, setPic] = useState<File | string | null>(null);
-  const [Upload, setUpload] = useState<File | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -105,12 +103,9 @@ const Page: React.FC = () => {
       const response = await fetch(croppedImage);
       const blob = await response.blob();
       const file = new File([blob], "cropped-image.png", { type: "image/png" });
-      setUpload(file);
-      const imagePreviewUrl = URL.createObjectURL(file); // Generate URL for display
       setIsCropping(false);
       const image = await uploadToS3(file);
       if (image) {
-        setPic(image);
         changeProfile(image);
       }
     } catch (error) {
@@ -162,7 +157,7 @@ const Page: React.FC = () => {
 
             {/* ==================== CROPPING IMAGE  ================================*/}
             {isCropping && (
-              <div className="fixed inset-0 z-40 flex items-center justify-center w-full bg-black bg-opacity-60 ">
+              <div className="fixed inset-0 z-40 flex items-center justify-center w-full bg- bg-opacity-60 ">
                 <div className="relative h-screen p-4 rounded w-96">
                   <Cropper
                     image={imageSrc || ""}
