@@ -8,6 +8,8 @@ type Config = {
   mongodbUrl: string;
   clientUrl: string;
   MessageUrl: string;
+  companyUrl: string;
+  userUrl: string;
 };
 
 // Function to load and validate environment variables
@@ -24,6 +26,8 @@ function loadConfig(): Config {
     MONGODB_URL: Joi.string().required(),
     CLIENT_URL: Joi.string().required(),
     API_SENDMESSAGE_ENDPOINT: Joi.string().required(),
+    API_COMPANY_ENDPOINT: Joi.string().required(),
+    API_USERS_ENDPOINT: Joi.string().required(),
   })
     .unknown()
     .required();
@@ -40,6 +44,8 @@ function loadConfig(): Config {
     mongodbUrl: envVars.MONGODB_URL,
     clientUrl: envVars.CLIENT_URL,
     MessageUrl: envVars.API_SENDMESSAGE_ENDPOINT,
+    companyUrl: envVars.API_SENDMESSAGE_ENDPOINT,
+    userUrl: envVars.API_SENDMESSAGE_ENDPOINT,
   };
 }
 

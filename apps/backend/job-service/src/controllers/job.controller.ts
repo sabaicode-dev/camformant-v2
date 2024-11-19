@@ -59,7 +59,7 @@ export class JobController extends Controller {
       throw error;
     }
   }
-
+  //todo::
   @Get("/search-history")
   public async getSearchHistory(
     @Request() request: ExpressRequest
@@ -74,6 +74,7 @@ export class JobController extends Controller {
       throw error;
     }
   }
+  //todo::
 
   @Get("/search-trending")
   public async getSearchTrending(): Promise<APIResponse<string[]>> {

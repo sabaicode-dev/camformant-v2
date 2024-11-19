@@ -62,8 +62,6 @@ const Page = () => {
             entry.year.split("-")[1] || entry.year.split("-")[0]
         );
         setEndYear(updatedEndYears);
-
-        console.log("start year", startYear);
       } catch (error) {
         console.error(error);
       } finally {
