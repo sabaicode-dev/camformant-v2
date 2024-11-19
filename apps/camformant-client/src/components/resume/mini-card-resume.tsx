@@ -9,8 +9,7 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import axiosInstance from "@/utils/axios";
 
 interface typeMiniCard {
-  name: string;
-  cvId?:string
+  item:{url: string; _id: string }
   index: number;
   next: boolean;
   setNext: (next: boolean) => void;
@@ -21,8 +20,7 @@ interface typeMiniCard {
 }
 
 const MiniCardResume: React.FC<typeMiniCard> = ({
-  name = "#",
-  cvId,
+  item,
   index,
   next,
   setNext,
@@ -42,7 +40,7 @@ const MiniCardResume: React.FC<typeMiniCard> = ({
     try {
       setNext(true);
       const res = await axiosInstance.delete(
-        `${API_ENDPOINTS.USER_SERVICE_CV_FILE}/${cvId}`,
+        `${API_ENDPOINTS.USER_SERVICE_CV_FILE}/${item._id}`,
       );
       if (res.status === 200) {
         console.log("CV deleted successfully");
@@ -72,7 +70,7 @@ const MiniCardResume: React.FC<typeMiniCard> = ({
             className={` z-10 duration-300 transition-all ${isSwiped ? style : "translate-x-0"} flex w-full max-w-lg p-6 items-center rounded-lg shadow-md gap-4 bg-white border border-gray-200 hover:shadow-lg transform hover:scale-105`}
           >
             <a
-              href={name}
+              href={item.url}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center w-full h-full gap-4"

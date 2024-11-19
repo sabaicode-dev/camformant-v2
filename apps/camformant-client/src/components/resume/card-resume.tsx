@@ -4,18 +4,13 @@ import React, { useEffect, useState } from "react";
 import Mypic from "../../../public/images/Croods User Interface.png";
 import AttachedCvs from "@/components/resume/attached-cv";
 import Image from "next/image";
-import axios from "axios";
 import MiniCardResume from "./mini-card-resume";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
+import { CvData } from "@/utils/types/user-profile";
 
-interface CvData {
-  cv: {
-    url: string;
-    _id: string;
-  }[];
-}
+
 const CardResume: React.FC = () => {
   const [show, setShow] = useState<boolean>(false);
   const [cvs, setCvs] = useState<CvData | null>(null);
@@ -78,8 +73,7 @@ const CardResume: React.FC = () => {
               (item: { url: string; _id: string }, index: number) => (
                 <div key={index} className="relative w-full h-full">
                   <MiniCardResume
-                    name={item.url}
-                    cvId={item._id}
+                    item={item}
                     index={index}
                     next={next}
                     setNext={setNext}
