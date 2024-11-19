@@ -181,7 +181,9 @@ export class AuthController extends Controller {
   }
 
   @Post("/corporate/signup")
-  public async corporateSignup(@Body() body: CorporateSignupRequest): Promise<{ message: string }> {
+  public async corporateSignup(
+    @Body() body: CorporateSignupRequest
+  ): Promise<{ message: string }> {
     try {
       const result = await AuthService.corporateSignup(body);
 
@@ -193,6 +195,8 @@ export class AuthController extends Controller {
   @Post("/corporate/verify")
   public async corporateVerifyUser(@Body() body: VerifyUserRequest) {
     try {
+      console.log("sttart verify");
+
       await AuthService.corporateVerifyUser(body);
       return sendResponse({ message: `You've verified successfully` });
     } catch (error) {
@@ -225,6 +229,4 @@ export class AuthController extends Controller {
       throw error;
     }
   }
-
-
 }

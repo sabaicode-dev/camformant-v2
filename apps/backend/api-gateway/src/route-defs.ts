@@ -125,14 +125,15 @@ const ROUTE_PATHS: RoutesConfig = {
             authRequired: false,
           },
         },
-      }, {
+      },
+      {
         path: "/corporate/verify",
         methods: {
           POST: {
             authRequired: false,
           },
         },
-      }
+      },
     ],
   },
   CORPORATE_SERVICE: {
@@ -157,7 +158,8 @@ const ROUTE_PATHS: RoutesConfig = {
             // roles: ["company"],
           },
         },
-      }]
+      },
+    ],
   },
   USER_SERVICE: {
     path: "/v1/users",

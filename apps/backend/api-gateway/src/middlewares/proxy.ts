@@ -11,7 +11,6 @@ interface ProxyConfig {
 }
 
 const proxyConfigs: ProxyConfig = {
-
   [ROUTE_PATHS.AUTH_SERVICE.path]: {
     target: ROUTE_PATHS.AUTH_SERVICE.target,
     pathRewrite: (path, _req) => {
@@ -172,10 +171,21 @@ const proxyConfigs: ProxyConfig = {
     pathRewrite: (path, _req) => `${ROUTE_PATHS.CONVERSATION.path}${path}`,
     on: {
       proxyReq: (
-        _proxyReq: ClientRequest,
-        _req: IncomingMessage,
+        proxyReq: ClientRequest,
+        req: IncomingMessage & {
+          currentUser?: {
+            username?: string;
+            role: string[] | undefined;
+          };
+        },
         _res: Response
       ) => {
+        const { currentUser } = req;
+
+        if (currentUser) {
+          // Add headers to proxyReq for forwarding to the target service
+          proxyReq.setHeader("currentUser", JSON.stringify(currentUser)); // Another header as specified
+        }
         // @ts-ignore
         // logRequest(gatewayLogger, proxyReq, {
         //   protocol: proxyReq.protocol,
@@ -200,14 +210,26 @@ const proxyConfigs: ProxyConfig = {
   [ROUTE_PATHS.CORPORATE_SERVICE.path]: {
     target: ROUTE_PATHS.CORPORATE_SERVICE.target,
     pathRewrite: (path, _req) => {
-      return `${ROUTE_PATHS.CORPORATE_SERVICE.path}${path}`
+      return `${ROUTE_PATHS.CORPORATE_SERVICE.path}${path}`;
     },
     on: {
       proxyReq: (
-        _proxyReq: ClientRequest,
-        _req: IncomingMessage,
+        proxyReq: ClientRequest,
+        req: IncomingMessage & {
+          currentUser?: {
+            username?: string;
+            role: string[] | undefined;
+          };
+        },
         _res: Response
       ) => {
+        const { currentUser } = req;
+
+        if (currentUser) {
+          // Add headers to proxyReq for forwarding to the target service
+          proxyReq.setHeader("currentUser", JSON.stringify(currentUser)); // Another header as specified
+        }
+
         // @ts-ignore
         // logRequest(gatewayLogger, proxyReq, {
         //   protocol: proxyReq.protocol,
@@ -274,8 +296,6 @@ const proxyConfigs: ProxyConfig = {
       // },
     },
   },
-
-
 };
 
 const applyProxy = (app: express.Application) => {

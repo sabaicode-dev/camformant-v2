@@ -214,8 +214,8 @@ export class MessageRepository {
         api_endpoint = "http://localhost:4003/v1/companies/getMulti/Profile";
       } else if (senderRole === "Company") {
         //TODO: fetch to user to get profile
-        fetchQuery = "?user=....";
-        api_endpoint = "http://localhost:4...";
+        fetchQuery = `?usersId=${participantsId}`;
+        api_endpoint = "http://localhost:4005/v1/users/getMulti/Profile";
       }
 
       const res = await fetch(`${api_endpoint}${fetchQuery}`);
