@@ -214,8 +214,8 @@ export class MessageRepository {
         api_endpoint = "http://localhost:4003/v1/companies/getMulti/Profile";
       } else if (senderRole === "Company") {
         //TODO: fetch to user to get profile
-        fetchQuery = "?user=....";
-        api_endpoint = "http://localhost:4...";
+        fetchQuery = `?users=${participantsId}`;
+        api_endpoint = "http://localhost:4005/v1/users/getMulti/Profile";
       }
 
       const res = await fetch(`${api_endpoint}${fetchQuery}`);
@@ -224,10 +224,10 @@ export class MessageRepository {
       //declare
       let participantsProfile:
         | {
-            _id: string;
-            profile: string;
-            name: string;
-          }[]
+          _id: string;
+          profile: string;
+          name: string;
+        }[]
         | [];
       if (data.companiesProfile) {
         participantsProfile = data.companiesProfile;

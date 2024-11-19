@@ -8,6 +8,7 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 const UserPage = () => {
     const pathname = usePathname();
     const [user, setUser] = useState(null);
+    console.log("URL :::::::::::::::::::::: cgat ",API_ENDPOINTS.GET_CONVERSATIONS);
     useEffect(() => {
         axiosInstance
             .get(API_ENDPOINTS.GET_CONVERSATIONS)
