@@ -1,9 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye } from "lucide-react";
-import { SquarePen } from "lucide-react";
-import { Trash } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +19,7 @@ export type Jobs = {
   _id: string;
   profile: string;
   name: string;
-  Position: string;
+  email: string;
   job: number;
   moblie: number;
 };
@@ -50,44 +50,41 @@ export const columns: ColumnDef<Jobs>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "Position",
+    accessorKey: "profile",
     cell: ({ row }) => {
       const userProfile = row.original;
+      return (
+        <Avatar>
+          <AvatarImage src={userProfile.profile} />
+          <AvatarFallback>{userProfile.name}</AvatarFallback>
+        </Avatar>
+      );
     },
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: "Type",
-    cell: ({ row }) => {
-      const userProfile = row.original;
-
-    },
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "Posted Date",
+    accessorKey: "name",
     header: ({ column }) => {
-      return <div>Posted Date</div>;
+      return <div className="">Name</div>;
     },
   },
   {
-    accessorKey: "Last Date to Apply",
+    accessorKey: "job",
     header: ({ column }) => {
-      return <div>Last Date to Apply</div>;
+      return <div className="">job</div>;
     },
   },
   {
-    accessorKey: "Close Date",
+    accessorKey: "job",
     header: ({ column }) => {
-      return <div>Close Date</div>;
+      return <div className="">mobile</div>;
     },
   },
   {
-    accessorKey: "status",
+    accessorKey: "job",
     header: ({ column }) => {
-      return <div>status</div>;
+      return <div className=" ">email</div>;
     },
   },
   {
@@ -96,13 +93,25 @@ export const columns: ColumnDef<Jobs>[] = [
       const payment = row.original;
 
       return (
-        <>
-          <div className="flex gap-2 ">
-            <Eye className=" h-[35px] w-[35px] p-2 bg-green-100 text-green-500 rounded-full " />
-            <SquarePen className=" h-[35px] w-[35px] p-2 bg-green-100 text-green-900 rounded-full" />
-            <Trash className=" h-[35px] w-[35px] p-2 bg-red-100 text-red-500 rounded-full "  />
-          </div>
-        </>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => navigator.clipboard.writeText(payment._id)}
+            >
+              Copy payment ID
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>View customer</DropdownMenuItem>
+            <DropdownMenuItem>View payment details</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
     enableSorting: false,

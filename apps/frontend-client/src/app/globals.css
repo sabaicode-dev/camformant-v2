@@ -150,4 +150,21 @@ body {
             height: 0;
         }
     }
+    /* Global Styles or within @layer directive */
+.scrollbar-custom::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+    height: 8px; /* Height for horizontal scrollbar */
+  }
+  
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    background-color: rgba(128, 128, 128, 0.116); /* Orange thumb color */
+    border-radius: 10px; /* Rounded corners for the thumb */
+    border: 2px solid #fff; /* Border around the thumb */
+  }
+  
+  .scrollbar-custom::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Light gray track background */
+    border-radius: 10px; /* Rounded track corners */
+  }
+  
 }

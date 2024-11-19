@@ -17,14 +17,24 @@ const dashboard = [
 // Menu jobs.
 const Jobs = [
     {
-        title: "View Applicant",
+        title: "Job List",
         url: "/dashboard/jobs",
+        icon: Sheet,
+    },
+    {
+        title: "Job View",
+        url: "/dashboard/jobs",
+        icon: Sheet,
+    },
+    {
+        title: "View Applicant",
+        url: "/dashboard/applicant",
         icon: Sheet,
     },
     {
         title: "New Job",
         url: "/dashboard/posts",
-        icon: List,
+        icon: LetterText,
     },
 ];
 
@@ -129,15 +139,15 @@ export const itemsMenu = [
         iconTrigger: User,
         isCollapsibleOpen: false,
     },
-    {
-        item: posts,
-        triggerName: "Posts",
-        iconTrigger: LetterText,
-        isCollapsibleOpen: false,
-    },
+    // {
+    //     item: posts,
+    //     triggerName: "Posts",
+    //     iconTrigger: LetterText,
+    //     isCollapsibleOpen: false,
+    // },
     {
         item: Jobs,
-        triggerName: "View Applicant",
+        triggerName: "Jobs",
         iconTrigger: Sheet,
         isCollapsibleOpen: true,
     },
