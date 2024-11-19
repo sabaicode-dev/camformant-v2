@@ -107,16 +107,45 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CvFileParams": {
+        "dataType": "refObject",
+        "properties": {
+            "userId": {"ref":"mongoose.Types.ObjectId"},
+            "cv": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"_id":{"dataType":"union","subSchemas":[{"ref":"mongoose.Types.ObjectId"},{"dataType":"enum","enums":[null]},{"dataType":"undefined"}],"required":true},"url":{"dataType":"string","required":true}}}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CvFilePResponse": {
+        "dataType": "refObject",
+        "properties": {
+            "message": {"dataType":"string","required":true},
+            "data": {"ref":"CvFileParams","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CvStyleParams": {
+        "dataType": "refObject",
+        "properties": {
+            "_id": {"ref":"mongoose.Types.ObjectId","required":true},
+            "style": {"dataType":"string","required":true},
+            "thumbnail": {"dataType":"string","required":true},
+            "json": {"dataType":"nestedObjectLiteral","nestedProperties":{"objects":{"dataType":"array","array":{"dataType":"any"},"required":true},"version":{"dataType":"string","required":true}},"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "BasicParams": {
         "dataType": "refObject",
         "properties": {
-            "surname": {"dataType":"string","required":true},
-            "lastname": {"dataType":"string","required":true},
-            "career": {"dataType":"string","required":true},
-            "email": {"dataType":"string","required":true},
-            "dob": {"dataType":"string","required":true},
-            "address": {"dataType":"string","required":true},
-            "phonenumber": {"dataType":"string","required":true},
+            "surname": {"dataType":"string"},
+            "lastname": {"dataType":"string"},
+            "career": {"dataType":"string"},
+            "email": {"dataType":"string"},
+            "dob": {"dataType":"string"},
+            "address": {"dataType":"string"},
+            "phonenumber": {"dataType":"string"},
             "martial": {"dataType":"string"},
         },
         "additionalProperties": false,
@@ -125,8 +154,8 @@ const models: TsoaRoute.Models = {
     "SkillParams": {
         "dataType": "refObject",
         "properties": {
-            "name": {"dataType":"string","required":true},
-            "percent": {"dataType":"double","required":true},
+            "name": {"dataType":"string"},
+            "percent": {"dataType":"double"},
         },
         "additionalProperties": false,
     },
@@ -134,8 +163,8 @@ const models: TsoaRoute.Models = {
     "ExpertiseParams": {
         "dataType": "refObject",
         "properties": {
-            "name": {"dataType":"string","required":true},
-            "proficiency": {"dataType":"string","required":true},
+            "name": {"dataType":"string"},
+            "proficiency": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -143,8 +172,8 @@ const models: TsoaRoute.Models = {
     "LanguageParams": {
         "dataType": "refObject",
         "properties": {
-            "name": {"dataType":"string","required":true},
-            "proficiency": {"dataType":"string","required":true},
+            "name": {"dataType":"string"},
+            "proficiency": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -152,10 +181,10 @@ const models: TsoaRoute.Models = {
     "EducationParams": {
         "dataType": "refObject",
         "properties": {
-            "academic": {"dataType":"string","required":true},
-            "school": {"dataType":"string","required":true},
-            "major": {"dataType":"string","required":true},
-            "year": {"dataType":"string","required":true},
+            "academic": {"dataType":"string"},
+            "school": {"dataType":"string"},
+            "major": {"dataType":"string"},
+            "year": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -163,8 +192,8 @@ const models: TsoaRoute.Models = {
     "ExperienceParams": {
         "dataType": "refObject",
         "properties": {
-            "position": {"dataType":"string","required":true},
-            "company": {"dataType":"string","required":true},
+            "position": {"dataType":"string"},
+            "company": {"dataType":"string"},
             "description": {"dataType":"string"},
             "year": {"dataType":"string"},
         },
@@ -174,11 +203,11 @@ const models: TsoaRoute.Models = {
     "ReferenceParams": {
         "dataType": "refObject",
         "properties": {
-            "name": {"dataType":"string","required":true},
-            "career": {"dataType":"string","required":true},
-            "company": {"dataType":"string","required":true},
-            "email": {"dataType":"string","required":true},
-            "phonenumber": {"dataType":"string","required":true},
+            "name": {"dataType":"string"},
+            "career": {"dataType":"string"},
+            "company": {"dataType":"string"},
+            "email": {"dataType":"string"},
+            "phonenumber": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -186,8 +215,8 @@ const models: TsoaRoute.Models = {
     "DescriptionParams": {
         "dataType": "refObject",
         "properties": {
-            "description": {"dataType":"string","required":true},
-            "strength": {"dataType":"string","required":true},
+            "description": {"dataType":"string"},
+            "strength": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -213,15 +242,25 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "basic": {"ref":"BasicParams"},
-            "skills": {"dataType":"array","array":{"dataType":"refObject","ref":"SkillParams"}},
-            "expertise": {"dataType":"array","array":{"dataType":"refObject","ref":"ExpertiseParams"}},
-            "languages": {"dataType":"array","array":{"dataType":"refObject","ref":"LanguageParams"}},
-            "educations": {"dataType":"array","array":{"dataType":"refObject","ref":"EducationParams"}},
-            "experiences": {"dataType":"array","array":{"dataType":"refObject","ref":"ExperienceParams"}},
-            "references": {"dataType":"array","array":{"dataType":"refObject","ref":"ReferenceParams"}},
+            "skills": {"dataType":"array","array":{"dataType":"intersection","subSchemas":[{"ref":"SkillParams"},{"dataType":"nestedObjectLiteral","nestedProperties":{"index":{"dataType":"double"}}}]}},
+            "expertise": {"dataType":"array","array":{"dataType":"intersection","subSchemas":[{"ref":"ExpertiseParams"},{"dataType":"nestedObjectLiteral","nestedProperties":{"index":{"dataType":"double"}}}]}},
+            "languages": {"dataType":"array","array":{"dataType":"intersection","subSchemas":[{"ref":"LanguageParams"},{"dataType":"nestedObjectLiteral","nestedProperties":{"index":{"dataType":"double"}}}]}},
+            "educations": {"dataType":"array","array":{"dataType":"intersection","subSchemas":[{"ref":"EducationParams"},{"dataType":"nestedObjectLiteral","nestedProperties":{"index":{"dataType":"double"}}}]}},
+            "experiences": {"dataType":"array","array":{"dataType":"intersection","subSchemas":[{"ref":"ExperienceParams"},{"dataType":"nestedObjectLiteral","nestedProperties":{"index":{"dataType":"double"}}}]}},
+            "references": {"dataType":"array","array":{"dataType":"intersection","subSchemas":[{"ref":"ReferenceParams"},{"dataType":"nestedObjectLiteral","nestedProperties":{"index":{"dataType":"double"}}}]}},
             "descriptions": {"ref":"DescriptionParams"},
             "certificates": {"dataType":"array","array":{"dataType":"refObject","ref":"CertificateParams"}},
             "portfolio": {"dataType":"array","array":{"dataType":"refObject","ref":"PortfolioParams"}},
+            "cv": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IUserProfileResposne": {
+        "dataType": "refObject",
+        "properties": {
+            "message": {"dataType":"string","required":true},
+            "data": {"ref":"IUserProfile","required":true},
         },
         "additionalProperties": false,
     },
@@ -235,9 +274,32 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CvParam": {
+        "dataType": "refObject",
+        "properties": {
+            "cv": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "UnionProfileType": {
         "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"ref":"IdParams"},{"dataType":"array","array":{"dataType":"refObject","ref":"IUserProfile"}},{"ref":"BasicParams"},{"dataType":"array","array":{"dataType":"refObject","ref":"SkillParams"}},{"dataType":"array","array":{"dataType":"refObject","ref":"ExperienceParams"}},{"dataType":"array","array":{"dataType":"refObject","ref":"EducationParams"}},{"dataType":"array","array":{"dataType":"refObject","ref":"ExperienceParams"}},{"dataType":"array","array":{"dataType":"refObject","ref":"LanguageParams"}},{"ref":"DescriptionParams"},{"dataType":"array","array":{"dataType":"refObject","ref":"ReferenceParams"}},{"dataType":"array","array":{"dataType":"refObject","ref":"PortfolioParams"}},{"dataType":"array","array":{"dataType":"refObject","ref":"CertificateParams"}},{"dataType":"enum","enums":[null]}],"validators":{}},
+        "type": {"dataType":"union","subSchemas":[{"ref":"IdParams"},{"dataType":"array","array":{"dataType":"refObject","ref":"IUserProfile"}},{"ref":"BasicParams"},{"dataType":"array","array":{"dataType":"refObject","ref":"SkillParams"}},{"dataType":"array","array":{"dataType":"refObject","ref":"ExperienceParams"}},{"dataType":"array","array":{"dataType":"refObject","ref":"EducationParams"}},{"dataType":"array","array":{"dataType":"refObject","ref":"ExperienceParams"}},{"dataType":"array","array":{"dataType":"refObject","ref":"LanguageParams"}},{"ref":"DescriptionParams"},{"dataType":"array","array":{"dataType":"refObject","ref":"ReferenceParams"}},{"dataType":"array","array":{"dataType":"refObject","ref":"PortfolioParams"}},{"dataType":"array","array":{"dataType":"refObject","ref":"CertificateParams"}},{"ref":"CvParam"},{"dataType":"enum","enums":[null]},{"dataType":"undefined"}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CustomCvResponse": {
+        "dataType": "refObject",
+        "properties": {
+            "_id": {"ref":"mongoose.Types.ObjectId","required":true},
+            "style": {"dataType":"string","required":true},
+            "json": {"dataType":"nestedObjectLiteral","nestedProperties":{"clipPath":{"dataType":"any","required":true},"objects":{"dataType":"array","array":{"dataType":"any"},"required":true},"version":{"dataType":"string","required":true}},"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UnionCustomCvResponse": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"ref":"CustomCvResponse"},{"dataType":"undefined"},{"dataType":"enum","enums":[null]},{"dataType":"nestedObjectLiteral","nestedProperties":{}}],"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "UserUpdateRequestParams": {
@@ -251,16 +313,6 @@ const models: TsoaRoute.Models = {
             "gender": {"dataType":"string"},
             "age": {"dataType":"double"},
             "role": {"dataType":"string"},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CvStyleParams": {
-        "dataType": "refObject",
-        "properties": {
-            "_id": {"ref":"mongoose.Types.ObjectId","required":true},
-            "style": {"dataType":"string","required":true},
-            "json": {"dataType":"nestedObjectLiteral","nestedProperties":{"objects":{"dataType":"array","array":{"dataType":"any"},"required":true},"version":{"dataType":"string","required":true}},"required":true},
         },
         "additionalProperties": false,
     },
@@ -450,6 +502,35 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/v1/users/cvstyle',
+            ...(fetchMiddlewares<RequestHandler>(UsersController)),
+            ...(fetchMiddlewares<RequestHandler>(UsersController.prototype.getCVStyle)),
+
+            async function UsersController_getCVStyle(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new UsersController();
+
+              await templateService.apiHandler({
+                methodName: 'getCVStyle',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/v1/users/profile-detail',
             ...(fetchMiddlewares<RequestHandler>(UsersController)),
             ...(fetchMiddlewares<RequestHandler>(UsersController.prototype.getProfileByID)),
@@ -489,6 +570,7 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
             const args: Record<string, TsoaRoute.ParameterSchema> = {
                     updateBody: {"in":"body","name":"updateBody","required":true,"ref":"IUserProfile"},
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    query: {"in":"query","name":"query","dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -501,6 +583,67 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
 
               await templateService.apiHandler({
                 methodName: 'updateUserProfile',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/v1/users/customCv',
+            ...(fetchMiddlewares<RequestHandler>(UsersController)),
+            ...(fetchMiddlewares<RequestHandler>(UsersController.prototype.getCustomCv)),
+
+            async function UsersController_getCustomCv(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new UsersController();
+
+              await templateService.apiHandler({
+                methodName: 'getCustomCv',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/v1/users/customCv',
+            ...(fetchMiddlewares<RequestHandler>(UsersController)),
+            ...(fetchMiddlewares<RequestHandler>(UsersController.prototype.updateCustomCv)),
+
+            async function UsersController_updateCustomCv(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    bodyData: {"in":"body","name":"bodyData","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"json":{"dataType":"any","required":true},"style":{"dataType":"string","required":true}}},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new UsersController();
+
+              await templateService.apiHandler({
+                methodName: 'updateCustomCv',
                 controller,
                 response,
                 next,
@@ -844,36 +987,6 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
 
               await templateService.apiHandler({
                 methodName: 'deleteCvFile',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: undefined,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/v1/users/cvstyle/:style',
-            ...(fetchMiddlewares<RequestHandler>(UsersController)),
-            ...(fetchMiddlewares<RequestHandler>(UsersController.prototype.getCVStyle)),
-
-            async function UsersController_getCVStyle(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    style: {"in":"path","name":"style","required":true,"dataType":"string"},
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
-
-                const controller = new UsersController();
-
-              await templateService.apiHandler({
-                methodName: 'getCVStyle',
                 controller,
                 response,
                 next,

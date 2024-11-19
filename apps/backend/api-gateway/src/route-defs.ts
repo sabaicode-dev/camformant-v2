@@ -295,9 +295,22 @@ const ROUTE_PATHS: RoutesConfig = {
         ],
       },
       {
-        path: "/cvstyle/:style",
+        path: "/cvstyle",
         methods: {
           GET: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+        },
+      },
+      {
+        path: "/customCv",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+          PUT: {
             authRequired: true,
             roles: ["user", "admin"],
           },

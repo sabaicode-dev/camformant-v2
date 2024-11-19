@@ -6,7 +6,12 @@ import {
 } from "@/src/database/repositories/types/user-repository.type";
 import UserRepository from "@/src/database/repositories/user.repository";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
-import { CvStyleParams } from "@/src/controllers/types/user-cv-controller.type";
+import {
+  CustomCvResponse,
+  CvFileParams,
+  CvStyleParams,
+  UnionCustomCvResponse,
+} from "@/src/controllers/types/user-cv-controller.type";
 import {
   IUserProfile,
   UnionProfileType,
@@ -181,12 +186,15 @@ class UserService {
       throw error;
     }
   }
-  async getProfileById(
+  async getUserProfileById(
     userId: string,
     category?: string
   ): Promise<IUserProfile> {
     try {
-      const profile = await UserRepository.getProfileByUserId(userId, category);
+      const profile = await UserRepository.getUserProfileByUserId(
+        userId,
+        category
+      );
       return profile;
     } catch (error) {
       console.error(
@@ -198,10 +206,16 @@ class UserService {
   }
   async updateUserProfile(
     userid: string,
-    updateBody: IUserProfile
+    updateBody: IUserProfile,
+    query?: string
   ): Promise<UnionProfileType> {
     try {
-      const userData = await UserRepository.updateProfile(userid, updateBody);
+      console.log("service::::", updateBody);
+      const userData = await UserRepository.updateProfile(
+        userid,
+        updateBody,
+        query
+      );
       return userData;
     } catch (err) {
       throw err;
@@ -210,7 +224,7 @@ class UserService {
   async getCvFiles(userId: string) {
     try {
       console.log("inside get cv services");
-      const response = await UserRepository.getCvFile(userId);
+      const response:CvFileParams = await UserRepository.getCvFile(userId);
       return response;
     } catch (err) {
       throw err;
@@ -234,9 +248,32 @@ class UserService {
       throw err;
     }
   }
-  async getCvStyle(style: string): Promise<CvStyleParams> {
+  async getCvStyle(): Promise<CvStyleParams[]> {
     try {
-      const response: CvStyleParams = await UserRepository.getCvStyle(style);
+      const response: CvStyleParams[] = await UserRepository.getCvStyle();
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  async getCustomCvByUserId(
+    userId: string
+  ): Promise<CustomCvResponse | null | undefined> {
+    try {
+      const response: CustomCvResponse | null | undefined =
+        await UserRepository.getCustomCvByUserId(userId);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  async updateCustomCvByUserId(
+    userId: string,
+    cvData: any
+  ): Promise<UnionCustomCvResponse> {
+    try {
+      const response: UnionCustomCvResponse =
+        await UserRepository.updateCustomCvByUserId(userId, cvData);
       return response;
     } catch (err) {
       throw err;

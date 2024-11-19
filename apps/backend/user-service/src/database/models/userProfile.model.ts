@@ -132,6 +132,7 @@ const UserProfileSchema = new mongoose.Schema(
     descriptions: { type: DescriptionSchema },
     portfolio: { type: [Portfoliochema] },
     certificates: { type: [CertificateSchema] },
+    cv:{type:String}
   },
   {
     toObject: {

@@ -79,7 +79,7 @@ export const ImagesSidebar = ({
         <div className="p-4 space-y-1"></div>
       </ScrollArea>
       {/* Footer SideBar */}
-      {/* <ToolSidebarClose onClick={onClose} /> */}
+      <ToolSidebarClose onClick={onClose} />
     </aside>
   );
 };

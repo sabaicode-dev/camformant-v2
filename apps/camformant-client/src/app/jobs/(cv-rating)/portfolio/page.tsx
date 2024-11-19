@@ -15,7 +15,6 @@ import { PortfolioParam } from "@/utils/types/user-profile";
 import React, { useEffect, useState } from "react";
 
 const Page = () => {
-  const { user } = useAuth();
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [next, setNext] = useState<boolean>(false);
   const [isPut, setIsPut] = useState<boolean>(false);
@@ -30,7 +29,6 @@ const Page = () => {
     async function GetData() {
       try {
         setNext(true);
-        console.log("user", user);
         const response = await axiosInstance.get(
           `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=portfolio`
         );
@@ -45,7 +43,7 @@ const Page = () => {
       }
     }
     GetData();
-  }, [user]);
+  }, []);
   async function PostData() {
     try {
       setNext(true); // Trigger loading

@@ -36,7 +36,7 @@ app.use(cookieParser());
 // ========================
 // Global Middleware
 // ========================
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 
 // ========================
 // Global API V1

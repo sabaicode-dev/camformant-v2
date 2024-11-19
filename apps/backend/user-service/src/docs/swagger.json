@@ -262,6 +262,90 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"CvFileParams": {
+				"properties": {
+					"userId": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"cv": {
+						"items": {
+							"properties": {
+								"_id": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+										}
+									],
+									"nullable": true
+								},
+								"url": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"url"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CvFilePResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/CvFileParams"
+					}
+				},
+				"required": [
+					"message",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CvStyleParams": {
+				"properties": {
+					"_id": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"style": {
+						"type": "string"
+					},
+					"thumbnail": {
+						"type": "string"
+					},
+					"json": {
+						"properties": {
+							"objects": {
+								"items": {},
+								"type": "array"
+							},
+							"version": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"objects",
+							"version"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"_id",
+					"style",
+					"thumbnail",
+					"json"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"BasicParams": {
 				"properties": {
 					"surname": {
@@ -289,15 +373,6 @@
 						"type": "string"
 					}
 				},
-				"required": [
-					"surname",
-					"lastname",
-					"career",
-					"email",
-					"dob",
-					"address",
-					"phonenumber"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -311,10 +386,6 @@
 						"format": "double"
 					}
 				},
-				"required": [
-					"name",
-					"percent"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -327,10 +398,6 @@
 						"type": "string"
 					}
 				},
-				"required": [
-					"name",
-					"proficiency"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -343,10 +410,6 @@
 						"type": "string"
 					}
 				},
-				"required": [
-					"name",
-					"proficiency"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -365,12 +428,6 @@
 						"type": "string"
 					}
 				},
-				"required": [
-					"academic",
-					"school",
-					"major",
-					"year"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -389,10 +446,6 @@
 						"type": "string"
 					}
 				},
-				"required": [
-					"position",
-					"company"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -414,13 +467,6 @@
 						"type": "string"
 					}
 				},
-				"required": [
-					"name",
-					"career",
-					"company",
-					"email",
-					"phonenumber"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -433,10 +479,6 @@
 						"type": "string"
 					}
 				},
-				"required": [
-					"description",
-					"strength"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -475,37 +517,115 @@
 					},
 					"skills": {
 						"items": {
-							"$ref": "#/components/schemas/SkillParams"
+							"allOf": [
+								{
+									"$ref": "#/components/schemas/SkillParams"
+								},
+								{
+									"properties": {
+										"index": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"type": "object"
+								}
+							]
 						},
 						"type": "array"
 					},
 					"expertise": {
 						"items": {
-							"$ref": "#/components/schemas/ExpertiseParams"
+							"allOf": [
+								{
+									"$ref": "#/components/schemas/ExpertiseParams"
+								},
+								{
+									"properties": {
+										"index": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"type": "object"
+								}
+							]
 						},
 						"type": "array"
 					},
 					"languages": {
 						"items": {
-							"$ref": "#/components/schemas/LanguageParams"
+							"allOf": [
+								{
+									"$ref": "#/components/schemas/LanguageParams"
+								},
+								{
+									"properties": {
+										"index": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"type": "object"
+								}
+							]
 						},
 						"type": "array"
 					},
 					"educations": {
 						"items": {
-							"$ref": "#/components/schemas/EducationParams"
+							"allOf": [
+								{
+									"$ref": "#/components/schemas/EducationParams"
+								},
+								{
+									"properties": {
+										"index": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"type": "object"
+								}
+							]
 						},
 						"type": "array"
 					},
 					"experiences": {
 						"items": {
-							"$ref": "#/components/schemas/ExperienceParams"
+							"allOf": [
+								{
+									"$ref": "#/components/schemas/ExperienceParams"
+								},
+								{
+									"properties": {
+										"index": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"type": "object"
+								}
+							]
 						},
 						"type": "array"
 					},
 					"references": {
 						"items": {
-							"$ref": "#/components/schemas/ReferenceParams"
+							"allOf": [
+								{
+									"$ref": "#/components/schemas/ReferenceParams"
+								},
+								{
+									"properties": {
+										"index": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"type": "object"
+								}
+							]
 						},
 						"type": "array"
 					},
@@ -523,8 +643,27 @@
 							"$ref": "#/components/schemas/PortfolioParams"
 						},
 						"type": "array"
+					},
+					"cv": {
+						"type": "string"
 					}
 				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IUserProfileResposne": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/IUserProfile"
+					}
+				},
+				"required": [
+					"message",
+					"data"
+				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -540,6 +679,18 @@
 				"required": [
 					"_id",
 					"userId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CvParam": {
+				"properties": {
+					"cv": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"cv"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -602,6 +753,56 @@
 							"$ref": "#/components/schemas/CertificateParams"
 						},
 						"type": "array"
+					},
+					{
+						"$ref": "#/components/schemas/CvParam"
+					}
+				],
+				"nullable": true
+			},
+			"CustomCvResponse": {
+				"properties": {
+					"_id": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"style": {
+						"type": "string"
+					},
+					"json": {
+						"properties": {
+							"clipPath": {},
+							"objects": {
+								"items": {},
+								"type": "array"
+							},
+							"version": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"clipPath",
+							"objects",
+							"version"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"_id",
+					"style",
+					"json"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UnionCustomCvResponse": {
+				"anyOf": [
+					{
+						"$ref": "#/components/schemas/CustomCvResponse"
+					},
+					{
+						"properties": {},
+						"type": "object"
 					}
 				],
 				"nullable": true
@@ -634,39 +835,6 @@
 						"type": "string"
 					}
 				},
-				"type": "object",
-				"additionalProperties": false
-			},
-			"CvStyleParams": {
-				"properties": {
-					"_id": {
-						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
-					},
-					"style": {
-						"type": "string"
-					},
-					"json": {
-						"properties": {
-							"objects": {
-								"items": {},
-								"type": "array"
-							},
-							"version": {
-								"type": "string"
-							}
-						},
-						"required": [
-							"objects",
-							"version"
-						],
-						"type": "object"
-					}
-				},
-				"required": [
-					"_id",
-					"style",
-					"json"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -916,7 +1084,9 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {}
+								"schema": {
+									"$ref": "#/components/schemas/CvFilePResponse"
+								}
 							}
 						}
 					}
@@ -970,9 +1140,9 @@
 				}
 			}
 		},
-		"/v1/users/profile-detail": {
+		"/v1/users/cvstyle": {
 			"get": {
-				"operationId": "GetProfileByID",
+				"operationId": "GetCVStyle",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -981,7 +1151,10 @@
 								"schema": {
 									"properties": {
 										"data": {
-											"$ref": "#/components/schemas/IUserProfile"
+											"items": {
+												"$ref": "#/components/schemas/CvStyleParams"
+											},
+											"type": "array"
 										},
 										"message": {
 											"type": "string"
@@ -992,6 +1165,25 @@
 										"message"
 									],
 									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/v1/users/profile-detail": {
+			"get": {
+				"operationId": "GetProfileByID",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IUserProfileResposne"
 								}
 							}
 						}
@@ -1036,13 +1228,102 @@
 					}
 				},
 				"security": [],
-				"parameters": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "query",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/IUserProfile"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/users/customCv": {
+			"get": {
+				"operationId": "GetCustomCv",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"$ref": "#/components/schemas/CustomCvResponse"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			},
+			"put": {
+				"operationId": "UpdateCustomCv",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"$ref": "#/components/schemas/UnionCustomCvResponse"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"json": {},
+									"style": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"json",
+									"style"
+								],
+								"type": "object"
 							}
 						}
 					}
@@ -1384,46 +1665,6 @@
 					{
 						"in": "path",
 						"name": "cvId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			}
-		},
-		"/v1/users/cvstyle/{style}": {
-			"get": {
-				"operationId": "GetCVStyle",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"data": {
-											"$ref": "#/components/schemas/CvStyleParams"
-										},
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"data",
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "style",
 						"required": true,
 						"schema": {
 							"type": "string"
