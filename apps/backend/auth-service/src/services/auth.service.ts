@@ -142,7 +142,7 @@ class AuthService {
       const userInfo = await this.getUserByUsername(username);
       const role =
         userInfo.UserAttributes?.find((attr) => attr.Name === "custom:role")
-          ?.Value || "user";
+          ?.Value || "company";
 
       // Add the user to the group based on the `role` attribute
       await this.addToGroup(username, role);

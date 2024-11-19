@@ -74,7 +74,7 @@ const ROUTE_PATHS: RoutesConfig = {
         methods: {
           POST: {
             authRequired: true,
-            roles: ["user", "admin"],
+            roles: ["user", "conpany"],
           },
         },
       },

@@ -106,7 +106,8 @@ const Page: React.FC = () => {
       const blob = await response.blob();
       const file = new File([blob], "cropped-image.png", { type: "image/png" });
       setUpload(file);
-      const imagePreviewUrl = URL.createObjectURL(file); // Generate URL for display
+      const imagefile=URL.createObjectURL(file)
+      setPic(imagefile)
       setIsCropping(false);
       const image = await uploadToS3(file);
       if (image) {

@@ -27,6 +27,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "cam-formant.s3.amazonaws.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "encrypted-tbn0.gstatic.com",
         pathname: "/**",
       },

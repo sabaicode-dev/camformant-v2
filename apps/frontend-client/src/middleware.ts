@@ -1,5 +1,4 @@
 import { NextResponse, NextRequest } from "next/server";
-import { signOutAndClearCookies } from "./utils/helper/signOutAndClearCookies";
 import { API_ENDPOINTS } from "./utils/const/api-endpoints";
 
 export async function middleware(request: NextRequest) {
@@ -8,14 +7,8 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const { cookies } = await import("next/headers");
   const cookieStore = cookies();
-  const allCookies = cookieStore
-    .getAll()
-    .map((cookie) => `${cookie.name}=${cookie.value}`)
-    .join("; ");
-  const access_token = allCookies
-    .split("; ")
-    .find((cookie) => cookie.startsWith("access_token="))
-    ?.split("=")[1];
+  const allCookies = cookieStore.getAll().map((cookie) => `${cookie.name}=${cookie.value}`).join("; ");
+  const access_token = allCookies.split("; ").find((cookie) => cookie.startsWith("access_token="))?.split("=")[1];
 
   // Helper function to clear cookies and redirect
   const signOutAndClearCookies = async (
@@ -67,13 +60,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/signin", request.url));
   }
 
-    // 3. Check user role for /dashboard access if authenticated
-    if (pathname.startsWith("/dashboard")) {
-        const role = userInfo.data.user.role;
-        console.log("middleware.ts: role :::", role);
+  // 3. Check user role for /dashboard access if authenticated
+  if (pathname.startsWith("/dashboard")) {
+    const role = userInfo.data.user.role;
+    console.log("middleware.ts: role :::", role);
 
     // If user is not authorized for the dashboard, clear cookies and redirect
-    if (role !== "admin") {
+    if (role !== "company") {
       return await signOutAndClearCookies(request, "/signin");
     } else {
       console.log("middleware.ts: User is authorized for the dashboard");
