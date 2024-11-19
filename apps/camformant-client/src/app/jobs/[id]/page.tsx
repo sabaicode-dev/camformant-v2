@@ -18,6 +18,7 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import axiosInstance from "@/utils/axios";
 import { MdMessage } from "react-icons/md";
 import { useAuth } from "@/context/auth";
+import SkeletonLoader from "@/components/cv-rating-card/router-page/basic/skeleton";
 
 const Page: React.FC = () => {
   const { user } = useAuth();
@@ -214,6 +215,7 @@ const Page: React.FC = () => {
               <p className="w-full pl-5 text-gray-400 ">
                 Please select for apply{" "}
               </p>
+              {next && <SkeletonLoader text="loading..." />}
               {cv && (
                 <div
                   onClick={handleSelectCv}

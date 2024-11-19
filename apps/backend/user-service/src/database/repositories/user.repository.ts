@@ -477,7 +477,6 @@ class UserRepository {
       const response: CvFileParams | null = await CvFileModel.findOne({
         userId: new mongoose.Types.ObjectId(userId),
       });
-      console.log("response in get:::", response);
       if (!response) throw new NotFoundError("userid not found");
       return response;
     } catch (err) {
@@ -491,9 +490,7 @@ class UserRepository {
         { $push: { cv: { url } } },
         { new: true }
       );
-      console.log("response in insert", response);
       if (!response) {
-        console.log("respnose::: ", response);
         const newCvFile = await CvFileModel.create({
           userId: new mongoose.Types.ObjectId(userId),
           cv: [{ url: url }],
