@@ -82,7 +82,7 @@ export class MessageService {
       throw error;
     }
   }
-  //todo::Type of return
+  //todo::Type of return (no need for now)
   async getConversationById(conversationId: string): Promise<any> {
     try {
       const result =
