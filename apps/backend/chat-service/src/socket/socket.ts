@@ -63,7 +63,7 @@ const setupSocketIO = (io: Server) => {
       const cookies = socket.handshake.headers["cookie"];
       try {
         console.log("data:::", data);
-
+        //bug::
         if (cookies) {
           const response = await axios.post(
             `${configs.MessageUrl}/send/${data.receiverId}`,

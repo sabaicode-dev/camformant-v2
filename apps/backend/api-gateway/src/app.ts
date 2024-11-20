@@ -18,11 +18,17 @@ const app = express();
 // ========================
 // Security Middleware
 // ========================
+app.use((_req, _res, next) => {
+  console.log("Reach api getway1");
+  next();
+});
+//
 app.use(cors(corsOptions));
+//
 app.use(cookieParser());
 app.use((_req, _res, next) => {
   console.log("Reach api getway");
-  next()
+  next();
 });
 // ========================
 // Gateway Health

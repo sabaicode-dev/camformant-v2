@@ -9,9 +9,11 @@ export const allowedOrigins: string[] = [
 
 const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
-    if (allowedOrigins.indexOf(origin!) !== -1) {
+    if (allowedOrigins.includes(origin!) || !origin) {
       callback(null, true);
     } else {
+      console.log("error origin cors");
+
       callback(new Error("Not allowed by CORS!"));
     }
   },

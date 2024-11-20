@@ -31,13 +31,18 @@ export class MessageController extends Controller {
     @Request() request: express.Request
   ) {
     try {
+      console.log("0:");
+
       const { message } = reqBody;
+      console.log("1:::", message);
 
       const cookieHeader = request.headers.cookie;
       const currentUser = JSON.parse(request.headers.currentuser as string) as {
         username?: string;
         role?: string[];
       };
+
+      console.log("2:::", currentUser);
 
       const result = await this.MessageService.sendMessaage(
         message,
