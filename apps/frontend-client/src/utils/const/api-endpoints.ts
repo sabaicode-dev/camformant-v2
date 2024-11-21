@@ -1,8 +1,5 @@
 export const API_ENDPOINTS = {
   // AUTH SERVICE
-  SIGN_UP: `${process.env.NEXT_PUBLIC_AUTH_ENDPOINT}/signup`,
-  VERIFY: `${process.env.NEXT_PUBLIC_AUTH_ENDPOINT}/verify`,
-  SIGN_IN: `${process.env.NEXT_PUBLIC_AUTH_ENDPOINT}/login`,
   SIGN_OUT: `${process.env.NEXT_PUBLIC_AUTH_ENDPOINT}/signout`,
   REFRESH: `${process.env.NEXT_PUBLIC_AUTH_ENDPOINT}/refresh-token`,
   SIGN_IN_WITH_GOOGLE: `${process.env.NEXT_PUBLIC_AUTH_ENDPOINT}/google`,

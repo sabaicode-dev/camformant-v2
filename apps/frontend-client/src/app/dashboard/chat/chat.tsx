@@ -9,9 +9,9 @@ const ChatPage = () => {
   return (
     <div className="w-5/6 m-auto flex py-2">
       <div className="w-2/6 border-r-2  ">
-        <div className="flex h-[80px] justify-center items-center">
+        {/* <div className="flex h-[80px] justify-center items-center">
           <Input placeholder="search" className="w-3/4 h-[42px] border border-gray-200 rounded-2xl" />
-        </div>
+        </div> */}
         <div className="w-full px-2">
           <ChatProfile
             name="Jonh Doe"
