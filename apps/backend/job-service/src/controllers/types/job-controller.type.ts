@@ -6,19 +6,20 @@ import {
   EmploymentType,
   WorkMode,
 } from "@/src/database/models/job.model";
+import mongoose from "mongoose";
 
 // ========================
 export interface JobParams {
-  companyId?: string;
-  title?: string;
-  position?: string[];
-  workMode?: WorkMode[];
-  location?: string;
-  requirement?: string;
+  companyId: string | mongoose.Types.ObjectId;
+  title: string;
+  position: string[];
+  workMode: WorkMode[];
+  location: string;
+  requirement: string;
   description?: string;
-  address?: string;
-  min_salary?: number;
-  max_salary?: number;
+  address: string;
+  min_salary: number | 0;
+  max_salary: number | 5000;
   job_opening?: number;
   type?: EmploymentType[];
   schedule?: EmploymentSchedule[];

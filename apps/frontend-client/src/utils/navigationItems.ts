@@ -1,5 +1,5 @@
 import { PersonIcon } from "@radix-ui/react-icons";
-import {LayoutDashboard,Sheet,LetterText, Calendar, ChartNetwork, UserPen, List, MessageSquare, Settings, Users2, User } from "lucide-react";
+import { LayoutDashboard, Sheet, LetterText, Calendar, ChartNetwork, UserPen, List, MessageSquare, Settings, Users2, User } from "lucide-react";
 
 
 
@@ -23,7 +23,7 @@ const Jobs = [
     },
     {
         title: "Job View",
-        url: "/dashboard/jobs",
+        url: "/dashboard/viewJob",
         icon: Sheet,
     },
     {

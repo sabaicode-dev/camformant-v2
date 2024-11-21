@@ -31,25 +31,24 @@ const Page = () => {
   useEffect(() => {
     async function GetData() {
       try {
-        
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=basic`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=basic`
         );
         setLoading(true);
         const res = response.data.data.basic;
-        if(res.Length) return 
+        if (res.Length) return;
         console.log("datares:", res);
         setEmail(res.email);
-        setLastname(res.surname);
-        setSurname(res.lastname);
+        setLastname(res.lastname);
+        setSurname(res.surname);
         setCareer(res.career);
         setPhone(res.phonenumber);
         setDate(res.dob);
         setAddress(res.address);
         setStatus(res.martial);
-        setDay(res.dob.split('/')[0])
-        setMonth(res.dob.split('/')[1])
-        setYear(res.dob.split('/')[2])
+        setDay(res.dob.split("/")[0]);
+        setMonth(res.dob.split("/")[1]);
+        setYear(res.dob.split("/")[2]);
       } catch (error) {
       } finally {
         setLoading(false);
@@ -68,19 +67,19 @@ const Page = () => {
         phonenumber: phone,
         dob: date, // Date of birth from state
         address, // Address from state
-        status: status, // Marital status from state
+        martial: status, // Marital status from state
       };
-      console.log("response",dataValue)
+      console.log("response", dataValue);
       console.log("Data", dataValue);
       setLoading(true);
       const response = await axiosInstance.put(
-        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
-        { basic:{...dataValue} }
+        API_ENDPOINTS.USER_PROFILE_DETAIL,
+        { basic: { ...dataValue } }
       );
-      console.log("response",response)
+      console.log("response", response);
       return response;
     } catch (error) {
-      console.error(error);
+      console.error("error in post", error);
     } finally {
       setLoading(false);
     }
@@ -103,7 +102,7 @@ const Page = () => {
           txt="Sur Name"
           setValues={(value) => {
             setSurname(value);
-            value != surname || setIsPut(true);
+            value == surname || setIsPut(true);
           }}
           valuesFouce="surname"
         />
@@ -115,7 +114,7 @@ const Page = () => {
           txt="Last Name"
           setValues={(value) => {
             setLastname(value);
-            value != lastname || setIsPut(true);
+            value == lastname || setIsPut(true);
           }}
           valuesFouce="lastname"
         />
@@ -126,7 +125,7 @@ const Page = () => {
           txt="Career"
           setValues={(value) => {
             setCareer(value);
-            value != career || setIsPut(true);
+            value == career || setIsPut(true);
           }}
           valuesFouce="carer"
         />
@@ -137,7 +136,7 @@ const Page = () => {
           txt="Email"
           setValues={(value) => {
             setEmail(value);
-            value != email || setIsPut(true);
+            value == email || setIsPut(true);
           }}
           valuesFouce="email"
         />
@@ -153,7 +152,7 @@ const Page = () => {
           txt="Phone"
           setValues={(value) => {
             setPhone(value);
-            value != phone || setIsPut(true);
+            value == phone || setIsPut(true);
           }}
           valuesFouce="phone"
         />
@@ -164,7 +163,7 @@ const Page = () => {
           txt="Adress"
           setValues={(value) => {
             setAddress(value);
-            value != address || setIsPut(true);
+            value == address || setIsPut(true);
           }}
           valuesFouce="address"
         />
@@ -175,7 +174,7 @@ const Page = () => {
           txt="Martail Status"
           setValues={(value) => {
             setStatus(value);
-            value != status || setIsPut(true);
+            value == status || setIsPut(true);
           }}
           valuesFouce="Status"
         />

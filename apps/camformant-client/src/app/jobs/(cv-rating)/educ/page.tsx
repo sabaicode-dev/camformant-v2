@@ -46,20 +46,24 @@ const Page = () => {
         console.log("user id", user!._id);
         setNext(true);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=educations`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=educations`
         );
-       
+
         const data = response.data.data.educations;
-        if(data.length==0) return
-        setEducationEntries(
-          data
+        console.log("education data in get", response.data);
+        if (data.length == 0) return;
+        setEducationEntries(data);
+        let updatedEndYears = data.map(
+          (entry: EducationParams) => entry.year.split("-")[0]
         );
-        let updatedEndYears = data.map((entry:EducationParams) => entry.year.split("-")[0]);
         setStartYear(updatedEndYears);
-        updatedEndYears = data.map((entry:EducationParams) => entry.year.split("-")[1]||entry.year.split("-")[0]);
+        updatedEndYears = data.map(
+          (entry: EducationParams) =>
+            entry.year.split("-")[1] || entry.year.split("-")[0]
+        );
         setEndYear(updatedEndYears);
 
-        console.log("start year",startYear)
+        console.log("start year", startYear);
       } catch (error) {
         console.error(error);
       } finally {
@@ -67,7 +71,7 @@ const Page = () => {
       }
     }
     GetData();
-  }, []);
+  }, [startYear, user]);
 
   async function PostData() {
     try {
@@ -75,12 +79,12 @@ const Page = () => {
       const dataValue = {
         educations: educationEntries,
       };
-      console.log("data value",dataValue);
+      console.log("data value", dataValue);
       const response = await axiosInstance.put(
-        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
+        API_ENDPOINTS.USER_PROFILE_DETAIL,
         { ...dataValue }
       );
-      console.log("post respone",response);
+      console.log("post respone", response);
       return response;
     } catch (error) {
       console.error(error);
@@ -98,7 +102,7 @@ const Page = () => {
       />
       {next && <SkeletonLoader text="Loading ..." />}
       {educationEntries.map((entry, index) => (
-        <div>
+        <div key={""}>
           {Object.entries(entry).map(([key, value]) => {
             return key != "year" ? (
               <InputComponent
@@ -169,7 +173,4 @@ const Page = () => {
   );
 };
 
-
 export default Page;
-
-

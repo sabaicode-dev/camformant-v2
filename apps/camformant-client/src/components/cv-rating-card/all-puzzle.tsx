@@ -10,22 +10,26 @@ const AllPuzzle = () => {
   const { user } = useAuth();
   const [total, setTotal] = useState<number>(0);
 
-  return user ? (
+  return (
     <div>
       <Link href={"/profile"}>
         <BackButton_md styles="absolute bg-white p-3 px-4 rounded-xl top-5  left-3  " />
       </Link>
-      <div className=" container ">
-        <PuzzleProfile totalRating={total} />
-      </div>
-      <div>
-        <PuzzleCard propTotal={setTotal} />
-      </div>
+      {user ? (
+        <div>
+          <div className=" container ">
+            <PuzzleProfile totalRating={total} />
+          </div>
+          <div>
+            <PuzzleCard propTotal={setTotal} />
+          </div>
+        </div>
+      ) : (
+        <p className="flex items-center justify-center w-full h-56 mb-20">
+          Please Signin
+        </p>
+      )}
     </div>
-  ) : (
-    <p className="flex items-center justify-center w-full h-56 mb-20">
-      Please Signin
-    </p>
   );
 };
 

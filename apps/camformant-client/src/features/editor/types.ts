@@ -118,6 +118,7 @@ export type ActiveTool =
   | "shapes"
   | "text"
   | "images"
+  | "imageReplace"
   | "draw"
   | "fill"
   | "stroke-color"
@@ -147,6 +148,9 @@ export type BuildEditorProps = {
   autoZoom: () => void;
   copy: () => void;
   paste: () => void;
+  setPatternImageSrc: React.Dispatch<React.SetStateAction<string|null>>;
+  setShowCropper: React.Dispatch<React.SetStateAction<boolean>>;
+  cropperRef: HTMLImageElement | null;
   canvas: fabric.Canvas;
   fillColor: string;
   strokeColor: string;
@@ -185,6 +189,9 @@ export interface Editor {
   onPaste: () => void;
   changeImageFilter: (value: string) => void;
   addImage: (value: string) => void;
+  replaceImage: (value: string) => void;
+  enableCropping:()=>void;
+  handleCrop:()=>void
   delete: () => void;
   getActiveFontSize: () => number;
   changeFontSize: (value: number) => void;

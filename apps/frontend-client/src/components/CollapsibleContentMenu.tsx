@@ -39,10 +39,14 @@ const CollapsibleContentMenu: React.FC<CollapsibleContentMenuProps> = ({
   const pathname = usePathname();
   const isActive = pathname === item[0].url;
   const [isActives, setIsActives] = useState(false);
+  const [activeUrl, setActiveUrl] = useState<string | null>(null);
 
   // Toggle active state on click
   const handleClick = () => {
     setIsActives(!isActives);
+  };
+  const handleClickList = (url: string) => {
+    setActiveUrl(url)
   };
   return (
     <>
@@ -63,17 +67,23 @@ const CollapsibleContentMenu: React.FC<CollapsibleContentMenuProps> = ({
             <CollapsibleContent className="CollapsibleContent">
               <SidebarGroupContent>
                 <SidebarMenu>
+                  {/* separator on dropdown sidebar  */}
                   <div className="relative">
                     <Separator
                       orientation="vertical"
-                      className="absolute left-0 top-0 h-full w-[1px] bg-gray-300"
+                      className="absolute left-0 top-0 h-full w-[1px] bg-[rgba(251,146,60,1)]"
                       aria-orientation="vertical"
                     />
                     <SidebarMenu className="pl-4">
                       {item.map((item: any) => (
                         <SidebarMenuItem key={item.title}>
                           <SidebarMenuButton asChild>
-                            <Link href={item.url} className="flex items-center">
+                            <Link
+                              href={item.url}
+                              key={item}
+                              onClick={() => handleClickList(item.url)}
+                              className={`flex items-center hover:bg-transparent hover:text-[rgba(251,146,60,1)] ${activeUrl===item.url ? "text-orange-400" : ""}`}
+                            >
                               <item.icon />
                               <span>{item.title}</span>
                             </Link>

@@ -32,7 +32,7 @@ const Page = () => {
         setNext(true);
         console.log("user", user);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=portfolio`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=portfolio`
         );
         if (!response) {
           return null;
@@ -45,16 +45,16 @@ const Page = () => {
       }
     }
     GetData();
-  }, []);
+  }, [user]);
   async function PostData() {
     try {
       setNext(true); // Trigger loading
       const dataValue = {
         portfolio: portfoEntries,
       };
-
+      console.log("data calue:::", dataValue);
       const response = await axiosInstance.put(
-        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
+        API_ENDPOINTS.USER_PROFILE_DETAIL,
         { ...dataValue }
       );
       console.log("response", response);
@@ -74,7 +74,7 @@ const Page = () => {
       />
       {next && <SkeletonLoader text="Loading ..." />}
       {portfoEntries.map((entry, index) => (
-        <div>
+        <div key={""}>
           {Object.entries(entry).map(([key, value]) => (
             <InputComponent
               key={key}

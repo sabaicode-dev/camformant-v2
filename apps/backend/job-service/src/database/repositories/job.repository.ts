@@ -9,6 +9,7 @@ import { NotFoundError, prettyObject } from "@sabaicode-dev/camformant-libs";
 import mongoose, { SortOrder } from "mongoose";
 
 class JobRepository {
+  //DONE::
   public async createNewJob(newInfo: JobParams): Promise<IJob> {
     try {
       const newJob = await JobModel.create(newInfo);
@@ -78,8 +79,6 @@ class JobRepository {
             { min_salary: { $gte: min_salary, $lte: max_salary } },
             { max_salary: { $gte: min_salary, $lte: max_salary } },
           ];
-
-          console.log("mongoFilter::: ", mongoFilter);
         } else if (
           typeof filter[key] === "object" &&
           !Array.isArray(filter[key])
@@ -125,8 +124,6 @@ class JobRepository {
       return mongoFilter;
     };
 
-    // console.log("mongoFilter::: ", buildFilter(filter));
-
     // Adding search functionality
     const searchFilter = search
       ? {
@@ -137,23 +134,24 @@ class JobRepository {
           ],
         }
       : {};
-    // console.log("userFav:::, ", userFav);
-
-    const userFavFilter: any = {};
-    if (userFav?.length !== 0) {
+    type UserFavFilter = {
+      _id?: {
+        $in: mongoose.Types.ObjectId[];
+      };
+    };
+    const userFavFilter: UserFavFilter = {};
+    if (userFav?.length) {
       userFavFilter._id = {
-        $in: userFav?.map((id) => new mongoose.Types.ObjectId(id)),
+        $in: userFav.map((id) => new mongoose.Types.ObjectId(id)),
       };
     }
-    // console.log("userFavFilter::::,", userFavFilter);
 
     try {
       const mongoFilter = {
-        ...(userFavFilter || {}),
+        ...userFavFilter,
         ...buildFilter(filter),
         ...searchFilter,
       };
-      // console.log("filter mongo:::, ", mongoFilter);
 
       let operation: IJob[] = [];
       if (queries.limit === "*") {

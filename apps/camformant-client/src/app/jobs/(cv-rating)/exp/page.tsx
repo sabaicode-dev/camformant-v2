@@ -43,19 +43,22 @@ const Page: React.FC = () => {
   useEffect(() => {
     async function GetData() {
       try {
-        console.log(user)
+        console.log(user);
         setNext(true);
         console.log("user id", user!._id);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=experiences`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=experiences`
         );
         const data = response.data.data.experiences;
-        data.length&&setExperEntries(
-          data
+        data.length && setExperEntries(data);
+        let updatedEndYears = data.map(
+          (entry: ExperienceParams) => entry.year.split("-")[0]
         );
-        let updatedEndYears = data.map((entry:ExperienceParams) => entry.year.split("-")[0]);
         setStartYear(updatedEndYears);
-        updatedEndYears = data.map((entry:ExperienceParams) => entry.year.split("-")[1]||entry.year.split("-")[0]);
+        updatedEndYears = data.map(
+          (entry: ExperienceParams) =>
+            entry.year.split("-")[1] || entry.year.split("-")[0]
+        );
         setEndYear(updatedEndYears);
       } catch (error) {
       } finally {
@@ -73,7 +76,7 @@ const Page: React.FC = () => {
       };
 
       const response = await axiosInstance.put(
-        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
+        API_ENDPOINTS.USER_PROFILE_DETAIL,
         { ...dataValue }
       );
       return response;
@@ -93,7 +96,7 @@ const Page: React.FC = () => {
       />
       {next && <SkeletonLoader text="Loading ..." />}
       {experEntries.map((entry, index) => (
-        <div>
+        <div key={""}>
           {Object.entries(entry).map(([key, value]) => {
             return key != "year" ? (
               <InputComponent
@@ -112,7 +115,7 @@ const Page: React.FC = () => {
                     newValue
                   );
                   value == newValue || setIsPut(true);
-                  console.log("key",key)
+                  console.log("key", key);
                 }}
                 valuesFouce={`education-${key}-${index}`}
               />
@@ -156,7 +159,7 @@ const Page: React.FC = () => {
         lengthofData={experEntries.length}
         onAdd={() => addEntry(setExperEntries, experEntries, inputEmpty)}
         onDelete={() => {
-          deleteEntry(setExperEntries, experEntries)
+          deleteEntry(setExperEntries, experEntries);
           setIsPut(true);
         }}
       />

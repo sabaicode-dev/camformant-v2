@@ -2,7 +2,7 @@ import { Camera } from "lucide-react";
 import { RiFacebookCircleLine } from "react-icons/ri";
 import { FaInstagram } from "react-icons/fa6";
 
-const ProfilePage = () => {
+const Profile = () => {
   return (
     <>
       <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
@@ -83,4 +83,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default Profile;

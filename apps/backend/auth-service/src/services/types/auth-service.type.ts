@@ -11,6 +11,6 @@ export interface CognitoToken {
   accessToken: string;
   idToken: string;
   refreshToken: string;
-  username?: string;
+  sub?: string;
   userId?: string;
 }

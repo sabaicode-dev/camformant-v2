@@ -47,10 +47,10 @@ const authenticateToken = async (
   try {
     const { methodConfig } = req;
 
-    // console.log("req cookie:::", req.cookies);
-
-    // Step 1
     if (methodConfig.authRequired) {
+      // console.log("req cookie:::", req.cookies);
+
+      // Step 1
       console.log("need authicated");
       // Step 2
       const token = req.cookies?.["access_token"];
@@ -97,6 +97,8 @@ const authenticateToken = async (
         role,
       };
     }
+    console.log("req.currentUser", req.currentUser);
+
     // Step 4
     next();
   } catch (error) {
@@ -191,7 +193,7 @@ const routeConfigMiddleware = (
 ) => {
   const { path, method } = req;
 
-  console.log("path:::", path, " method:::", method);
+  console.log("path:::", path, " method1111111111:::", method);
 
   // Step 1
   let routeConfig = null;
@@ -200,16 +202,18 @@ const routeConfigMiddleware = (
     // console.log("routeConfig", routeConfig);
     if (routeConfig) break;
   }
-
+  console.log("routeConfig", routeConfig);
   if (!routeConfig) {
     return next(new NotFoundError("Route not found"));
   }
   // Step 2
   const methodConfig = routeConfig.methods?.[method];
-  console.log(methodConfig)
+  console.log(methodConfig);
   if (!methodConfig) {
     return next(new NotFoundError("Method not allowed"));
   }
+
+  console.log("routeConfig", routeConfig);
 
   // Attach the route configuration and method config to the request object
   req.routeConfig = routeConfig;

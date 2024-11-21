@@ -49,7 +49,7 @@ const SelfDescription: React.FC = () => {
       try {
         setNext(true);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=descriptions`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=descriptions`
         );
         if (!response) {
           return null;
@@ -58,14 +58,14 @@ const SelfDescription: React.FC = () => {
         const data = response.data.data.descriptions;
         setStrength(data.strength);
         setDescription(data.description);
-        console.log("feedback",feedbacks)
+        console.log("feedback", feedbacks);
       } catch (error) {
       } finally {
         setNext(false);
       }
     }
     GetData();
-  }, []);
+  }, [feedbacks]);
 
   async function PostData() {
     try {
@@ -76,7 +76,7 @@ const SelfDescription: React.FC = () => {
       };
 
       const response = await axiosInstance.put(
-        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
+        API_ENDPOINTS.USER_PROFILE_DETAIL,
         { descriptions: { ...dataValue } }
       );
       return response;
@@ -126,18 +126,18 @@ const SelfDescription: React.FC = () => {
 
   return (
     <div>
-      {next&&<SkeletonLoader text={"loading..."} />}
+      {next && <SkeletonLoader text={"loading..."} />}
       <HeaderBasic
         title="Self Descriptions"
         nextRoute={"/jobs/certificate"}
         {...(isPut ? { next: PostData } : {})}
       />
-      <div className=" p-5 font-sans">
-        <div className=" mb-4">
+      <div className="p-5 font-sans ">
+        <div className="mb-4 ">
           <div className="relative">
             <input
               type="text"
-              className="w-full p-7 mb-4 border rounded-3xl shadow-md"
+              className="w-full mb-4 border shadow-md p-7 rounded-3xl"
               value={strength}
               onChange={(e) => {
                 handleChange(e, setStrength, "feedbackStren");
@@ -147,11 +147,11 @@ const SelfDescription: React.FC = () => {
             />
             {feedbacks.feedbackStren.length ? (
               <ul className="absolute top-[-10px] list-none flex bg-gray-300 rounded-lg">
-                <span className="font-semibold mx-4">Mistake:</span>
+                <span className="mx-4 font-semibold">Mistake:</span>
                 {feedbacks.feedbackStren.map(
                   (element: MatchParams, index: number) => (
                     <li
-                    className="mr-5 cursor-pointer"
+                      className="mr-5 cursor-pointer"
                       key={element.offset}
                       onClick={() =>
                         handleSuggestionClick(
@@ -164,15 +164,18 @@ const SelfDescription: React.FC = () => {
                         )
                       }
                     >
-                      {element.replacements[0]?.value && element.replacements[0].value}
+                      {element.replacements[0]?.value &&
+                        element.replacements[0].value}
                     </li>
                   )
                 )}
               </ul>
-            ):<></>}
+            ) : (
+              <></>
+            )}
           </div>
           <button
-            className="text-yellow-500  w-full flex justify-end"
+            className="flex justify-end w-full text-yellow-500"
             onClick={() => setOpen(true)}
           >
             Show Recommendation
@@ -181,7 +184,7 @@ const SelfDescription: React.FC = () => {
           <div className="relative">
             <input
               type="text"
-              className="w-full p-7 mb-4 border rounded-3xl shadow-md mt-5"
+              className="w-full mt-5 mb-4 border shadow-md p-7 rounded-3xl"
               value={description}
               onChange={(e) => {
                 handleChange(e, setDescription, "feedbackDesc");
@@ -191,7 +194,7 @@ const SelfDescription: React.FC = () => {
             />
             {feedbacks.feedbackDesc.length ? (
               <ul className="absolute top-[-10px] list-none flex bg-gray-300 rounded-lg">
-                <span className="font-semibold mx-4">Mistake:</span>
+                <span className="mx-4 font-semibold">Mistake:</span>
                 {feedbacks.feedbackDesc.map(
                   (element: MatchParams, index: number) => (
                     <li
@@ -208,12 +211,15 @@ const SelfDescription: React.FC = () => {
                         )
                       }
                     >
-                      {element.replacements[0]?.value && element.replacements[0].value}
+                      {element.replacements[0]?.value &&
+                        element.replacements[0].value}
                     </li>
                   )
                 )}
               </ul>
-            ):<></>}
+            ) : (
+              <></>
+            )}
           </div>
         </div>
 
@@ -237,11 +243,11 @@ const SelfDescription: React.FC = () => {
                           className={`flex m-auto w-96 p-5 mb-10 border rounded-3xl shadow-md cursor-pointer xl:w-full xl:left-0 xl:p-7 }`}
                           onClick={() => handleOptionClick(rec)}
                         >
-                          <div className="flex justify-between items-center ">
+                          <div className="flex items-center justify-between ">
                             <span>{rec}</span>
                             {selectedRecommendation === rec && (
-                              <span className=" absolute right-4 mt-10">
-                                <div className="text-orange-500 text-xl">
+                              <span className="absolute mt-10  right-4">
+                                <div className="text-xl text-orange-500">
                                   <FaCheckCircle />
                                 </div>
                               </span>

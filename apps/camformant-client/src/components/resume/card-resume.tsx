@@ -8,12 +8,13 @@ import axios from "axios";
 import MiniCardResume from "./mini-card-resume";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
 
 interface CvData {
- cv:{
-  url:string
-  _id:string
- }[]
+  cv: {
+    url: string;
+    _id: string;
+  }[];
 }
 const CardResume: React.FC = () => {
   const [show, setShow] = useState<boolean>(false);
@@ -22,23 +23,15 @@ const CardResume: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-    };
     const getCv = async () => {
       try {
         setLoading(true);
         const check_cv = await axiosInstance.get(
-        API_ENDPOINTS.USER_SERVICE_CV_FILE
+          API_ENDPOINTS.USER_SERVICE_CV_FILE
         );
-        console.log("cv data",check_cv);
-
-        if (check_cv.status === 200) {
+        if (check_cv.status == 200) {
           setCvs(check_cv.data.data); // Set the entire response data, which includes the 'cv' array
-          setShow(check_cv.data.cv.length > 0); // Set show based on whether there are CVs
+          setShow(check_cv.data.data.cv.length > 0); // Set show based on whether there are CVs
         } else {
           setShow(false);
         }
@@ -54,9 +47,9 @@ const CardResume: React.FC = () => {
 
   return (
     <div className="h-[400px] ">
-      <AttachedCvs next={next} setNext={setNext} />
+      <AttachedCvs next={next} setNext={setNext}  setLoading={setLoading}/>
 
-      {!show && !loading && (
+      {!show&&(
         <div className="flex flex-col items-center justify-center pt-5">
           <h1 className="w-full pb-5 text-xl font-semibold">My Resume</h1>
           <Image
@@ -74,42 +67,27 @@ const CardResume: React.FC = () => {
       )}
 
       {loading && (
-        <div className="flex flex-col items-center justify-center pt-5 pb-20">
-          <h1 className="w-full pb-5 text-xl font-semibold">My Resume</h1>
-          <div className="flex flex-col w-full gap-3">
-            {Array(5)
-              .fill(0)
-              .map((_, index) => (
-                <div key={index} className="mb-5 rounded-xl drop-shadow-md">
-                  <MiniCardResume
-                    isLoading={true}
-                    name={""}
-                    index={index}
-                    next={next}
-                    setNext={setNext}
-                  />
-                </div>
-              ))}
-          </div>
-        </div>
+        <SkeletonLoader text="Loading..."/>
       )}
 
       {show && (
         <div className="flex flex-col items-center justify-center pt-5 pb-20">
           <h1 className="w-full pb-5 text-xl font-semibold">My Resume</h1>
           <div className="flex flex-col w-full gap-3 ">
-            {cvs?.cv?.map((item: {url:string,_id:string}, index: number) => (
-              <div key={index} className="relative w-full h-full">
-                <MiniCardResume
-                  name={item.url}
-                  cvId={item._id}
-                  index={index}
-                  next={next}
-                  setNext={setNext}
-                  style="translate-x-[-70px]"
-                />
-              </div>
-            ))}
+            {cvs?.cv?.map(
+              (item: { url: string; _id: string }, index: number) => (
+                <div key={index} className="relative w-full h-full">
+                  <MiniCardResume
+                    name={item.url}
+                    cvId={item._id}
+                    index={index}
+                    next={next}
+                    setNext={setNext}
+                    style="translate-x-[-70px]"
+                  />
+                </div>
+              )
+            )}
           </div>
         </div>
       )}
@@ -118,3 +96,23 @@ const CardResume: React.FC = () => {
 };
 
 export default CardResume;
+
+//incase we need this(skeletal of cv)
+// <div className="flex flex-col items-center justify-center pt-5 pb-20">
+// <h1 className="w-full pb-5 text-xl font-semibold">My Resume</h1>
+// <div className="flex flex-col w-full gap-3">
+//   {Array(5)
+//     .fill(0)
+//     .map((_, index) => (
+//       <div key={index} className="mb-5 rounded-xl drop-shadow-md">
+//         <MiniCardResume
+//           isLoading={true}
+//           name={""}
+//           index={index}
+//           next={next}
+//           setNext={setNext}
+//         />
+//       </div>
+//     ))}
+// </div>
+// </div>

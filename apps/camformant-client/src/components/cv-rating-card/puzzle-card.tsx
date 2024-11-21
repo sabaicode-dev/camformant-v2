@@ -28,7 +28,7 @@ const PuzzleCard: React.FC<typePropsTotal> = ({ propTotal }) => {
       // const ip = 'http://192.168.3.167:3030'
       try {
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}`
+          API_ENDPOINTS.USER_PROFILE_DETAIL
         ); //get uer data
         if (!response) {
           return null;
@@ -39,9 +39,9 @@ const PuzzleCard: React.FC<typePropsTotal> = ({ propTotal }) => {
         setEdu(calculateProgressBar(response.data.data.educations, 4));
         console.log("education", edu);
         setExp(calculateProgressBar(response.data.data.experiences, 4));
-        console.log("self")
+        console.log("self");
         setSelf(calculateProgressBar(response.data.data.descriptions, 2));
-        setCert(calculateProgressBar(response.data.data.certificates, 1))
+        setCert(calculateProgressBar(response.data.data.certificates, 1));
         setPort(calculateProgressBar(response.data.data.portfolio, 2));
         setRef(calculateProgressBar(response.data.data.references, 5));
         console.log("skill");
@@ -65,7 +65,7 @@ const PuzzleCard: React.FC<typePropsTotal> = ({ propTotal }) => {
       }
     }
     GetCard();
-  }, []);
+  }, [edu, info]);
   useEffect(() => {
     const totalRating = info + edu + exp + self + cert + port + ref + ability;
     console.log("Total rating: " + totalRating);
@@ -81,7 +81,7 @@ const PuzzleCard: React.FC<typePropsTotal> = ({ propTotal }) => {
     { txt: "Ability ", rating: ability, route: "/ability" },
     { txt: "Self Description", rating: self, route: "/description" },
     { txt: "Portfilio", rating: port, route: "/portfolio" },
-    { txt: "Certificate", rating: cert, route: "/certificate"},
+    { txt: "Certificate", rating: cert, route: "/certificate" },
     { txt: "Reference", rating: ref, route: "/references" },
   ];
   return (

@@ -62,7 +62,7 @@ function ChartComponent() {
                   tickMargin={8}
                 />
                 <YAxis tickLine={false} axisLine={false} 
-                tickFormatter={(value)=>`${value/100}`}/>
+                tickFormatter={(value:any)=>`${value/100}`}/>
                 <Tooltip
                   cursor={{ stroke: "#f97316", strokeWidth: 1 }}
                   content={<ChartTooltipContent indicator="dot" />}

@@ -7,8 +7,10 @@ import {
 import UserRepository from "@/src/database/repositories/user.repository";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
 import { CvStyleParams } from "@/src/controllers/types/user-cv-controller.type";
-import { IUserProfile, UnionProfileType } from "@/src/controllers/types/userprofile.type";
-
+import {
+  IUserProfile,
+  UnionProfileType,
+} from "@/src/controllers/types/userprofile.type";
 
 class UserService {
   async getAllUsers(queries: UserGetAllControllerParams) {
@@ -60,16 +62,14 @@ class UserService {
       throw error;
     }
   }
-async changeProfilePic(photo:string,userId:string):Promise<IUser>{
-  try{
-    const response=await UserRepository.updateProfilePic(photo,userId)
-    return response
+  async changeProfilePic(photo: string, userId: string): Promise<IUser> {
+    try {
+      const response = await UserRepository.updateProfilePic(photo, userId);
+      return response;
+    } catch (err) {
+      throw err;
+    }
   }
-  catch(err){
-    throw err
-  }
-
-}
   async createNewUser(userInfo: UserCreationRepoParams) {
     try {
       console.log("userInfo", userInfo);
@@ -111,6 +111,32 @@ async changeProfilePic(photo:string,userId:string):Promise<IUser>{
     }
   }
 
+  //TODO: type
+  public async getMultiProfileUser(usersId?: string): Promise<{
+    usersProfile: {
+      _id?: string;
+      profile?: string;
+      name?: string;
+    }[];
+  }> {
+    const arrUsersId = usersId?.split(",") || [];
+    try {
+      const result = await UserRepository.getMultiProfileUser(arrUsersId!);
+
+      if (!result) {
+        // throw new NotFoundError();
+        throw new Error("No user Found!");
+      }
+      return { usersProfile: result };
+    } catch (error) {
+      console.error(
+        `UserService - getMultiProfileUser() method error:`,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
+
   async addFavorite(userId: string, jobId: string): Promise<IUser> {
     try {
       const user = await UserRepository.addFavorite(userId, jobId);
@@ -142,13 +168,19 @@ async changeProfilePic(photo:string,userId:string):Promise<IUser>{
       const favorites = await UserRepository.getUserFavorites(userId);
       return favorites;
     } catch (error) {
-      console.error(`UserService - getUserFavorites() method error: `, prettyObject(error as {}));
+      console.error(
+        `UserService - getUserFavorites() method error: `,
+        prettyObject(error as {})
+      );
       throw error;
     }
   }
-  async getProfileById(userId:string,category?:string):Promise<IUserProfile> {
+  async getProfileById(
+    userId: string,
+    category?: string
+  ): Promise<IUserProfile> {
     try {
-      const profile = await UserRepository.getProfileByUserId(userId,category);
+      const profile = await UserRepository.getProfileByUserId(userId, category);
       return profile;
     } catch (error) {
       console.error(
@@ -158,53 +190,52 @@ async changeProfilePic(photo:string,userId:string):Promise<IUser>{
       throw error;
     }
   }
-  async updateUserProfile(userid:string,updateBody:IUserProfile):Promise<UnionProfileType>{
-    try{
-      const userData=await UserRepository.updateProfile(userid,updateBody)
-      return userData
-    }
-    catch(err){
-      throw err
-    }
-  }
-  async getCvFiles(userId:string){
-    try{
-      const response=await UserRepository.getCvFile(userId)
-      return response
-    }
-    catch(err){
-      throw err
+  async updateUserProfile(
+    userid: string,
+    updateBody: IUserProfile
+  ): Promise<UnionProfileType> {
+    try {
+      const userData = await UserRepository.updateProfile(userid, updateBody);
+      return userData;
+    } catch (err) {
+      throw err;
     }
   }
-  async insertCvFile(userId:string,url:string){
-    try{
-      const response=await UserRepository.insertCvFile(userId,url)
-      return response
-    }
-    catch(err){
-      throw err
-    }
-  }
-  async deleteCvFile(userId:string,cvId:string){
-   try{
-    const response=await UserRepository.deleteCvFile(userId,cvId)
-    return response
-   }
-   catch(err){
-    throw err
-   }
-  }
-  async getCvStyle(style:string):Promise<CvStyleParams>{
-    try{
-      const response:CvStyleParams=await UserRepository.getCvStyle(style)
-      return response
-    }
-    catch(err){
-      throw err
+  async getCvFiles(userId: string) {
+    try {
+      console.log("inside get cv services");
+      const response = await UserRepository.getCvFile(userId);
+      return response;
+    } catch (err) {
+      throw err;
     }
   }
-
-
+  async insertCvFile(userId: string, url: string) {
+    try {
+      console.log("inside get cv services");
+      const response = await UserRepository.insertCvFile(userId, url);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  async deleteCvFile(userId: string, cvId: string) {
+    try {
+      console.log("inside delete cv services");
+      const response = await UserRepository.deleteCvFile(userId, cvId);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  async getCvStyle(style: string): Promise<CvStyleParams> {
+    try {
+      const response: CvStyleParams = await UserRepository.getCvStyle(style);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 export default new UserService();

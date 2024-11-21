@@ -84,7 +84,7 @@ export function DataTable<TData, TValue>({
   }, [columnFilters, pathname, router]);
 
   return (
-    <div className="border m-2 p-2 rounded-md">
+    <div className=" w-full float-end  border m-2 p-2 rounded-md">
       <div className="flex justify-start items-center">
         <div className="flex items-center py-4">
           <Input

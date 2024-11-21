@@ -4,10 +4,10 @@ import { usePathname } from "next/navigation";
 import DynamicBreadcrumb from "@/components/DynamicBreadcrumb";
 import ContactSearch from "@/components/contact-search";
 
-import ChatPage from "./chat";
+import Chat from "./chat";
 
 
-const Chat = () => {
+const ChatPage = () => {
   const pathname = usePathname();
   return (
     <>
@@ -17,10 +17,10 @@ const Chat = () => {
         <ContactSearch />
       </div>
       <div className="">
-        <ChatPage />
+        <Chat />
       </div>
     </>
   );
 };
 
-export default Chat;
+export default ChatPage;

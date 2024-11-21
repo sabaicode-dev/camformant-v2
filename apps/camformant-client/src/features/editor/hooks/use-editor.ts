@@ -46,6 +46,9 @@ const buildEditor = ({
   autoZoom,
   copy,
   paste,
+  cropperRef,
+  setPatternImageSrc,
+  setShowCropper,
   canvas,
   fillColor,
   setFillColor,
@@ -133,6 +136,34 @@ const buildEditor = ({
     canvas.add(object);
     canvas.setActiveObject(object);
   };
+  const getImage = () => {
+    const selectedObject = canvas.getActiveObject() as fabric.Circle;
+    const pattern = selectedObject.get("fill") as fabric.Pattern | undefined;
+    return { pattern, selectedObject };
+  };
+  const createPattern = (circleRadius: number, image: fabric.Image) => {
+    const translateX = 0; // No horizontal translation needed
+    const translateY = 0;
+    const scale = Math.max(
+      (circleRadius * 2) / image.width!,
+      (circleRadius * 2) / image.height!
+    );
+
+    const pattern = new fabric.Pattern({
+      source: image.getElement() as HTMLImageElement, // Use the new image as the pattern source
+      repeat: "no-repeat",
+      patternTransform: [scale, 0, 0, scale, translateX, translateY], // Preserve the existing pattern's transform if any
+    });
+    return pattern as fabric.Pattern;
+  };
+  const resetSelection = (objects: fabric.Object[]) => {
+    canvas.discardActiveObject(); // Clear the active selection
+    const newActiveSelection = new fabric.ActiveSelection(objects, {
+      canvas: canvas,
+    }); //to create a new active selection from an array of objects.
+    canvas.setActiveObject(newActiveSelection); //setActiveObject is designed to set a single active object
+    canvas.renderAll();
+  };
 
   return {
     onMoveLeft: () => moveLeft(),
@@ -193,25 +224,111 @@ const buildEditor = ({
           imageObject.filters = effect ? [effect] : [];
           imageObject.applyFilters();
           canvas.renderAll();
+        } else {
+          console.log("inside else:::");
+          objects.forEach((object) => {
+            if (object instanceof fabric.Circle) {
+              const pattern = object.fill as fabric.Pattern;
+              console.log("type of source",typeof pattern.source)
+              const image = pattern.source as HTMLImageElement;
+              const patternImage = pattern.source as fabric.Image;
+              const effect = createFilter(value);
+
+              patternImage.filters = effect ? [effect] : [];
+              patternImage.applyFilters();
+              const newPattern: fabric.Pattern = createPattern(
+                100,
+                patternImage
+              );
+              object.set("fill", newPattern);
+            }
+          });
+          canvas.renderAll();
         }
       });
     },
     addImage: (value: string) => {
-      // console.log("Success");
       fabric.Image.fromURL(
         value,
         (image) => {
-          const workspace = getWorkspace();
+          //fabirc.image
+          const circleRadius = 100; // Radius of 100 pixels, making the circle diameter 200 pixels
 
-          image.scaleToWidth(workspace?.width || 0);
-          image.scaleToHeight(workspace?.height || 0);
+          // Create a circle with the desired dimensions and style
+          const circle = new fabric.Circle({
+            left: 10, // Position from the left
+            top: 10, // Position from the top
+            radius: circleRadius, // Radius of the circle
+            stroke: "red", // Border color
+            strokeWidth: 5, // Border thickness
+            fill: "", // Placeholder to apply pattern later
+          });
+          const pattern = createPattern(circleRadius, image);
 
-          addToCanvas(image);
+          // Set the circle's fill to the pattern
+          circle.set("fill", pattern);
+          addToCanvas(circle);
         },
         {
           crossOrigin: "anonymous",
         }
       );
+    },
+    replaceImage(value: string) {
+      fabric.Image.fromURL(
+        value,
+        (image) => {
+          console.log("hello");
+          const { pattern, selectedObject } = getImage();
+
+          if (pattern) {
+            const circleRadius = 100;
+            const newPattern: fabric.Pattern = createPattern(
+              circleRadius,
+              image
+            );
+
+            // Update the circle's fill with the new pattern
+            selectedObject.set("fill", newPattern);
+          }
+          canvas.renderAll();
+        },
+        {
+          crossOrigin: "anonymous",
+        }
+      );
+    },
+    enableCropping: () => {
+      const { pattern, selectedObject } = getImage();
+      if (pattern!.source instanceof HTMLImageElement) {
+        const imageSrc = pattern!.source.src;
+        setPatternImageSrc(imageSrc);
+        setShowCropper(true);
+      }
+    },
+    handleCrop: () => {
+      const { selectedObject } = getImage();
+      const imageElement: any = cropperRef!;
+      const cropper = imageElement?.cropper;
+      if (cropper) {
+        const croppedDataURL = cropper.getCroppedCanvas().toDataURL();
+        fabric.Image.fromURL(
+          croppedDataURL,
+          (img) => {
+            console.log("crop data url", croppedDataURL);
+            const circleRadius = 100;
+            const newPattern = createPattern(circleRadius, img);
+            selectedObject.set("fill", newPattern);
+            canvas.renderAll();
+            setShowCropper(false);
+          },
+          {
+            crossOrigin: "anonymous",
+          }
+        );
+      } else {
+        console.log("Cropper not initialized");
+      }
     },
 
     delete: () => {
@@ -569,7 +686,15 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const [selectedObjects, setSelectedObjects] = useState<fabric.Object[]>([]);
+  //state for image
+  const [setPatternImageSrc, setStatePatternImageSrc] = useState<React.Dispatch<
+    React.SetStateAction<any>
+  > | null>(null);
+  const [setShowCropper, setStateShowCropper] = useState<React.Dispatch<
+    React.SetStateAction<any>
+  > | null>(null);
 
+  const [cropperRef, setCropper] = useState<HTMLImageElement | null>(null);
   const [fontFamily, setFontFamily] = useState(FONT_FAMILY);
   const [fillColor, setFillColor] = useState(FILL_COLOR);
   const [strokeColor, setStrokeColor] = useState(STROKE_COLOR);
@@ -683,6 +808,11 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
         autoZoom,
         copy,
         paste,
+        cropperRef,
+        //@ts-ignore
+        setPatternImageSrc,
+        //@ts-ignore
+        setShowCropper,
         canvas,
         fillColor,
         setFillColor,
@@ -707,6 +837,8 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     save,
     copy,
     paste,
+    setPatternImageSrc,
+    setShowCropper,
     canvas,
     strokeWidth,
     strokeColor,
@@ -725,9 +857,17 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     ({
       initialCanvas,
       initialContainer,
+      initSetPatternImageSrc,
+      initSetShowCropper,
+      initCropper,
     }: {
       initialCanvas: fabric.Canvas;
       initialContainer: HTMLDivElement;
+      initSetPatternImageSrc: React.Dispatch<
+        React.SetStateAction<string | null>
+      >;
+      initSetShowCropper: React.Dispatch<React.SetStateAction<boolean>>;
+      initCropper: HTMLImageElement | null;
     }) => {
       // Custom prototype of object(shape)
       fabric.Object.prototype.set({
@@ -760,7 +900,9 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 
       setCanvas(initialCanvas);
       setContainer(initialContainer);
-
+      setStatePatternImageSrc(() => initSetPatternImageSrc); //  // Correctly set the state using type assertion if necessary
+      setStateShowCropper(() => initSetShowCropper);
+      setCropper(initCropper);
       const currentState = JSON.stringify(initialCanvas.toJSON(JSON_KEYS));
       canvasHistory.current = [currentState];
       setHistoryIndex(0);

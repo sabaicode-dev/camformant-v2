@@ -6,7 +6,7 @@ import { Table, User } from "lucide-react";
 import { RiMailVolumeLine, RiPassValidLine } from "react-icons/ri";
 import JobList from "@/components/jobList";
 
-const ChartPage = () => {
+const Chart = () => {
   return (
     <>
       <div className="flex gap-[56px] w-full mt-[31px] px-4 ">
@@ -61,4 +61,4 @@ const ChartPage = () => {
     </>
   );
 };
-export default ChartPage;
+export default Chart;

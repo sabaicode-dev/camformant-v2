@@ -21,7 +21,7 @@ import userJoiSchema from "@/src/schemas/user.schema";
 import {
   UsersPaginatedResponse,
   prettyObject,
-  UserCreationRequestParams,
+  // UserCreationRequestParams,
   UserProfileResponse,
   UserUpdateRequestParams,
   IUser,
@@ -35,10 +35,37 @@ import {
   IUserProfile,
   UnionProfileType,
 } from "@/src/controllers/types/userprofile.type";
-import {
-  CvStyleParams,
-} from "@/src/controllers/types/user-cv-controller.type";
+import { CvStyleParams } from "@/src/controllers/types/user-cv-controller.type";
+import { error } from "console";
+import { Types } from "mongoose";
 // import { unionProfileType } from "./types/userprofile.type";
+export interface UserCreationRequestParams2 {
+  sub?: string;
+  googleSub?: string;
+  facebookSub?: string;
+  username: string;
+  email?: string;
+  phone_number?: string;
+  profile?: string;
+  role?: string;
+  gender?: string;
+  age?: number;
+  favorites?: Types.ObjectId[];
+  createdAt?: Date;
+  updatedAt?: Date;
+  lastActive?: Date;
+  lastSeen?: Date;
+  sessions?: {
+    deviceId: string;
+    ipAddress: string;
+    lastLogin: Date;
+  }[];
+  privacySettings?: {
+    lastSeenVisibleTo: "everyone" | "contacts" | "nobody";
+    profilePhotoVisibleTo: "everyone" | "contacts" | "nobody";
+  };
+  contacts?: Types.ObjectId[];
+}
 
 @Route("v1/users")
 export class UsersController extends Controller {
@@ -50,12 +77,7 @@ export class UsersController extends Controller {
       const response = await UserService.getAllUsers(queries);
 
       return sendResponse({ message: "success", data: response });
-      return sendResponse({ message: "success", data: response });
     } catch (error) {
-      console.error(
-        `UsersController - createUser() method error: `,
-        prettyObject(error as {})
-      );
       console.error(
         `UsersController - createUser() method error: `,
         prettyObject(error as {})
@@ -68,7 +90,7 @@ export class UsersController extends Controller {
   @Post()
   @Middlewares(validateRequest(userJoiSchema))
   public async createUser(
-    @Body() requestBody: UserCreationRequestParams
+    @Body() requestBody: UserCreationRequestParams2
   ): Promise<UserProfileResponse> {
     try {
       // Create New User
@@ -80,19 +102,10 @@ export class UsersController extends Controller {
         SCHEDULE_JOBS.NOTIFICATION_NEW_REGISTRATION,
         { userId: response._id }
       );
-      await agenda.schedule(
-        "in 1 minutes",
-        SCHEDULE_JOBS.NOTIFICATION_NEW_REGISTRATION,
-        { userId: response._id }
-      );
 
       this.setStatus(201); // set return status 201
       return sendResponse<IUser>({ message: "success", data: response });
     } catch (error) {
-      console.error(
-        `UsersController - createUser() method error: `,
-        prettyObject(error as {})
-      );
       console.error(
         `UsersController - createUser() method error: `,
         prettyObject(error as {})
@@ -115,10 +128,54 @@ export class UsersController extends Controller {
         `UsersController - getUserProfile() method error: `,
         prettyObject(error as {})
       );
-      console.error(
-        `UsersController - getUserProfile() method error: `,
-        prettyObject(error as {})
-      );
+      throw error;
+    }
+  }
+  @Get("/cv")
+  public async getCvFiles(@Request() request: ExpressRequest): Promise<any> {
+    try {
+      console.log("inside get cv controller");
+      const userId = request.cookies["user_id"];
+      const data = await UserService.getCvFiles(userId);
+      return sendResponse<any>({
+        message: "Fetch is successful",
+        data,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Get("/profile-detail")
+  public async getProfileByID(
+    @Request() request: ExpressRequest,
+    @Query() category?: string
+  ) {
+    try {
+      const userId = request.cookies["user_id"];
+      const userProfile = await UserService.getProfileById(userId, category);
+      return sendResponse<IUserProfile>({
+        message: "success",
+        data: userProfile,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+  @Put("/profile-detail")
+  public async updateUserProfile(
+    @Body() updateBody: IUserProfile,
+    @Request() request: ExpressRequest
+  ) {
+    try {
+      const userId = request.cookies["user_id"];
+      const userData = await UserService.updateUserProfile(userId, updateBody);
+
+      return sendResponse<UnionProfileType>({
+        message: "Data is updated successfully",
+        data: userData,
+      });
+    } catch (err) {
       throw error;
     }
   }
@@ -160,10 +217,6 @@ export class UsersController extends Controller {
         `UsersController - addFavorite() method error: `,
         prettyObject(error as {})
       );
-      console.error(
-        `UsersController - addFavorite() method error: `,
-        prettyObject(error as {})
-      );
       throw error;
     }
   }
@@ -179,10 +232,6 @@ export class UsersController extends Controller {
 
       return sendResponse<string[]>({ message: "success", data: favorites });
     } catch (error) {
-      console.error(
-        `UsersController - getFavorites() method error: `,
-        prettyObject(error as {})
-      );
       console.error(
         `UsersController - getFavorites() method error: `,
         prettyObject(error as {})
@@ -204,15 +253,7 @@ export class UsersController extends Controller {
         message: "Favorite removed successfully",
         data: response,
       });
-      return sendResponse<IUser>({
-        message: "Favorite removed successfully",
-        data: response,
-      });
     } catch (error) {
-      console.error(
-        `UsersController - removeFavorite() method error: `,
-        prettyObject(error as {})
-      );
       console.error(
         `UsersController - removeFavorite() method error: `,
         prettyObject(error as {})
@@ -226,16 +267,10 @@ export class UsersController extends Controller {
     @Path() userId: string
   ): Promise<UserProfileResponse> {
     try {
-      console.log("userId: ", userId);
-      console.log("userId: ", userId);
       const response = await UserService.getUserBySub(userId);
 
       return sendResponse<IUser>({ message: "success", data: response });
     } catch (error) {
-      console.error(
-        `UsersController - getUserProfile() method error: `,
-        prettyObject(error as {})
-      );
       console.error(
         `UsersController - getUserProfile() method error: `,
         prettyObject(error as {})
@@ -250,15 +285,11 @@ export class UsersController extends Controller {
     @Body() updateUserInfo: UserUpdateRequestParams
   ): Promise<UserProfileResponse> {
     try {
-      const newUpdateUserInfo = { id: userId, ...updateUserInfo };
+      const newUpdateUserInfo = { _id: userId, ...updateUserInfo };
       const response = await UserService.updateUserBySub(newUpdateUserInfo);
 
       return sendResponse<IUser>({ message: "success", data: response });
     } catch (error) {
-      console.error(
-        `UsersController - createUser() method error: `,
-        prettyObject(error as {})
-      );
       console.error(
         `UsersController - createUser() method error: `,
         prettyObject(error as {})
@@ -277,73 +308,40 @@ export class UsersController extends Controller {
         `UsersController - createUser() method error: `,
         prettyObject(error as {})
       );
-      console.error(
-        `UsersController - createUser() method error: `,
-        prettyObject(error as {})
-      );
       throw error;
     }
   }
-
-  @Get("/profile-detail/:userId")
-  public async getProfileByID(
-    @Path() userId: string,
-    @Query() category?: string
-  ) {
+  //TODO: type
+  @Get("/getMulti/Profile")
+  public async getMultiProfileUser(@Queries() query: { usersId?: string }) {
     try {
-      const userProfile = await UserService.getProfileById(userId, category);
-      return sendResponse<IUserProfile>({
-        message: "success",
-        data: userProfile,
-      });
-    } catch (err) {
-      throw err;
+      const res = await UserService.getMultiProfileUser(query.usersId!);
+      return res;
+    } catch (error) {
+      throw error;
     }
   }
-  @Put("/profile-detail/:userId")
-  public async updateUserProfile(
-    @Path() userId: string,
-    @Body() updateBody: IUserProfile
-  ) {
-    try {
-      const userData = await UserService.updateUserProfile(userId, updateBody);
-
-      return sendResponse<UnionProfileType>({
-        message: "Data is updated successfully",
-        data: userData,
-      });
-    } catch (err) {
-      throw err;
-    }
-  }
+  //
   @Post("/uploadFile")
   public async uploadFile(
     @UploadedFile() file: Express.Multer.File,
     @Request() request: ExpressRequest
-  ): Promise<string> {
+  ): Promise<string | undefined> {
     try {
       const userId = request.cookies["user_id"];
       const response: string = await uploadToS3(file, `user-service/${userId}`);
       return response;
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      if ((error as { code: string }).code == "LIMIT_FILE_SIZE") {
+        console.log("multer error");
+        throw new Error((error as { message: string }).message);
+      }
+      throw error;
     }
   }
 
   //cv endpoint
-  @Get("/cv")
-  public async getCvFiles(@Request() request: ExpressRequest): Promise<any> {
-    try {
-      const userId: string = request.cookies["user_id"];
-      const data = await UserService.getCvFiles(userId);
-      return sendResponse<any>({
-        message: "Fetch is successful",
-        data,
-      });
-    } catch (err) {
-      throw err;
-    }
-  }
+
   @Post("/cv")
   public async updateCvFiles(
     @Request() request: ExpressRequest,

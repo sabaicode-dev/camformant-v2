@@ -1,9 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye } from "lucide-react";
-import { SquarePen } from "lucide-react";
-import { Trash } from "lucide-react";
+import { Eye, MoreHorizontal, SquarePen, Trash } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,15 +13,27 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export type Jobs = {
-  _id: string;
-  profile: string;
-  name: string;
-  Position: string;
-  job: number;
-  moblie: number;
+  _id?: string;
+  company_id?: string;
+  title?: string;
+  position?: string[];
+  workMode?: string[];
+  requirement?: string;
+  location?: string;
+  job_opening?: number;
+  max_salary?: number;
+  min_salary?: number;
+  description?: string;
+  address?: string;
+  type?: string[];
+  schedule?: string[];
+  required_experience?: string[];
+  benefit?: string[];
+  deadline?: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export const columns: ColumnDef<Jobs>[] = [
@@ -50,17 +62,17 @@ export const columns: ColumnDef<Jobs>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "Position",
-    cell: ({ row }) => {
-      const userProfile = row.original;
+    accessorKey: "position",
+    cell: ({ column }) => {
+      return <div className="">heloo</div>;
     },
     enableSorting: false,
     enableHiding: false,
   },
   {
     accessorKey: "Type",
-    cell: ({ row }) => {
-      const userProfile = row.original;
+    cell: ({ column }) => {
+      return <div className=""></div>;
 
     },
     enableSorting: false,

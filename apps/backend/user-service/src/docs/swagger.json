@@ -143,7 +143,10 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"UserCreationRequestParams": {
+			"mongoose.Types.ObjectId": {
+				"type": "string"
+			},
+			"UserCreationRequestParams2": {
 				"properties": {
 					"sub": {
 						"type": "string"
@@ -152,6 +155,9 @@
 						"type": "string"
 					},
 					"facebookSub": {
+						"type": "string"
+					},
+					"username": {
 						"type": "string"
 					},
 					"email": {
@@ -163,34 +169,7 @@
 					"profile": {
 						"type": "string"
 					},
-					"username": {
-						"type": "string"
-					},
 					"role": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"username"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"UserUpdateRequestParams": {
-				"properties": {
-					"sub": {
-						"type": "string"
-					},
-					"googleSub": {
-						"type": "string"
-					},
-					"facebookSub": {
-						"type": "string"
-					},
-					"username": {
-						"type": "string"
-					},
-					"profile": {
 						"type": "string"
 					},
 					"gender": {
@@ -200,10 +179,86 @@
 						"type": "number",
 						"format": "double"
 					},
-					"role": {
-						"type": "string"
+					"favorites": {
+						"items": {
+							"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+						},
+						"type": "array"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"lastActive": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"lastSeen": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"sessions": {
+						"items": {
+							"properties": {
+								"lastLogin": {
+									"type": "string",
+									"format": "date-time"
+								},
+								"ipAddress": {
+									"type": "string"
+								},
+								"deviceId": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"lastLogin",
+								"ipAddress",
+								"deviceId"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					},
+					"privacySettings": {
+						"properties": {
+							"profilePhotoVisibleTo": {
+								"type": "string",
+								"enum": [
+									"everyone",
+									"contacts",
+									"nobody"
+								]
+							},
+							"lastSeenVisibleTo": {
+								"type": "string",
+								"enum": [
+									"everyone",
+									"contacts",
+									"nobody"
+								]
+							}
+						},
+						"required": [
+							"profilePhotoVisibleTo",
+							"lastSeenVisibleTo"
+						],
+						"type": "object"
+					},
+					"contacts": {
+						"items": {
+							"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+						},
+						"type": "array"
 					}
 				},
+				"required": [
+					"username"
+				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -473,9 +528,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"mongoose.Types.ObjectId": {
-				"type": "string"
-			},
 			"IdParams": {
 				"properties": {
 					"_id": {
@@ -554,6 +606,37 @@
 				],
 				"nullable": true
 			},
+			"UserUpdateRequestParams": {
+				"properties": {
+					"sub": {
+						"type": "string"
+					},
+					"googleSub": {
+						"type": "string"
+					},
+					"facebookSub": {
+						"type": "string"
+					},
+					"username": {
+						"type": "string"
+					},
+					"profile": {
+						"type": "string"
+					},
+					"gender": {
+						"type": "string"
+					},
+					"age": {
+						"type": "number",
+						"format": "double"
+					},
+					"role": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
 			"CvStyleParams": {
 				"properties": {
 					"_id": {
@@ -583,6 +666,132 @@
 					"_id",
 					"style",
 					"json"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ICorporateModel": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"sub": {
+						"type": "string"
+					},
+					"username": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"role": {
+						"type": "string",
+						"enum": [
+							"company"
+						],
+						"nullable": false
+					},
+					"corporateProfileId": {
+						"type": "string"
+					},
+					"favorites": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"_id",
+					"sub",
+					"username",
+					"email",
+					"role",
+					"favorites",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CorporateProfileResponseCreate": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/ICorporateModel"
+					}
+				},
+				"required": [
+					"message",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CorporateProfileResquestParams": {
+				"properties": {
+					"sub": {
+						"type": "string"
+					},
+					"corporateProfileId": {
+						"type": "string"
+					},
+					"username": {
+						"type": "string"
+					},
+					"profile": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"role": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"username"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CorporateProfileResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"properties": {
+							"jobs": {
+								"items": {
+									"type": "string"
+								},
+								"type": "array"
+							},
+							"user": {
+								"$ref": "#/components/schemas/ICorporateModel"
+							}
+						},
+						"required": [
+							"jobs",
+							"user"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"message",
+					"data"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -673,7 +882,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/UserCreationRequestParams"
+								"$ref": "#/components/schemas/UserCreationRequestParams2"
 							}
 						}
 					}
@@ -697,6 +906,147 @@
 				},
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/v1/users/cv": {
+			"get": {
+				"operationId": "GetCvFiles",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "UpdateCvFiles",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"url": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"url"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/users/profile-detail": {
+			"get": {
+				"operationId": "GetProfileByID",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"$ref": "#/components/schemas/IUserProfile"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "category",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateUserProfile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"$ref": "#/components/schemas/UnionProfileType"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/IUserProfile"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/v1/users/me/photo": {
@@ -916,9 +1266,9 @@
 				]
 			}
 		},
-		"/v1/users/profile-detail/{userId}": {
+		"/v1/users/getMulti/Profile": {
 			"get": {
-				"operationId": "GetProfileByID",
+				"operationId": "GetMultiProfileUser",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -926,16 +1276,26 @@
 							"application/json": {
 								"schema": {
 									"properties": {
-										"data": {
-											"$ref": "#/components/schemas/IUserProfile"
-										},
-										"message": {
-											"type": "string"
+										"usersProfile": {
+											"items": {
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"profile": {
+														"type": "string"
+													},
+													"_id": {
+														"type": "string"
+													}
+												},
+												"type": "object"
+											},
+											"type": "array"
 										}
 									},
 									"required": [
-										"data",
-										"message"
+										"usersProfile"
 									],
 									"type": "object"
 								}
@@ -946,70 +1306,14 @@
 				"security": [],
 				"parameters": [
 					{
-						"in": "path",
-						"name": "userId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
 						"in": "query",
-						"name": "category",
+						"name": "usersId",
 						"required": false,
 						"schema": {
 							"type": "string"
 						}
 					}
 				]
-			},
-			"put": {
-				"operationId": "UpdateUserProfile",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"data": {
-											"$ref": "#/components/schemas/UnionProfileType"
-										},
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"data",
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "userId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/IUserProfile"
-							}
-						}
-					}
-				}
 			}
 		},
 		"/v1/users/uploadFile": {
@@ -1044,68 +1348,6 @@
 								"required": [
 									"file"
 								]
-							}
-						}
-					}
-				}
-			}
-		},
-		"/v1/users/cv": {
-			"get": {
-				"operationId": "GetCvFiles",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {}
-							}
-						}
-					}
-				},
-				"security": [],
-				"parameters": []
-			},
-			"post": {
-				"operationId": "UpdateCvFiles",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"data": {},
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"data",
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"properties": {
-									"url": {
-										"type": "string"
-									}
-								},
-								"required": [
-									"url"
-								],
-								"type": "object"
 							}
 						}
 					}
@@ -1213,6 +1455,163 @@
 						}
 					}
 				},
+				"tags": [
+					"Health"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/v1/corporate": {
+			"post": {
+				"operationId": "CreateCorporate",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CorporateProfileResponseCreate"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporate"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CorporateProfileResquestParams"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetAllCorporates",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CorporateProfileResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporate"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/v1/corporate/{corporateId}": {
+			"get": {
+				"operationId": "GetCorporateBySub",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CorporateProfileResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporate"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "corporateId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v1/corporate/profile/{corporateId}": {
+			"put": {
+				"operationId": "UpdateCorporateProfile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CorporateProfileResponseCreate"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporate"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "corporateId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"corporateProfileId": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"corporateProfileId"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/corporate/profile/me": {
+			"get": {
+				"operationId": "GetCorporateMe",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CorporateProfileResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporate"
+				],
 				"security": [],
 				"parameters": []
 			}

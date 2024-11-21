@@ -1,39 +1,32 @@
+"use client";
 import DynamicBreadcrumb from "@/components/DynamicBreadcrumb";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { useAuth } from "@/context/AuthContext";
+import { useEffect } from "react";
+import { Eye } from "lucide-react";
 
-async function getData() {
-    try {
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}${process.env.NEXT_PUBLIC_JOB_ENDPOINT}`,
-            { method: "GET" }
-        );
 
-        const responseData = await response.json();
-
-        if (!response.ok) {
-            throw new Error(responseData.message || "Failed to fetch data");
-        }
-
-        const jobs = responseData.data.jobs;
-
-        return jobs.map((job: { companyId: string }) => job.companyId);
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        throw new Error("Failed to fetch data");
-    }
+export type ApplicantProps = {
+    _id: string;
+    company_id: string;
+    title: string;
 }
-const Jobs = async () => {
-    const data = await getData();
-    return (
-        <>
-            <DynamicBreadcrumb />
-            Jobs
-            <div className="">
-              <DataTable data={data} columns={columns} />
-            </div>
-        </>
-    );
+const JobsPage = () => {
+  
+  const { jobs } = useAuth();
+  const jobsData = jobs?.jobStats.recentJobs;
+  useEffect(() => {
+    console.log("jobs:::::::::::::::::::::::::;", jobs?.jobStats.recentJobs);
+  }, [jobs]);
+
+  return (
+    <>
+      <DynamicBreadcrumb />
+      Jobs
+      <DataTable data={jobsData||[]} columns={columns} />
+    </>
+  );
 };
 
-export default Jobs;
+export default JobsPage;

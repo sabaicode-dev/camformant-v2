@@ -1,20 +1,20 @@
 "use client";
 import { FileParams } from "@/app/jobs/(cv-rating)/certificate/page";
-import { useAuth } from "@/context/auth";
-import axiosInstance from "@/utils/axios";
-import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { uploadToS3 } from "@/utils/functions/upload-to-s3";
 import { useState } from "react";
 export interface InputFileParams {
   setFiles: React.Dispatch<React.SetStateAction<FileParams[]>>;
   setIsPost: React.Dispatch<React.SetStateAction<boolean>>;
+  setLoading:React.Dispatch<React.SetStateAction<boolean>>
 }
-const InputFile: React.FC<InputFileParams> = ({ setFiles, setIsPost }) => {
+const InputFile: React.FC<InputFileParams> = ({ setFiles, setIsPost,setLoading }) => {
   const [fileName, setFileName] = useState("No file chosen");
   const handleFileChange = async (event: any) => {
     const file = event.target.files[0];
     if (file) {
+      setLoading(true);
       const image: string | undefined = await uploadToS3(file);
+      setLoading(false)
       setFileName(file.name);
       image &&
         setFiles((previous: FileParams[]) => {

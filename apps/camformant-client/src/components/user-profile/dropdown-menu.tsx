@@ -1,28 +1,24 @@
-const DropDownMenu:React.FC<{
-  setValue:(value: string) => void,
-  currentText:string,
-  arrText:string[]
-}> = ({
-  setValue,
-  currentText,
-  arrText
-}) => {
-  return ( 
-    <div className="w-full container pt-10">
-      <select className="min-w-full h-16 w-full outline-none rounded-2xl p-5 shadow-md shadow-black-300 pl-7 text-black"
-      value={currentText}
-      onChange={(e)=>setValue(e.target.value)}
+const DropDownMenu: React.FC<{
+  setValue: (value: string) => void;
+  currentText: string;
+  title: string;
+  arrText: string[];
+}> = ({ setValue, currentText, title, arrText }) => {
+  return (
+    <div className="container w-full pt-10">
+      <select
+        className="w-full h-16 p-5 text-black shadow-md outline-none min-w-5/6 rounded-2xl shadow-black-300 pl-7"
+        value={currentText}
+        onChange={(e) => setValue(e.target.value)}
       >
-        {
-          arrText.map((text:string)=>(
-            <option value={text}>{text}</option>
-          )
-
-          )
-        }
+        {arrText.map((text: string) => (
+          <option key={""} value={text}>
+            {text}
+          </option>
+        ))}
       </select>
     </div>
-   );
-}
- 
+  );
+};
+
 export default DropDownMenu;

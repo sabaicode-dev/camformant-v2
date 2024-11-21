@@ -1,10 +1,11 @@
+/* eslint-disable jsx-a11y/alt-text */
 import ChatProfile from "@/components/user-profile";
 import ProfileChat from "@/components/profile-chat";
 import { Input } from "@/components/ui/input";
 import { Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const ChatPage = () => {
+const Chat = () => {
   return (
     <div className="w-5/6 m-auto flex py-2">
       <div className="w-2/6 border-r-2  ">
@@ -39,4 +40,4 @@ const ChatPage = () => {
     </div>
   );
 };
-export default ChatPage;
+export default Chat;

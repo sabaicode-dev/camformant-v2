@@ -34,10 +34,12 @@ const Page: React.FC = () => {
       proficiency: "",
     },
   ]);
-  const [languageEntries, setLanguageEntries] = useState<LanguageParams[]>([{
-    name: "",
-    proficiency: "",
-  }]);
+  const [languageEntries, setLanguageEntries] = useState<LanguageParams[]>([
+    {
+      name: "",
+      proficiency: "",
+    },
+  ]);
   const { user } = useAuth();
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [next, setNext] = useState<boolean>(false);
@@ -51,22 +53,13 @@ const Page: React.FC = () => {
       try {
         setNext(true);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=ability`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=ability`
         );
         const data = response.data.data;
         console.log("abiloty", data);
-        data.skills.length &&
-          setSkillEntries(
-            data.skills
-          );
-        data.expertise.length &&
-          setExpertiseEntries(
-            data.expertise
-          );
-        data.languages.length &&
-          setLanguageEntries(
-            data.languages
-          );
+        data.skills.length && setSkillEntries(data.skills);
+        data.expertise.length && setExpertiseEntries(data.expertise);
+        data.languages.length && setLanguageEntries(data.languages);
         console.log("lanuage", languageEntries);
       } catch (error) {
       } finally {
@@ -90,7 +83,7 @@ const Page: React.FC = () => {
       };
 
       const response = await axiosInstance.put(
-        `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user!._id}`,
+        API_ENDPOINTS.USER_PROFILE_DETAIL,
         { ...dataValue }
       );
       return response;
@@ -111,7 +104,7 @@ const Page: React.FC = () => {
       {next && <SkeletonLoader text="Loading ..." />}
       <CustomLabel text={"Skills"} />
       {skillEntries.map((entry, index) => (
-        <div>
+        <div key={""}>
           {Object.entries(entry).map(([key, value]) => (
             <InputComponent
               key={key}
@@ -120,17 +113,16 @@ const Page: React.FC = () => {
               focused={focusedField}
               txt={key} // Helper function to get label text if needed
               typeofInput={key.includes("date") ? "date" : "text"} // Set type based on key
-              setValues={(newValue) =>
-                {handleInputChange(
+              setValues={(newValue) => {
+                handleInputChange(
                   setSkillEntries,
                   skillEntries,
                   index,
                   key,
                   newValue
-                )
-                newValue==value||setIsPut(true)
-              }
-              }
+                );
+                newValue == value.toString() || setIsPut(true);
+              }}
               valuesFouce={`skill-${key}-${index}`}
             />
           ))}
@@ -151,7 +143,7 @@ const Page: React.FC = () => {
       />
       <CustomLabel text={"Expertise"} />
       {expertiseEntries.map((entry, index) => (
-        <div>
+        <div key={""}>
           {Object.entries(entry).map(([key, value]) =>
             key != "proficiency" ? (
               <InputComponent
@@ -161,19 +153,21 @@ const Page: React.FC = () => {
                 focused={focusedField}
                 txt={key} // Helper function to get label text if needed
                 typeofInput={key.includes("date") ? "date" : "text"} // Set type based on key
-                setValues={(newValue) =>
+                setValues={(newValue) => {
                   handleInputChange(
                     setExpertiseEntries,
                     expertiseEntries,
                     index,
                     key,
                     newValue
-                  )
-                }
+                  );
+                  newValue == value || setIsPut(true);
+                }}
                 valuesFouce={`expertise-${key}-${index}`}
               />
             ) : (
               <DropDownMenu
+                key={""}
                 setValue={(newValue) => {
                   handleInputChange(
                     setExpertiseEntries,
@@ -185,7 +179,8 @@ const Page: React.FC = () => {
                   newValue == value || setIsPut(true);
                 }}
                 currentText={value}
-                arrText={["Beginner", "Intermediate", "Advanced"]}
+                title={"proficiency"}
+                arrText={["", "Beginner", "Intermediate", "Advanced"]}
               />
             )
           )}
@@ -207,7 +202,7 @@ const Page: React.FC = () => {
       <CustomLabel text={"Langauges"} />
 
       {languageEntries.map((entry, index) => (
-        <div>
+        <div key={""}>
           {Object.entries(entry).map(([key, value]) =>
             key != "proficiency" ? (
               <InputComponent
@@ -231,6 +226,7 @@ const Page: React.FC = () => {
               />
             ) : (
               <DropDownMenu
+                key={""}
                 setValue={(newValue) => {
                   handleInputChange(
                     setLanguageEntries,
@@ -242,7 +238,8 @@ const Page: React.FC = () => {
                   newValue == value || setIsPut(true);
                 }}
                 currentText={value}
-                arrText={["Beginner", "Native", "Fluent"]}
+                title={"proficiency"}
+                arrText={["", "Beginner", "Native", "Fluent"]}
               />
             )
           )}

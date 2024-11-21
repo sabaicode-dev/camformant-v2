@@ -1,7 +1,10 @@
 import configs from "@/src/config";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
-export const  uploadToS3 = async(file: Express.Multer.File, location?: string) => {
+export const uploadToS3 = async (
+  file: Express.Multer.File,
+  location?: string
+) => {
   const s3 = new S3Client({
     region: configs.awsRegion,
     credentials: {
@@ -10,7 +13,7 @@ export const  uploadToS3 = async(file: Express.Multer.File, location?: string) =
     },
   });
   const uploadParams = {
-    Bucket:configs.awsS3BucketName,
+    Bucket: configs.awsS3BucketName,
     Key: `${location}/${Date.now()}-${file.originalname}`, // File name in S3
     Body: file.buffer, // File data
     ContentType: file.mimetype, // MIME type of the file

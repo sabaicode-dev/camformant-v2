@@ -6,11 +6,16 @@ import { IJob } from "@/src/database/models/job.model";
 import jobRepository from "@/src/database/repositories/job.repository";
 import searchService from "@/src/services/search.service";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
+import mongoose from "mongoose";
 
 class JobService {
   public async createNewJob(newInfo: JobParams): Promise<IJob> {
     try {
-      const jobs = await jobRepository.createNewJob(newInfo);
+      const newJobInfo = {
+        ...newInfo,
+        companyId: new mongoose.Types.ObjectId(newInfo.companyId),
+      };
+      const jobs = await jobRepository.createNewJob(newJobInfo);
       return jobs;
     } catch (error) {
       console.error(
@@ -20,9 +25,7 @@ class JobService {
       throw error;
     }
   }
-
   public async getAllJobs(queries: JobGetAllControllerParams, userId = null) {
-    
     try {
       const { page, limit, filter, sort, search, userFav } = queries;
       const searchUserFav = userFav?.split(",") || [];
@@ -74,6 +77,7 @@ class JobService {
       const newJob = await jobRepository.updateJobById({
         _id: jobId,
         ...updateJob,
+        companyId: new mongoose.Types.ObjectId(updateJob.companyId),
       });
 
       return newJob;

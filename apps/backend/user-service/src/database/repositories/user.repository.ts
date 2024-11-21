@@ -191,11 +191,11 @@ class UserRepository {
 
   async updateBySub(updateInfo: UserUpdateRepoParams) {
     try {
-      const { id, ...newUpdateInfo } = updateInfo;
+      const { _id, ...newUpdateInfo } = updateInfo;
 
       const result = await UserModel.findOneAndUpdate(
         {
-          $or: [{ userId: id }, { googleSub: id }, { facebookSub: id }],
+          $or: [{ sub: _id }, { googleSub: _id }, { facebookSub: _id }],
         },
         newUpdateInfo,
         { new: true }
@@ -204,6 +204,7 @@ class UserRepository {
       if (!result) {
         throw new NotFoundError();
       }
+      console.log("repo passed:::");
 
       return result;
     } catch (error) {
@@ -225,6 +226,54 @@ class UserRepository {
     } catch (error) {
       console.error(
         `UserRepository - updateById() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
+
+  //TODO: type
+  public async getMultiProfileUser(arrUsersId: string[]): Promise<
+    {
+      _id: string | undefined;
+      profile: string | undefined;
+      name: string | undefined;
+    }[]
+  > {
+    try {
+      type Filter = {
+        _id?: {
+          $in: mongoose.Types.ObjectId[];
+        };
+      };
+      const filter: Filter = {};
+
+      if (arrUsersId?.length === 0) {
+        return [];
+      } else if (arrUsersId?.length !== 0) {
+        filter._id = {
+          $in: arrUsersId.map((id) => new mongoose.Types.ObjectId(id)),
+        };
+      }
+
+      const result = await UserModel.find(filter);
+      if (!result) {
+        throw new NotFoundError();
+      }
+
+      const usersData = result.map((user) => {
+        const userData = {
+          _id: user._id,
+          profile: user.profile,
+          name: user.username,
+        };
+        return userData;
+      });
+
+      return usersData;
+    } catch (error) {
+      console.error(
+        `UserRepository - getMultiProfileUser() method error:`,
         prettyObject(error as {})
       );
       throw error;
@@ -278,12 +327,13 @@ class UserRepository {
   async getUserFavorites(userId: string): Promise<string[]> {
     try {
       const user = await UserModel.findById(userId).select("favorites");
+      console.log("user::::", user);
 
       if (!user) {
         throw new NotFoundError("User not found");
       }
 
-      return user.favorites;
+      return user.favorites.map((favorite) => favorite.toString());
     } catch (error) {
       console.error(
         `UserRepository - getUserFavorites() method error: `,
@@ -342,27 +392,59 @@ class UserRepository {
         return updatedUser;
       }
     } catch (err) {
+      // if (err instanceof mongoose.Error.ValidationError) {
+      //   const validationErrors: { [key: string]: string } = {};
+
+      //   // Collect the error messages
+      //   for (const key in err.errors) {
+      //     validationErrors[key] = err.errors[key].message;
+      //   }
+
+      //   // Check for the first required error and throw it
+      //   const firstRequiredError = Object.entries(validationErrors).find(
+      //     ([_key, message]) => message.includes("required")
+      //   );
+
+      //   if (firstRequiredError) {
+      //     const [_key, _message] = firstRequiredError;
+      //     console.log("First required error message: ", validationErrors);
+
+      //     // Throw with only the first required error or all errors
+      //     throw new InvalidInputError({
+      //       errors: validationErrors, // You can also pass the full validationErrors here
+      //     });
+      //   }
+
+      //   // If no "required" error found, throw all validation errors
+      //   throw new InvalidInputError({
+      //     errors: validationErrors,
+      //   });
+      // }
       throw err;
     }
   }
   async getCvFile(userId: string) {
     try {
-      const response = await CvFileModel.findById(userId);
-      if (!response) throw new NotFoundError("userid not found");
-      return response;
+      console.log("insode get ::::", userId);
+      const response = await CvFileModel.find();
+      console.log("response in get:::", response);
+      if (!response.length) throw new NotFoundError("userid not found");
+      return response[0];
     } catch (err) {
       throw err;
     }
   }
   async insertCvFile(userId: string, url: string) {
     try {
-      const response = await CvFileModel.findByIdAndUpdate(
-        new mongoose.Types.ObjectId(userId),
+      const response = await CvFileModel.findOneAndUpdate(
+        { userId: new mongoose.Types.ObjectId(userId) },
         { $push: { cv: { url } } },
         { new: true }
       );
+      console.log("response in insert", response);
       if (!response) {
-        const newCvFile = CvFileModel.create({
+        console.log("respnose::: ", response);
+        const newCvFile = await CvFileModel.create({
           userId: new mongoose.Types.ObjectId(userId),
           cv: [{ url: url }],
         });
@@ -370,14 +452,15 @@ class UserRepository {
       }
       return response;
     } catch (err) {
+      console.log("repo error", err);
       throw err;
     }
   }
   async deleteCvFile(userId: string, cvId: string) {
     try {
       const cvIdObj = new mongoose.Types.ObjectId(cvId);
-      const response = await CvFileModel.findByIdAndUpdate(
-        userId,
+      const response = await CvFileModel.findOneAndUpdate(
+        { userId: new mongoose.Types.ObjectId(userId) },
         { $pull: { cv: { _id: cvIdObj } } },
         { new: true }
       );

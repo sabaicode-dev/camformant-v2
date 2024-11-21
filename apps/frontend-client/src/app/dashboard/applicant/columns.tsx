@@ -2,26 +2,21 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
+
 
 export type Jobs = {
-  _id: string;
   profile: string;
   name: string;
+  job: string;
   email: string;
-  job: number;
-  moblie: number;
+  mobile: string;
 };
 
 export const columns: ColumnDef<Jobs>[] = [
@@ -52,16 +47,15 @@ export const columns: ColumnDef<Jobs>[] = [
   {
     accessorKey: "profile",
     cell: ({ row }) => {
-      const userProfile = row.original;
-      return (
-        <Avatar>
-          <AvatarImage src={userProfile.profile} />
-          <AvatarFallback>{userProfile.name}</AvatarFallback>
-        </Avatar>
-      );
-    },
-    enableSorting: false,
-    enableHiding: false,
+      const profileImage = row.getValue("profile") as string;
+      return(
+        <img
+        src={profileImage}
+        alt="Profile"
+        className="w-10 h-10 rounded-full object-cover"
+      />
+      )
+    }
   },
   {
     accessorKey: "name",
@@ -76,13 +70,13 @@ export const columns: ColumnDef<Jobs>[] = [
     },
   },
   {
-    accessorKey: "job",
+    accessorKey: "mobile",
     header: ({ column }) => {
       return <div className="">mobile</div>;
     },
   },
   {
-    accessorKey: "job",
+    accessorKey: "email",
     header: ({ column }) => {
       return <div className=" ">email</div>;
     },
@@ -100,7 +94,7 @@ export const columns: ColumnDef<Jobs>[] = [
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          {/* <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(payment._id)}
@@ -110,7 +104,7 @@ export const columns: ColumnDef<Jobs>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem>View customer</DropdownMenuItem>
             <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
+          </DropdownMenuContent> */}
         </DropdownMenu>
       );
     },

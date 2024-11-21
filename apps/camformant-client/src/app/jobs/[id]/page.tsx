@@ -41,6 +41,8 @@ const Page: React.FC = () => {
         const response = await axiosInstance.get(`${API_ENDPOINTS.JOBS}/${id}`);
         if (response.status === 200 && response.data.data) {
           const job = response.data.data;
+          console.log("job after fetch:::", job);
+
           job.createdAt = new Date(job.createdAt);
           setJobData([job]);
           setLoading(false);
@@ -193,10 +195,11 @@ const Page: React.FC = () => {
           Apply Now
         </button>
         <span className="p-3 text-xl bg-white text-primaryCam drop-shadow-2xl rounded-2xl">
-          <Link href={`${id}/message`}>
-            {" "}
+          <Link
+            href={`/chat/${jobData[0]?.companyId! ? jobData[0].companyId._id : ""}`}
+          >
             <MdMessage />
-          </Link>{" "}
+          </Link>
         </span>
       </div>
 

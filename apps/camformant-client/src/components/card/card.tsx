@@ -51,7 +51,7 @@ export const Card: React.FC<CardProps> = (props) => {
         <section className="flex items-center gap-x-5">
           <Image
             src={profile!}
-            alt={title!}
+            alt={title! || profile!}
             width={48}
             height={48}
             className="object-cover w-12 h-12 rounded-full"
