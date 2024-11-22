@@ -317,49 +317,50 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ICorporateModel": {
+    "companiesForJobs": {
         "dataType": "refObject",
         "properties": {
-            "_id": {"dataType":"string","required":true},
-            "sub": {"dataType":"string","required":true},
-            "username": {"dataType":"string","required":true},
-            "email": {"dataType":"string","required":true},
-            "role": {"dataType":"enum","enums":["company"],"required":true},
-            "corporateProfileId": {"dataType":"string"},
-            "favorites": {"dataType":"array","array":{"dataType":"string"},"required":true},
-            "createdAt": {"dataType":"datetime","required":true},
-            "updatedAt": {"dataType":"datetime","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CorporateProfileResponseCreate": {
-        "dataType": "refObject",
-        "properties": {
-            "message": {"dataType":"string","required":true},
-            "data": {"ref":"ICorporateModel","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CorporateProfileResquestParams": {
-        "dataType": "refObject",
-        "properties": {
-            "sub": {"dataType":"string"},
-            "corporateProfileId": {"dataType":"string"},
-            "username": {"dataType":"string","required":true},
+            "_id": {"dataType":"string"},
             "profile": {"dataType":"string"},
+            "name": {"dataType":"string"},
+            "location": {"dataType":"nestedObjectLiteral","nestedProperties":{"country":{"dataType":"string"},"city":{"dataType":"string"},"address":{"dataType":"string"}}},
+            "description": {"dataType":"string"},
+            "contact": {"dataType":"nestedObjectLiteral","nestedProperties":{"website":{"dataType":"string"},"phone_number":{"dataType":"string"}}},
             "email": {"dataType":"string"},
-            "role": {"dataType":"string"},
+            "job_openings_count": {"dataType":"double"},
+            "job_closings_count": {"dataType":"double"},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CorporateProfileResponse": {
+    "ICorporatorProfile": {
+        "dataType": "refObject",
+        "properties": {
+            "_id": {"dataType":"string"},
+            "sub": {"dataType":"string"},
+            "name": {"dataType":"string"},
+            "email": {"dataType":"string"},
+            "role": {"dataType":"enum","enums":["company"]},
+            "profile": {"dataType":"string"},
+            "location": {"dataType":"nestedObjectLiteral","nestedProperties":{"country":{"dataType":"string"},"city":{"dataType":"string"},"address":{"dataType":"string"}}},
+            "contact": {"dataType":"nestedObjectLiteral","nestedProperties":{"website":{"dataType":"string"},"phone_number":{"dataType":"string"}}},
+            "social_links": {"dataType":"nestedObjectLiteral","nestedProperties":{"facebook":{"dataType":"string"},"twitter":{"dataType":"string"},"linkedin":{"dataType":"string"}}},
+            "description": {"dataType":"string"},
+            "employee_count": {"dataType":"double"},
+            "job_openings_count": {"dataType":"double"},
+            "job_closings_count": {"dataType":"double"},
+            "completed": {"dataType":"double"},
+            "createdAt": {"dataType":"datetime"},
+            "updatedAt": {"dataType":"datetime"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "APIResponse_ICorporatorProfile_": {
         "dataType": "refObject",
         "properties": {
             "message": {"dataType":"string","required":true},
-            "data": {"dataType":"nestedObjectLiteral","nestedProperties":{"jobs":{"dataType":"array","array":{"dataType":"string"},"required":true},"user":{"ref":"ICorporateModel","required":true}},"required":true},
+            "data": {"ref":"ICorporatorProfile"},
         },
         "additionalProperties": false,
     },
@@ -1027,13 +1028,13 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/v1/corporate',
+        app.get('/v1/corporator/companies',
             ...(fetchMiddlewares<RequestHandler>(CorporateController)),
-            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.createCorporate)),
+            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.getMultiCompanies)),
 
-            async function CorporateController_createCorporate(request: ExRequest, response: ExResponse, next: any) {
+            async function CorporateController_getMultiCompanies(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"CorporateProfileResquestParams"},
+                    query: {"in":"queries","name":"query","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"companiesId":{"dataType":"string"}}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -1045,7 +1046,68 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
                 const controller = new CorporateController();
 
               await templateService.apiHandler({
-                methodName: 'createCorporate',
+                methodName: 'getMultiCompanies',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/v1/corporator/getMulti/Profile',
+            ...(fetchMiddlewares<RequestHandler>(CorporateController)),
+            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.getMultiProfileCompany)),
+
+            async function CorporateController_getMultiProfileCompany(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    query: {"in":"queries","name":"query","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"companiesId":{"dataType":"string"}}},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new CorporateController();
+
+              await templateService.apiHandler({
+                methodName: 'getMultiProfileCompany',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/v1/corporator/profile',
+            ...(fetchMiddlewares<RequestHandler>(CorporateController)),
+            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.createCorporateProfile)),
+
+            async function CorporateController_createCorporateProfile(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    body: {"in":"body","name":"body","required":true,"ref":"ICorporatorProfile"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new CorporateController();
+
+              await templateService.apiHandler({
+                methodName: 'createCorporateProfile',
                 controller,
                 response,
                 next,
@@ -1057,11 +1119,11 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/v1/corporate',
+        app.get('/v1/corporator/profile',
             ...(fetchMiddlewares<RequestHandler>(CorporateController)),
-            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.getAllCorporates)),
+            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.getCorporateProfiles)),
 
-            async function CorporateController_getAllCorporates(request: ExRequest, response: ExResponse, next: any) {
+            async function CorporateController_getCorporateProfiles(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
             };
 
@@ -1074,23 +1136,23 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
                 const controller = new CorporateController();
 
               await templateService.apiHandler({
-                methodName: 'getAllCorporates',
+                methodName: 'getCorporateProfiles',
                 controller,
                 response,
                 next,
                 validatedArgs,
-                successStatus: undefined,
+                successStatus: 200,
               });
             } catch (err) {
                 return next(err);
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/v1/corporate/:corporateId',
+        app.get('/v1/corporator/profile/:corporateId',
             ...(fetchMiddlewares<RequestHandler>(CorporateController)),
-            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.getCorporateBySub)),
+            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.getCorporateProfilesById)),
 
-            async function CorporateController_getCorporateBySub(request: ExRequest, response: ExResponse, next: any) {
+            async function CorporateController_getCorporateProfilesById(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
                     corporateId: {"in":"path","name":"corporateId","required":true,"dataType":"string"},
             };
@@ -1104,26 +1166,26 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
                 const controller = new CorporateController();
 
               await templateService.apiHandler({
-                methodName: 'getCorporateBySub',
+                methodName: 'getCorporateProfilesById',
                 controller,
                 response,
                 next,
                 validatedArgs,
-                successStatus: undefined,
+                successStatus: 200,
               });
             } catch (err) {
                 return next(err);
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/v1/corporate/profile/:corporateId',
+        app.put('/v1/corporator/profile/:corporateId',
             ...(fetchMiddlewares<RequestHandler>(CorporateController)),
             ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.updateCorporateProfile)),
 
             async function CorporateController_updateCorporateProfile(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
                     corporateId: {"in":"path","name":"corporateId","required":true,"dataType":"string"},
-                    requestBody: {"in":"body","name":"requestBody","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"corporateProfileId":{"dataType":"string","required":true}}},
+                    updateDataCorporateProfile: {"in":"body","name":"updateDataCorporateProfile","required":true,"ref":"ICorporatorProfile"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -1140,20 +1202,20 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
                 response,
                 next,
                 validatedArgs,
-                successStatus: undefined,
+                successStatus: 204,
               });
             } catch (err) {
                 return next(err);
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/v1/corporate/profile/me',
+        app.delete('/v1/corporator/profile/:corporateId',
             ...(fetchMiddlewares<RequestHandler>(CorporateController)),
-            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.getCorporateMe)),
+            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.deleteCorporateProfile)),
 
-            async function CorporateController_getCorporateMe(request: ExRequest, response: ExResponse, next: any) {
+            async function CorporateController_deleteCorporateProfile(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    corporateId: {"in":"path","name":"corporateId","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -1165,12 +1227,12 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
                 const controller = new CorporateController();
 
               await templateService.apiHandler({
-                methodName: 'getCorporateMe',
+                methodName: 'deleteCorporateProfile',
                 controller,
                 response,
                 next,
                 validatedArgs,
-                successStatus: undefined,
+                successStatus: 200,
               });
             } catch (err) {
                 return next(err);

@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-
+//todo: remove andd merge to user service
 export interface ICompany {
   _id?: string;
   name?: string;
@@ -34,6 +34,6 @@ const CompanySchema: Schema = new Schema(
       },
     },
   }
-)
+);
 
 export const CompanyModel = model<ICompany>("Company", CompanySchema);

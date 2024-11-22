@@ -2,13 +2,33 @@ import {
   JobGetAllControllerParams,
   JobParams,
 } from "@/src/controllers/types/job-controller.type";
-import { IJob } from "@/src/database/models/job.model";
+import { IJob, returnJobs } from "@/src/database/models/job.model";
 import jobRepository from "@/src/database/repositories/job.repository";
 import searchService from "@/src/services/search.service";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
 import mongoose from "mongoose";
 
 class JobService {
+  //new post
+  public async createJob(companyId: string, jobData: any) {
+    try {
+      const newJob = await jobRepository.createJob({
+        ...jobData,
+        companyId: companyId,
+      });
+      if (!newJob) {
+        throw new Error("Job creation failed.");
+      }
+      return newJob;
+    } catch (error) {
+      console.error(
+        `JobOpeningService - createJob() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
+  //
   public async createNewJob(newInfo: JobParams): Promise<IJob> {
     try {
       const newJobInfo = {
@@ -25,7 +45,17 @@ class JobService {
       throw error;
     }
   }
-  public async getAllJobs(queries: JobGetAllControllerParams, userId = null) {
+  public async getAllJobs(
+    queries: JobGetAllControllerParams,
+    userId = null
+  ): Promise<{
+    jobs: returnJobs[];
+    totalJobs: number;
+    totalPages: number;
+    currentPage: number;
+    skip: number;
+    limit: number;
+  }> {
     try {
       const { page, limit, filter, sort, search, userFav } = queries;
       const searchUserFav = userFav?.split(",") || [];

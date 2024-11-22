@@ -1,94 +1,183 @@
-import { UserCreationRepoParams } from "@/src/database/repositories/types/user-repository.type";
 import CorporateRepository from "@/src/database/repositories/coporate.repository";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
+import { ICorporatorProfile } from "../database/models/corporate.model";
+import { companiesForJobs } from "../database/repositories/types/user-repository.type";
 
 class CorporateService {
+  public async getMultiCompanies(
+    companiesId?: string
+  ): Promise<{ companies: companiesForJobs[] }> {
+    try {
+      const arrayCompaniesId = companiesId ? companiesId.split(",") : [];
+      const res = await CorporateRepository.getMultiCompanies(arrayCompaniesId);
 
-    async getAllCorporates() {
-        try {
-            const getAllCorporates = await CorporateRepository.getAllCorporates()
-
-            if (!getAllCorporates) {
-                return null
-            }
-            return getAllCorporates
-        } catch (error) {
-            console.error(
-                `CorporateService - getAllCorporates() method error: `,
-                prettyObject(error as {})
-            );
-            throw error;
-        }
+      return { companies: res };
+    } catch (error) {
+      throw error;
     }
-
-    async createCorporate(userInfo: UserCreationRepoParams) {
-        try {
-            console.log("userInfo", userInfo);
-            const newUser = await CorporateRepository.createCorporate(userInfo);
-
-            if (!newUser) {
-                return null;
-            }
-
-            return newUser;
-        } catch (error) {
-            console.error(
-                `CorporateService - createNewUser() method error: `,
-                prettyObject(error as {})
-            );
-            throw error;
-        }
+  }
+  public async createProfile(profileData: ICorporatorProfile) {
+    try {
+      const profile = await CorporateRepository.createProfile(profileData);
+      if (!profile) {
+        console.log(
+          "CorporateService - createProfile() method error: Profile not created"
+        );
+        throw new Error("Profile not created");
+      }
+      return profile;
+    } catch (error) {
+      console.error(
+        `CorporateService - createProfile() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
     }
-
-    async updateCorporateProfile(corporateId: string, corporateProfileId: string) {
-        try {
-            const updatedCorporate = await CorporateRepository.updateCorporateProfile(corporateId, corporateProfileId);
-            console.log("CorporateSerivce() updatedCorporate::::::::::::::::::::::::", updatedCorporate);
-            if (!updatedCorporate) {
-                throw Error("CorporateSerivce() not found");
-            }
-
-            return updatedCorporate;
-        } catch (error) {
-            console.error(
-                `CorporateService - updateCorporateProfile() method error: `,
-                prettyObject(error as {})
-            );
-            throw error;
-        }
+  }
+  public async getAllProfiles(): Promise<ICorporatorProfile[]> {
+    try {
+      const corporateProfile = await CorporateRepository.getAllProfiles();
+      if (!corporateProfile) {
+        console.log(
+          "CorporateService - postIJob() method error: No corporate profile found"
+        );
+        return [];
+      }
+      return corporateProfile;
+    } catch (error) {
+      console.error(
+        `CorporateService - postIJob() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
     }
-
-    async getCorporateBySub(sub: string) {
-        try {
-            console.log("Fetching corporate profile by sub:", sub);
-            const corporate = await CorporateRepository.getCorporateProfile(sub);
-
-            if (!corporate) {
-                console.warn(`Corporate profile with sub ${sub} not found`);
-                return null;
-            }
-
-            return corporate;
-        } catch (error) {
-            console.error("CorporateService - getCorporateBySub() method error:", error);
-            throw error;
-        }
+  }
+  public async getProfileById(id: string): Promise<ICorporatorProfile | null> {
+    try {
+      const corporateProfile = await CorporateRepository.findProfileById(id);
+      if (!corporateProfile) {
+        console.log(
+          "CorporateService - getProfileById() method error: No corporate profile found"
+        );
+        return null;
+      }
+      return corporateProfile;
+    } catch (error) {
+      console.error(
+        `CorporateService - getProfileById() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
     }
-
-
-    async getCorporateById(corporateId: string) {
-        try {
-            const corporate = await CorporateRepository.getCorporateById(corporateId);
-            return corporate;
-        } catch (error) {
-            console.error(
-                `CorporateService - getCorporateById() method error: `,
-                prettyObject(error as {})
-            );
-            throw error;
-        }
+  }
+  public async updateCorporateProfile(
+    corporateId: string,
+    profileData: ICorporatorProfile
+  ) {
+    try {
+      const profile = await CorporateRepository.updateCorporateProfile(
+        corporateId,
+        profileData
+      );
+      if (!profile) {
+        console.log(
+          "CorporateService - updateCorporateProfile() method error: Profile not updated"
+        );
+        throw new Error(
+          "CorporateService - updateCorporateProfile() method error: Profile not updated"
+        );
+      }
+      return profile;
+    } catch (error) {
+      console.error(
+        `CorporateService - updateCorporateProfile() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
     }
+  }
+  public async deleteCorporateProfile(corporateId: string) {
+    try {
+      const profile =
+        await CorporateRepository.deleteCorporateProfile(corporateId);
+      if (!profile) {
+        console.log(
+          "CorporateService - deleteCorporateProfile() method error: Profile not deleted"
+        );
+        throw new Error(
+          "CorporateService - deleteCorporateProfile() method error: Profile not deleted"
+        );
+      }
+      return profile;
+    } catch (error) {
+      console.error(
+        `CorporateService - deleteCorporateProfile() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
+  //TODO: type
+  public async getMultiProfileCompany(companiesId?: string): Promise<{
+    companiesProfile: {
+      _id: string | undefined;
+      profile: string | undefined;
+      name: string | undefined;
+    }[];
+  }> {
+    const arrCompaniesId = companiesId ? companiesId?.split(",") : [];
+    try {
+      console.log("jeab hz 2");
 
+      const result = await CorporateRepository.getMultiProfileCompany(
+        arrCompaniesId!
+      );
+
+      if (!result) {
+        throw new Error("Not found");
+      }
+      return { companiesProfile: result };
+    } catch (error) {
+      console.error(
+        `CompanyService getMultiProfileCompany() method error:`,
+        error
+      );
+      throw error;
+    }
+  }
+  //todo: later
+  //   public async getProfileWithJobs(
+  //     companyId: string,
+  //     recentJobsLimit: number = 5
+  //   ) {
+  //     const profile = await CorporateRepository.findProfileById(companyId);
+
+  //     if (!profile) {
+  //       console.log(
+  //         "CorporateService - getProfileWithJobs() method error: Profile not found"
+  //       );
+  //       return null;
+  //     }
+  //     //todo::: prepare from job service
+  //     const [totalJobs, recentJobs] = await Promise.all([
+  //       jobOpeningRepository.countJobsByCompanyId(companyId), // total jobs
+  //       jobOpeningRepository.findRecentJobsByCompanyId(
+  //         companyId,
+  //         recentJobsLimit
+  //       ), // recent jobs
+  //     ]);
+
+  //     const jobStats = {
+  //       total: totalJobs,
+  //       recentJobs: recentJobs,
+  //     };
+
+  //     const profileObject = (
+  //       profile as Document & { toObject: () => any }
+  //     ).toObject();
+
+  //     return { ...profileObject, jobStats };
+  //   }
 }
 
 export default new CorporateService();

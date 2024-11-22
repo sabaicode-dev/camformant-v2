@@ -10,6 +10,7 @@ import {
   RespondGetConversations,
   RespondGetConversationsPagination,
 } from "./types/messages.repository.types";
+import configs from "@/src/config";
 
 export class MessageRepository {
   async sendMessage(makeMessage: {
@@ -56,6 +57,7 @@ export class MessageRepository {
     }
   }
   //todo: reduce / structure type
+  //todo: sort for frontend
   async getMessage(
     userToChatId: string,
     senderId: string,
@@ -78,9 +80,11 @@ export class MessageRepository {
         },
       }).populate({
         path: "messages",
-        options: { limit, skip, sort: { createdAt: 1 } },
-        // model: MessageModel,
-        // select: "_id senderId receiverId message createdAt updatedAt",
+        options: {
+          limit,
+          skip,
+          sort: { createdAt: 1 },
+        },
       });
       if (!conversation) {
         const roomId = [senderId, userToChatId].sort().join("_");
@@ -111,6 +115,13 @@ export class MessageRepository {
           skip: skip,
         };
       }
+      //todo: sort
+      console.log("conversation", conversation.messages);
+      const sortedByCreatedAt = conversation.messages.sort(
+        (a: any, b: any) => b.createdAt - a.createdAt
+      );
+
+      console.log("Sorted by createdAt:", sortedByCreatedAt);
 
       // Step 2: Count total messages for the conversation separately
       const totalMessages = await MessageModel.countDocuments({
@@ -211,17 +222,18 @@ export class MessageRepository {
       if (senderRole === "User") {
         fetchQuery =
           participantsId.length === 0 ? "" : `?companiesId=${participantsId}`;
-        api_endpoint = "http://localhost:4003/v1/companies/getMulti/Profile";
+        api_endpoint = `${configs.companyUrl}/getMulti/Profile`;
       } else if (senderRole === "Company") {
         //TODO: fetch to user to get profile
         fetchQuery =
           participantsId.length === 0 ? "" : `?usersId=${participantsId}`;
-        api_endpoint = "http://localhost:4005/v1/users/getMulti/Profile";
+        api_endpoint = `${configs.userUrl}/getMulti/Profile`;
       }
 
       const res = await fetch(`${api_endpoint}${fetchQuery}`);
 
       const data = await res.json();
+
       //declare
       let participantsProfile:
         | {
@@ -235,6 +247,7 @@ export class MessageRepository {
       } else if (data.usersProfile) {
         participantsProfile = data.usersProfile;
       }
+
       //check compare the participant from db and fetching must be match to ensure correctly
       if (participantsProfile! && participantsProfile.length !== 0) {
         for (let i = 0; i < participantsProfile!.length; i++) {

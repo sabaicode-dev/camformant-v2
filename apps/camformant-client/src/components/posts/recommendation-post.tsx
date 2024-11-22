@@ -58,7 +58,7 @@ export const RecommendationPost: React.FC = () => {
           },
         });
         const jobs = jobResponse.data.data.jobs;
-        // console.log("jobs: ", jobs);
+        console.log("jobs: ", jobs);
 
         // Merge favorite status into jobs
         const jobsWithFavoriteStatus = jobs.map((job: any) => ({
@@ -124,7 +124,7 @@ export const RecommendationPost: React.FC = () => {
                     _id={job._id}
                     title={job.title}
                     position={job.position}
-                    profile={job.companyId?.profile}
+                    profile={job.company.profile}
                     min_salary={job.min_salary}
                     max_salary={job.max_salary}
                     job_opening={job.job_opening}

@@ -14,45 +14,48 @@ interface Company {
   name: string;
   profile: string;
 }
-export interface Job {
-  _id: string;
-  companyId: Company;
-}
-export enum EmploymentSchedule {
-  FULL_TIME = "Full-Time",
-  PART_TIME = "Part-Time",
-  FLEXIBLE_HOURS = "Flexible-Hours",
-  PROJECT_BASED = "Project-Based",
-}
-export enum EmploymentType {
-  CONTRACT = "Contract",
-  INTERNSHIP = "Internship",
-}
-export enum WorkMode {
-  REMOTE = "Remote",
-  ON_SITE = "On-Site",
-  HYBRID = "Hybrid",
-}
-interface IJob {
+export interface companiesForJobs {
   _id?: string;
-  companyId?: string;
+  profile?: string;
+  name?: string;
+  location?: {
+    address?: string;
+    city?: string;
+    country?: string;
+  };
+  description?: string;
+  contact?: {
+    phone_number?: string;
+    website?: string;
+  };
+  email?: string;
+  job_openings_count?: number;
+  job_closings_count?: number;
+}
+export interface IJob {
+  _id?: string;
   title?: string; // name of the job that company looking for. Example: Java Developer
   position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
-  workMode?: WorkMode[];
+  workMode?: string[];
   location?: string; // location could be phnom penh, kompong-cham, etc.
   requirement?: string;
-  address?: string; // address could be the link address of the company (google link)
   description?: string;
+  address?: string; // address could be the link address of the company (google link)
   min_salary?: number;
   max_salary?: number;
-  deadline?: Date;
   job_opening?: number;
-  type?: EmploymentType[];
-  schedule?: EmploymentSchedule[];
+  type?: string[];
+  schedule?: string[];
   required_experience?: string[];
   benefit?: string[];
   createdAt?: Date;
   updatedAt?: Date;
+  deadline?: Date;
+  company?: companiesForJobs;
+}
+export interface Job {
+  _id: string;
+  companyId: Company;
 }
 
 export const PositionPost: React.FC = () => {
@@ -207,7 +210,7 @@ export const PositionPost: React.FC = () => {
               _id={job._id}
               title={job.title}
               position={job.position}
-              profile={job.companyId?.profile}
+              profile={job.company.profile}
               min_salary={job.min_salary}
               max_salary={job.max_salary}
               job_opening={job.job_opening}
@@ -224,7 +227,7 @@ export const PositionPost: React.FC = () => {
         <div className="flex flex-col items-center w-full">
           <Image
             src={"/images/unavailable.png"}
-            alt=""
+            alt="No jobs available"
             width={1280}
             height={1280}
             className="w-full lg:w-1/2"

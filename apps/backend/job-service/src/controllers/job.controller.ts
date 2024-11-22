@@ -6,11 +6,7 @@ import { IJob } from "@/src/database/models/job.model";
 import jobService from "@/src/services/job.service";
 import searchService from "@/src/services/search.service";
 import sendResponse from "@/src/utils/send-response";
-import {
-  APIResponse,
-  PaginationResponse,
-  prettyObject,
-} from "@sabaicode-dev/camformant-libs";
+import { APIResponse, prettyObject } from "@sabaicode-dev/camformant-libs";
 import {
   Controller,
   Route,
@@ -26,10 +22,65 @@ import {
   Request,
 } from "tsoa";
 import { Request as ExpressRequest } from "express";
+import axios from "axios";
 
 @Route("/v1/jobs")
 @Tags("Job")
 export class JobController extends Controller {
+  //new post
+  @SuccessResponse("201", "Created")
+  @Post("/job")
+  public async postIJob(
+    @Request() request: ExpressRequest,
+    @Body() body: IJob
+  ): Promise<APIResponse<IJob>> {
+    try {
+      const corporateSub = request.cookies["username"];
+      if (!corporateSub) {
+        console.log(
+          "CorporateController - getCorporateProfileWithJobs() method error : Corporate ID is missing"
+        );
+        return sendResponse<IJob>({
+          message: "Corporate ID is missing",
+          data: {} as IJob,
+        });
+      }
+      const getCorporateProfileId = await axios.get(
+        `http://localhost:4005/v1/corporate/${corporateSub}`
+      );
+      const corporateProfileId =
+        getCorporateProfileId.data.data.corporateProfileId;
+
+      if (!getCorporateProfileId || !corporateProfileId) {
+        console.log(
+          "CorporateController - getCorporateProfileWithJobs() method error : Corporate Profile ID is missing"
+        );
+        return sendResponse<IJob>({
+          message: "Corporate Profile ID is missing",
+          data: {} as IJob,
+        });
+      }
+
+      const newJob = await jobService.createJob(corporateProfileId, body);
+      if (!newJob) {
+        console.log(
+          "CorporateController - postIJob() method error : Job creation failed."
+        );
+        return {} as any;
+      }
+      return sendResponse<IJob>({
+        message: "Job was created successfully!",
+        data: newJob,
+      });
+    } catch (error) {
+      console.error(
+        `CorporateController - postIJob() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
+  //
   @SuccessResponse("201", "Created")
   @Post("/")
   public async createJob(@Body() req: JobParams): Promise<APIResponse<IJob>> {
@@ -45,16 +96,16 @@ export class JobController extends Controller {
   public async getAllJobs(
     @Request() request: ExpressRequest,
     @Queries() queries: JobGetAllControllerParams
-  ): Promise<APIResponse<PaginationResponse<IJob>>> {
+  ) {
     try {
       const userId = request.cookies["user_id"] || null;
 
       const response = await jobService.getAllJobs(queries, userId);
 
-      return sendResponse<PaginationResponse<IJob>>({
+      return {
         message: "success",
         data: response,
-      });
+      };
     } catch (error) {
       throw error;
     }

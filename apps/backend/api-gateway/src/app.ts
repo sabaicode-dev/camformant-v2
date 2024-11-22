@@ -44,8 +44,12 @@ app.get("/v1/gateway-health", (_req: Request, res: Response) => {
 // ========================
 app.use(routeConfigMiddleware);
 app.use(authenticateToken);
+//bug: stuck auth role
 app.use(authorizeRole);
-
+app.use((_req, _res, next) => {
+  console.log("Reach api getway 3");
+  next();
+});
 // =======================
 // Proxy Routes
 // =======================

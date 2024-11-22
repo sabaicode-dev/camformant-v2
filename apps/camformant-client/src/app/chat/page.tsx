@@ -101,6 +101,7 @@ const Chat = () => {
         setConversations([]);
         const res = await axiosInstance.get(API_ENDPOINTS.GET_CONVERSATIONS);
         const conversations: RespondGetConversations = res.data;
+
         setPagination({
           totalConversation: conversations.totalConversation,
           currentPage: conversations.currentPage,

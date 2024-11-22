@@ -44,7 +44,7 @@ function loadConfig(): Config {
     mongodbUrl: envVars.MONGODB_URL,
     clientUrl: envVars.CLIENT_URL,
     MessageUrl: envVars.API_SENDMESSAGE_ENDPOINT,
-    companyUrl: envVars.API_SENDMESSAGE_ENDPOINT,
+    companyUrl: envVars.API_COMPANY_ENDPOINT,
     userUrl: envVars.API_SENDMESSAGE_ENDPOINT,
   };
 }
