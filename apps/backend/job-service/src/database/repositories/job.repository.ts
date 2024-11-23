@@ -12,6 +12,7 @@ import {
 import { NotFoundError, prettyObject } from "@sabaicode-dev/camformant-libs";
 import mongoose, { SortOrder } from "mongoose";
 import axios from "axios";
+import configs from "@/src/config";
 
 class JobRepository {
   //new post
@@ -267,7 +268,7 @@ async function fetchCompaniesProfile(
     : companiesId?.toString() || "";
   const query = lastId.length === 0 ? "" : `?companiesId=${lastId}`;
 
-  const endpoint = "http://localhost:4005/v1/corporator/companies";
+  const endpoint = `${configs.corporator_api_endpoint}/companies`;
   const companiesRes = await axios.get(`${endpoint}${query}`);
   const data: companiesForJobs[] = companiesRes.data.companies;
   return data;

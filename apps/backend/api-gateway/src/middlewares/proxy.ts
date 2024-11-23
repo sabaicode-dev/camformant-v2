@@ -4,7 +4,7 @@ import express, { Response } from "express";
 import { ClientRequest, IncomingMessage } from "http";
 import { createProxyMiddleware, Options } from "http-proxy-middleware";
 // import { gatewayLogger } from "@/src/server";
-import { allowedOrigins, corsOptions2 } from "@/src/middlewares/cors";
+import corsOptions, { allowedOrigins } from "@/src/middlewares/cors";
 
 interface ProxyConfig {
   [context: string]: Options<IncomingMessage, Response>;
@@ -34,11 +34,10 @@ const proxyConfigs: ProxyConfig = {
         if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
           res.setHeader("Access-Control-Allow-Origin", requestOrigin);
         }
-        // res.setHeader("Access-Control-Allow-Origin", corsOptions2.origin);
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader(
           "Access-Control-Allow-Methods",
-          corsOptions2.methods.join(", ")
+          (corsOptions!.methods as string[]).join(", ")
         );
         res.setHeader(
           "Access-Control-Allow-Headers",
@@ -69,11 +68,10 @@ const proxyConfigs: ProxyConfig = {
         if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
           res.setHeader("Access-Control-Allow-Origin", requestOrigin);
         }
-        // res.setHeader("Access-Control-Allow-Origin", corsOptions2.origin);
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader(
           "Access-Control-Allow-Methods",
-          corsOptions2.methods.join(", ")
+          (corsOptions!.methods as string[]).join(", ")
         );
         res.setHeader(
           "Access-Control-Allow-Headers",
@@ -103,11 +101,10 @@ const proxyConfigs: ProxyConfig = {
         if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
           res.setHeader("Access-Control-Allow-Origin", requestOrigin);
         }
-        // res.setHeader("Access-Control-Allow-Origin", corsOptions2.origin);
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader(
           "Access-Control-Allow-Methods",
-          corsOptions2.methods.join(", ")
+          (corsOptions!.methods as string[]).join(", ")
         );
         res.setHeader(
           "Access-Control-Allow-Headers",
@@ -137,11 +134,10 @@ const proxyConfigs: ProxyConfig = {
         if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
           res.setHeader("Access-Control-Allow-Origin", requestOrigin);
         }
-        // res.setHeader("Access-Control-Allow-Origin", corsOptions2.origin);
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader(
           "Access-Control-Allow-Methods",
-          corsOptions2.methods.join(", ")
+          (corsOptions!.methods as string[]).join(", ")
         );
         res.setHeader(
           "Access-Control-Allow-Headers",
@@ -173,11 +169,10 @@ const proxyConfigs: ProxyConfig = {
         if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
           res.setHeader("Access-Control-Allow-Origin", requestOrigin);
         }
-        res.setHeader("Access-Control-Allow-Origin", corsOptions2.origin);
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader(
           "Access-Control-Allow-Methods",
-          corsOptions2.methods.join(", ")
+          (corsOptions!.methods as string[]).join(", ")
         );
         res.setHeader(
           "Access-Control-Allow-Headers",
@@ -218,11 +213,10 @@ const proxyConfigs: ProxyConfig = {
         if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
           res.setHeader("Access-Control-Allow-Origin", requestOrigin);
         }
-        // res.setHeader("Access-Control-Allow-Origin", corsOptions2.origin);
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader(
           "Access-Control-Allow-Methods",
-          corsOptions2.methods.join(", ")
+          (corsOptions!.methods as string[]).join(", ")
         );
         res.setHeader(
           "Access-Control-Allow-Headers",
@@ -266,11 +260,10 @@ const proxyConfigs: ProxyConfig = {
         if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
           res.setHeader("Access-Control-Allow-Origin", requestOrigin);
         }
-        // res.setHeader("Access-Control-Allow-Origin", corsOptions2.origin);
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader(
           "Access-Control-Allow-Methods",
-          corsOptions2.methods.join(", ")
+          (corsOptions!.methods as string[]).join(", ")
         );
         res.setHeader(
           "Access-Control-Allow-Headers",

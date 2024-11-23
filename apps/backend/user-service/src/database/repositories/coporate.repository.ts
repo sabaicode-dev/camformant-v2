@@ -30,7 +30,11 @@ class CorporateRepository {
 
       const result = await CorporatorModel.find(filter);
       if (!result) {
-        throw new NotFoundError();
+        throw new NotFoundError("No User Found!");
+      }
+
+      if (result.length === 0) {
+        return [];
       }
 
       const companiesData = result.map((com: ICorporatorProfile) => {

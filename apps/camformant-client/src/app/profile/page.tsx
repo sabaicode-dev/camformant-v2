@@ -130,7 +130,7 @@ const Page: React.FC = () => {
                 className={` w-32 h-32 rounded-full overflow-hidden bg-white`}
               >
                 <Image
-                  className="object-cover"
+                  className={`object-cover`}
                   src={user?.profile || "/images/def-user-profile.png"}
                   height={200}
                   width={200}

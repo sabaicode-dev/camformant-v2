@@ -4,7 +4,7 @@ import { CorsOptions } from "cors";
 // Define the two allowed origins
 export const allowedOrigins: string[] = [
   configs.clientUrl,
-  "http://localhost:5000",
+  configs.corporatorUrl,
 ];
 
 const corsOptions: CorsOptions = {
@@ -19,13 +19,6 @@ const corsOptions: CorsOptions = {
   },
   credentials: true, // Allow credentials like cookies
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"], // Allowed HTTP methods
-};
-
-export const corsOptions2 = {
-  origin: [configs.clientUrl],
-  // origin: ["http://localhost:5000"],
-  credentials: true, // Request includes credentials like cookies
-  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
 };
 
 console.log("Allowed Origins:", allowedOrigins);

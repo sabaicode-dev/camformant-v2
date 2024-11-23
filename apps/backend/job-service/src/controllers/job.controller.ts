@@ -23,6 +23,7 @@ import {
 } from "tsoa";
 import { Request as ExpressRequest } from "express";
 import axios from "axios";
+import configs from "../config";
 
 @Route("/v1/jobs")
 @Tags("Job")
@@ -46,7 +47,7 @@ export class JobController extends Controller {
         });
       }
       const getCorporateProfileId = await axios.get(
-        `http://localhost:4005/v1/corporate/${corporateSub}`
+        `${configs.corporator_api_endpoint}/${corporateSub}`
       );
       const corporateProfileId =
         getCorporateProfileId.data.data.corporateProfileId;

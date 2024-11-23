@@ -19,6 +19,7 @@ import { Request as ExpressRequest } from "express";
 import axios from "axios";
 
 import { ICorporatorProfile } from "../database/models/corporate.model";
+import configs from "../config";
 
 @Tags("Corporate")
 @Route("v1/corporator")
@@ -67,7 +68,7 @@ export class CorporateController extends Controller {
         );
       }
       await axios.put(
-        `http://localhost:4005/v1/corporate/profile/${corporateId}`,
+        `${configs.corporator_api_endpoint}/profile/${corporateId}`,
         { corporateProfileId },
         {
           headers: { Authorization: "application/json" },

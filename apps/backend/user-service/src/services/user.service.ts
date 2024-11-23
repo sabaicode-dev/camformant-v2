@@ -124,14 +124,11 @@ class UserService {
       name?: string;
     }[];
   }> {
-    console.log("1::");
 
     const arrUsersId = usersId?.split(",") || [];
-    console.log("hi", arrUsersId);
 
     try {
       const result = await UserRepository.getMultiProfileUser(arrUsersId!);
-      console.log("2::");
 
       if (!result) {
         // throw new NotFoundError();
