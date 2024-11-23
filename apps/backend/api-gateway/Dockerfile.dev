@@ -13,7 +13,7 @@ COPY .npmrc ./
 RUN npm install && npm install -g nodemon
 
 # Copy other files
-COPY tsconfig.json ./
+COPY tsconfig.json ecosystem.config.js ./
 COPY nodemon.json ./
 COPY src ./src
 

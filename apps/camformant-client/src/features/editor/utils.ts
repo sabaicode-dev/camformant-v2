@@ -338,7 +338,7 @@ export const catchEditedData = (
   setDataForUpdate: React.Dispatch<SetStateAction<any>>,
   canvas: fabric.Canvas
 ) => {
-  const activeObject = canvas.getActiveObject() as fabric.Textbox;
+  const activeObject = e.target! as fabric.Textbox;
   const doubleKeyTextbox: {
     key: string | null;
     value: string | null;

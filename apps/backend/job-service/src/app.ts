@@ -5,8 +5,8 @@ import cookieParser from 'cookie-parser';
 import express from 'express';
 import fs from 'fs';
 import path from 'path'
+import cors from "cors";
 import swaggerUi from "swagger-ui-express";
-import cors from 'cors';
 
 // Dynamically load swagger.json & Initialize Sentry
 const swaggerDocument = JSON.parse(fs.readFileSync(path.join(__dirname, 'docs/swagger.json'), 'utf8'));

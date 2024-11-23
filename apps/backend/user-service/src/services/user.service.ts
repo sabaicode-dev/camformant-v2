@@ -218,7 +218,7 @@ class UserService {
   async getCvFiles(userId: string) {
     try {
       console.log("inside get cv services");
-      const response:CvFileParams = await UserRepository.getCvFile(userId);
+      const response:CvFileParams|null = await UserRepository.getCvFile(userId);
       return response;
     } catch (err) {
       throw err;

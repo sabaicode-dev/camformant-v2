@@ -471,13 +471,12 @@ class UserRepository {
       throw err;
     }
   }
-  async getCvFile(userId: string): Promise<CvFileParams> {
+  async getCvFile(userId: string): Promise<CvFileParams|null> {
     try {
       console.log("insode get ::::", userId);
       const response: CvFileParams | null = await CvFileModel.findOne({
         userId: new mongoose.Types.ObjectId(userId),
       });
-      if (!response) throw new NotFoundError("userid not found");
       return response;
     } catch (err) {
       throw err;

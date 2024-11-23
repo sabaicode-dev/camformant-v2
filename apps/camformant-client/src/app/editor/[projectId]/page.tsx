@@ -41,7 +41,6 @@ const page = () => {
           ...userTemplate.data.data,
           ...setStructureUserdata(data.data),
         });
-
       } catch (err) {
         console.log(err);
       } finally {
@@ -51,7 +50,13 @@ const page = () => {
     fetchData();
   }, []);
   // if (!user?._id) {
-  //   return <div>Please login</div>;
+  //   return (
+  //     <CallToAction
+  //       text="Login To Generate Cv"
+  //       buttonText="Go to Login"
+  //       buttonLink="/login"
+  //     />
+  //   );
   // }
   return (
     <div className="h-full bg-muted-foreground">
