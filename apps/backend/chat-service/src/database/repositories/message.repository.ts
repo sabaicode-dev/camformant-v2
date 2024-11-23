@@ -9,6 +9,7 @@ import {
   query,
   RespondGetConversations,
   RespondGetConversationsPagination,
+  messType,
 } from "./types/messages.repository.types";
 import configs from "@/src/config";
 
@@ -65,7 +66,6 @@ export class MessageRepository {
     senderRole: "User" | "Company",
     receiverRole: "User" | "Company"
   ): Promise<null | conversationRespond> {
-    //conversation
     const { limit = 7, page = 1 } = query;
 
     const skip = (page - 1) * limit;
@@ -83,7 +83,7 @@ export class MessageRepository {
         options: {
           limit,
           skip,
-          sort: { createdAt: 1 },
+          sort: { createdAt: -1 },
         },
       });
       if (!conversation) {
@@ -115,13 +115,13 @@ export class MessageRepository {
           skip: skip,
         };
       }
-      //todo: sort
-      console.log("conversation", conversation.messages);
-      const sortedByCreatedAt = conversation.messages.sort(
-        (a: any, b: any) => b.createdAt - a.createdAt
-      );
 
-      console.log("Sorted by createdAt:", sortedByCreatedAt);
+      conversation.messages = (
+        conversation.messages as unknown as messType[]
+      ).sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      ) as unknown as typeof conversation.messages;
 
       // Step 2: Count total messages for the conversation separately
       const totalMessages = await MessageModel.countDocuments({
