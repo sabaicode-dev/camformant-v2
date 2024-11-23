@@ -84,11 +84,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children , isLogin }: { children: React.ReactNode ,isLogin: boolean }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [jobs , setJobs] = useState<CorporateProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(false); 
   const router = useRouter();
 
   useEffect(() => {
@@ -107,13 +107,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(false); 
       }
     };
-    checkAuthStatus()
+    if (isLogin) {
+      checkAuthStatus();
+    }
     // if (isAuthenticated) {
     //   checkAuthStatus();
     // } else {
     //   setIsLoading(false); 
     // }
-  }, []);
+  }, [isLogin]);
 
   const signUp = async (data: SignUpData) => {
     setIsLoading(true);

@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useSearchParams } from "next/navigation";
-import { Button, } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { 
+import {
   Card,
   CardContent,
   CardDescription,
@@ -38,17 +38,18 @@ export default function VerifyForm() {
         throw new Error("Invalid contact method or query");
       } else {
         await verifyCode({
-          email: contactMethodQuery === 'email' ? contactQuery ?? "" : "",
-          phone_number: contactMethodQuery === 'phone' ? contactQuery ?? "" : "",
+          email: contactMethodQuery === "email" ? (contactQuery ?? "") : "",
+          phone_number:
+            contactMethodQuery === "phone" ? (contactQuery ?? "") : "",
           code: otpCode,
         });
       }
     } catch (error: any) {
       console.error("Verification error:", error.message); // Debugging
-      form.setError("root", { 
-        message: error.message || "Verification failed" 
+      form.setError("root", {
+        message: error.message || "Verification failed",
       });
-    } 
+    }
   }
 
   const handleOtpChange = (value: string, index: number) => {
@@ -66,55 +67,57 @@ export default function VerifyForm() {
   };
 
   return (
-    <Card className="w-[400px]">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Verify your email</CardTitle>
-        <CardDescription>
-          Enter the verification code sent to your email
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="flex justify-center gap-2 mb-4">
-              {Array(6)
-                .fill(0)
-                .map((_, index) => (
-                  <Controller
-                    key={index}
-                    name="code"
-                    control={form.control}
-                    defaultValue=""
-                    render={({ field }) => (
-                      <input
-                        {...field}
-                        id={`otp-input-${index}`}
-                        type="text"
-                        maxLength={1}
-                        value={otp[index]}
-                        onChange={(e) => handleOtpChange(e.target.value, index)}
-                        className="w-12 h-12 text-xl font-semibold text-center border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryCam"
-                      />
-                    )}
-                  />
-                ))}
-            </div>
-
-            {form.formState.errors.root && (
-              <div className="text-sm font-medium text-destructive">
-                {form.formState.errors.root.message}
+      <Card className="w-[400px] m-auto mt-[50px] shadow-md">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl">Verify your email</CardTitle>
+          <CardDescription>
+            Enter the verification code sent to your email
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div className="flex justify-center gap-2 mb-4">
+                {Array(6)
+                  .fill(0)
+                  .map((_, index) => (
+                    <Controller
+                      key={index}
+                      name="code"
+                      control={form.control}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          id={`otp-input-${index}`}
+                          type="text"
+                          maxLength={1}
+                          value={otp[index]}
+                          onChange={(e) =>
+                            handleOtpChange(e.target.value, index)
+                          }
+                          className="w-12 h-12 text-xl font-semibold text-center border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryCam"
+                        />
+                      )}
+                    />
+                  ))}
               </div>
-            )}
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading && (
-                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              {form.formState.errors.root && (
+                <div className="text-sm font-medium text-destructive">
+                  {form.formState.errors.root.message}
+                </div>
               )}
-              Verify Email
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+
+              <Button variant={"orange"} type="submit" className="w-full transition duration-200 ease-in-out" disabled={isLoading}>
+                {isLoading && (
+                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Verify Email
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
   );
 }

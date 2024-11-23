@@ -9,7 +9,6 @@ interface CardLocationProps {
 export const CardLocation: React.FC<CardLocationProps> = ({ address }) => {
   // Use the address directly as the src for the iframe
   const googleMapsUrl = address || "";
-  console.log("googleMapsUrl:", googleMapsUrl);
 
   return (
     <div>

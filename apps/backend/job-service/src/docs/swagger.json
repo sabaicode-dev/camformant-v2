@@ -40,14 +40,7 @@
 						"type": "string"
 					},
 					"companyId": {
-						"anyOf": [
-							{
-								"type": "string"
-							},
-							{
-								"$ref": "#/components/schemas/mongoose.Types.ObjectId"
-							}
-						]
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 					},
 					"title": {
 						"type": "string"
@@ -257,54 +250,144 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"PaginationResponse_IJob_": {
+			"companiesForJobs": {
 				"properties": {
-					"totalItems": {
-						"type": "number",
-						"format": "double"
-					},
-					"totalPages": {
-						"type": "number",
-						"format": "double"
-					},
-					"currentPage": {
-						"type": "number",
-						"format": "double"
-					}
-				},
-				"required": [
-					"totalItems",
-					"totalPages",
-					"currentPage"
-				],
-				"type": "object",
-				"additionalProperties": {
-					"anyOf": [
-						{
-							"items": {
-								"$ref": "#/components/schemas/IJob"
-							},
-							"type": "array"
-						},
-						{
-							"type": "number",
-							"format": "double"
-						}
-					]
-				}
-			},
-			"APIResponse_PaginationResponse_IJob__": {
-				"properties": {
-					"message": {
+					"_id": {
 						"type": "string"
 					},
-					"data": {
-						"$ref": "#/components/schemas/PaginationResponse_IJob_"
+					"profile": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"location": {
+						"properties": {
+							"country": {
+								"type": "string"
+							},
+							"city": {
+								"type": "string"
+							},
+							"address": {
+								"type": "string"
+							}
+						},
+						"type": "object"
+					},
+					"description": {
+						"type": "string"
+					},
+					"contact": {
+						"properties": {
+							"website": {
+								"type": "string"
+							},
+							"phone_number": {
+								"type": "string"
+							}
+						},
+						"type": "object"
+					},
+					"email": {
+						"type": "string"
+					},
+					"job_openings_count": {
+						"type": "number",
+						"format": "double"
+					},
+					"job_closings_count": {
+						"type": "number",
+						"format": "double"
 					}
 				},
-				"required": [
-					"message"
-				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"returnJobs": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					},
+					"position": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"workMode": {
+						"items": {
+							"$ref": "#/components/schemas/WorkMode"
+						},
+						"type": "array"
+					},
+					"location": {
+						"type": "string"
+					},
+					"requirement": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"address": {
+						"type": "string"
+					},
+					"min_salary": {
+						"type": "number",
+						"format": "double"
+					},
+					"max_salary": {
+						"type": "number",
+						"format": "double"
+					},
+					"job_opening": {
+						"type": "number",
+						"format": "double"
+					},
+					"type": {
+						"items": {
+							"$ref": "#/components/schemas/EmploymentType"
+						},
+						"type": "array"
+					},
+					"schedule": {
+						"items": {
+							"$ref": "#/components/schemas/EmploymentSchedule"
+						},
+						"type": "array"
+					},
+					"required_experience": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"benefit": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deadline": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"company": {
+						"$ref": "#/components/schemas/companiesForJobs"
+					}
+				},
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -350,167 +433,6 @@
 				],
 				"type": "object",
 				"additionalProperties": false
-			},
-			"ICorporateProfile": {
-				"properties": {
-					"_id": {
-						"type": "string"
-					},
-					"company_name": {
-						"type": "string"
-					},
-					"profile": {
-						"type": "string"
-					},
-					"location": {
-						"properties": {
-							"country": {
-								"type": "string"
-							},
-							"city": {
-								"type": "string"
-							},
-							"address": {
-								"type": "string"
-							}
-						},
-						"type": "object"
-					},
-					"contact": {
-						"properties": {
-							"website": {
-								"type": "string"
-							},
-							"phone_number": {
-								"type": "string"
-							},
-							"email": {
-								"type": "string"
-							}
-						},
-						"type": "object"
-					},
-					"description": {
-						"type": "string"
-					},
-					"social_links": {
-						"properties": {
-							"facebook": {
-								"type": "string"
-							},
-							"twitter": {
-								"type": "string"
-							},
-							"linkedin": {
-								"type": "string"
-							}
-						},
-						"type": "object"
-					},
-					"industry": {
-						"type": "string"
-					},
-					"employee_count": {
-						"type": "number",
-						"format": "double"
-					},
-					"job_openings_count": {
-						"type": "number",
-						"format": "double"
-					},
-					"job_closings_count": {
-						"type": "number",
-						"format": "double"
-					},
-					"timestamps": {
-						"properties": {
-							"updated_at": {
-								"type": "string",
-								"format": "date-time"
-							},
-							"created_at": {
-								"type": "string",
-								"format": "date-time"
-							}
-						},
-						"type": "object"
-					}
-				},
-				"type": "object",
-				"additionalProperties": false
-			},
-			"APIResponse_ICorporateProfile_": {
-				"properties": {
-					"message": {
-						"type": "string"
-					},
-					"data": {
-						"$ref": "#/components/schemas/ICorporateProfile"
-					}
-				},
-				"required": [
-					"message"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"ICompany": {
-				"properties": {
-					"_id": {
-						"type": "string"
-					},
-					"name": {
-						"type": "string"
-					},
-					"location": {
-						"type": "string"
-					},
-					"bio": {
-						"type": "string"
-					},
-					"profile": {
-						"type": "string"
-					},
-					"email": {
-						"type": "string"
-					},
-					"phone_number": {
-						"type": "string"
-					},
-					"job_openings": {
-						"type": "number",
-						"format": "double"
-					},
-					"job_closings": {
-						"type": "number",
-						"format": "double"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					}
-				},
-				"type": "object",
-				"additionalProperties": false
-			},
-			"APIResponse_ICompany_": {
-				"properties": {
-					"message": {
-						"type": "string"
-					},
-					"data": {
-						"$ref": "#/components/schemas/ICompany"
-					}
-				},
-				"required": [
-					"message"
-				],
-				"type": "object",
-				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -524,6 +446,38 @@
 		"contact": {}
 	},
 	"paths": {
+		"/v1/jobs/job": {
+			"post": {
+				"operationId": "PostIJob",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIResponse_IJob_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/IJob"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/v1/jobs": {
 			"post": {
 				"operationId": "CreateJob",
@@ -563,7 +517,55 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/APIResponse_PaginationResponse_IJob__"
+									"properties": {
+										"data": {
+											"properties": {
+												"limit": {
+													"type": "number",
+													"format": "double"
+												},
+												"skip": {
+													"type": "number",
+													"format": "double"
+												},
+												"currentPage": {
+													"type": "number",
+													"format": "double"
+												},
+												"totalPages": {
+													"type": "number",
+													"format": "double"
+												},
+												"totalJobs": {
+													"type": "number",
+													"format": "double"
+												},
+												"jobs": {
+													"items": {
+														"$ref": "#/components/schemas/returnJobs"
+													},
+													"type": "array"
+												}
+											},
+											"required": [
+												"limit",
+												"skip",
+												"currentPage",
+												"totalPages",
+												"totalJobs",
+												"jobs"
+											],
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
 								}
 							}
 						}
@@ -829,876 +831,6 @@
 				],
 				"security": [],
 				"parameters": []
-			}
-		},
-		"/v1/corporate/job": {
-			"post": {
-				"operationId": "PostIJob",
-				"responses": {
-					"201": {
-						"description": "Created",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/APIResponse_IJob_"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"corporate"
-				],
-				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/IJob"
-							}
-						}
-					}
-				}
-			},
-			"get": {
-				"operationId": "GetAllJobs",
-				"responses": {
-					"200": {
-						"description": "Success",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/APIResponse_PaginationResponse_IJob__"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"corporate"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "query",
-						"name": "page",
-						"required": false,
-						"schema": {
-							"format": "double",
-							"type": "number"
-						}
-					},
-					{
-						"in": "query",
-						"name": "limit",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "query",
-						"name": "filter",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "query",
-						"name": "sort",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "query",
-						"name": "search",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "query",
-						"name": "userFav",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			}
-		},
-		"/v1/corporate/job/{jobId}": {
-			"get": {
-				"operationId": "GetJobById",
-				"responses": {
-					"200": {
-						"description": "Success",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"data": {
-											"$ref": "#/components/schemas/IJob"
-										},
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"data",
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"corporate"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "jobId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			},
-			"put": {
-				"operationId": "UpdateJobById",
-				"responses": {
-					"204": {
-						"description": "Updated Successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"data": {
-											"$ref": "#/components/schemas/IJob"
-										},
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"data",
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"corporate"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "jobId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/JobParams"
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"operationId": "DeleteJobById",
-				"responses": {
-					"200": {
-						"description": "Delete Successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"corporate"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "jobId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			}
-		},
-		"/v1/corporate/profile": {
-			"post": {
-				"operationId": "CreateCorporateProfile",
-				"responses": {
-					"201": {
-						"description": "Created",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/APIResponse_ICorporateProfile_"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"corporate"
-				],
-				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/ICorporateProfile"
-							}
-						}
-					}
-				}
-			},
-			"get": {
-				"operationId": "GetCorporateProfiles",
-				"responses": {
-					"200": {
-						"description": "Success",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"data": {
-											"items": {
-												"$ref": "#/components/schemas/ICorporateProfile"
-											},
-											"type": "array"
-										},
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"data",
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"corporate"
-				],
-				"security": [],
-				"parameters": []
-			}
-		},
-		"/v1/corporate/profile/{corporateId}": {
-			"get": {
-				"operationId": "GetCorporateProfilesById",
-				"responses": {
-					"200": {
-						"description": "Success",
-						"content": {
-							"application/json": {
-								"schema": {
-									"anyOf": [
-										{
-											"properties": {
-												"data": {
-													"items": {},
-													"type": "array"
-												},
-												"message": {
-													"type": "string"
-												}
-											},
-											"required": [
-												"data",
-												"message"
-											],
-											"type": "object"
-										},
-										{
-											"properties": {
-												"data": {
-													"$ref": "#/components/schemas/ICorporateProfile"
-												},
-												"message": {
-													"type": "string"
-												}
-											},
-											"required": [
-												"data",
-												"message"
-											],
-											"type": "object"
-										}
-									]
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"corporate"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "corporateId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			},
-			"put": {
-				"operationId": "UpdateCorporateProfile",
-				"responses": {
-					"204": {
-						"description": "Updated Successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"data": {
-											"$ref": "#/components/schemas/ICorporateProfile"
-										},
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"data",
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"corporate"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "corporateId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/ICorporateProfile"
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"operationId": "DeleteCorporateProfile",
-				"responses": {
-					"200": {
-						"description": "Delete Successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"corporate"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "corporateId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			}
-		},
-		"/v1/corporate": {
-			"get": {
-				"operationId": "GetCorporateProfileWithJobs",
-				"responses": {
-					"200": {
-						"description": "Success",
-						"content": {
-							"application/json": {
-								"schema": {}
-							}
-						}
-					}
-				},
-				"tags": [
-					"corporate"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "query",
-						"name": "recentJobsLimit",
-						"required": false,
-						"schema": {
-							"format": "double",
-							"type": "number"
-						}
-					}
-				]
-			}
-		},
-		"/v1/companies": {
-			"post": {
-				"operationId": "CreateCompany",
-				"responses": {
-					"201": {
-						"description": "Created",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/APIResponse_ICompany_"
-								},
-								"examples": {
-									"Example 1": {
-										"value": {
-											"message": "Company was created successfully!",
-											"data": {
-												"_id": "64a7f1e2d6f4c12a3456abcd",
-												"name": "Tech Innovators Inc.",
-												"location": "San Francisco, CA",
-												"bio": "A leading company in tech innovations.",
-												"profile": "https://your-bucket-name.s3.amazonaws.com/profiles/unique-id.jpg",
-												"email": "contact@techinnovators.com",
-												"phone_number": "+1-555-1234",
-												"job_openings": 10,
-												"job_closings": 2,
-												"createdAt": "2023-10-03T12:34:56.789Z",
-												"updatedAt": "2023-10-03T12:34:56.789Z"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"409": {
-						"description": "Resource Conflict Error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"error": {
-											"properties": {},
-											"type": "object"
-										},
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"message"
-									],
-									"type": "object"
-								},
-								"examples": {
-									"Example 1": {
-										"value": {
-											"message": "This resource is already exists!"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal Server Error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"message"
-									],
-									"type": "object"
-								},
-								"examples": {
-									"Example 1": {
-										"value": {
-											"message": "Something went wrong!"
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"description": "Creates a new company with the provided details and profile image.",
-				"tags": [
-					"Company"
-				],
-				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"multipart/form-data": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"profile": {
-										"type": "string",
-										"format": "binary",
-										"description": "The profile image file for the company."
-									},
-									"name": {
-										"type": "string",
-										"description": "The name of the company."
-									},
-									"location": {
-										"type": "string",
-										"description": "The location of the company."
-									},
-									"bio": {
-										"type": "string",
-										"description": "A short biography of the company."
-									},
-									"email": {
-										"type": "string",
-										"description": "The contact email of the company."
-									},
-									"phone_number": {
-										"type": "string",
-										"description": "The contact phone number of the company."
-									},
-									"job_openings": {
-										"type": "string",
-										"description": "The number of job openings."
-									},
-									"job_closings": {
-										"type": "string",
-										"description": "The number of job closings."
-									}
-								},
-								"required": [
-									"profile",
-									"name",
-									"location",
-									"bio",
-									"email",
-									"phone_number",
-									"job_openings",
-									"job_closings"
-								]
-							}
-						}
-					}
-				}
-			},
-			"get": {
-				"operationId": "GetAllCompany",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"data": {
-											"items": {
-												"$ref": "#/components/schemas/ICompany"
-											},
-											"type": "array"
-										},
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"data",
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Company"
-				],
-				"security": [],
-				"parameters": []
-			}
-		},
-		"/v1/companies/getMulti/Profile": {
-			"get": {
-				"operationId": "GetMultiProfileCompany",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"companiesProfile": {
-											"items": {
-												"properties": {
-													"name": {
-														"type": "string"
-													},
-													"profile": {
-														"type": "string"
-													},
-													"_id": {
-														"type": "string"
-													}
-												},
-												"required": [
-													"name",
-													"profile",
-													"_id"
-												],
-												"type": "object"
-											},
-											"type": "array"
-										}
-									},
-									"required": [
-										"companiesProfile"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Company"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "query",
-						"name": "companiesId",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			}
-		},
-		"/v1/companies/{companyId}": {
-			"get": {
-				"operationId": "FindCompanyById",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/APIResponse_ICompany_"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Company"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "companyId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			},
-			"put": {
-				"operationId": "UpdateCompanyById",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/APIResponse_ICompany_"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Company"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "companyId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"multipart/form-data": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"profile": {
-										"type": "string",
-										"format": "binary"
-									},
-									"name": {
-										"type": "string"
-									},
-									"location": {
-										"type": "string"
-									},
-									"bio": {
-										"type": "string"
-									},
-									"email": {
-										"type": "string"
-									},
-									"phone_number": {
-										"type": "string"
-									},
-									"job_openings": {
-										"type": "string"
-									},
-									"job_closings": {
-										"type": "string"
-									}
-								},
-								"required": [
-									"profile",
-									"name",
-									"location",
-									"bio",
-									"email",
-									"phone_number",
-									"job_openings",
-									"job_closings"
-								]
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"operationId": "DeleteCompanyById",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Company"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "companyId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
 			}
 		}
 	},

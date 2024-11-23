@@ -121,7 +121,7 @@ const Message = React.memo(
         try {
           //NEXT_PUBLIC_CONVERSATION_ENDPOINT
           const response = await axiosInstance.get(
-            `${API_ENDPOINTS.GET_MESSAGE}/${receiverId}?page=${page}`
+            `${API_ENDPOINTS.GET_MESSAGE}/${receiverId}?page=${page}&limit=7`
           );
           const data = await response.data;
           if (response.status === 200 && data) {

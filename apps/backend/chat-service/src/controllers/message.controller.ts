@@ -94,6 +94,7 @@ export class MessageController extends Controller {
   ) {
     try {
       const cookieHeader = request.headers.cookie;
+
       const currentUser = JSON.parse(request.headers.currentuser as string) as {
         username?: string;
         role?: string[];

@@ -142,7 +142,7 @@ class AuthService {
       const userInfo = await this.getUserByUsername(username);
       const role =
         userInfo.UserAttributes?.find((attr) => attr.Name === "custom:role")
-          ?.Value || "user";
+          ?.Value || "company";
 
       // Add the user to the group based on the `role` attribute
       await this.addToGroup(username, role);
@@ -240,7 +240,7 @@ class AuthService {
       const result: GlobalSignOutCommandOutput = await client.send(command);
       console.log("result::: ", result);
       return "success cleared cookies from cignito";
-    } catch (error) { }
+    } catch (error) {}
   }
 
   loginWithGoogle(state: string): string {
@@ -598,7 +598,7 @@ class AuthService {
     }
   }
 
-  // corporate 
+  // corporate
   async corporateSignup(body: SignupRequest): Promise<string> {
     const existingUser = await this.getUserByEmail(
       (body.email || body.phone_number) as string
@@ -668,6 +668,7 @@ class AuthService {
   async corporateVerifyUser(body: VerifyUserRequest): Promise<void> {
     const username = (body.email ||
       body.phone_number?.replace(/^\+/, "")) as string;
+    console.log("start verify service 1");
 
     const params = {
       ClientId: configs.awsCognitoClientId,
@@ -682,25 +683,32 @@ class AuthService {
       console.log(
         "AuthService corporateVerifyUser() method: User verified successfully"
       );
+      console.log("2::::");
 
       const userInfo = await this.getUserByUsername(username);
       console.log("userInfo: ", userInfo);
 
-      const role = userInfo.UserAttributes?.find((attr) => attr.Name === "company")?.Value || "company";
+      const role =
+        userInfo.UserAttributes?.find((attr) => attr.Name === "company")
+          ?.Value || "company";
 
-      const userSub = userInfo.UserAttributes?.filter((Name) => Name.Name === "sub")[0].Value;
+      const userSub = userInfo.UserAttributes?.filter(
+        (Name) => Name.Name === "sub"
+      )[0].Value;
+      console.log("3:::::::");
 
       await this.addToGroup(userSub!, role);
-      await axios.post(`${configs.userServiceUrl}/v1/users/corporate`, {
+      console.log("4::::");
+
+      await axios.post(`${configs.userServiceUrl}/v1/corporate`, {
         sub: userInfo.Username,
         email: body.email,
         username: userInfo.UserAttributes?.find((attr) => attr.Name === "name")
           ?.Value,
-        corporateProfileId: "",
-        role,
       });
+      console.log("5::::");
     } catch (error) {
-      console.error("AuthService corporateVerifyUser() method error:", error);
+      console.log("AuthService corporateVerifyUser() method error:", error);
 
       // Mismatch Code
       if (typeof error === "object" && error !== null && "name" in error) {
@@ -772,8 +780,6 @@ class AuthService {
       throw new Error(`Error verifying user: ${error}`);
     }
   }
-
-
 }
 
 export default new AuthService();

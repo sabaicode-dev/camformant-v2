@@ -18,11 +18,17 @@ const app = express();
 // ========================
 // Security Middleware
 // ========================
+app.use((_req, _res, next) => {
+  console.log("Reach api getway1");
+  next();
+});
+//
 app.use(cors(corsOptions));
+//
 app.use(cookieParser());
 app.use((_req, _res, next) => {
   console.log("Reach api getway");
-  next()
+  next();
 });
 // ========================
 // Gateway Health
@@ -38,8 +44,12 @@ app.get("/v1/gateway-health", (_req: Request, res: Response) => {
 // ========================
 app.use(routeConfigMiddleware);
 app.use(authenticateToken);
+//bug: stuck auth role
 app.use(authorizeRole);
-
+app.use((_req, _res, next) => {
+  console.log("Reach api getway 3");
+  next();
+});
 // =======================
 // Proxy Routes
 // =======================

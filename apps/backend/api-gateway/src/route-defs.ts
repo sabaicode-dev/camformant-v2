@@ -74,7 +74,7 @@ const ROUTE_PATHS: RoutesConfig = {
         methods: {
           POST: {
             authRequired: true,
-            roles: ["user", "admin"],
+            roles: ["user", "conpany"],
           },
         },
       },
@@ -125,39 +125,80 @@ const ROUTE_PATHS: RoutesConfig = {
             authRequired: false,
           },
         },
-      }, {
+      },
+      {
         path: "/corporate/verify",
         methods: {
           POST: {
             authRequired: false,
           },
         },
-      }
+      },
     ],
   },
   CORPORATE_SERVICE: {
-    path: "/v1/corporate",
+    path: "/v1/corporator",
     target: configs.userServiceUrl,
     methods: {
       GET: {
-        authRequired: false,
-        // roles: ["company"],
-      },
-      POST: {
         authRequired: true,
-        roles: ["company"],
+        roles: ["user", "company"],
       },
     },
     nestedRoutes: [
       {
-        path: "/profile/me",
+        path: "/companies",
         methods: {
           GET: {
             authRequired: false,
-            // roles: ["company"],
           },
         },
-      }]
+      },
+      {
+        path: "/getMulti/Profile",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
+      },
+      {
+        path: "/profile",
+        methods: {
+          POST: {
+            authRequired: true,
+            roles: ["company"],
+          },
+          GET: {
+            authRequired: false,
+          },
+        },
+        nestedRoutes: [
+          {
+            path: "/:corporateId",
+            methods: {
+              GET: {
+                authRequired: false,
+              },
+              PUT: {
+                authRequired: false,
+              },
+              DELETE: {
+                authRequired: false,
+              },
+            },
+          },
+        ],
+      },
+      {
+        path: "/getMulti/Profile",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
+      },
+    ],
   },
   USER_SERVICE: {
     path: "/v1/users",

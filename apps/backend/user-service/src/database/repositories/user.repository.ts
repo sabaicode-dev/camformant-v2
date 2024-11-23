@@ -281,7 +281,7 @@ class UserRepository {
 
       return usersData;
     } catch (error) {
-      console.error(
+      console.log(
         `UserRepository - getMultiProfileUser() method error:`,
         prettyObject(error as {})
       );

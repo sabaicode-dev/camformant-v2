@@ -101,6 +101,7 @@ const Chat = () => {
         setConversations([]);
         const res = await axiosInstance.get(API_ENDPOINTS.GET_CONVERSATIONS);
         const conversations: RespondGetConversations = res.data;
+
         setPagination({
           totalConversation: conversations.totalConversation,
           currentPage: conversations.currentPage,
@@ -124,11 +125,13 @@ const Chat = () => {
     };
     getConversations();
   }, []);
-  console.log("hasmore", hasMore);
-  console.log("height", divRef.current?.clientHeight);
-  console.log("window::", window.innerHeight);
-  console.log("window.scrollY::", window.scrollY);
-  console.log("document.body.scrollHeight::", document.body.scrollHeight);
+  useEffect(() => {
+    console.log("hasmore", hasMore);
+    console.log("height", divRef.current?.clientHeight);
+    console.log("window::", window.innerHeight);
+    console.log("window.scrollY::", window.scrollY);
+    console.log("document.body.scrollHeight::", document.body.scrollHeight);
+  }, [window.scrollY]);
 
   const handleConversationClick = (conId: string) => {
     router.push(`/chat/${conId}`);

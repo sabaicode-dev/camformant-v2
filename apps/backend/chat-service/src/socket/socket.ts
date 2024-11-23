@@ -62,6 +62,8 @@ const setupSocketIO = (io: Server) => {
     socket.on("sendMessage", async (data: Message) => {
       const cookies = socket.handshake.headers["cookie"];
       try {
+        console.log("data:::", data);
+        //bug::
         if (cookies) {
           const response = await axios.post(
             `${configs.MessageUrl}/send/${data.receiverId}`,
@@ -69,7 +71,7 @@ const setupSocketIO = (io: Server) => {
               message: data.message,
             },
             {
-              withCredentials: true, // Include credentials (e.g., cookies, authentication headers)
+              withCredentials: true,
               headers: {
                 "Content-Type": "application/json",
                 Cookie: cookies,

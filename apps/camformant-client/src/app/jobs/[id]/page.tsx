@@ -42,7 +42,6 @@ const Page: React.FC = () => {
         const response = await axiosInstance.get(`${API_ENDPOINTS.JOBS}/${id}`);
         if (response.status === 200 && response.data.data) {
           const job = response.data.data;
-          console.log("job after fetch:::", job);
 
           job.createdAt = new Date(job.createdAt);
           setJobData([job]);
@@ -136,11 +135,11 @@ const Page: React.FC = () => {
           {jobData.map((x) => (
             <CardApply
               key={x?._id}
-              name={x?.companyId?.name}
-              location={x?.companyId?.location}
+              name={x?.company?.name}
+              location={x?.company?.address}
               deadline={x?.deadline}
               job_opening={x?.job_opening}
-              profile={x?.companyId?.profile}
+              profile={x?.company?.profile}
               createdAt={x?.createdAt}
             />
           ))}
@@ -177,11 +176,11 @@ const Page: React.FC = () => {
         {jobData.map((x) => (
           <JobPublisher
             key={x._id}
-            profile={x?.companyId?.profile}
-            name={x?.companyId?.name}
-            bio={x?.companyId?.bio}
-            phone_number={x?.companyId?.phone_number}
-            email={x?.companyId?.email}
+            profile={x?.company?.profile}
+            name={x?.company?.name}
+            bio={x?.company?.description}
+            phone_number={x?.company?.contact?.phone_number}
+            email={x?.company?.email}
           />
         ))}
       </div>
@@ -195,7 +194,7 @@ const Page: React.FC = () => {
         </button>
         <span className="p-3 text-xl bg-white text-primaryCam drop-shadow-2xl rounded-2xl">
           <Link
-            href={`/chat/${jobData[0]?.companyId! ? jobData[0].companyId._id : ""}`}
+            href={`/chat/${jobData[0]?.company ? jobData[0].company._id : ""}`}
           >
             <MdMessage />
           </Link>

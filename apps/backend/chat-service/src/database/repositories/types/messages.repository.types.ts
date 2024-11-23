@@ -10,7 +10,15 @@ export interface createdMessage {
   conversationId: mongoose.Types.ObjectId;
   // conversationId: mongoose.Types.ObjectId;
 }
-
+export interface messType {
+  _id: string;
+  senderId: mongoose.Types.ObjectId;
+  receiverId: mongoose.Types.ObjectId;
+  message: string;
+  createdAt: Date;
+  updatedAt: Date;
+  conversationId: mongoose.Types.ObjectId;
+}
 export interface conversation {
   _id: string;
   roomId: string;

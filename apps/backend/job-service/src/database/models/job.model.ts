@@ -18,9 +18,49 @@ export enum WorkMode {
   HYBRID = "Hybrid",
 }
 
+export interface companiesForJobs {
+  _id?: string;
+  profile?: string;
+  name?: string;
+  location?: {
+    address?: string;
+    city?: string;
+    country?: string;
+  };
+  description?: string;
+  contact?: {
+    phone_number?: string;
+    website?: string;
+  };
+  email?: string;
+  job_openings_count?: number;
+  job_closings_count?: number;
+}
+export interface returnJobs {
+  _id?: string;
+  title?: string; // name of the job that company looking for. Example: Java Developer
+  position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
+  workMode?: WorkMode[];
+  location?: string; // location could be phnom penh, kompong-cham, etc.
+  requirement?: string;
+  description?: string;
+  address?: string; // address could be the link address of the company (google link)
+  min_salary?: number;
+  max_salary?: number;
+  job_opening?: number;
+  type?: EmploymentType[];
+  schedule?: EmploymentSchedule[];
+  required_experience?: string[];
+  benefit?: string[];
+  createdAt?: Date;
+  updatedAt?: Date;
+  deadline?: Date;
+  company?: companiesForJobs;
+}
+
 export interface IJob {
   _id?: string;
-  companyId?: string | mongoose.Types.ObjectId;
+  companyId?: mongoose.Types.ObjectId;
   title?: string; // name of the job that company looking for. Example: Java Developer
   position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
   workMode?: WorkMode[];
@@ -42,7 +82,7 @@ export interface IJob {
 
 const JobSchema: Schema = new Schema(
   {
-    companyId: { type: String, required: true },
+    companyId: { type: mongoose.Types.ObjectId, required: true },
     title: { type: String, required: true },
     position: { type: [String], required: true },
     workMode: { type: [String], required: true, enum: Object.values(WorkMode) },

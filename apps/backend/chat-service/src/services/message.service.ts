@@ -82,7 +82,7 @@ export class MessageService {
       throw error;
     }
   }
-  //todo::Type of return
+  //todo::Type of return (no need for now)
   async getConversationById(conversationId: string): Promise<any> {
     try {
       const result =
@@ -97,7 +97,7 @@ export class MessageService {
     currentUser: { username?: string; role?: string[] },
     query: QueryGetUserConversations
   ): Promise<RespondGetConversations> {
-    const { page = 1, limit = 12 } = query;
+    const { page = 1, limit = 8 } = query;
     const skip = (page - 1) * limit;
     try {
       const cookies = deCookies(cookieHeader);
