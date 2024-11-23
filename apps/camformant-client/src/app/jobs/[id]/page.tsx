@@ -42,7 +42,6 @@ const Page: React.FC = () => {
         const response = await axiosInstance.get(`${API_ENDPOINTS.JOBS}/${id}`);
         if (response.status === 200 && response.data.data) {
           const job = response.data.data;
-          console.log("job after fetch:::", job);
 
           job.createdAt = new Date(job.createdAt);
           setJobData([job]);

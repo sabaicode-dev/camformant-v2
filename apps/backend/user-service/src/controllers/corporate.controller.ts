@@ -38,8 +38,6 @@ export class CorporateController extends Controller {
     @Queries() query: { companiesId?: string }
   ) {
     try {
-      console.log("jeab hz");
-
       const res = await CorporateService.getMultiProfileCompany(
         query.companiesId!
       );

@@ -127,7 +127,6 @@ class CorporateService {
   }> {
     const arrCompaniesId = companiesId ? companiesId?.split(",") : [];
     try {
-      console.log("jeab hz 2");
 
       const result = await CorporateRepository.getMultiProfileCompany(
         arrCompaniesId!
