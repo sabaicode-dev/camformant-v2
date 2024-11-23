@@ -91,7 +91,7 @@ export class MessageRepository {
       if (!conversation) {
         const endpoint =
           senderRole === "User"
-            ? `${configs.companyUrl}/getMulti/Profile?companiesId=`
+            ? `${configs.corporatorApiEndpoint}/getMulti/Profile?companiesId=`
             : `${configs.userUrl}/`;
         const data = (await axios.get(`${endpoint}${userToChatId}`)).data;
 
@@ -241,7 +241,7 @@ export class MessageRepository {
       if (senderRole === "User") {
         fetchQuery =
           participantsId.length === 0 ? "" : `?companiesId=${participantsId}`;
-        api_endpoint = `${configs.companyUrl}/getMulti/Profile`;
+        api_endpoint = `${configs.corporatorApiEndpoint}/getMulti/Profile`;
       } else if (senderRole === "Company") {
         fetchQuery =
           participantsId.length === 0 ? "" : `?usersId=${participantsId}`;
