@@ -3,7 +3,7 @@ import {
   JobGetAllRepoParams,
   JobSortParams,
 } from "@/src/controllers/types/job-controller.type";
-import { SortOrder } from "mongoose";
+import mongoose, { SortOrder } from "mongoose";
 import CorporateProfileModel from "../models/corporateProfile.model";
 import { IJob, JobModel } from "../models/job.model";
 
@@ -32,9 +32,6 @@ class IJobRepository {
       "position",
       "workMode",
     ];
-
-    //todo: add userFav from the exist
-    console.log("userFav", userFav);
 
     // Convert sort from {'field': 'desc'} to {'field': -1}
     const sortFields = Object.keys(sort).reduce(
@@ -118,9 +115,20 @@ class IJobRepository {
         ],
       }
       : {};
-
+    type UserFavFilter = {
+      _id?: {
+        $in: mongoose.Types.ObjectId[];
+      };
+    };
+    const userFavFilter: UserFavFilter = {};
+    if (userFav?.length) {
+      userFavFilter._id = {
+        $in: userFav.map((id) => new mongoose.Types.ObjectId(id)),
+      };
+    }
     try {
       const mongoFilter = {
+        ...userFavFilter,
         ...buildFilter(filter),
         ...searchFilter,
       };
@@ -128,24 +136,12 @@ class IJobRepository {
       if (queries.limit === "*") {
         operation = await JobModel.find(mongoFilter)
           .sort(sortFields)
-          .skip(skip)
-          .populate({
-            path: "companyId",
-            model: CorporateProfileModel,
-            select:
-              "name location bio profile email phone_number job_openings job_closings",
-          });
+          .skip(skip);
       } else {
         operation = await JobModel.find(mongoFilter)
           .sort(sortFields)
           .skip(skip)
-          .limit(limit)
-          .populate({
-            path: "companyId",
-            model: CorporateProfileModel,
-            select:
-              "name location bio profile email phone_number job_openings job_closings",
-          });
+          .limit(limit);
       }
 
       const result = await operation;
@@ -249,7 +245,7 @@ class IJobRepository {
         path: "companyId",
         model: CorporateProfileModel,
         select:
-          "name location bio profile email phone_number job_openings job_closings",
+          "_id name location bio profile email phone_number job_openings job_closings",
       });
 
       if (!result) {

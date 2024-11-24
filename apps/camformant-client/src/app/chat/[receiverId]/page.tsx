@@ -69,14 +69,23 @@ const MessagePage = () => {
         const response = await axiosInstance.get(
           `${API_ENDPOINTS.GET_PROFILE_COMPANY}?companiesId=${receiverId}`
         );
-        const data = await response.data;
-        const companiesProfile = data.companiesProfile[0];
-        if (response.status === 200 && data && companiesProfile) {
-          setParticipantProfile({
-            _id: receiverId as string,
-            name: companiesProfile.name,
-            profile: companiesProfile.profile,
-          });
+        const data = (await response.data).companiesProfile;
+        console.log("hi1");
+
+        const companiesProfile = data[0] || [];
+        console.log("hi2", companiesProfile);
+        if (response.status === 200 && data && companiesProfile.length !== 0) {
+          if (companiesProfile.name) {
+            setParticipantProfile({
+              _id: receiverId as string,
+              name: companiesProfile.name,
+              profile: companiesProfile.profile,
+            });
+          }
+        } else {
+          if (!companiesProfile.name) {
+            setError("No User Found!");
+          }
         }
       } catch (error) {
         console.error("chat error: ", error);
@@ -216,7 +225,7 @@ const MessagePage = () => {
               {/* Company name and online status */}
               <div className="flex flex-col -ml-5 text-center">
                 <p className="font-mono text-xl font-bold text-white xl:text-3xl">
-                  {participantProfile.name}
+                  {participantProfile.name || "No User"}
                 </p>
                 {/* <p className="mt-2 text-sm text-gray-700 ">
                   {onlineUsers.includes(participantProfile._id)

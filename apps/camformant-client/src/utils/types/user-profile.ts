@@ -50,6 +50,32 @@ export interface DescriptionParams {
   description: string;
   strength: string;
 }
+export interface CertificateParams {
+  url: string;
+}
+export interface ProfileDetailParams{
+  basic:BasicParams
+  educations:EducationParams[]
+  experiences: ExperienceParams[]
+  languages: LanguageParams[]
+  skills: SkillParams[]
+  expertise: ExpertiseParams[]
+  references: ReferenceParams[]
+  descriptions:DescriptionParams
+  portfolio?: PortfolioParam[]
+  certificates:CertificateParams[]
+  cv:string
+}
+export interface CustomCvDataParams{
+  basic:BasicParams
+  education:EducationParams[]
+  experience: ExperienceParams[]
+  language: LanguageParams[]
+  skill: SkillParams[]
+  expertise: ExpertiseParams[]
+  reference: ReferenceParams[]
+  description:DescriptionParams
+}
 
 export interface MatchParams {
   message: string;

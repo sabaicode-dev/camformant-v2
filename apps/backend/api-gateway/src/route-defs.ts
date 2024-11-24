@@ -137,29 +137,45 @@ const ROUTE_PATHS: RoutesConfig = {
     ],
   },
   CORPORATE_SERVICE: {
-    path: "/v1/corporate",
+    path: "/v1/corporator",
     target: configs.userServiceUrl,
     methods: {
       GET: {
         authRequired: true,
-        roles: ["company"],
+        roles: ["user", "company"],
       },
     },
     nestedRoutes: [
       {
-        path: "/job",
+        path: "/companies",
         methods: {
           GET: {
             authRequired: false,
           },
+        },
+      },
+      {
+        path: "/getMulti/Profile",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
+      },
+      {
+        path: "/profile",
+        methods: {
           POST: {
             authRequired: true,
             roles: ["company"],
           },
+          GET: {
+            authRequired: false,
+          },
         },
         nestedRoutes: [
           {
-            path: "/:jobId",
+            path: "/:corporateId",
             methods: {
               GET: {
                 authRequired: false,
@@ -167,16 +183,18 @@ const ROUTE_PATHS: RoutesConfig = {
               PUT: {
                 authRequired: false,
               },
+              DELETE: {
+                authRequired: false,
+              },
             },
           },
         ],
       },
       {
-        path: "/profile",
+        path: "/getMulti/Profile",
         methods: {
           GET: {
-            authRequired: true,
-            roles: ["company"],
+            authRequired: false,
           },
         },
       },
@@ -295,9 +313,22 @@ const ROUTE_PATHS: RoutesConfig = {
         ],
       },
       {
-        path: "/cvstyle/:style",
+        path: "/cvstyle",
         methods: {
           GET: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+        },
+      },
+      {
+        path: "/customCv",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["user", "admin"],
+          },
+          PUT: {
             authRequired: true,
             roles: ["user", "admin"],
           },

@@ -219,7 +219,7 @@ const ChatDashboard: React.FC = () => {
             >
               <div className="relative mr-3">
                 <img 
-                  src={conversation.profile} 
+                  src="https://coin-images.coingecko.com/nft_contracts/images/15175/large/chill-guy-pfp.png?1732114825"
                   alt={conversation.name} 
                   className="w-12 h-12 rounded-full object-cover" 
                 />

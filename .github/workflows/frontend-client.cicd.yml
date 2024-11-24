@@ -1,20 +1,20 @@
-name: CI/CD Pipeline for Camformant Client
+name: CI/CD Pipeline for Frontend Client
 
 on:
   push:
     branches:
       - main
     paths:
-      - "apps/camformant-client/**"
+      - "apps/frontend-client/**"
   pull_request:
     branches:
       - main
     paths:
-      - "apps/camformant-client/**"
+      - "apps/frontend-client/**"
 
 defaults:
   run:
-    working-directory: "apps/camformant-client"
+    working-directory: "apps/frontend-client"
 
 jobs:
   build:
@@ -34,7 +34,7 @@ jobs:
           echo "@sabaicode-dev:registry=https://npm.pkg.github.com/" > ~/.npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
-      - name: Install dependencies for camformant-client
+      - name: Install dependencies for frontend-client
         run: yarn install
 
       - name: Build the Next.js project
@@ -59,7 +59,7 @@ jobs:
           echo "@sabaicode-dev:registry=https://npm.pkg.github.com/" > ~/.npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
-      - name: Install dependencies for camformant-client
+      - name: Install dependencies for frontend-client
         run: yarn install
 
       - name: Set Environment Variables
@@ -83,4 +83,4 @@ jobs:
 
       - name: Deploy to AWS with SST
         run: npx sst deploy --stage prod
-        working-directory: "apps/camformant-client"
+        working-directory: "apps/frontend-client"

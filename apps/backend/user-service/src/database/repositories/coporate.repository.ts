@@ -1,127 +1,214 @@
-import { MongoError, UserCreationRepoParams } from "@/src/database/repositories/types/user-repository.type";
+import { NotFoundError, prettyObject } from "@sabaicode-dev/camformant-libs";
+import CorporatorModel, { ICorporatorProfile } from "../models/corporate.model";
 import mongoose from "mongoose";
-import {
-    InvalidInputError,
-    NotFoundError,
-    prettyObject,
-} from "@sabaicode-dev/camformant-libs";
-import { CorporateModel } from "../models/corporate.model";
+import { companiesForJobs } from "./types/user-repository.type";
 
 class CorporateRepository {
+  //TODO: type
+  public async getMultiProfileCompany(arrCompaniesId: string[]): Promise<
+    {
+      _id: string | undefined;
+      profile: string | undefined;
+      name: string | undefined;
+    }[]
+  > {
+    try {
+      type Filter = {
+        _id?: {
+          $in: mongoose.Types.ObjectId[];
+        };
+      };
+      const filter: Filter = {};
 
-    async getAllCorporates() {
-        try {
-            const result = await CorporateModel.find()
-            if (!result) {
-                throw new Error("Not Found Corporates")
-            }
-            return result
-        } catch (error) {
-            console.error(
-                `CorporateRepository - getAllCorporates() method error: `,
-                prettyObject(error as {})
-            );
+      if (arrCompaniesId?.length === 0) {
+        return [];
+      } else if (arrCompaniesId?.length !== 0) {
+        filter._id = {
+          $in: arrCompaniesId.map((id) => new mongoose.Types.ObjectId(id)),
+        };
+      }
 
-        }
+      const result = await CorporatorModel.find(filter);
+      if (!result) {
+        throw new NotFoundError("No User Found!");
+      }
+
+      if (result.length === 0) {
+        return [];
+      }
+
+      const companiesData = result.map((com: ICorporatorProfile) => {
+        const companyData = {
+          _id: com._id,
+          profile: com.profile,
+          name: com.name,
+        };
+        return companyData;
+      });
+
+      return companiesData;
+    } catch (error) {
+      console.error(
+        `CompanyRepository getMultiProfileCompany() method error:`,
+        prettyObject(error as {})
+      );
+      throw error;
     }
+  }
+  public async getMultiCompanies(
+    companiesId: string[]
+  ): Promise<companiesForJobs[]> {
+    try {
+      type Filter = {
+        _id?: {
+          $in: mongoose.Types.ObjectId[];
+        };
+      };
+      const filter: Filter = {};
 
-    async createCorporate(newInfo: UserCreationRepoParams) {
-        try {
-            const result = await CorporateModel.create(newInfo);
-            console.log("CreateCorporate ::::::::::::::::::::::::;;", result);
-            return result;
-        } catch (error) {
-            console.error(
-                `CorporateRepository - create() method error: `,
-                prettyObject(error as {})
-            );
+      if (companiesId?.length === 0) {
+        return [];
+      } else if (companiesId?.length !== 0) {
+        filter._id = {
+          $in: companiesId.map((id) => new mongoose.Types.ObjectId(id)),
+        };
+      }
 
-            // Duplicate Email
-            if ((error as MongoError).code === 11000) {
-                // throw new ResourceConflictError(APP_ERROR_MESSAGE.existedEmail);
-                throw new Error("Exist data");
-            }
+      const result = await CorporatorModel.find(filter);
+      if (result.length === 0) {
+        return [];
+      }
+      const latestResult = result.map((company: ICorporatorProfile) => {
+        const newCompany = {
+          _id: company._id,
+          name: company.name,
+          location: {
+            address: company.location?.address,
+            city: company.location?.city,
+            country: company.location?.country,
+          },
+          description: company.description,
+          profile: company.profile,
+          email: company.email,
+          contact: {
+            phone_number: company.contact?.phone_number,
+            website: company.contact?.website,
+          },
+          job_openings_count: company.job_openings_count,
+          job_closings_count: company.job_closings_count,
+        };
+        return newCompany;
+      });
 
-            // Validation Error
-            if (error instanceof mongoose.Error.ValidationError) {
-                const validationErrors: { [key: string]: string } = {};
-
-                // Iterate over the errors object and collect messages
-                for (const key in error.errors) {
-                    // Here, error.errors[key] can give you each specific validation error
-                    validationErrors[key] = error.errors[key].message;
-                }
-
-                throw new InvalidInputError({
-                    errors: validationErrors, // Now passing the structured errors
-                });
-            }
-
-            throw error;
-        }
+      return latestResult as unknown as companiesForJobs[];
+    } catch (error) {
+      throw error;
     }
-
-    async getCorporateProfile(sub: string) {
-        try {
-            console.log("Searching for corporate profile with username:", sub);
-            const result = await CorporateModel.findOne({ sub: sub });
-            console.log("CorporateProfile Result:", result);
-
-            if (!result) {
-                console.warn(`Corporate profile not found for username: ${sub}`);
-                throw new NotFoundError("Corporate profile not found.");
-            }
-
-            return result;
-        } catch (error) {
-            console.error("CorporateRepository - getCorporateProfile() method error:", error);
-            throw error;
-        }
+  }
+  public async createProfile(
+    profileData: ICorporatorProfile
+  ): Promise<ICorporatorProfile> {
+    try {
+      const profile = new CorporatorModel(profileData);
+      if (!profile) {
+        console.log(
+          "corporateRepository - createProfile() method error: Profile not created"
+        );
+        throw new Error(
+          "corporateRepository - createProfile() method error: Profile not created"
+        );
+      }
+      return profile.save();
+    } catch (error) {
+      console.error(
+        `corporateRepository - createProfile() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
     }
-
-
-    async updateCorporateProfile(corporateId: string, corporateProfileId: string) {
-        try {
-            const updatedCorporate = await CorporateModel.updateOne(
-                { _id: new mongoose.Types.ObjectId(corporateId) },
-                { "$set": { corporateProfileId: corporateProfileId } }
-            );
-
-            console.log("CorporateRepository() updatedCorporate::::::::::::::::::::::::", updatedCorporate);
-
-            if (!updatedCorporate) {
-                throw Error("CorporateRepository() Corporate not found");
-            }
-
-            return updatedCorporate;
-        } catch (error) {
-            console.error(
-                `CorporateRepository - updateCorporateProfile() method error: `,
-                prettyObject(error as {})
-            );
-            throw error;
-        }
+  }
+  public async getAllProfiles(): Promise<ICorporatorProfile[]> {
+    try {
+      const profiles = CorporatorModel.find().exec();
+      if (!profiles) {
+        console.log(
+          "CompanyJobRepository - getAllProfiles() method error: No profiles found"
+        );
+        return [];
+      }
+      return profiles;
+    } catch (error) {
+      console.error(
+        `CompanyJobRepository - getAllProfiles() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
     }
-
-
-    async getCorporateById(corporateId: string) {
-        try {
-            const corporate = await CorporateModel.findById(corporateId);
-
-            if (!corporate) {
-                throw new NotFoundError("Corporate not found");
-            }
-
-            return corporate;
-        } catch (error) {
-            console.error(
-                `CorporateRepository - getCorporateById() method error: `,
-                prettyObject(error as {})
-            );
-            throw error;
-        }
+  }
+  public async findProfileById(
+    companyId: string
+  ): Promise<ICorporatorProfile | null> {
+    try {
+      const profile = CorporatorModel.findById(companyId);
+      if (!profile) {
+        console.log(
+          "CompanyJobRepository - findProfileById() method error: Profile not found"
+        );
+        return null;
+      }
+      return profile;
+    } catch (error) {
+      console.error(
+        `CompanyJobRepository - findProfileById() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
     }
+  }
+  public async updateCorporateProfile(
+    companyId: string,
+    profileData: ICorporatorProfile
+  ): Promise<ICorporatorProfile | null> {
+    try {
+      const profile = CorporatorModel.findByIdAndUpdate(
+        companyId,
+        profileData,
+        { new: true }
+      ).exec();
+      if (!profile) {
+        console.log(
+          "CompanyJobRepository - updateCorporateProfile() method error: Profile not found"
+        );
+        return null;
+      }
+      return profile;
+    } catch (error) {
+      console.error(
+        `CompanyJobRepository - updateCorporateProfile() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
+  public async deleteCorporateProfile(
+    companyId: string
+  ): Promise<ICorporatorProfile | null> {
+    try {
+      const result = await CorporatorModel.findByIdAndDelete(companyId);
 
+      if (!result) {
+        throw new NotFoundError("Job was not found!");
+      }
+
+      return result;
+    } catch (error) {
+      console.error(
+        `CompanyJobRepository - deleteCorporateProfile() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
 }
 
 export default new CorporateRepository();

@@ -6,13 +6,12 @@ import UploadedFile from "@/components/user-profile/uploadedFile";
 import { useAuth } from "@/context/auth";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { CertificateParams } from "@/utils/types/user-profile";
 import React, { useEffect, useState } from "react";
-export interface FileParams {
-  url: string;
-}
+
 const Page = () => {
   const { user } = useAuth();
-  const [filesEntries, setFilesEntries] = useState<FileParams[]>([]);
+  const [filesEntries, setFilesEntries] = useState<CertificateParams[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isPost, setIsPost] = useState<boolean>(false);
   const removeFile = (index: number) => {

@@ -7,7 +7,7 @@ export const API_ENDPOINTS = {
   CORPARATE_SIGNIN: `${process.env.NEXT_PUBLIC_CORPORATE_ENDPOINT}/login`,
   CORPARATE_SIGNUP: `${process.env.NEXT_PUBLIC_CORPORATE_ENDPOINT}/signup`,
   CORPARATE_VERIFY: `${process.env.NEXT_PUBLIC_CORPORATE_ENDPOINT}/verify`,
-  CORPARATE_USER_PROFILE: `http://localhost:4000/v1/corporate/profile/me`,
+  CORPARATE_USER_PROFILE: `http://localhost:4000/v1/corporator/profile/me`,
   // USER SERVICE
   USER_PROFILE: `${process.env.NEXT_PUBLIC_USER_ENDPOINT}/me`,
   USER_PROFILE_UPDATE: `${process.env.NEXT_PUBLIC_USER_ENDPOINT}/photo`,

@@ -35,6 +35,9 @@ import TextColor from "./icons/svg components/textColor";
 import { NudgePosition } from "./move-nudge";
 import NudgeIcon from "./icons/svg components/nudge";
 import { FaCropSimple } from "react-icons/fa6";
+import { MdAlignHorizontalLeft, MdAlignVerticalCenter } from "react-icons/md";
+import GroupVerticalAlign from "./groupVerticalAlign";
+import GroupHorizontalAlign from "./groupHoriAlign";
 //TODO: add picker moving work
 interface ToolbarProps {
   editor: Editor | undefined;
@@ -54,7 +57,10 @@ export const Toolbar = ({
 
     // Check if the fill is a fabric.Pattern object
     if (pattern instanceof fabric.Pattern) {
-      return pattern.source instanceof HTMLImageElement && "image";
+      return pattern.source instanceof HTMLImageElement ||
+        (pattern.source as any) instanceof HTMLCanvasElement
+        ? "image"
+        : "";
     }
 
     return null;
@@ -64,6 +70,7 @@ export const Toolbar = ({
   const isText = isTextType(selectedObjectType);
 
   const isShape = selectedObjectType === "shape";
+  const isGroup = editor?.selectedObjects && editor?.selectedObjects.length > 1;
 
   const initialFillColor = editor?.getActiveFillColor();
   const initialStrokeColor = editor?.getActiveStrokeColor();
@@ -275,20 +282,46 @@ export const Toolbar = ({
           </Hint>
         </div>
       )}
-      {
+      {isGroup && (
         <div className="flex items-center justify-center h-full">
-          <Hint label="nudge" side="top" sideOffset={5}>
+          <Hint label="verticle align" side="top" sideOffset={5}>
             <Button
-              onClick={() => onChangeActiveTool("nudge")}
+              onClick={() => onChangeActiveTool("vertical-align")}
               size="icon"
               variant="ghost"
-              className={cn(activeTool === "nudge" && "bg-gray-100")}
+              className={cn(activeTool === "vertical-align" && "bg-gray-100")}
             >
-              <NudgeIcon width={28} height={28} />
+              <MdAlignVerticalCenter width={28} height={28} />
             </Button>
           </Hint>
         </div>
-      }
+      )}
+      {isGroup && (
+        <div className="flex items-center justify-center h-full">
+          <Hint label="horizontal align" side="top" sideOffset={5}>
+            <Button
+              onClick={() => onChangeActiveTool("horizontal-align")}
+              size="icon"
+              variant="ghost"
+              className={cn(activeTool === "horizontal-align" && "bg-gray-100")}
+            >
+              <MdAlignHorizontalLeft width={28} height={28} />
+            </Button>
+          </Hint>
+        </div>
+      )}
+      <div className="flex items-center justify-center h-full">
+        <Hint label="nudge" side="top" sideOffset={5}>
+          <Button
+            onClick={() => onChangeActiveTool("nudge")}
+            size="icon"
+            variant="ghost"
+            className={cn(activeTool === "nudge" && "bg-gray-100")}
+          >
+            <NudgeIcon width={28} height={28} />
+          </Button>
+        </Hint>
+      </div>
       {isText && activeTool === "format" && (
         <div className="flex absolute bottom-[108px] z-[40] left-20 bg-white p-1">
           <div className="flex items-center justify-center h-full">
@@ -395,8 +428,22 @@ export const Toolbar = ({
           </div>
         </div>
       )}
+      {activeTool === "vertical-align" && (
+        <div className="flex absolute bottom-[108px] z-[40] left-[140px] bg-white p-1">
+          <div className="flex items-center justify-center h-full">
+            <GroupVerticalAlign editor={editor} />
+          </div>
+        </div>
+      )}
+      {activeTool === "horizontal-align" && (
+        <div className="flex absolute bottom-[108px] z-[40] left-[175px] bg-white p-1">
+          <div className="flex items-center justify-center h-full">
+            <GroupHorizontalAlign editor={editor} />
+          </div>
+        </div>
+      )}
       {activeTool === "nudge" && (
-        <div className="flex absolute bottom-[108px] z-[40] left-28 bg-white p-1">
+        <div className="flex absolute bottom-[108px] z-[40] left-[195px] bg-white p-1">
           <div className="flex items-center justify-center h-full">
             <NudgePosition
               value={properties.fontSize}

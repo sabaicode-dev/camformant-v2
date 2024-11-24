@@ -2,7 +2,6 @@ import { cn } from "@/lib/utils";
 
 import { ActiveTool, Editor, fonts } from "@/features/editor/types";
 
-
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 
@@ -26,14 +25,12 @@ export const FontSidebar = ({
   return (
     <aside
       className={cn(
-        "bg-red-100 relative border-r z-[40] flex justify-center items-center",
+        "bg-red-100 absolute w-full bottom-[108px] border-r z-[40] flex justify-center items-center",
         activeTool === "font" ? "visible" : "hidden"
       )}
     >
-      {/* Header Sidebar */}
-      {/* <ToolSidebarHeader title="Fonts" description="Change Font to your text" /> */}
-      <ScrollArea className="p-2 bg-purple-200">
-        <div className="flex p-4 space-x-3 overflow-x-auto w-full  border-b bg-yellow-200">
+      <ScrollArea className="p-2">
+        <div className="flex p-4 space-x-3 overflow-x-auto w-full  border-b">
           {fonts.map((font) => (
             <Button
               key={font}
@@ -55,8 +52,6 @@ export const FontSidebar = ({
           ))}
         </div>
       </ScrollArea>
-      {/* Footer SideBar */}
-      {/* <ToolSidebarClose onClick={onClose} /> */}
     </aside>
   );
 };

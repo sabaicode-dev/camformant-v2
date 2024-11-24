@@ -69,7 +69,7 @@ const Page = () => {
       }
     }
     GetData();
-  }, [startYear, user]);
+  }, []);
 
   async function PostData() {
     try {

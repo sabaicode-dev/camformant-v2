@@ -36,11 +36,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = cookies();
-  const userCookie = cookieStore.get("id_token");
+  const userCookie = cookieStore.get("resfresh_token");
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider isLogin={!!userCookie}>
+        <AuthProvider isLogin={!userCookie}>
           {/* <NavigationBar /> */}
           <SocketContextProvider>{children}</SocketContextProvider>
         </AuthProvider>

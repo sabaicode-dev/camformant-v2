@@ -25,17 +25,25 @@ import {
   UserProfileResponse,
   UserUpdateRequestParams,
   IUser,
+  AuthenticationError,
 } from "@sabaicode-dev/camformant-libs";
 import { UserGetAllControllerParams } from "@/src/controllers/types/user-controller.type";
 import { Request as ExpressRequest } from "express";
 import agenda from "@/src/utils/agenda";
 import { SCHEDULE_JOBS } from "@/src/jobs";
-import { uploadToS3 } from "../utils/s3";
+import { uploadToS3 } from "@/src/utils/s3";
 import {
   IUserProfile,
+  IUserProfileResposne,
   UnionProfileType,
 } from "@/src/controllers/types/userprofile.type";
-import { CvStyleParams } from "@/src/controllers/types/user-cv-controller.type";
+import {
+  CustomCvResponse,
+  CvFileParams,
+  CvFilePResponse,
+  CvStyleParams,
+  UnionCustomCvResponse,
+} from "@/src/controllers/types/user-cv-controller.type";
 import { error } from "console";
 import { Types } from "mongoose";
 // import { unionProfileType } from "./types/userprofile.type";
@@ -132,14 +140,32 @@ export class UsersController extends Controller {
     }
   }
   @Get("/cv")
-  public async getCvFiles(@Request() request: ExpressRequest): Promise<any> {
+  public async getCvFiles(
+    @Request() request: ExpressRequest
+  ): Promise<CvFilePResponse> {
     try {
       console.log("inside get cv controller");
       const userId = request.cookies["user_id"];
       const data = await UserService.getCvFiles(userId);
-      return sendResponse<any>({
+      return sendResponse<CvFileParams>({
         message: "Fetch is successful",
-        data,
+        data: data as CvFileParams,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+  //for cv generate
+  @Get("/cvstyle")
+  public async getCVStyle(): Promise<{
+    message: string;
+    data: CvStyleParams[];
+  }> {
+    try {
+      const data = await UserService.getCvStyle();
+      return sendResponse<CvStyleParams[]>({
+        message: "CV Style is fetched successfully",
+        data: data,
       });
     } catch (err) {
       throw err;
@@ -150,10 +176,13 @@ export class UsersController extends Controller {
   public async getProfileByID(
     @Request() request: ExpressRequest,
     @Query() category?: string
-  ) {
+  ): Promise<IUserProfileResposne> {
     try {
       const userId = request.cookies["user_id"];
-      const userProfile = await UserService.getProfileById(userId, category);
+      const userProfile = await UserService.getUserProfileById(
+        userId,
+        category
+      );
       return sendResponse<IUserProfile>({
         message: "success",
         data: userProfile,
@@ -165,11 +194,16 @@ export class UsersController extends Controller {
   @Put("/profile-detail")
   public async updateUserProfile(
     @Body() updateBody: IUserProfile,
-    @Request() request: ExpressRequest
+    @Request() request: ExpressRequest,
+    @Query() query?: string
   ) {
     try {
       const userId = request.cookies["user_id"];
-      const userData = await UserService.updateUserProfile(userId, updateBody);
+      const userData = await UserService.updateUserProfile(
+        userId,
+        updateBody,
+        query
+      );
 
       return sendResponse<UnionProfileType>({
         message: "Data is updated successfully",
@@ -179,6 +213,41 @@ export class UsersController extends Controller {
       throw error;
     }
   }
+  @Get("/customCv")
+  public async getCustomCv(@Request() request: ExpressRequest) {
+    try {
+      const userId = request.cookies["user_id"];
+      if (userId) {
+        const data = await UserService.getCustomCvByUserId(userId);
+        return sendResponse<CustomCvResponse | null | undefined>({
+          message: "Fetch is successful",
+          data,
+        });
+      }
+      throw new AuthenticationError("Please login");
+    } catch (err) {
+      throw err;
+    }
+  }
+  @Put("/customCv")
+  public async updateCustomCv(
+    @Request() request: ExpressRequest,
+    @Body() bodyData: { style: string; json: any }
+  ) {
+    const userId = request.cookies["user_id"];
+    try {
+      if (userId) {
+        const data = await UserService.updateCustomCvByUserId(userId, bodyData);
+        return sendResponse<UnionCustomCvResponse>({
+          message: "Update is successful",
+          data,
+        });
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
   @Put("/me/photo")
   public async changePhoto(
     @Request() request: ExpressRequest,
@@ -372,20 +441,6 @@ export class UsersController extends Controller {
       return sendResponse<any>({
         message: "Delete is successful",
         data,
-      });
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  //for cv generate
-  @Get("/cvstyle/:style")
-  public async getCVStyle(@Path() style: string) {
-    try {
-      const data = await UserService.getCvStyle(style);
-      return sendResponse<CvStyleParams>({
-        message: "CV Style is fetched successfully",
-        data: data,
       });
     } catch (err) {
       throw err;
