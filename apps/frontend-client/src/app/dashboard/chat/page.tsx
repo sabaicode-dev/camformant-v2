@@ -1,10 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import DynamicBreadcrumb from "@/components/DynamicBreadcrumb";
-import ChatPage from "./chat";
-import axiosInstance from "@/utils/axios";
-import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
-import Image from "next/image";
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { 
   MessageCircle, 
   Phone, 
@@ -14,163 +9,176 @@ import {
   ChevronLeft,
   Send
 } from 'lucide-react';
-interface Conversations {
+import axiosInstance from '@/utils/axios';
+import { ScrollArea } from '@/components/ui/scroll-area';
+
+interface Conversation {
   _id: string;
   receiver: string;
   messages: string[];
-  updatedAt: Date;
+  updatedAt: string;
   role: string;
-  name: string;
   profile: string;
-}
-
-
-// Dummy data types
-interface User {
-  id: string;
   name: string;
-  avatar: string;
-  lastMessage?: string;
-  unreadCount?: number;
-  isOnline: boolean;
 }
 
 interface Message {
-  id: string;
-  sender: string;
-  content: string;
-  timestamp: Date;
-  isRead: boolean;
+  _id: string;
+  senderId: string;
+  receiverId: string;
+  message: string;
+  conversationId: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-const mockUsers: User[] = [
-  { 
-    id: '1', 
-    name: 'John Doe', 
-    avatar: '/placeholder-avatar.png', 
-    lastMessage: 'Hey, how are you?', 
-    unreadCount: 2,
-    isOnline: true 
-  },
-  // { 
-  //   id: '2', 
-  //   name: 'Jane Smith', 
-  //   avatar: '/placeholder-avatar.png', 
-  //   lastMessage: 'Meeting at 3 PM', 
-  //   unreadCount: 0,
-  //   isOnline: false 
-  // },
-];
-
-const mockMessages: { [key: string]: Message[] } = {
-  '1': [
-    { 
-      id: 'm1', 
-      sender: '1', 
-      content: 'Hey, how are you?', 
-      timestamp: new Date(),
-      isRead: true 
-    },
-    { 
-      id: 'm2', 
-      sender: 'me', 
-      content: 'I\'m good, thanks!', 
-      timestamp: new Date(),
-      isRead: true 
-    }
-  ]
-};
-
-
-const Chat = () => {
-  const [conversations, setConversations] = useState<Conversations[]>([]);
-  const [message, setMessage] = useState("");
-
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+const ChatDashboard: React.FC = () => {
+  const messageRef = useRef<HTMLDivElement>(null);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [messageInput, setMessageInput] = useState('');
+  const [currentUser, setCurrentUser] = useState('672ef3cd4acf5254583a8001');
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
-  const handleSelectUser = (user: User) => {
-    setSelectedUser(user);
+  // Sort messages helper function
+  const sortMessages = (msgs: Message[]): Message[] => {
+    return [...msgs].sort((a, b) => 
+      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
   };
 
-  const handleSendMessage = () => {
-    if (!selectedUser || messageInput.trim() === '') return;
+  // Fetch conversations
+  const fetchConversations = useCallback(async () => {
+    try {
+      const response = await axiosInstance.get('http://localhost:4000/v1/messages/get/conversations');
+      setConversations(response.data.conversations);
+    } catch (error) {
+      console.error('Failed to fetch conversations:', error);
+    }
+  }, []);
 
-    // In a real app, this would be an API call
-    const newMessage: Message = {
-      id: `m${Date.now()}`,
-      sender: 'me',
-      content: messageInput,
-      timestamp: new Date(),
-      isRead: false
+  // Scroll to bottom function
+  const scrollToBottom = useCallback(() => {
+    if (messageRef.current) {
+      messageRef.current.scrollTop = messageRef.current.scrollHeight;
+    }
+  }, []);
+
+  // Fetch messages with pagination
+  const fetchMessages = async (conversationId: string, pageNum: number, isNewConversation: boolean = false) => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.get(`http://localhost:4000/v1/messages/${conversationId}?page=${pageNum}`);
+      const newMessages = response.data.conversation.messages;
+
+      if (isNewConversation) {
+        // For new conversation, sort all messages
+        setMessages(sortMessages(newMessages));
+        setPage(1);
+        setHasMore(true);
+        setTimeout(scrollToBottom, 100);
+      } else {
+        // For pagination, merge and sort all messages
+        setMessages(prevMessages => {
+          const allMessages = [...prevMessages, ...newMessages];
+          return sortMessages(allMessages);
+        });
+        setHasMore(newMessages.length > 0);
+      }
+    } catch (error) {
+      console.error('Failed to fetch messages:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle conversation selection
+  const handleSelectConversation = async (conversation: Conversation) => {
+    setSelectedConversation(conversation);
+    setMessages([]); // Clear existing messages
+    await fetchMessages(conversation.receiver, 1, true);
+  };
+
+  // Handle send message
+  const handleSendMessage = async () => {
+    if (!selectedConversation || messageInput.trim() === '') return;
+
+    const optimisticMessage: Message = {
+      _id: Date.now().toString(), // Temporary ID
+      senderId: currentUser,
+      receiverId: selectedConversation.receiver,
+      message: messageInput,
+      conversationId: selectedConversation._id,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
-    // Update messages (would be an API call in real implementation)
-    mockMessages[selectedUser.id].push(newMessage);
-    setMessageInput('');
+    try {
+      // Add optimistic message
+      setMessages(prevMessages => sortMessages([...prevMessages, optimisticMessage]));
+      setMessageInput('');
+      setTimeout(scrollToBottom, 100);
+
+      // Actually send the message
+      await axiosInstance.post(`http://localhost:4000/v1/messages/send/${selectedConversation.receiver}`, {
+        message: messageInput
+      });
+
+      // Update conversations list
+      await fetchConversations();
+      
+      // Refresh messages to get the real message ID
+      await fetchMessages(selectedConversation.receiver, 1, true);
+
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      // Remove optimistic message on error
+      setMessages(prevMessages => 
+        prevMessages.filter(msg => msg._id !== optimisticMessage._id)
+      );
+      setMessageInput(optimisticMessage.message); // Restore the message input
+    }
   };
 
-
+  // Scroll handler for infinite scroll
   useEffect(() => {
-    const fetchConversations = async () => {
-      try {
-        const response = await axiosInstance.get(
-          `${API_ENDPOINTS.GET_CONVERSATIONS}`
-        );
-        console.log("Conversations fetched:", response.data);
-        setConversations(response.data.conversations);
-      } catch (error) {
-        console.error("Error fetching conversations:", error);
+    const messageContainer = messageRef.current;
+    
+    const handleScroll = async (event: Event) => {
+      const target = event.target as HTMLDivElement;
+      const scrollTop = Math.round(target.scrollTop);
+
+      if (scrollTop === 0 && !loading && hasMore && selectedConversation) {
+        const nextPage = page + 1;
+        setPage(nextPage);
+        await fetchMessages(selectedConversation.receiver, nextPage, false);
       }
     };
-    fetchConversations();
-  }, []);
-  console.log("conversations:::::::::::::::::::::;;;" ,conversations);
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    try {
-      const response = await axiosInstance.post(
-        "http://localhost:4000/v1/messages/send/672ef3cd4acf5254583a8001",
-        { message }
-      );
-      console.log("Message sent:", response.data);
-      setMessage(""); // Clear the input field after sending the message
-    } catch (error) {
-      console.error("Error sending message:", error);
+
+    if (messageContainer) {
+      messageContainer.addEventListener('scroll', handleScroll);
+      return () => {
+        messageContainer.removeEventListener('scroll', handleScroll);
+      };
     }
-  };
+  }, [selectedConversation, page, loading, hasMore]);
+
+  // Initial fetch
+  useEffect(() => {
+    fetchConversations();
+  }, [fetchConversations]);
+  // Add loading indicator component
+  const LoadingIndicator = () => (
+    <div className="text-center py-2">
+      <div className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-r-transparent"></div>
+    </div>
+  );
 
   return (
-    <>
-      <DynamicBreadcrumb />
-    {/* <ChatPage />
-      <div>
-        {conversations.map((conversation: any) => (
-          <div key={conversation._id}>
-            <Image
-              src={conversation.profile}
-              alt={conversation.name}
-              width={50}
-              height={50}
-            />
-            <div>{conversation.name}</div>
-          </div>
-        ))}
-      </div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type your message"
-          required
-        />
-        <button type="submit">Send</button>
-      </form> */}
-      {/* <div className="">
-
-      </div> */}
-      <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-100">
       {/* Conversations Sidebar */}
       <div className="w-96 bg-white border-r">
         {/* Sidebar Header */}
@@ -200,36 +208,33 @@ const Chat = () => {
 
         {/* Conversation List */}
         <div className="overflow-y-auto">
-          {mockUsers.map(user => (
+          {conversations.map(conversation => (
             <div 
-              key={user.id}
-              onClick={() => handleSelectUser(user)}
+              key={conversation._id}
+              onClick={() => handleSelectConversation(conversation)}
               className={`
                 flex items-center p-3 hover:bg-gray-100 cursor-pointer
-                ${selectedUser?.id === user.id ? 'bg-gray-100' : ''}
+                ${selectedConversation?._id === conversation._id ? 'bg-gray-100' : ''}
               `}
             >
               <div className="relative mr-3">
                 <img 
-                  src={user.avatar} 
-                  alt={user.name} 
+                  src={conversation.profile} 
+                  alt={conversation.name} 
                   className="w-12 h-12 rounded-full object-cover" 
                 />
-                {user.isOnline && (
-                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
-                )}
               </div>
               <div className="flex-grow">
                 <div className="flex justify-between items-center">
-                  <h3 className="font-semibold">{user.name}</h3>
-                  {user.unreadCount && user.unreadCount > 0 && (
+                  <h3 className="font-semibold">{conversation.name}</h3>
+                  {conversation.messages.length > 0 && (
                     <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                      {user.unreadCount}
+                      {conversation.messages.length}
                     </span>
                   )}
                 </div>
                 <p className="text-sm text-gray-500 truncate">
-                  {user.lastMessage}
+                  Last message placeholder
                 </p>
               </div>
             </div>
@@ -239,32 +244,26 @@ const Chat = () => {
 
       {/* Chat Window */}
       <div className="flex-grow flex flex-col">
-        {selectedUser ? (
+        {selectedConversation ? (
           <>
             {/* Chat Header */}
             <div className="p-4 bg-white border-b flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <button 
-                  onClick={() => setSelectedUser(null)} 
+                  onClick={() => setSelectedConversation(null)} 
                   className="md:hidden"
                 >
                   <ChevronLeft />
                 </button>
                 <div className="relative">
                   <img 
-                    src={selectedUser.avatar} 
-                    alt={selectedUser.name} 
+                    src={selectedConversation.profile} 
+                    alt={selectedConversation.name} 
                     className="w-10 h-10 rounded-full object-cover" 
                   />
-                  {selectedUser.isOnline && (
-                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
-                  )}
                 </div>
                 <div>
-                  <h3 className="font-semibold">{selectedUser.name}</h3>
-                  <p className="text-sm text-gray-500">
-                    {selectedUser.isOnline ? 'Online' : 'Offline'}
-                  </p>
+                  <h3 className="font-semibold">{selectedConversation.name}</h3>
                 </div>
               </div>
               <div className="flex space-x-3">
@@ -277,30 +276,37 @@ const Chat = () => {
               </div>
             </div>
 
-            {/* Messages Container */}
-            <div className="flex-grow overflow-y-auto p-4 space-y-3">
-              {mockMessages[selectedUser.id].map(message => (
-                <div 
-                  key={message.id} 
-                  className={`flex ${
-                    message.sender === 'me' ? 'justify-end' : 'justify-start'
-                  }`}
-                >
-                  <div 
-                    className={`
-                      max-w-[70%] p-3 rounded-2xl
-                      ${message.sender === 'me' 
-                        ? 'bg-blue-500 text-white' 
-                        : 'bg-gray-200 text-black'}
-                    `}
-                  >
-                    {message.content}
-                    <div className="text-xs mt-1 opacity-70">
-                      {message.timestamp.toLocaleTimeString()}
+    {/* Messages Container with Loading Indicator */}
+    <div className="flex-1 overflow-y-auto px-4" ref={messageRef}>
+              {loading && page === 1 ? (
+                <LoadingIndicator />
+              ) : (
+                <div className="space-y-4">
+                  {loading && page > 1 && <LoadingIndicator />}
+                  {messages.map(message => (
+                    <div 
+                      key={message._id} 
+                      className={`flex ${
+                        message.senderId === currentUser ? 'justify-start' : 'justify-end'
+                      }`}
+                    >
+                      <div 
+                        className={`
+                          max-w-[70%] p-3 rounded-2xl
+                          ${message.senderId === currentUser 
+                            ? 'bg-gray-200 text-black' 
+                            : 'bg-blue-500 text-white'}
+                        `}
+                      >
+                        {message.message}
+                        <div className="text-xs mt-1 opacity-70">
+                          {new Date(message.createdAt).toLocaleTimeString()}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
 
             {/* Message Input */}
@@ -339,9 +345,7 @@ const Chat = () => {
         )}
       </div>
     </div>
-
-    </>
   );
 };
 
-export default Chat;
+export default ChatDashboard;

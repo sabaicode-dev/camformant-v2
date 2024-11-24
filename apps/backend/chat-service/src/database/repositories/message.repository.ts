@@ -78,7 +78,7 @@ export class MessageRepository {
         },
       }).populate({
         path: "messages",
-        options: { limit, skip, sort: { createdAt: 1 } },
+        options: { limit, skip, sort: { createdAt: -1 } },
         // model: MessageModel,
         // select: "_id senderId receiverId message createdAt updatedAt",
       });
