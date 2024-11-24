@@ -8,7 +8,7 @@ type Config = {
   mongodbUrl: string;
   clientUrl: string;
   MessageUrl: string;
-  companyUrl: string;
+  corporatorApiEndpoint: string;
   userUrl: string;
 };
 
@@ -25,9 +25,9 @@ function loadConfig(): Config {
     PORT: Joi.number().default(3000),
     MONGODB_URL: Joi.string().required(),
     CLIENT_URL: Joi.string().required(),
-    API_SENDMESSAGE_ENDPOINT: Joi.string().required(),
-    API_COMPANY_ENDPOINT: Joi.string().required(),
-    API_USERS_ENDPOINT: Joi.string().required(),
+    SENDMESSAGE_API_ENDPOINT: Joi.string().required(),
+    CORPORATOR_API_ENDPOINT: Joi.string().required(),
+    USERS_API_ENDPOINT: Joi.string().required(),
   })
     .unknown()
     .required();
@@ -43,9 +43,9 @@ function loadConfig(): Config {
     port: envVars.PORT,
     mongodbUrl: envVars.MONGODB_URL,
     clientUrl: envVars.CLIENT_URL,
-    MessageUrl: envVars.API_SENDMESSAGE_ENDPOINT,
-    companyUrl: envVars.API_COMPANY_ENDPOINT,
-    userUrl: envVars.API_SENDMESSAGE_ENDPOINT,
+    MessageUrl: envVars.SENDMESSAGE_API_ENDPOINT,
+    corporatorApiEndpoint: envVars.CORPORATOR_API_ENDPOINT,
+    userUrl: envVars.SENDMESSAGE_API_ENDPOINT,
   };
 }
 

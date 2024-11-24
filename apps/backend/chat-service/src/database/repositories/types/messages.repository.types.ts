@@ -40,7 +40,7 @@ export interface conversation {
   updatedAt: Date;
 }
 export interface conversationRespond {
-  conversation: conversation;
+  conversation: conversation | [];
   currentPage: number;
   totalMessages: number;
   totalPage: number;

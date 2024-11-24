@@ -115,9 +115,7 @@ const authenticateToken = async (
 
 const authorizeRole = (req: Request, _res: Response, next: NextFunction) => {
   const { methodConfig, currentUser } = req;
-  console.log("curent user", currentUser);
 
-  //bug::: error
   // Check if the route requires specific roles
   if (methodConfig.roles) {
     // If the user is not authenticated or does not have any of the required roles, throw an error

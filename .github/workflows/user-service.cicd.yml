@@ -119,8 +119,14 @@ jobs:
             echo "NODE_ENV=${{ secrets.NODE_ENV }}" > /home/ubuntu/apps/user-service/build/configs/.env.production
             echo "PORT=${{ secrets.USER_PORT }}" >> /home/ubuntu/apps/user-service/build/configs/.env.production
             echo "MONGODB_URL=${{ secrets.USER_MONGODB_URL }}" >> /home/ubuntu/apps/user-service/build/configs/.env.production
-            echo "GLITCHTIP_DNS=${{ secrets.GLITCHTIP_DNS }}" >> /home/ubuntu/apps/user-service/build/configs/.env.production
             echo "NOTIFICATION_SERVICE_URL=${{ secrets.NOTIFICATION_SERVICE_URL }}" >> /home/ubuntu/apps/user-service/build/configs/.env.production
+            echo "CORPORATOR_API_ENDPOINT=${{ secrets.CORPORATOR_API_ENDPOINT }}" >> /home/ubuntu/apps/user-service/build/configs/.env.production
+            echo "GLITCHTIP_DNS=${{ secrets.GLITCHTIP_DNS }}" >> /home/ubuntu/apps/user-service/build/configs/.env.production
+            echo "AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}" >> /home/ubuntu/apps/user-service/build/configs/.env.production
+            echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> /home/ubuntu/apps/user-service/build/configs/.env.production
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> /home/ubuntu/apps/user-service/build/configs/.env.production
+            echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> /home/ubuntu/apps/user-service/build/configs/.env.production
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> /home/ubuntu/apps/user-service/build/configs/.env.production
 
       - name: Install Dependencies and Restart PM2
         uses: appleboy/ssh-action@master

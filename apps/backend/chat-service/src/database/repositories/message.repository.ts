@@ -12,6 +12,7 @@ import {
   messType,
 } from "./types/messages.repository.types";
 import configs from "@/src/config";
+import axios from "axios";
 
 export class MessageRepository {
   async sendMessage(makeMessage: {
@@ -86,7 +87,26 @@ export class MessageRepository {
           sort: { createdAt: -1 },
         },
       });
+      //todo: handle if no receiverFound will not create conversation
       if (!conversation) {
+        const endpoint =
+          senderRole === "User"
+            ? `${configs.corporatorApiEndpoint}/getMulti/Profile?companiesId=`
+            : `${configs.userUrl}/`;
+        const data = (await axios.get(`${endpoint}${userToChatId}`)).data;
+
+        const receiverData = data.companiesProfile || data.usersProfile;
+
+        if (!receiverData) {
+          return {
+            conversation: [],
+            currentPage: page,
+            totalMessages: 0,
+            totalPage: 1,
+            limit: limit,
+            skip: skip,
+          };
+        }
         const roomId = [senderId, userToChatId].sort().join("_");
         const participants = [
           {
@@ -218,13 +238,11 @@ export class MessageRepository {
       //declare endpoint and query to get participant Profile Detail from endpoint
       let fetchQuery: string = "";
       let api_endpoint: string = "";
-      //todo: user/company fetch data
       if (senderRole === "User") {
         fetchQuery =
           participantsId.length === 0 ? "" : `?companiesId=${participantsId}`;
-        api_endpoint = `${configs.companyUrl}/getMulti/Profile`;
+        api_endpoint = `${configs.corporatorApiEndpoint}/getMulti/Profile`;
       } else if (senderRole === "Company") {
-        //TODO: fetch to user to get profile
         fetchQuery =
           participantsId.length === 0 ? "" : `?usersId=${participantsId}`;
         api_endpoint = `${configs.userUrl}/getMulti/Profile`;
