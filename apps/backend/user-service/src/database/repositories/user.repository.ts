@@ -387,6 +387,7 @@ class UserRepository {
           { $set: { ...updateBody } },
           { new: true, useFindAndModify: false }
         );
+        console.log("response:::", updatedUser);
         if (!updatedUser) {
           let response = await UserProfileDetailModel.create({
             ...updateBody,
@@ -399,7 +400,6 @@ class UserRepository {
       }
       //this for canva update when we edit the object textbox
       else {
-        console.log("inside queryyyyy:::");
         let updateQuery: Record<string, string | number> = {};
         for (const [key, value] of Object.entries(updateBody)) {
           //case: data is array of object
@@ -468,10 +468,11 @@ class UserRepository {
       //     errors: validationErrors,
       //   });
       // }
+      console.log(err)
       throw err;
     }
   }
-  async getCvFile(userId: string): Promise<CvFileParams|null> {
+  async getCvFile(userId: string): Promise<CvFileParams | null> {
     try {
       console.log("insode get ::::", userId);
       const response: CvFileParams | null = await CvFileModel.findOne({

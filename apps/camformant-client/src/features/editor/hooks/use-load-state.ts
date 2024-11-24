@@ -28,7 +28,6 @@ export const useLoadState = ({
 
   useEffect(() => {
     async function loadState() {
-      console.log("inside loasState:::", initialState);
       if (!initialized.current && initialState?.current && canvas) {
         const data = initialState.current;
 

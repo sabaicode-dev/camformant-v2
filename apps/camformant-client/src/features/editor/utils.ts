@@ -149,10 +149,9 @@ export const setFetchData = (
   canvas: fabric.Canvas | null,
   userData: CustomCvDataParams | {} | undefined
 ) => {
-  console.log("user data in fetchData", userData);
   for (const [key, value] of Object.entries(userData!)) {
     let previousObj: fabric.Textbox | fabric.Group | undefined; //for getting previous object example we have name and age so the next name will have previous obj is age
-    if (Array.isArray(value)) {
+    if (Array.isArray(value) && value.length > 0) {
       const firstElement: string = Object.keys(value[0])[0];
       value.forEach((item, index) => {
         for (const [innerKey, innerValue] of Object.entries(item)) {
@@ -224,26 +223,28 @@ export const setFetchData = (
     } else {
       const skipKey = ["dob", "martial", "strength"];
       let forNameObj = "";
-      for (const [innerKey, innerValue] of Object.entries(value as any)) {
-        if (skipKey.includes(innerKey)) continue;
-        if (!innerKey) continue;
-        const nameForSearch = `${innerKey}`;
-        const fabricObject = searchObject(
-          canvas,
-          nameForSearch
-        ) as fabric.Textbox;
-        if (
-          !fabricObject &&
-          (innerKey == "surname" || innerKey == "lastname")
-        ) {
-          forNameObj += innerValue + " ";
-          const nameTextBox = searchObject(canvas, "name") as fabric.Textbox;
-          nameTextBox.set("text", forNameObj);
-          continue;
-        }
-        if (fabricObject) {
-          previousObj = fabricObject;
-          fabricObject?.set("text", String(innerValue));
+      if (value) {
+        for (const [innerKey, innerValue] of Object.entries(value as any)) {
+          if (skipKey.includes(innerKey)) continue;
+          if (!innerKey) continue;
+          const nameForSearch = `${innerKey}`;
+          const fabricObject = searchObject(
+            canvas,
+            nameForSearch
+          ) as fabric.Textbox;
+          if (
+            !fabricObject &&
+            (innerKey == "surname" || innerKey == "lastname")
+          ) {
+            forNameObj += innerValue + " ";
+            const nameTextBox = searchObject(canvas, "name") as fabric.Textbox;
+            nameTextBox.set("text", forNameObj);
+            continue;
+          }
+          if (fabricObject) {
+            previousObj = fabricObject;
+            fabricObject?.set("text", String(innerValue));
+          }
         }
       }
     }
@@ -471,8 +472,9 @@ export const postCv = async (
   setCvContent: React.Dispatch<SetStateAction<CvContentParams>>
 ) => {
   try {
+    console.log("cv style:::", cvStyle);
     await axiosInstance.put(API_ENDPOINTS.USER_CUSTOM_CV, {
-      style: cvStyle,
+      style: cvStyle ? cvStyle : " unknown",
       json: canvas.toJSON(JSON_KEYS),
     });
     if (Object.keys(updateData).length !== 0) {

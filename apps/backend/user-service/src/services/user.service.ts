@@ -210,7 +210,6 @@ class UserService {
     query?: string
   ): Promise<UnionProfileType> {
     try {
-      console.log("service::::", updateBody);
       const userData = await UserRepository.updateProfile(
         userid,
         updateBody,

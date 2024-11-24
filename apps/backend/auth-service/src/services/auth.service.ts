@@ -60,6 +60,7 @@ class AuthService {
     const existingUser = await this.getUserByEmail(
       (body.email || body.phone_number) as string
     );
+    console.log("signup body:::::", body);
     if (existingUser) {
       throw new ResourceConflictError(
         AUTH_MESSAGES.AUTHENTICATION.ACCOUNT_ALREADY_EXISTS
@@ -75,7 +76,7 @@ class AuthService {
           return obj;
         }, {}),
     };
-
+    console.log("input body:::::", inputBody);
     const allowedAttributes = ["email", "phone_number", "name", "custom:role"];
 
     const attributes = Object.keys(inputBody)
@@ -84,7 +85,7 @@ class AuthService {
         Name: key === "role" ? "custom:role" : key,
         Value: inputBody[key as keyof typeof inputBody],
       }));
-
+    console.log("attributes:::", attributes);
     const username = (body.email || body.phone_number) as string;
 
     const params: SignUpCommandInput = {
@@ -142,7 +143,7 @@ class AuthService {
       const userInfo = await this.getUserByUsername(username);
       const role =
         userInfo.UserAttributes?.find((attr) => attr.Name === "custom:role")
-          ?.Value || "company";
+          ?.Value || "user";
 
       // Add the user to the group based on the `role` attribute
       await this.addToGroup(username, role);
@@ -463,6 +464,7 @@ class AuthService {
   }
 
   async getUserByEmail(email: string): Promise<UserType | undefined> {
+    console.log("exisited");
     const params: ListUsersCommandInput = {
       Filter: `email = "${email}"`,
       UserPoolId: configs.awsCognitoUserPoolId,
@@ -570,13 +572,16 @@ class AuthService {
     if (!refreshToken || !username) {
       throw new AuthenticationError();
     }
-
+    const userData = await axios.get(
+      `${configs.userServiceUrl}/v1/users/${username}`
+    );
+    console.log("refresh", userData.data.data.email);
     const params: InitiateAuthCommandInput = {
       AuthFlow: AuthFlowType.REFRESH_TOKEN_AUTH,
       ClientId: configs.awsCognitoClientId,
       AuthParameters: {
         REFRESH_TOKEN: refreshToken,
-        SECRET_HASH: this.generateSecretHash(username),
+        SECRET_HASH: this.generateSecretHash(userData.data.data.email),
       },
     };
 

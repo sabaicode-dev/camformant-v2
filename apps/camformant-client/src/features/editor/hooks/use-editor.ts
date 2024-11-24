@@ -878,7 +878,6 @@ export const useEditor = ({
     setSelectedObjects,
     clearSelectionCallback,
   });
-
   useHotKeys({
     canvas,
     save,
@@ -892,15 +891,15 @@ export const useEditor = ({
     moveUp,
   });
 
-  // useLoadState({
-  //   //for set history when we fetch data
-  //   canvas,
-  //   autoZoom,
-  //   initialState,
-  //   canvasHistory,
-  //   setHistoryIndex,
-  //   userData: defaultState.userData,
-  // });
+  useLoadState({
+    //for set history when we fetch data
+    canvas,
+    autoZoom,
+    initialState,
+    canvasHistory,
+    setHistoryIndex,
+    userData: defaultState.userData,
+  });
 
   const editor = useMemo(() => {
     if (canvas) {
@@ -944,6 +943,7 @@ export const useEditor = ({
     }
     return undefined;
   }, [
+    defaultState.style,
     moveLeft,
     canRedo,
     canUndo,
@@ -981,7 +981,7 @@ export const useEditor = ({
         }
       });
     }
-  }, []);
+  }, [canvas]);
 
   const init = useCallback(
     async ({
@@ -1008,7 +1008,7 @@ export const useEditor = ({
         width: 620,
         height: 877,
         name: "clip",
-        fill: "yellow",
+        fill: "white",
         selectable: false,
         hasControls: false,
         shadow: new fabric.Shadow({ color: "rgba(0,0,0,0.8)", blur: 5 }),

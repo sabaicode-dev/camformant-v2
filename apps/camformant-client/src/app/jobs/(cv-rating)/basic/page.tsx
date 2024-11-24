@@ -63,7 +63,7 @@ const Page = () => {
         surname,
         lastname,
         career,
-        email,
+        email:user?.email,
         phonenumber: phone,
         dob: date, // Date of birth from state
         address, // Address from state

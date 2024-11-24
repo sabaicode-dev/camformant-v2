@@ -7,10 +7,11 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { CvContentParams } from "@/features/editor/types";
 import { FaBullseye } from "react-icons/fa";
 import SkeletonLoader from "@/components/cv-rating-card/router-page/basic/skeleton";
-import { useAuth } from "@/context/auth";
 import { setStructureUserdata } from "@/features/editor/utils";
+import CallToAction from "@/components/calltoaction/call-to-action";
 
-const page = () => {
+const page = ({ params }: { params: { userId: string } }) => {
+  const { userId } = params;
   const [cvContent, setCvContent] = useState<CvContentParams>({
     style: "",
     json: {
@@ -21,7 +22,6 @@ const page = () => {
     userData: {},
   });
   const hasFetched = useRef(false);
-  const { user } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     async function fetchData() {
@@ -35,7 +35,6 @@ const page = () => {
         const { data } = await axiosInstance.get(
           API_ENDPOINTS.USER_PROFILE_DETAIL
         );
-        const userData = data.data;
 
         setCvContent({
           ...userTemplate.data.data,
@@ -49,15 +48,15 @@ const page = () => {
     }
     fetchData();
   }, []);
-  // if (!user?._id) {
-  //   return (
-  //     <CallToAction
-  //       text="Login To Generate Cv"
-  //       buttonText="Go to Login"
-  //       buttonLink="/login"
-  //     />
-  //   );
-  // }
+  if (!userId || userId == "undefined") {
+    return (
+      <CallToAction
+        text="Login To Generate Cv"
+        buttonText="Go to Login"
+        buttonLink="/login"
+      />
+    );
+  }
   return (
     <div className="h-full bg-muted-foreground">
       {loading ? (

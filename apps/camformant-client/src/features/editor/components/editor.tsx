@@ -32,7 +32,6 @@ import TemplateModal from "./template-modal";
 import Cropper, { Area } from "react-easy-crop";
 import { useNotification } from "@/hooks/user-notification";
 import getCroppedImg from "@/components/profile/crop";
-// import LayersList from "./LayersList";
 const Editor: React.FC<{
   cvContent: CvContentParams;
   setCvContent: React.Dispatch<SetStateAction<CvContentParams>>;
@@ -56,7 +55,6 @@ const Editor: React.FC<{
     },
     [activeTool] //get back activeTool callback to this global/editor state from child
   );
-
   const onClearSelection = useCallback(() => {
     if (selectionDependentTools.includes(activeTool)) {
       setActiveTool("select");
@@ -72,7 +70,6 @@ const Editor: React.FC<{
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    console.log("inside this again");
     const canvas = new fabric.Canvas(canvasRef.current, {
       controlsAboveOverlay: true,
       preserveObjectStacking: true,
@@ -84,87 +81,6 @@ const Editor: React.FC<{
       initialCanvas: canvas,
       initialContainer: containerRef.current!,
     });
-
-    // let lastTouchDistance = 0;
-    // let isPinching = false;
-
-    // // Disable selection and object events during pinch
-    // const disableInteraction = () => {
-    //   canvas.selection = false;
-    //   canvas.forEachObject((obj) => (obj.evented = false));
-    // };
-
-    // // Restore interaction after pinch
-    // const restoreInteraction = () => {
-    //   canvas.selection = true;
-    //   canvas.forEachObject((obj) => (obj.evented = true));
-    // };
-
-    // const getTouchDistance = (e: TouchEvent) => {
-    //   // Calculate the distance between the two touch points
-    //   const dx = e.touches[0].pageX - e.touches[1].pageX;
-    //   const dy = e.touches[0].pageY - e.touches[1].pageY;
-    //   return Math.sqrt(dx * dx + dy * dy);
-    // };
-
-    // canvas.on("mouse:down", (e: fabric.IEvent) => {
-    //   const mouseEvent = e.e as TouchEvent;
-    //   if (touchEvent.touches && touchEvent.touches.length === 2) {
-    //     alert("2 touches detected");
-    //     const dist = getTouchDistance(touchEvent);
-    //     lastTouchDistance = dist;
-    //     isPinching = true;
-    //     disableInteraction();
-    //   } else {
-    //     alert("Single touch or mouse click");
-    //   }
-    // });
-    // let isDragging = false;
-    // let initialX = 0;
-    // let initialY = 0;
-    // let scale = 1;
-
-    // // Mouse down event to start dragging
-    // canvas.on("mouse:down", (e: fabric.IEvent) => {
-    //   const mouseEvent = e.e as MouseEvent;
-    //   if (
-    //     (e.e as TouchEvent).touches &&
-    //     (e.e as TouchEvent).touches.length === 2
-    //   ) {
-    //     isDragging = true;
-    //     initialX = mouseEvent.clientX;
-    //     initialY = mouseEvent.clientY;
-    //     canvas.selection = false;
-    //   }
-    // });
-
-    // // Mouse move event to zoom based on drag distance
-    // canvas.on("mouse:move", (e) => {
-    //   if (!isDragging) return;
-
-    //   const deltaX = e.e.clientX - initialX;
-    //   const deltaY = e.e.clientY - initialY;
-
-    //   // Calculate a zoom factor based on how far the mouse has moved
-    //   const zoomFactor = 1 + deltaY / 200; // Adjust 200 for sensitivity
-
-    //   // Decrease the scale when zooming out (when deltaY is negative)
-    //   scale = Math.max(0.1, Math.min(5, scale * zoomFactor)); // Limit the zoom factor
-
-    //   // Set the canvas zoom
-    //   canvas.setZoom(scale);
-
-    //   // Update initial coordinates for next move
-    //   initialX = e.e.clientX;
-    //   initialY = e.e.clientY;
-    // });
-
-    // // Mouse up event to stop dragging
-    // canvas.on("mouse:up", () => {
-    //   isDragging = false;
-    //   // Optionally re-enable selection after zoom or drag ends
-    //   canvas.selection = true;
-    // });
 
     let lastPosX = 0;
     let lastPosY = 0;
@@ -250,6 +166,8 @@ const Editor: React.FC<{
       isPinching = false; // Reset panning and zooming state
       canvas.selection = true; // Re-enable selection after the gesture ends
     });
+
+    !cvContent.style && setIsOpenTem(true);
     return () => {
       canvas.dispose(); // Dispose canvas when unmounting
     };

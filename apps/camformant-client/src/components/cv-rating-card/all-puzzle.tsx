@@ -2,10 +2,10 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { BackButton_md } from "../back/BackButton";
-import PuzzleProfile from "./puzzle-profile";
 import PuzzleCard from "./puzzle-card";
 import { useAuth } from "@/context/auth";
 import CallToAction from "@/components/calltoaction/call-to-action";
+import PuzzleProfile from "@/components/cv-rating-card/puzzle-profile";
 
 const AllPuzzle = () => {
   const { user } = useAuth();
@@ -19,7 +19,7 @@ const AllPuzzle = () => {
       {user ? (
         <div>
           <div className=" container ">
-            <PuzzleProfile totalRating={total} />
+            <PuzzleProfile totalRating={total}/>
           </div>
           <div>
             <PuzzleCard propTotal={setTotal} />
