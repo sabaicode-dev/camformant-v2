@@ -9,6 +9,9 @@ import { FaBullseye } from "react-icons/fa";
 import SkeletonLoader from "@/components/cv-rating-card/router-page/basic/skeleton";
 import { setStructureUserdata } from "@/features/editor/utils";
 import CallToAction from "@/components/calltoaction/call-to-action";
+import HeaderBasic from "@/components/cv-rating-card/router-page/basic/header-basic";
+import { BackButton_md } from "@/components/back/BackButton";
+import Link from "next/link";
 
 const page = ({ params }: { params: { userId: string } }) => {
   const { userId } = params;
@@ -49,12 +52,20 @@ const page = ({ params }: { params: { userId: string } }) => {
     fetchData();
   }, []);
   if (!userId || userId == "undefined") {
+    console.log("userid", userId);
     return (
-      <CallToAction
-        text="Login To Generate Cv"
-        buttonText="Go to Login"
-        buttonLink="/login"
-      />
+      <div>
+        <div className="h-10 mt-4 mb-8 mx-2 w-14">
+          <Link href={"/resume"}>
+            <BackButton_md styles="bg-primaryCam p-3 px-4 rounded-xl text-gray-200" />
+          </Link>
+        </div>
+        <CallToAction
+          text="Login To Generate Cv"
+          buttonText="Go to Login"
+          buttonLink="/login"
+        />
+      </div>
     );
   }
   return (
