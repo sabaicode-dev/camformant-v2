@@ -572,16 +572,13 @@ class AuthService {
     if (!refreshToken || !username) {
       throw new AuthenticationError();
     }
-    const userData = await axios.get(
-      `${configs.userServiceUrl}/v1/users/${username}`
-    );
-    console.log("refresh", userData.data.data.email);
+
     const params: InitiateAuthCommandInput = {
       AuthFlow: AuthFlowType.REFRESH_TOKEN_AUTH,
       ClientId: configs.awsCognitoClientId,
       AuthParameters: {
         REFRESH_TOKEN: refreshToken,
-        SECRET_HASH: this.generateSecretHash(userData.data.data.email),
+        SECRET_HASH: this.generateSecretHash(username),
       },
     };
 

@@ -30,9 +30,8 @@ async function refreshToken(): Promise<{
 }> {
   try {
     const headers = isServer ? { Cookie: await getServerCookies() } : {};
-    console.log("before post");
     const response = await axios.post(
-      "http://localhost:4000/v1/auth/refresh-token",
+      `${process.env.NEXT_PUBLIC_API_URL}/v1/auth/refresh-token`,
       null,
       {
         withCredentials: true,
