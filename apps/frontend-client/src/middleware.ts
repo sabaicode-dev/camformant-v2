@@ -47,7 +47,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname.startsWith("/dashboard")) {
-    const role = userInfo.data.user.role;
+    const role = userInfo.data.role;
     console.log("middleware.ts: role :::", role);
 
     if (role !== "company") {

@@ -155,6 +155,15 @@ const ROUTE_PATHS: RoutesConfig = {
         },
       },
       {
+        path: "/profile/me",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["company"],
+          },
+        },
+      },
+      {
         path: "/getMulti/Profile",
         methods: {
           GET: {

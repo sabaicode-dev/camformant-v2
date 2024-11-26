@@ -1782,6 +1782,48 @@
 				]
 			}
 		},
+		"/v1/corporator/profile/me": {
+			"get": {
+				"operationId": "GetCorporateProfileWithJobs",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"items": {},
+											"type": "array"
+										},
+										{
+											"properties": {
+												"data": {
+													"$ref": "#/components/schemas/ICorporatorProfile"
+												},
+												"message": {
+													"type": "string"
+												}
+											},
+											"required": [
+												"data",
+												"message"
+											],
+											"type": "object"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporator"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
 		"/v1/corporator/getMulti/Profile": {
 			"get": {
 				"operationId": "GetMultiProfileCompany",
@@ -1920,8 +1962,7 @@
 										{
 											"properties": {
 												"data": {
-													"items": {},
-													"type": "array"
+													"$ref": "#/components/schemas/ICorporatorProfile"
 												},
 												"message": {
 													"type": "string"
@@ -1936,7 +1977,8 @@
 										{
 											"properties": {
 												"data": {
-													"$ref": "#/components/schemas/ICorporatorProfile"
+													"items": {},
+													"type": "array"
 												},
 												"message": {
 													"type": "string"
