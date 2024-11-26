@@ -378,6 +378,14 @@ const ROUTE_PATHS: RoutesConfig = {
           },
         },
       },
+      {
+        path: "/corporator",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
+      },
     ],
   },
   COMPANY_SERVICE: {

@@ -1094,7 +1094,6 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
 
             async function CorporateController_createCorporateProfile(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
                     body: {"in":"body","name":"body","required":true,"ref":"ICorporatorProfile"},
             };
 
@@ -1148,13 +1147,13 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/v1/corporator/profile/:corporateId',
+        app.get('/v1/corporator/profile/:corporateSub',
             ...(fetchMiddlewares<RequestHandler>(CorporateController)),
-            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.getCorporateProfilesById)),
+            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.getCorporateProfilesBySub)),
 
-            async function CorporateController_getCorporateProfilesById(request: ExRequest, response: ExResponse, next: any) {
+            async function CorporateController_getCorporateProfilesBySub(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    corporateId: {"in":"path","name":"corporateId","required":true,"dataType":"string"},
+                    corporateSub: {"in":"path","name":"corporateSub","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -1166,7 +1165,7 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
                 const controller = new CorporateController();
 
               await templateService.apiHandler({
-                methodName: 'getCorporateProfilesById',
+                methodName: 'getCorporateProfilesBySub',
                 controller,
                 response,
                 next,
@@ -1228,36 +1227,6 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
 
               await templateService.apiHandler({
                 methodName: 'deleteCorporateProfile',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: 200,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/v1/corporator/profile/me',
-            ...(fetchMiddlewares<RequestHandler>(CorporateController)),
-            ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.getCorporateProfileWithJobs)),
-
-            async function CorporateController_getCorporateProfileWithJobs(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
-
-                const controller = new CorporateController();
-
-              await templateService.apiHandler({
-                methodName: 'getCorporateProfileWithJobs',
                 controller,
                 response,
                 next,

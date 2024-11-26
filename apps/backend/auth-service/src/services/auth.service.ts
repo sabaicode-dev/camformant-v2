@@ -703,7 +703,7 @@ class AuthService {
       await axios.post(`${configs.userServiceUrl}/v1/corporator/profile`, {
         sub: userInfo.Username,
         email: body.email,
-        username: userInfo.UserAttributes?.find((attr) => attr.Name === "name")
+        name: userInfo.UserAttributes?.find((attr) => attr.Name === "name")
           ?.Value,
       });
       console.log("5::::");

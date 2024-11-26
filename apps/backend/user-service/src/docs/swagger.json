@@ -1907,9 +1907,9 @@
 				"parameters": []
 			}
 		},
-		"/v1/corporator/profile/{corporateId}": {
+		"/v1/corporator/profile/{corporateSub}": {
 			"get": {
-				"operationId": "GetCorporateProfilesById",
+				"operationId": "GetCorporateProfilesBySub",
 				"responses": {
 					"200": {
 						"description": "Success",
@@ -1961,14 +1961,16 @@
 				"parameters": [
 					{
 						"in": "path",
-						"name": "corporateId",
+						"name": "corporateSub",
 						"required": true,
 						"schema": {
 							"type": "string"
 						}
 					}
 				]
-			},
+			}
+		},
+		"/v1/corporator/profile/{corporateId}": {
 			"put": {
 				"operationId": "UpdateCorporateProfile",
 				"responses": {
@@ -2056,26 +2058,6 @@
 						}
 					}
 				]
-			}
-		},
-		"/v1/corporator/profile/me": {
-			"get": {
-				"operationId": "GetCorporateProfileWithJobs",
-				"responses": {
-					"200": {
-						"description": "Success",
-						"content": {
-							"application/json": {
-								"schema": {}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Corporator"
-				],
-				"security": [],
-				"parameters": []
 			}
 		}
 	},
