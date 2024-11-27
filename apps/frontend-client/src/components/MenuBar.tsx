@@ -22,7 +22,7 @@ export const MenuBar = () => {
   };
 
   return (
-    <Menubar className="w-full py-8 z-40">
+    <Menubar className="w-full py-8 z-40 bg-white">
       {/* logo */}
       <div className="w-1/6 flex items-center">
         <SidebarGroup>

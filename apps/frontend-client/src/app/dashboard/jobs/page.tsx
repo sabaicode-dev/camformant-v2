@@ -19,14 +19,12 @@ const Jobs = () => {
         fetchData();
     } , []);
 
-    console.log("jobsDatalikdsjhfloiuahlsioudhfas", jobsData);
-
     return (
-        <>
+        <div className="w-full">
             <DynamicBreadcrumb />
             Jobs
             <DataTable data={jobsData || []} columns={columns} />
-        </>
+        </div>
     );
 };
 

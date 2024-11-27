@@ -1,11 +1,6 @@
 import { PersonIcon } from "@radix-ui/react-icons";
 import { LayoutDashboard, Sheet, LetterText, Calendar, ChartNetwork, UserPen, List, MessageSquare, Settings, Users2, User } from "lucide-react";
 
-
-
-// All icons in sidebar
-// Menu Dashboard.
-
 const dashboard = [
     {
         title: "Dashboard",
@@ -28,23 +23,7 @@ const Jobs = [
     },
 ];
 
-// Menu Posts
-
-// const posts = [
-//     {
-//         title: "Posts",
-//         url: "/dashboard/posts",
-//         icon: LetterText,
-//     },
-//     {
-//         title: "List",
-//         url: "/dashboard/posts/list",
-//         icon: List,
-//     },
-// ];
-
 // Menu users.
-
 const users = [
     {
         title: "Users",
@@ -56,11 +35,6 @@ const users = [
         url: "/dashboard/users/profile",
         icon: UserPen,
     },
-    // {
-    //     title: "List",
-    //     url: "/dashboard/users/list",
-    //     icon: List,
-    // },
 ];
 
 // Menu Calendar.

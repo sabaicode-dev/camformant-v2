@@ -30,6 +30,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { itemsMenu } from "@/utils/navigationItems";
 
 interface Route {
   label: string;
@@ -44,23 +45,7 @@ const routes: Route[] = [
     label: "Dashboards",
     icon: LayoutDashboard,
     color: "text-sky-500",
-    subRoutes: [
-      {
-        label: "Analytics",
-        icon: CircleDot,
-        href: "/",
-      },
-      {
-        label: "eCommerce",
-        icon: CircleDot,
-        href: "/ecommerce-dashboard",
-      },
-      {
-        label: "CRM",
-        icon: CircleDot,
-        href: "/crm-dashboard",
-      },
-    ],
+    href: "/dashboard",
   },
   {
     label: "Analytics",
@@ -80,14 +65,14 @@ const routes: Route[] = [
     ],
   },
   {
-    label: "CRM",
+    label: "Jobs",
     icon: Users,
     color: "text-pink-500",
     subRoutes: [
       {
-        label: "Customers",
+        label: "View Applicant",
         icon: UserCircle,
-        href: "/crm/customers",
+        href: "dashboard/jobs",
       },
       {
         label: "Leads",

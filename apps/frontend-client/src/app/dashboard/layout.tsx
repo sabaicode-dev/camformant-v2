@@ -7,26 +7,20 @@ import KakSideBar from "@/components/KakSideBar";
 const layout = ({ children }: { children: ReactNode }) => {
   return (
     <SidebarProvider>
-      <div className="flex h-screen w-full">
-        {/* <div className="h-screen overflow-y-auto">
-        </div> */}
-          {/* <AppSidebar /> */}
-          <KakSideBar />
-
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col">
-          {/* Full-Width Navbar */}
-          <div className="sticky top-0 left-0 z-10">
+    <div className="w-full flex overflow-x-hidden">
+      {/* <AppSidebar /> */}
+      <KakSideBar />
+      <div className="relative h-screen w-full">
+        <div className="fixed top-0 z-10 w-full">
           <MenuBar />
-          </div>
-
-          {/* Offset content to account for navbar height */}
-          <div className="h-screen">
-            {children}
-          </div>
+        </div>
+        <div className="pt-[4.5%] h-full w-full">
+          {children}
         </div>
       </div>
-    </SidebarProvider>
+    </div>
+  </SidebarProvider>
+  
   );
 };
 
