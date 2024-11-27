@@ -48,7 +48,6 @@ const Chat = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const divRef = useRef<HTMLDivElement>(null);
-  //todo: scroll conversations
   const loadMoreData = useCallback(async () => {
     if (!hasMore || isLoading) return; // Prevent fetching if no more data or already loading
 
@@ -133,7 +132,6 @@ const Chat = () => {
   const handleConversationClick = (conId: string) => {
     router.push(`/chat/${conId}`);
   };
-  //todo: scroll for more conversations
   return (
     <div className="relative h-screen">
       <Background>

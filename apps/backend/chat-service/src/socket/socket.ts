@@ -51,7 +51,7 @@ const setupSocketIO = (io: Server) => {
       const online = Object.keys(userSocketMap);
       //todo: when done remove online.push this is for test only
       //test if this company online
-      online.push("63e6a012e1234567890a1244");
+      online.push("674535e502cd5277dce74f5b");
       //io.emit() use to send any event to connected users
       io.emit("getOnlineUsers", online);
       console.log("user is online:::", online);
@@ -83,8 +83,8 @@ const setupSocketIO = (io: Server) => {
           console.log("new message:::", savedMessage);
           //todo: realtime message (wait for dashboard chat to test)
           const receiverSocketId = userSocketMap[data.receiverId];
-          console.log("receverid::", receiverSocketId);
 
+          //send notify to this user
           if (savedMessage && receiverSocketId) {
             console.log("Message delivered to:", receiverSocketId);
             io.to(receiverSocketId).emit("receiveMessage", savedMessage);
