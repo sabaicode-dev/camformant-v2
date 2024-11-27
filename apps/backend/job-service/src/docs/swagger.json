@@ -828,8 +828,8 @@
 			"post": {
 				"operationId": "PostIJob",
 				"responses": {
-					"201": {
-						"description": "Created",
+					"200": {
+						"description": "Success Bro",
 						"content": {
 							"application/json": {
 								"schema": {

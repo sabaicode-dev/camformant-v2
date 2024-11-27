@@ -38,6 +38,9 @@ import {
 import { CvStyleParams } from "@/src/controllers/types/user-cv-controller.type";
 import { error } from "console";
 import { Types } from "mongoose";
+import { CorporateProfileResponse } from "./types/corporate-controller.type";
+import corporateService from "../services/corporate.service";
+import axios from "axios";
 // import { unionProfileType } from "./types/userprofile.type";
 export interface UserCreationRequestParams2 {
   sub?: string;
@@ -311,7 +314,6 @@ export class UsersController extends Controller {
       throw error;
     }
   }
-  //TODO: type
   @Get("/getMulti/Profile")
   public async getMultiProfileUser(@Queries() query: { usersId?: string }) {
     try {
@@ -390,6 +392,67 @@ export class UsersController extends Controller {
       });
     } catch (err) {
       throw err;
+    }
+  }
+  
+  @Get("/profile/me")
+  public async getCorporateMe(
+    @Request() request: ExpressRequest
+  ): Promise<CorporateProfileResponse> {
+    try {
+      console.log("this is profile me....");
+      const sub = request.cookies["username"];
+      const access_token = request.cookies["access_token"];
+      if (!sub) {
+        console.error("Username not found in cookies");
+        throw new Error("Authentication error: Username not found in cookies");
+      }
+      const userProfile = await corporateService.getCorporateBySub(sub);
+      console.log("userProfile::: ", userProfile);
+      if (!userProfile) {
+        console.log(
+          "CorporateController - getCorporateMe() : User profile not found"
+        );
+        return sendResponse({
+          message: "Corporate profile fetched successfully",
+          data: {
+            user: {} as any,
+            jobs: [],
+          },
+        }) as CorporateProfileResponse;
+      }
+      const companyJobs = await axios.get(
+        `http://localhost:4003/v1/corporate`,
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+            Cookie: `username=${sub}; access_token=${access_token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      if (!companyJobs.data) {
+        console.log(
+          "CorporateController - getCorporateMe() : Company jobs not found"
+        );
+        return sendResponse({
+          message: "Corporate profile fetched successfully",
+          data: {
+            user: userProfile,
+            jobs: [],
+          },
+        }) as CorporateProfileResponse;
+      }
+      return sendResponse({
+        message: "Corporate profile fetched successfully",
+        data: {
+          user: userProfile,
+          jobs: [],
+        },
+      }) as CorporateProfileResponse;
+    } catch (error) {
+      console.error("CorporateController - getCorporateMe() error:", error);
+      throw error;
     }
   }
 }

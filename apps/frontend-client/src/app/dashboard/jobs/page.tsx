@@ -3,19 +3,15 @@ import DynamicBreadcrumb from "@/components/DynamicBreadcrumb";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { useAuth } from "@/context/AuthContext";
-import { useEffect } from "react";
-import { Eye } from "lucide-react";
+import { useEffect, useState } from "react";
 
 
-export type ApplicantProps = {
-    _id: string;
-    company_id: string;
-    title: string;
-}
+
 const JobsPage = () => {
-  
   const { jobs } = useAuth();
+
   const jobsData = jobs?.jobStats.recentJobs;
+ console.log(jobsData)
   useEffect(() => {
     console.log("jobs:::::::::::::::::::::::::;", jobs?.jobStats.recentJobs);
   }, [jobs]);
@@ -23,7 +19,8 @@ const JobsPage = () => {
   return (
     <>
       <DynamicBreadcrumb />
-      Jobs
+      <h1>hello world</h1>
+     <div className="font-roboto"> Jobs hello world</div>
       <DataTable data={jobsData||[]} columns={columns} />
     </>
   );

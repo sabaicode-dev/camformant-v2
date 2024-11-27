@@ -9,22 +9,22 @@ import JobList from "@/components/jobList";
 const Chart = () => {
   return (
     <>
-      <div className="flex gap-[56px] w-full mt-[31px] px-4 ">
+      <div className="flex w-full float-right gap-6 mt-[31px] ">
         <div className="w-2/3">
-          <div className="flex flex-col w-full h-auto gap-[32px]">
+          <div className="flex flex-col w-full float-right h-auto gap-[32px]">
             {/*cover three of card */}
-            <div className="flex w-full h-[130px] gap-[100px]">
-              <Card className="w-full flex flex-col rounded-[5px] bg-green-200 justify-center dark:text-black p-[10px]">
+            <div className="flex w-full h-[130px] gap-[20px] ">
+              <Card className="w-1/3 flex flex-col rounded-[5px] bg-green-200 justify-center dark:text-black p-[10px]">
                 <User className="w-[23px] h-[23px] text-blue-400" />
                 <span className="text-[21px] font-bold">395</span>
                 <div className="text-[13px] text-gray-500">Applicant</div>
               </Card>
-              <Card className="w-full flex flex-col rounded-[5px] bg-orange-100 justify-center dark:text-black p-[10px]">
+              <Card className="w-1/3 flex flex-col rounded-[5px] bg-orange-100 justify-center dark:text-black p-[10px]">
                 <RiMailVolumeLine className="w-[23px] h-[23px] text-blue-400" />
                 <span className="text-[21px] font-bold">395</span>
                 <div className="text-[13px] text-gray-500">interview</div>
               </Card>
-              <Card className="w-full flex flex-col rounded-[5px] bg-pink-100 justify-center dark:text-black p-[10px]">
+              <Card className="w-1/3 flex flex-col rounded-[5px] bg-pink-100 justify-center dark:text-black p-[10px]">
                 <RiPassValidLine className="w-[23px] h-[23px] text-blue-400" />
                 <span className="text-[21px] font-bold">395</span>
                 <div className="text-[13px] text-gray-500">Passed</div>
@@ -53,7 +53,7 @@ const Chart = () => {
               <div className="bg-[rgba(255,174,22,1)] w-[calc(50%-10px)] h-full absolute right-0" style={{ clipPath: 'polygon(30% 0%, 100% 0%, 100% 100%, 30% 100%, 0% 50%)' }}></div>
             </Card>
           </div>
-          <div className="w-full">
+          <div className="">
             <PieChartComponent />
           </div>
         </div>

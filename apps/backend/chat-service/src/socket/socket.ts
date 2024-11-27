@@ -69,7 +69,7 @@ const setupSocketIO = (io: Server) => {
               message: data.message,
             },
             {
-              withCredentials: true, // Include credentials (e.g., cookies, authentication headers)
+              withCredentials: true,
               headers: {
                 "Content-Type": "application/json",
                 Cookie: cookies,

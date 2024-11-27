@@ -23,7 +23,7 @@ const Jobs = [
     },
     {
         title: "Job View",
-        url: "/dashboard/viewJob",
+        url: "/dashboard/viewJobs",
         icon: Sheet,
     },
     {

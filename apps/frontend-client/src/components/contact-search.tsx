@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 
 const ContactSearch = () => {
   return (
-    <div className="bg-white w-11/12  h-[65px] border shadow-sm border-gray-300 m-auto rounded-md flex">
+    <div className="bg-white w-11/12 font-roboto  h-[65px] border shadow-sm border-gray-300 m-auto rounded-md flex">
       <Input
         placeholder="Contact App"
         className=" h-full p-[24px] bg-white border-none"

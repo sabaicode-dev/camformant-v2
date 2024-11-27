@@ -722,6 +722,37 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"CorporateProfileResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"properties": {
+							"jobs": {
+								"items": {
+									"type": "string"
+								},
+								"type": "array"
+							},
+							"user": {
+								"$ref": "#/components/schemas/ICorporateModel"
+							}
+						},
+						"required": [
+							"jobs",
+							"user"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"message",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"CorporateProfileResponseCreate": {
 				"properties": {
 					"message": {
@@ -761,37 +792,6 @@
 				},
 				"required": [
 					"username"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"CorporateProfileResponse": {
-				"properties": {
-					"message": {
-						"type": "string"
-					},
-					"data": {
-						"properties": {
-							"jobs": {
-								"items": {
-									"type": "string"
-								},
-								"type": "array"
-							},
-							"user": {
-								"$ref": "#/components/schemas/ICorporateModel"
-							}
-						},
-						"required": [
-							"jobs",
-							"user"
-						],
-						"type": "object"
-					}
-				},
-				"required": [
-					"message",
-					"data"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1430,6 +1430,25 @@
 						}
 					}
 				]
+			}
+		},
+		"/v1/users/profile/me": {
+			"get": {
+				"operationId": "GetCorporateMe",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CorporateProfileResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
 			}
 		},
 		"/v1/users/health": {

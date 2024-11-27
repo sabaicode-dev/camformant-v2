@@ -84,7 +84,7 @@ export function DataTable<TData, TValue>({
   }, [columnFilters, pathname, router]);
 
   return (
-    <div className=" w-full float-end  border m-2 p-2 rounded-md">
+    <div className=" w-full font-roboto float-end  border m-2 p-2 rounded-md">
       <div className="flex justify-start items-center">
         <div className="flex items-center py-4">
           <Input
@@ -182,7 +182,7 @@ export function DataTable<TData, TValue>({
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
-        <div className="">
+        <div className="flex gap-1">
           <Button
             variant="outline"
             size="sm"

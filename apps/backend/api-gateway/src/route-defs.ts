@@ -74,7 +74,7 @@ const ROUTE_PATHS: RoutesConfig = {
         methods: {
           POST: {
             authRequired: true,
-            roles: ["user", "conpany"],
+            roles: ["user", "company"],
           },
         },
       },
@@ -125,40 +125,55 @@ const ROUTE_PATHS: RoutesConfig = {
             authRequired: false,
           },
         },
-      }, {
+      },
+      {
         path: "/corporate/verify",
         methods: {
           POST: {
             authRequired: false,
           },
         },
-      }
+      },
     ],
   },
-  CORPORATE_SERVICE: {
+  CORPORATE_JOBS: {
     path: "/v1/corporate",
-    target: configs.userServiceUrl,
+    target: configs.jobServiceUrl,
     methods: {
       GET: {
-        authRequired: false,
-        // roles: ["company"],
-      },
-      POST: {
         authRequired: true,
         roles: ["company"],
       },
     },
     nestedRoutes: [
       {
-        path: "/profile/me",
+        path: "/job",
         methods: {
           GET: {
             authRequired: false,
-            // roles: ["company"],
+          },
+          POST: {
+            authRequired: true,
+            roles: ["company"],
           },
         },
-      }]
+        nestedRoutes: [
+          {
+            path: "/:jobId",
+            methods: {
+              GET: {
+                authRequired: false,
+              },
+              PUT: {
+                authRequired: false,
+              },
+            },
+          },
+        ],
+      },
+    ],
   },
+
   USER_SERVICE: {
     path: "/v1/users",
     target: configs.userServiceUrl,
@@ -277,6 +292,15 @@ const ROUTE_PATHS: RoutesConfig = {
           GET: {
             authRequired: true,
             roles: ["user", "admin"],
+          },
+        },
+      },
+      {
+        path: "/profile/me",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["company"],
           },
         },
       },

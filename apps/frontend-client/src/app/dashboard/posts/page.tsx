@@ -5,6 +5,7 @@ import DynamicBreadcrumb from "@/components/DynamicBreadcrumb";
 import InputForm from "./input-form";
 
 
+
 const PostPage = () => {
   const pathname = usePathname();
   return (

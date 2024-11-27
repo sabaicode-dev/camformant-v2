@@ -22,7 +22,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use((_req, _res, next) => {
   console.log("Reach api getway");
-  next()
+  next();
 });
 // ========================
 // Gateway Health

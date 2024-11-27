@@ -23,7 +23,7 @@ import { itemsMenu } from "@/utils/navigationItems";
 
 export function AppSidebar() {
   return (
-    <Sidebar className="absolute top-5">
+    <Sidebar className="absolute font-roboto top-5">
       {/* add this tonight */}
       <ScrollArea className="h-full pr-2">
         <SidebarGroup className=" mt-[45px]">
