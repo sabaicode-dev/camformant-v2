@@ -45,14 +45,14 @@ export function DataTable<TData, TValue>({
   const pathname = usePathname();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
-    searchParams.get("title")
-      ? [{ id: "title", value: searchParams.get("title") }]
+    searchParams.get("name")
+      ? [{ id: "name", value: searchParams.get("name") }]
       : []
   );
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
-  const table = useReactTable({
+ const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
@@ -75,32 +75,32 @@ export function DataTable<TData, TValue>({
     const params = new URLSearchParams(window.location.search);
     if (columnFilters.length > 0 && columnFilters[0].value) {
       const filterValue = columnFilters[0].value as string;
-      params.set("title", filterValue);
+      params.set("name", filterValue);
       router.replace(`${pathname}?${params.toString()}`);
     } else {
-      params.delete("title");
+      params.delete("name");
       router.replace(`${pathname}?${params.toString()}`);
     }
   }, [columnFilters, pathname, router]);
 
   return (
-    <div className="w-full font-roboto float-end border m-2 p-2 rounded-md">
+    <div className=" w-full font-roboto float-end  border m-2 p-2 rounded-md">
       <div className="flex justify-start items-center">
-        <div className="flex items-center py-4 bg">
+        <div className="flex items-center py-4">
           <Input
-            placeholder="Filter title..."
-            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+            placeholder="Filter name..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("title")?.setFilterValue(event.target.value)
+              table.getColumn("name")?.setFilterValue(event.target.value)
             }
-            className="max-w-sm"
+            className="max-w-sm border border-gray-300"
           />
         </div>
 
         {/* Dropdown for column visibility */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="orange" className="ml-auto">
+            <Button className="ml-auto bg-orange-400 hover:bg-orange-500">
               Views
             </Button>
           </DropdownMenuTrigger>
@@ -125,14 +125,16 @@ export function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
+      {/* table of applicant */}
+      <div className="">
         <Table>
+            {/* head of table */}
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="text-center">
+                    <TableHead key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -153,7 +155,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-center">
+                    <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

@@ -90,7 +90,8 @@ const authenticateToken = async (
       } else {
         role = payload["cognito:groups"] || [];
       }
-      // console.log("role", role);
+      console.log("role::: ", role);
+      console.log("payload::: ", payload.username);
 
       req.currentUser = {
         username: payload.username,
@@ -115,6 +116,8 @@ const authenticateToken = async (
 
 const authorizeRole = (req: Request, _res: Response, next: NextFunction) => {
   const { methodConfig, currentUser } = req;
+  console.log("ro le::: ", methodConfig);
+  console.log("currentUs er::: ", currentUser);
 
   // Check if the route requires specific roles
   if (methodConfig.roles) {

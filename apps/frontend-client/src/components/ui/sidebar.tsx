@@ -457,7 +457,7 @@ const SidebarGroupLabel = React.forwardRef<
             ref={ref}
             data-sidebar="group-label"
             className={cn(
-                "duration-200 flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 outline-none ring-sidebar-ring transition-[margin,opa] ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
+                "duration-200 flex h-8 shrink-0 items-center rounded-md px-2 font-medium text-sidebar-foreground/70 outline-none ring-sidebar-ring transition-[margin,opa] ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
                 "group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0",
                 className
             )}
@@ -538,12 +538,12 @@ const sidebarMenuButtonVariants = cva(
         variants: {
             variant: {
                 default:
-                    "hover:bg-sidebar-accent hover:bg-orange-400 dark:hover:bg-gray-800 hover:text-white ",
+                    "hover:bg-sidebar-accent hover:bg-[rgba(251,146,60,1)] text-gray-500 dark:hover:bg-gray-800 hover:text-white ",
                 outline:
                     "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
             },
             size: {
-                default: "h-[40px] text-sm ",
+                default: "h-[40px] text-md ",
                 sm: "h-7 text-xs",
                 lg: "h-12 text-sm group-data-[collapsible=icon]:!p-0",
             },
@@ -657,7 +657,7 @@ const SidebarMenuBadge = React.forwardRef<
         data-sidebar="menu-badge"
         className={cn(
             "absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium tabular-nums text-sidebar-foreground select-none pointer-events-none",
-            "peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground",
+            "peer-hover/menu-button:text-sidebar-accent-foreground  peer-data-[active=true]/menu-button:text-sidebar-accent-foreground",
             "peer-data-[size=sm]/menu-button:top-1",
             "peer-data-[size=default]/menu-button:top-1.5",
             "peer-data-[size=lg]/menu-button:top-2.5",
@@ -718,7 +718,7 @@ const SidebarMenuSub = React.forwardRef<
         ref={ref}
         data-sidebar="menu-sub"
         className={cn(
-            "mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5",
+            "mx-3.5 flex min-w-0 translate-x-px flex-colgap-1 border-l border-sidebar-border px-2.5 py-0.5",
             "group-data-[collapsible=icon]:hidden",
             className
         )}

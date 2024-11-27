@@ -80,6 +80,7 @@ const proxyConfigs: ProxyConfig = {
       },
     },
   },
+
   [ROUTE_PATHS.JOB_SERVICE.path]: {
     target: ROUTE_PATHS.JOB_SERVICE.target,
     pathRewrite: (path, _req) => `${ROUTE_PATHS.JOB_SERVICE.path}${path}`,
@@ -201,53 +202,6 @@ const proxyConfigs: ProxyConfig = {
           // Add headers to proxyReq for forwarding to the target service
           proxyReq.setHeader("currentUser", JSON.stringify(currentUser)); // Another header as specified
         }
-        // @ts-ignore
-        // logRequest(gatewayLogger, proxyReq, {
-        //   protocol: proxyReq.protocol,
-        //   host: proxyReq.getHeader("host"),
-        //   path: proxyReq.path,
-        // });
-      },
-      proxyRes: (_proxyRes, req, res) => {
-        const requestOrigin = req.headers.origin;
-        if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
-          res.setHeader("Access-Control-Allow-Origin", requestOrigin);
-        }
-        res.setHeader("Access-Control-Allow-Credentials", "true");
-        res.setHeader(
-          "Access-Control-Allow-Methods",
-          (corsOptions!.methods as string[]).join(", ")
-        );
-        res.setHeader(
-          "Access-Control-Allow-Headers",
-          "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-        );
-      },
-    },
-  },
-  [ROUTE_PATHS.CORPORATE_SERVICE.path]: {
-    target: ROUTE_PATHS.CORPORATE_SERVICE.target,
-    pathRewrite: (path, _req) => {
-      return `${ROUTE_PATHS.CORPORATE_SERVICE.path}${path}`;
-    },
-    on: {
-      proxyReq: (
-        proxyReq: ClientRequest,
-        req: IncomingMessage & {
-          currentUser?: {
-            username?: string;
-            role: string[] | undefined;
-          };
-        },
-        _res: Response
-      ) => {
-        const { currentUser } = req;
-
-        if (currentUser) {
-          // Add headers to proxyReq for forwarding to the target service
-          proxyReq.setHeader("currentUser", JSON.stringify(currentUser)); // Another header as specified
-        }
-
         // @ts-ignore
         // logRequest(gatewayLogger, proxyReq, {
         //   protocol: proxyReq.protocol,

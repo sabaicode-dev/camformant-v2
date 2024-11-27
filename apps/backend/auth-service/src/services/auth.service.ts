@@ -240,7 +240,7 @@ class AuthService {
       const result: GlobalSignOutCommandOutput = await client.send(command);
       console.log("result::: ", result);
       return "success cleared cookies from cignito";
-    } catch (error) { }
+    } catch (error) {}
   }
 
   loginWithGoogle(state: string): string {

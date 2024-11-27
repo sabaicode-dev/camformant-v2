@@ -5,7 +5,7 @@ import { DataTable } from "./data-table";
 import { useEffect, useState } from "react";
 import axiosInstance from "@/utils/axios";
 
-const Jobs = () => {
+const JobsPage = () => {
     const [jobsData, setJobsData] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
@@ -28,4 +28,4 @@ const Jobs = () => {
     );
 };
 
-export default Jobs;
+export default JobsPage;

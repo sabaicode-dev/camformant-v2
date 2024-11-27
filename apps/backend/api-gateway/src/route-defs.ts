@@ -136,9 +136,9 @@ const ROUTE_PATHS: RoutesConfig = {
       },
     ],
   },
-  CORPORATE_SERVICE: {
-    path: "/v1/corporator",
-    target: configs.userServiceUrl,
+  CORPORATE_JOBS: {
+    path: "/v1/corporate",
+    target: configs.jobServiceUrl,
     methods: {
       GET: {
         authRequired: true,
@@ -209,6 +209,7 @@ const ROUTE_PATHS: RoutesConfig = {
       },
     ],
   },
+
   USER_SERVICE: {
     path: "/v1/users",
     target: configs.userServiceUrl,
@@ -340,6 +341,15 @@ const ROUTE_PATHS: RoutesConfig = {
           PUT: {
             authRequired: true,
             roles: ["user", "admin"],
+          },
+        },
+      },
+      {
+        path: "/profile/me",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["company"],
           },
         },
       },
