@@ -42,7 +42,7 @@ const Chat = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<any>(null);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated = true } = useAuth();
   const socketContext = useSocketContext();
   const onlineUsers = socketContext ? socketContext.onlineUsers : [];
   const [hasMore, setHasMore] = useState(true);
