@@ -1,11 +1,12 @@
 "use client";
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { MessageCircle,Search,MoreHorizontal} from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { MessageCircle, Search } from 'lucide-react';
 import axiosInstance from '@/utils/axios';
 import { ChatInput } from '@/components/chat/chat-input';
-import { ChatMessage } from '@/components/chat/chat-message';
 import { ChatHeader } from '@/components/chat/chat-header';
 import { ConversationListItem } from '@/components/chat/conversation-list-item';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { ChatMessages } from '@/components/chat/chat-message';
 
 interface Conversation {
   _id: string;
@@ -28,7 +29,6 @@ interface Message {
 }
 
 const ChatDashboard: React.FC = () => {
-  const messageRef = useRef<HTMLDivElement>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -55,31 +55,23 @@ const ChatDashboard: React.FC = () => {
     }
   }, []);
 
-  // Scroll to bottom function
-  const scrollToBottom = useCallback(() => {
-    if (messageRef.current) {
-      messageRef.current.scrollTop = messageRef.current.scrollHeight;
-    }
-  }, []);
-
   // Fetch messages with pagination
   const fetchMessages = async (conversationId: string, pageNum: number, isNewConversation: boolean = false) => {
+    if (!hasMore || loading) return;
+
     try {
       setLoading(true);
       const response = await axiosInstance.get(`${process.env.NEXT_PUBLIC_API_URL}/v1/messages/${conversationId}?page=${pageNum}`);
       const newMessages = response.data.conversation.messages;
 
       if (isNewConversation) {
-        // For new conversation, sort all messages
         setMessages(sortMessages(newMessages));
         setPage(1);
         setHasMore(true);
-        setTimeout(scrollToBottom, 100);
       } else {
-        // For pagination, merge and sort all messages
         setMessages(prevMessages => {
-          const allMessages = [...prevMessages, ...newMessages];
-          return sortMessages(allMessages);
+          const allMessages = sortMessages([...newMessages, ...prevMessages]);
+          return allMessages;
         });
         setHasMore(newMessages.length > 0);
       }
@@ -94,8 +86,19 @@ const ChatDashboard: React.FC = () => {
   const handleSelectConversation = async (conversation: Conversation) => {
     setSelectedConversation(conversation);
     setCurrentUser(conversation.receiver);
-    setMessages([]); // Clear existing messages
+    setMessages([]);
+    setPage(1);
+    setHasMore(true);
     await fetchMessages(conversation.receiver, 1, true);
+  };
+
+  // Handle load more messages
+  const handleLoadMore = async () => {
+    if (selectedConversation && hasMore && !loading) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      await fetchMessages(selectedConversation.receiver, nextPage, false);
+    }
   };
 
   // Handle send message
@@ -103,7 +106,7 @@ const ChatDashboard: React.FC = () => {
     if (!selectedConversation || messageInput.trim() === '') return;
 
     const optimisticMessage: Message = {
-      _id: Date.now().toString(), // Temporary ID
+      _id: Date.now().toString(),
       senderId: currentUser,
       receiverId: selectedConversation.receiver,
       message: messageInput,
@@ -113,144 +116,100 @@ const ChatDashboard: React.FC = () => {
     };
 
     try {
-      // Add optimistic message
       setMessages(prevMessages => sortMessages([...prevMessages, optimisticMessage]));
       setMessageInput('');
-      setTimeout(scrollToBottom, 100);
 
-      // Actually send the message
       await axiosInstance.post(`${process.env.NEXT_PUBLIC_API_URL}/v1/messages/send/${selectedConversation.receiver}`, {
         message: messageInput
       });
 
-      // Update conversations list
       await fetchConversations();
-      
-      // Refresh messages to get the real message ID
       await fetchMessages(selectedConversation.receiver, 1, true);
-
     } catch (error) {
       console.error('Failed to send message:', error);
-      // Remove optimistic message on error
       setMessages(prevMessages => 
         prevMessages.filter(msg => msg._id !== optimisticMessage._id)
       );
-      setMessageInput(optimisticMessage.message); // Restore the message input
+      setMessageInput(optimisticMessage.message);
     }
   };
-
-  // Scroll handler for infinite scroll
-  useEffect(() => {
-    const messageContainer = messageRef.current;
-    
-    const handleScroll = async (event: Event) => {
-      const target = event.target as HTMLDivElement;
-      const scrollTop = Math.round(target.scrollTop);
-
-      if (scrollTop === 0 && !loading && hasMore && selectedConversation) {
-        const nextPage = page + 1;
-        setPage(nextPage);
-        await fetchMessages(selectedConversation.receiver, nextPage, false);
-      }
-    };
-
-    if (messageContainer) {
-      messageContainer.addEventListener('scroll', handleScroll);
-      return () => {
-        messageContainer.removeEventListener('scroll', handleScroll);
-      };
-    }
-  }, [selectedConversation, page, loading, hasMore]);
 
   // Initial fetch
   useEffect(() => {
     fetchConversations();
   }, [fetchConversations]);
-  // Add loading indicator component
-  const LoadingIndicator = () => (
-    <div className="text-center py-2">
-      <div className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-r-transparent"></div>
-    </div>
-  );
 
   return (
-    <div className="w-screen h-screen flex bg-gray-50 overflow-hidden">
-    {/* Conversations Sidebar */}
-    <div className="w-96 bg-white border-r shadow-sm">
-      <div className="p-4 flex items-center justify-between border-b">
-        <div className="flex items-center space-x-2">
-          <MessageCircle className="text-blue-600" />
-          <h2 className="text-xl font-semibold">Messages</h2>
-        </div>
-        <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-          <MoreHorizontal />
-        </button>
-      </div>
-
-      <div className="p-3">
-        <div className="flex items-center bg-gray-50 rounded-full px-3 py-2">
-          <Search className="text-gray-400 mr-2" size={20} />
-          <input 
-            type="text" 
-            placeholder="Search conversations..." 
-            className="bg-transparent w-full focus:outline-none" 
-          />
-        </div>
-      </div>
-
-      <div className="overflow-y-auto">
-        {conversations.map(conversation => (
-          <ConversationListItem
-            key={conversation._id}
-            id={conversation._id}
-            name={conversation.name}
-            profile={conversation.profile}
-            unreadCount={conversation.messages.length}
-            isSelected={selectedConversation?._id === conversation._id}
-            onClick={() => handleSelectConversation(conversation)}
-          />
-        ))}
-      </div>
-    </div>
-
-    {/* Chat Window */}
-    <div className="h-full flex-grow flex flex-col">
-
-      {selectedConversation ? (
-        <>
-          <ChatHeader
-            name={selectedConversation.name}
-            profile={selectedConversation.profile}
-            onBack={() => setSelectedConversation(null)}
-          />
-
-          <div className="flex-1 overflow-y-auto p-4 space-y-4" ref={messageRef}>
-            { loading 
-            ? <LoadingIndicator /> 
-            : messages.map(message => (
-              <ChatMessage
-                key={message._id}
-                message={message.message}
-                timestamp={message.createdAt}
-                isCurrentUser={message.senderId === currentUser}
-              />
-            ))
-            }
-          </div>
-
-          <ChatInput value={messageInput} onChange={setMessageInput} onSend={handleSendMessage} />
-        </>
-      ) : (
-        <div className="flex-grow flex items-center justify-center text-gray-500">
-          <div className="text-center">
-            <MessageCircle size={64} className="mx-auto mb-4 text-gray-300" />
-            <h2 className="text-xl font-semibold">Welcome to Messages</h2>
-            <p className="text-gray-400 mt-2">Select a conversation to start chatting</p>
+    <div className="flex h-screen bg-slate-600">
+      {/* Conversations Sidebar */}
+      <div className="w-80 border-r border-gray-200 flex flex-col">
+        <div className="p-4 flex items-center justify-between border-b">
+          <div className="flex items-center space-x-2">
+            <MessageCircle className="text-orange-500" />
+            <h2 className="text-xl font-semibold">Messages</h2>
           </div>
         </div>
-      )}
+
+        <div className="p-3">
+          <div className="flex items-center bg-gray-50 rounded-full px-3 py-2">
+            <Search className="text-gray-400 mr-2" size={20} />
+            <input 
+              type="text" 
+              placeholder="Search conversations..." 
+              className="bg-transparent w-full focus:outline-none" 
+            />
+          </div>
+        </div>
+
+        <ScrollArea className="flex-1">
+          {conversations.map(conversation => (
+            <ConversationListItem
+              key={conversation._id}
+              id={conversation._id}
+              name={conversation.name}
+              profile={conversation.profile}
+              unreadCount={conversation.messages.length}
+              isSelected={selectedConversation?._id === conversation._id}
+              onClick={() => handleSelectConversation(conversation)}
+            />
+          ))}
+        </ScrollArea>
+      </div>
+
+      {/* Chat Window */}
+      <div className="flex-1 flex flex-col">
+        {selectedConversation ? (
+          <>
+            <ChatHeader
+              name={selectedConversation.name}
+              profile={selectedConversation.profile}
+              onBack={() => setSelectedConversation(null)}
+            />
+
+            <ChatMessages
+              messages={messages}
+              currentUser={currentUser}
+              isLoading={loading}
+              onLoadMore={handleLoadMore}
+            />
+
+            <ChatInput 
+              value={messageInput} 
+              onChange={setMessageInput} 
+              onSend={handleSendMessage} 
+            />
+          </>
+        ) : (
+          <div className="flex-1 flex items-center justify-center text-gray-500">
+            <div className="text-center">
+              <MessageCircle size={64} className="mx-auto mb-4 text-gray-300" />
+              <h2 className="text-xl font-semibold">Welcome to Messages</h2>
+              <p className="text-gray-400 mt-2">Select a conversation to start chatting</p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
-  </div>
   );
 };
 

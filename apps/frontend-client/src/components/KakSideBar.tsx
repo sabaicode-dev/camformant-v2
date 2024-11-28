@@ -75,6 +75,11 @@ const routes: Route[] = [
         href: "dashboard/jobs",
       },
       {
+        label: "Lists",
+        icon: UserCircle,
+        href: "dashboard/jobs",
+      },
+      {
         label: "Leads",
         icon: Users,
         href: "/crm/leads",
@@ -205,7 +210,7 @@ export default function KakSideBar() {
     <div className="relative">
       <div
         className={cn(
-          "space-y-4 py-4 flex flex-col h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-white transition-all duration-300",
+          "space-y-4 py-4 flex flex-col h-full bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-white transition-all duration-300",
           isOpen ? "w-64" : "w-20"
         )}
       >

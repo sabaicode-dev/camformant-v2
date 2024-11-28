@@ -46,10 +46,6 @@ import {
 } from "@/src/controllers/types/user-cv-controller.type";
 import { error } from "console";
 import { Types } from "mongoose";
-import { CorporateProfileResponse } from "./types/corporate-controller.type";
-import corporateService from "../services/corporate.service";
-import axios from "axios";
-// import { unionProfileType } from "./types/userprofile.type";
 export interface UserCreationRequestParams2 {
   sub?: string;
   googleSub?: string;

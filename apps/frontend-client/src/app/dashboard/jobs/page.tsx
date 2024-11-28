@@ -21,8 +21,6 @@ const JobsPage = () => {
 
     return (
         <div className="w-full">
-            <DynamicBreadcrumb />
-            Jobs
             <DataTable data={jobsData || []} columns={columns} />
         </div>
     );

@@ -74,11 +74,11 @@ const profile = [
     },
 ];
 
-// Menu Chat.
+// Menu Messages.
 
-const chat = [
+const Messages = [
     {
-        title: "Chat",
+        title: "Messages",
         url: "/dashboard/chat",
         icon: MessageSquare,
     },
@@ -132,8 +132,8 @@ export const itemsMenu = [
         isCollapsibleOpen: false,
     },
     {
-        item: chat,
-        triggerName: "Chat",
+        item: Messages,
+        triggerName: "Messages",
         iconTrigger: User,
         isCollapsibleOpen: false,
     },

@@ -16,17 +16,15 @@ import {
   DropdownMenuContent,
 } from "./ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
 import { UserProfile } from "./UserProfile";
 import CollapsibleContentMenu from "./CollapsibleContentMenu";
 import { itemsMenu } from "@/utils/navigationItems";
 
 export function AppSidebar() {
   return (
-    <Sidebar className="absolute font-roboto top-5">
-      {/* add this tonight */}
+    <Sidebar className="font-roboto z-0 pt-10">
       <ScrollArea className="h-full pr-2">
-        <SidebarGroup className=" mt-[45px]">
+        <SidebarGroup className="mt-[45px]">
           {itemsMenu.map((item, index) => (
             <CollapsibleContentMenu
               key={index}
