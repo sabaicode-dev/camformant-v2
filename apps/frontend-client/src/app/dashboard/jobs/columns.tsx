@@ -78,38 +78,6 @@ export const columns: ColumnDef<Jobs>[] = [
         },
     },
     {
-        accessorKey: "location",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() =>
-                        column.toggleSorting(column.getIsSorted() === "asc")
-                    }
-                >
-                    Location
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            );
-        },
-    },
-    {
-        accessorKey: "workMode",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() =>
-                        column.toggleSorting(column.getIsSorted() === "asc")
-                    }
-                >
-                    Work Mode
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            );
-        },
-    },
-    {
         accessorKey: "type",
         header: ({ column }) => {
             return (
@@ -169,6 +137,8 @@ export const columns: ColumnDef<Jobs>[] = [
                 >
                     Post At
                     <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    
                 </Button>
             );
         },

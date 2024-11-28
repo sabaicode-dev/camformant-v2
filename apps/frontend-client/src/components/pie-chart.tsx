@@ -52,7 +52,7 @@ function PieChartComponent() {
   }, []);
 
   return (
-    <div className="h-full">
+    <div className="h-auto">
       <Card className="flex flex-col justify-center gap-[87px] shadow-md">
         <CardHeader>
           <CardTitle>Pie Chart - Donut with Text</CardTitle>

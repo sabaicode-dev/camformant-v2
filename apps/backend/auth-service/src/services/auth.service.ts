@@ -142,7 +142,7 @@ class AuthService {
       const userInfo = await this.getUserByUsername(username);
       const role =
         userInfo.UserAttributes?.find((attr) => attr.Name === "custom:role")
-          ?.Value || "company";
+          ?.Value || "user";
 
       // Add the user to the group based on the `role` attribute
       await this.addToGroup(username, role);
@@ -700,7 +700,7 @@ class AuthService {
       await this.addToGroup(userSub!, role);
       console.log("4::::");
 
-      await axios.post(`${configs.userServiceUrl}/v1/corporator`, {
+      await axios.post(`${configs.userServiceUrl}/v1/corporator/profile`, {
         sub: userInfo.Username,
         email: body.email,
         name: userInfo.UserAttributes?.find((attr) => attr.Name === "name")
@@ -747,7 +747,7 @@ class AuthService {
 
       // Get the user info from the user service
       const userInfo = await axios.get(
-        `${configs.userServiceUrl}/v1/corporate/${congitoUsername.sub}`
+        `${configs.userServiceUrl}/v1/corporator/profile/${congitoUsername.sub}`
       );
       console.log("userInfo: ", userInfo.data.data._id);
       return {

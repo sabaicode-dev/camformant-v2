@@ -74,7 +74,7 @@ const ROUTE_PATHS: RoutesConfig = {
         methods: {
           POST: {
             authRequired: true,
-            roles: ["user", "conpany"],
+            roles: ["user", "company"],
           },
         },
       },
@@ -372,6 +372,14 @@ const ROUTE_PATHS: RoutesConfig = {
       },
       {
         path: "/search-trending",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
+      },
+      {
+        path: "/corporator",
         methods: {
           GET: {
             authRequired: false,

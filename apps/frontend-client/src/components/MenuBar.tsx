@@ -22,7 +22,7 @@ export const MenuBar = () => {
   };
 
   return (
-    <Menubar className="w-full py-8 z-40">
+    <Menubar className="w-full py-8 z-40 bg-white fixed top-0">
       {/* logo */}
       <div className="w-1/6 flex items-center">
         <SidebarGroup>
@@ -54,9 +54,10 @@ export const MenuBar = () => {
             <ToolTip icon={<Bell />} text="Notification" />
             <ToolTip icon={<Mail />} text="Inbox" />
           </div>
+          <p> {user?.name}</p>
           <UserProfile
             avatarImage={user?.profile||"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCO2sR3EtGqpIpIa-GTVnvdrDHu0WxuzpA8g&s"}
-            fallback={user?.username}
+            fallback={user?.name}
           />
         </div>
       </div>

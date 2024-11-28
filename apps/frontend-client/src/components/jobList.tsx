@@ -50,7 +50,7 @@ const jobItems: JobItem[] = [
 
 const JobList = () => {
   return (
-    <div className="rounded-lg shadow-lg border  p-2">
+    <div className="rounded-lg font-roboto shadow-lg border  p-2">
       {jobItems.map((item) => (
         <div
           key={item.id}
