@@ -8,13 +8,13 @@ interface ChatMessageProps {
 
 export function ChatMessage({ message, timestamp, isCurrentUser }: ChatMessageProps) {
   return (
-    <div className={`flex ${isCurrentUser ?'justify-start' : 'justify-end'}`}>
+    <div className={`flex ${isCurrentUser ? 'justify-end':  'justify-start'}`}>
       <div 
         className={`
           max-w-[50%] p-3 rounded-2xl
           ${isCurrentUser 
-            ?'bg-gray-100 text-gray-900 border border-gray-100'
-            :'bg-orange-500 text-white'}
+            ?'bg-orange-500 text-white'
+            :'bg-gray-100 text-gray-900 border border-gray-100'}
           transform transition-all duration-200 hover:scale-[1.02]
         `}
       >
