@@ -700,10 +700,10 @@ class AuthService {
       await this.addToGroup(userSub!, role);
       console.log("4::::");
 
-      await axios.post(`${configs.userServiceUrl}/v1/corporate`, {
+      await axios.post(`${configs.userServiceUrl}/v1/corporator`, {
         sub: userInfo.Username,
         email: body.email,
-        username: userInfo.UserAttributes?.find((attr) => attr.Name === "name")
+        name: userInfo.UserAttributes?.find((attr) => attr.Name === "name")
           ?.Value,
       });
       console.log("5::::");

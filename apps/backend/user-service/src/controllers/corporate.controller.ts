@@ -50,16 +50,9 @@ export class CorporateController extends Controller {
   @SuccessResponse("201", "Created")
   @Post("/profile")
   public async createCorporateProfile(
-    @Request() request: ExpressRequest,
     @Body() body: ICorporatorProfile
   ): Promise<APIResponse<ICorporatorProfile>> {
     try {
-      const corporateId = request.cookies["user_id"];
-      if (!corporateId) {
-        throw new Error(
-          "CorporateController - createCorporateProfile() method error : Corporate ID is missing"
-        );
-      }
       const newCompany = await CorporateService.createProfile(body);
       const corporateProfileId = newCompany._id || null;
       if (!corporateProfileId) {
@@ -67,14 +60,7 @@ export class CorporateController extends Controller {
           "CorporateController - createCorporateProfile() method error : Corporate Profile ID is missing"
         );
       }
-      await axios.put(
-        `${configs.corporator_api_endpoint}/profile/${corporateId}`,
-        { corporateProfileId },
-        {
-          headers: { Authorization: "application/json" },
-          withCredentials: true,
-        }
-      );
+
       return sendResponse<ICorporatorProfile>({
         message: "Company was created successfully!",
         data: newCompany,
