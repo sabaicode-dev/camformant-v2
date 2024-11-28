@@ -26,22 +26,22 @@ export const useMessageScroll = ({ messages, isLoading, onLoadMore }: UseMessage
 
         if (isLoading || !scrollElement) return;
 
-        const { scrollTop, scrollHeight } = scrollElement;
+        const { scrollTop, scrollHeight, clientHeight } = scrollElement;
+        const isNearTop = scrollTop < 50;
 
+        if (isNearTop) {
+            lastScrollHeight.current = scrollHeight;
 
-        if (scrollTop === 0) {
-            // lastScrollHeight.current = scrollHeight;
-            event.currentTarget.scrollTop = 20;
             // Clear any existing timeout
-            // if (scrollTimeout.current) {
-            //     clearTimeout(scrollTimeout.current);
-            // }
+            if (scrollTimeout.current) {
+                clearTimeout(scrollTimeout.current);
+            }
 
             // Set a new timeout to prevent multiple calls
-            // scrollTimeout.current = setTimeout(async () => {
-            //     await onLoadMore();
-            //     preserveScroll(scrollElement);
-            // }, 200);
+            scrollTimeout.current = setTimeout(async () => {
+                await onLoadMore();
+                preserveScroll(scrollElement);
+            }, 200);
         }
     }, [isLoading, onLoadMore, preserveScroll]);
 
