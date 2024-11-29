@@ -39,6 +39,7 @@ const users = [
         title: "Users",
         url: "/dashboard/users",
         icon: PersonIcon,
+        color: "text-pink-500",
     },
     {
         title: "Profile",

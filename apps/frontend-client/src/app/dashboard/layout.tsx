@@ -2,8 +2,8 @@ import React, { ReactNode } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { MenuBar } from "@/components/MenuBar";
-import KakSideBar from "@/components/KakSideBar";
 import { DynamicBreadcrumb } from "@/components/breadcrumb/dynamic-breadcrumb";
+import KakSideBar from "@/components/KakSideBar";
 
 const layout = ({ children }: { children: ReactNode }) => {
   return (
@@ -13,9 +13,9 @@ const layout = ({ children }: { children: ReactNode }) => {
             <MenuBar />
           </div>
         <div className="flex">
-          <AppSidebar />
-          {/* <KakSideBar/> */}
-          <div className="w-full h-full overflow-y-auto pt-16">
+          {/* <AppSidebar /> */}
+          <KakSideBar/>
+          <div className="w-full h-screen overflow-y-auto pt-16 px-5">
             <DynamicBreadcrumb />
             {children}
           </div>

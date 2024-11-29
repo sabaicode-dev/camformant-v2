@@ -15,7 +15,6 @@ interface ConversationListItemProps {
 export function ConversationListItem({
   name,
   profile,
-  lastMessage,
   unreadCount,
   isSelected,
   onClick
@@ -41,9 +40,9 @@ export function ConversationListItem({
             </span>
           )}
         </div>
-        <p className="text-sm text-gray-500 truncate">
+        {/* <p className="text-sm text-gray-500 truncate">
           {lastMessage || 'No messages yet'}
-        </p>
+        </p> */}
       </div>
     </div>
   );

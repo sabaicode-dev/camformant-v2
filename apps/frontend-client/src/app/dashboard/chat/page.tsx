@@ -7,6 +7,8 @@ import { ChatHeader } from '@/components/chat/chat-header';
 import { ConversationListItem } from '@/components/chat/conversation-list-item';
 import { ChatMessage } from '@/components/chat/ChatMessage';
 import { useAuth } from '@/context/AuthContext';
+import { Input } from '@/components/ui/input';
+import { Spinner } from '@/components/ui/Spinner';
 
 interface Conversation {
   _id: string;
@@ -39,14 +41,12 @@ const ChatDashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  // Sort messages helper function
   const sortMessages = (msgs: Message[]): Message[] => {
     return [...msgs].sort((a, b) => 
       new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     );
   };
 
-  // Fetch conversations
   const fetchConversations = useCallback(async () => {
     try {
       const response = await axiosInstance.get(`${process.env.NEXT_PUBLIC_API_URL}/v1/messages/get/conversations`);
@@ -56,7 +56,6 @@ const ChatDashboard: React.FC = () => {
     }
   }, []);
 
-  // Enhanced scroll to bottom function
   const scrollToBottom = useCallback((behavior: 'smooth' | 'auto' = 'auto') => {
     if (messageRef.current) {
       messageRef.current.scrollTo({
@@ -66,7 +65,6 @@ const ChatDashboard: React.FC = () => {
     }
   }, []);
 
-  // Fetch messages with enhanced pagination
   const fetchMessages = async (conversationId: string, pageNum: number, isNewConversation: boolean = false) => {
     try {
       setLoading(true);
@@ -74,25 +72,21 @@ const ChatDashboard: React.FC = () => {
       const newMessages = response.data.conversation.messages;
   
       setMessages(prevMessages => {
-        // For new conversation, replace messages entirely
         if (isNewConversation) {
-          return sortMessages(newMessages); // clear and show new messages
+          return sortMessages(newMessages); 
         }
   
-        // For pagination, only add messages that are not already in the list
         const combinedMessages = [
           ...newMessages.filter((msg: { _id: string; }) => !prevMessages.some(existingMsg => existingMsg._id === msg._id)),
           ...prevMessages,
         ];
   
-        return sortMessages(combinedMessages); // make sure messages are sorted
+        return sortMessages(combinedMessages); 
       });
   
-      // Update pagination state
       setHasMore(newMessages.length > 0);
       setPage(pageNum);
   
-      // Scroll management for new conversation
       if (isNewConversation) {
         setTimeout(() => scrollToBottom('smooth'), 100);
       }
@@ -103,29 +97,25 @@ const ChatDashboard: React.FC = () => {
     }
   };
   
-  
-
-  // Handle conversation selection
   const handleSelectConversation = async (conversation: Conversation) => {
+    if (selectedConversation && selectedConversation?._id === conversation._id) return;
     setSelectedConversation(conversation);
-    setMessages([]); // Clear existing messages
+    setMessages([]); 
     setPage(1);
     setHasMore(true);
     await fetchMessages(conversation.receiver, 1, true);
   };
 
-  // Handle send message
   const handleSendMessage = async () => {
     if (!selectedConversation || messageInput.trim() === '') return;
   
-    // Check if the message is a duplicate of the previous one
     if (messages.length > 0 && messages[messages.length - 1].message === messageInput) {
       console.log('Duplicate message detected. Not sending.');
       return;
     }
   
     const optimisticMessage: Message = {
-      _id: Date.now().toString(), // Temporary ID
+      _id: Date.now().toString(),
       senderId: user?._id || '',
       receiverId: selectedConversation.receiver,
       message: messageInput,
@@ -135,56 +125,41 @@ const ChatDashboard: React.FC = () => {
     };
   
     try {
-      // Add optimistic message
       setMessages(prevMessages => sortMessages([...prevMessages, optimisticMessage]));
       setMessageInput('');
       setTimeout(() => scrollToBottom('smooth'), 100);
   
-      // Actually send the message
       await axiosInstance.post(`${process.env.NEXT_PUBLIC_API_URL}/v1/messages/send/${selectedConversation.receiver}`, {
         message: messageInput
       });
   
-      // Update conversations list
-      // await fetchConversations();
-      // Refresh messages to get the real message ID
-      // await fetchMessages(selectedConversation.receiver, 1, true);
-  
     } catch (error) {
       console.error('Failed to send message:', error);
-      // Remove optimistic message on error
       setMessages(prevMessages =>
         prevMessages.filter(msg => msg._id !== optimisticMessage._id)
       );
-      setMessageInput(optimisticMessage.message); // Restore the message input
+      setMessageInput(optimisticMessage.message);
     }
   };
   
-
-  // Infinite scroll effect
   useEffect(() => {
     const messageContainer = messageRef.current;
   
     const handleScroll = async () => {
       if (!messageContainer) return;
   
-      // Add a small buffer to detect when the user reaches the top
-      const isNearTop = messageContainer.scrollTop === 0;
+      let isNearTop = messageContainer.scrollTop === 0;
   
       if (isNearTop && !loading && hasMore && selectedConversation) {
         const nextPage = page + 1;
         try {
-          // Store current scroll height before loading messages
           const previousScrollHeight = messageContainer.scrollHeight;
   
-          // Fetch older messages
           await fetchMessages(selectedConversation.receiver, nextPage, false);
   
-          // After fetching messages, adjust the scroll position
           const newScrollHeight = messageContainer.scrollHeight;
           const scrollHeightDifference = newScrollHeight - previousScrollHeight;
   
-          // Maintain the scroll position by adjusting scrollTop
           messageContainer.scrollTop = scrollHeightDifference;
         } catch (error) {
           console.error('Error fetching older messages:', error);
@@ -202,29 +177,20 @@ const ChatDashboard: React.FC = () => {
 
   useEffect(() => {
     if (!selectedConversation) {
-      // Call scrollToBottom with smooth behavior after the component renders
       setTimeout(() => {
         scrollToBottom('smooth');
-      }, 100); // 100ms delay to ensure the DOM is fully updated
+      }, 100); 
     }
-  }, [selectedConversation, messages]); // Trigger this effect whenever the conversation or messages change
+  }, [selectedConversation, messages]);
   
-  // Initial conversations fetch
   useEffect(() => {
     fetchConversations();
   }, [fetchConversations]);
   
-  // Loading indicator component
-  const LoadingIndicator = () => (
-    <div className="text-center py-2">
-      <div className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-r-transparent"></div>
-    </div>
-  );
-
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex max-w-screen h-full bg-gray-200 border-1 rounded-sm">
       {/* Conversations Sidebar */}
-      <div className="w-96 h-full bg-white border-r shadow-sm">
+      <div className="w-96 h-full bg-white border-1 rounded-r-sm shadow-sm">
         <div className="p-4 flex items-center justify-between border-b">
           <div className="flex items-center space-x-2">
             <MessageCircle className="text-blue-600" />
@@ -238,11 +204,7 @@ const ChatDashboard: React.FC = () => {
         <div className="p-3">
           <div className="flex items-center bg-gray-50 rounded-full px-3 py-2">
             <Search className="text-gray-400 mr-2" size={20} />
-            <input 
-              type="text" 
-              placeholder="Search conversations..." 
-              className="bg-transparent w-full focus:outline-none" 
-            />
+            <Input type="text" placeholder="Search conversations..." className="bg-transparent w-full focus:outline-none" />
           </div>
         </div>
 
@@ -253,7 +215,6 @@ const ChatDashboard: React.FC = () => {
               id={conversation._id}
               name={conversation.name}
               profile={conversation.profile}
-              unreadCount={conversation.messages.length}
               isSelected={selectedConversation?._id === conversation._id}
               onClick={() => handleSelectConversation(conversation)}
             />
@@ -262,20 +223,15 @@ const ChatDashboard: React.FC = () => {
       </div>
 
       {/* Chat Window */}
-      <div className="h-full flex-grow flex flex-col">
+      <div className=" h-full flex-grow flex flex-col ">
         {selectedConversation ? (
           <>
-            <ChatHeader
-              name={selectedConversation.name}
-              profile={selectedConversation.profile}
-              onBack={() => setSelectedConversation(null)}
-            />
+            <ChatHeader name={selectedConversation.name} profile={selectedConversation.profile} onBack={() => setSelectedConversation(null)} />
 
-            <div 
-              className="h-full flex-1 overflow-y-auto p-4 space-y-4" 
-              ref={messageRef}
-            >
-              {loading && page > 1 && <LoadingIndicator />}
+            <div className="h-full flex-1 overflow-y-auto p-4 space-y-4 chat-container" ref={messageRef} >
+              {loading 
+              && page > 1 
+              && <Spinner className='text-orange-500'><span className='text-orange-500 text-sm'>loading message....</span></Spinner>}
                    
               {!hasMore && (
                 <div className="text-center text-gray-500 py-4">
@@ -288,16 +244,12 @@ const ChatDashboard: React.FC = () => {
                   message={message.message}
                   timestamp={message.createdAt}
                   isCurrentUser={message.senderId === user?._id}
+                  profile={selectedConversation.profile}
                 />
               ))}
-         
             </div>
 
-            <ChatInput 
-              value={messageInput} 
-              onChange={setMessageInput} 
-              onSend={handleSendMessage} 
-            />
+            <ChatInput value={messageInput} onChange={setMessageInput} onSend={handleSendMessage} />
           </>
         ) : (
           <div className="flex-grow flex items-center justify-center text-gray-500">

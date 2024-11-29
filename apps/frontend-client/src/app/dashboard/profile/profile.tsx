@@ -5,7 +5,7 @@ import { FaInstagram } from "react-icons/fa6";
 const Profile = () => {
   return (
     <>
-      <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+      <div className="bg-white h-full dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
         {/* Banner Section */}
         <div className="relative h-40 bg-gray-300 dark:bg-gray-700">
           <img
@@ -45,7 +45,7 @@ const Profile = () => {
         <div className="px-8 py-4 text-center">
           <h3 className="text-[14px] font-bold text-gray-700 dark:text-gray-200">About Me</h3>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the {"industry's"} standard dummy text ever since the 1500s.
           </p>
         </div>
 

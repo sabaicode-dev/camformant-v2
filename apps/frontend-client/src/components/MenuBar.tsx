@@ -22,13 +22,13 @@ export const MenuBar = () => {
   };
 
   return (
-    <Menubar className="w-full py-8 z-40 bg-white fixed top-0">
+    <Menubar className="w-full py-8 bg-white fixed top-0 z-40">
       {/* logo */}
       <div className="w-1/6 flex items-center">
         <SidebarGroup>
           <SidebarGroupLabel>
             <div>
-              <Image src={SabaiROkLogo} width={100} height={100} alt="logo" />
+              <Image src={user?.profile || SabaiROkLogo} width={100} height={100} alt="logo" />
             </div>
           </SidebarGroupLabel>
         </SidebarGroup>
@@ -46,7 +46,7 @@ export const MenuBar = () => {
             <Input ref={inputRef} placeholder="Search..." className="h-full" />
           </div>
         </div>
-        <div className="flex justify-between w-[200px]">
+        <div className="flex justify-between items-center gap-3">
           <div className=" flex items-center gap-2">
             <div className="">
               <ModeToggle />
@@ -54,9 +54,9 @@ export const MenuBar = () => {
             <ToolTip icon={<Bell />} text="Notification" />
             <ToolTip icon={<Mail />} text="Inbox" />
           </div>
-          <p> {user?.name}</p>
+          <span className="text-sm"> {user?.name}</span>
           <UserProfile
-            avatarImage={user?.profile||"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCO2sR3EtGqpIpIa-GTVnvdrDHu0WxuzpA8g&s"}
+            avatarImage={user?.profile||"https://github.com/shadcn.png"}
             fallback={user?.name}
           />
         </div>
