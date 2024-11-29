@@ -50,10 +50,13 @@ export default function Notification({
 
     if (!registration) {
       // Register service worker if not registered
-      registration = await navigator.serviceWorker.register("/sw.js", {
-        scope: "/",
-        updateViaCache: "none",
-      });
+      registration = await navigator.serviceWorker.register(
+        "/service-worker.js",
+        {
+          scope: "/",
+          updateViaCache: "none",
+        }
+      );
     }
   }
 

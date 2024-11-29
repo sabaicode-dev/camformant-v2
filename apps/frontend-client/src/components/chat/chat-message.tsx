@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useMessageScroll } from '@/hooks/useMessageScroll';
 import { ChatMessage } from './ChatMessage';
 
 interface Message {
@@ -14,35 +13,35 @@ interface ChatMessagesProps {
   messages: Message[];
   currentUser: string;
   isLoading: boolean;
-  onLoadMore: () => Promise<void>;
 }
 
 export const ChatMessages: React.FC<ChatMessagesProps> = ({
   messages,
   currentUser,
   isLoading,
-  onLoadMore,
 }) => {
-  const scrollViewportRef = useRef<HTMLDivElement>(null);
-  const { handleScroll, scrollToBottom } = useMessageScroll({
-    messages,
-    isLoading,
-    onLoadMore,
-  });
+  const viewportRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom on initial load and new messages
+  // Scroll to bottom whenever messages change
   useEffect(() => {
-    const scrollViewport = scrollViewportRef.current;
-    if (scrollViewport) {
-      scrollToBottom(scrollViewportRef.current);
-      console.log(scrollViewport.scrollTop);
+    if (viewportRef.current) {
+      viewportRef.current.scrollTop = viewportRef.current.scrollHeight;
     }
-  }, [messages.length, scrollToBottom,scrollViewportRef]);
+  }, [messages]);
+
+  const handleScroll = () => {
+    if (viewportRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = viewportRef.current;
+      console.log(`Scroll position: ${scrollTop}`);
+      console.log(`Scroll height: ${scrollHeight}`);
+      console.log(`Client height: ${clientHeight}`);
+    }
+  };
 
   return (
     <ScrollArea 
       className="flex-1 p-4"
-      ref={scrollViewportRef}
+      ref={viewportRef}
       onScrollCapture={handleScroll}
     >
       {isLoading && (
@@ -56,7 +55,7 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
             key={message._id}
             message={message.message}
             timestamp={message.createdAt}
-            isCurrentUser={message.senderId === currentUser}
+            isCurrentUser={currentUser === message.senderId}
           />
         ))}
       </div>

@@ -4,15 +4,14 @@ interface ChatMessageProps {
   message: string;
   timestamp: string;
   isCurrentUser: boolean;
-  messageRef?: any;
 }
 
-export function ChatMessage({ message, timestamp, isCurrentUser , messageRef }: ChatMessageProps) {
+export function ChatMessage({ message, timestamp, isCurrentUser }: ChatMessageProps) {
   return (
-    <div className={`flex ${isCurrentUser ?'justify-start' : 'justify-end'}`} ref={messageRef}>
+    <div className={`flex ${isCurrentUser ?'justify-start' : 'justify-end'}`}>
       <div 
         className={`
-          max-h-[10%] p-3 rounded-2xl
+          max-w-[50%] p-3 rounded-2xl
           ${isCurrentUser 
             ?'bg-gray-100 text-gray-900 border border-gray-100'
             :'bg-orange-500 text-white'}
