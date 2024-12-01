@@ -46,6 +46,7 @@ const client = new CognitoIdentityProviderClient({
   },
 });
 
+
 class AuthService {
   // Generate the SECRET_HASH
   private generateSecretHash(username: string): string {

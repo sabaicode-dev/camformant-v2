@@ -12,11 +12,11 @@ import { IJob } from "@/components/type-data/TypeofData";
 import Image from "next/image";
 
 const Page: React.FC = () => {
-  const { user, onChangeUser } = useAuth();
+  const { user, onChangeUser, setUser } = useAuth();
   const [jobData, setJobData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  //todo: realtime favorite
   const toggleFavorite = async (jobId: string) => {
     const jobIndex = jobData.findIndex((job) => job._id === jobId);
     if (jobIndex === -1) return;
@@ -34,10 +34,30 @@ const Page: React.FC = () => {
           jobId,
         });
         onChangeUser(jobId);
+        // setUser({
+        //   _id: user!._id,
+        //   email: user!.email,
+        //   profile: user!.profile,
+        //   role: user!.role,
+        //   username: user!.username,
+        //   favorites: [...user!.favorites, jobId],
+        // });
       } else {
         await axiosInstance.delete(`${API_ENDPOINTS.FAVORITE}/${jobId}`);
         // Remove the job from the list if unfavorited
         setJobData((prevData) => prevData.filter((job) => job._id !== jobId));
+        // const newFav =
+        //   user?.favorites.filter((Id) => {
+        //     Id !== jobId;
+        //   }) || [];
+        // setUser({
+        //   _id: user!._id,
+        //   email: user!.email,
+        //   profile: user!.profile,
+        //   role: user!.role,
+        //   username: user!.username,
+        //   favorites: newFav,
+        // });
       }
     } catch (error) {
       console.error("Error updating favorite status:", error);

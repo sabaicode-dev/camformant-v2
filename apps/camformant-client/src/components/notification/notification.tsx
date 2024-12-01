@@ -43,6 +43,8 @@ export default function Notification({
       setTimeout(() => setIsVisible(false), 8000); // Hide after 5s
     }
   }, [isSupported]);
+  console.log("suppoorted::",isSupported);
+  
 
   async function registerServiceWorker() {
     // Check if service worker is already registered
