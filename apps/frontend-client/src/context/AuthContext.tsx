@@ -43,6 +43,7 @@ interface AuthContextType {
   verifyCode: ({ email , phone_number , code }: VerifyCodeData) => Promise<void>;
   signIn: ({ email , phone_number , password }: SignInData) => Promise<void>;
   signOut: () => Promise<void>;
+
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -51,6 +52,7 @@ export function AuthProvider({ children , isLogin }: { children: React.ReactNode
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false); 
+
   const router = useRouter();
 
   useEffect(() => {

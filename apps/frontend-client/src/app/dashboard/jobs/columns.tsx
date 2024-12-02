@@ -49,6 +49,7 @@ export const columns: ColumnDef<Jobs>[] = [
                     table.toggleAllPageRowsSelected(!!value)
                 }
                 aria-label="Select all"
+                className="border-white"
             />
         ),
         cell: ({ row }) => (

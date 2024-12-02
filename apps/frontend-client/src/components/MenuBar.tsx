@@ -3,17 +3,20 @@ import { useRef } from "react";
 import { Menubar } from "@/components/ui/menubar";
 import { SidebarGroup, SidebarGroupLabel, SidebarTrigger } from "./ui/sidebar";
 import { ModeToggle } from "./ui/modeToggle";
-import { Bell, Mail, SearchCheckIcon } from "lucide-react";
+import { Bell, ChevronLeft, ChevronRight, Mail, SearchCheckIcon } from "lucide-react";
 import { Input } from "./ui/input";
 import { ToolTip } from "./ToolTip";
 import { UserProfile } from "./UserProfile";
 import SabaiROkLogo from "../../public/logoSabaiRok.svg";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
+import { Button } from "./ui/button";
+import { useSidebarContext } from "@/context/SidebarContext";
 
 export const MenuBar = () => {
-  const {user}=useAuth()
-  const inputRef = useRef<HTMLInputElement>(null);
+  const {user }=useAuth()
+  const { isOpen, toggleSidebar } = useSidebarContext();
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleSearch = () => {
     if (inputRef.current) {
@@ -37,7 +40,22 @@ export const MenuBar = () => {
       <div className="w-5/6 flex justify-between h-[50px] px-5 items-center">
         {/* search button */}
         <div className="flex items-center gap-2">
-          <SidebarTrigger />
+          {/* <SidebarTrigger /> */}
+          <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10"
+              onClick={toggleSidebar}
+            >
+              {isOpen ? (
+                <ChevronLeft className="h-6 w-6" />
+              ) : (
+                <ChevronRight className="h-6 w-6" />
+              )}
+            </Button>
+
+
+
           <SearchCheckIcon
             onClick={handleSearch}
             className="cursor-pointer"

@@ -88,7 +88,7 @@ export function DataTable<TData, TValue>({
       <div className="flex justify-start items-center">
         <div className="flex items-center py-4">
           <Input
-            placeholder="Filter name..."
+            placeholder="Search Title..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("name")?.setFilterValue(event.target.value)
@@ -101,7 +101,7 @@ export function DataTable<TData, TValue>({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="ml-auto bg-orange-400 hover:bg-orange-500">
-              Views
+              Filter
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

@@ -1,17 +1,24 @@
 import { Camera } from "lucide-react";
 import { RiFacebookCircleLine } from "react-icons/ri";
 import { FaInstagram } from "react-icons/fa6";
+import { useAuth } from "@/context/AuthContext";
+import Image from "next/image";
 
 const Profile = () => {
+  const {user} = useAuth();
+
+  console.log("user::::::", user);
   return (
     <>
       <div className="bg-white h-full dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
         {/* Banner Section */}
         <div className="relative h-40 bg-gray-300 dark:bg-gray-700">
-          <img
-            src="https://media.istockphoto.com/id/1696167872/photo/aerial-view-of-forest-at-sunset-on-the-background-of-mountains-in-dolomites.jpg?s=1024x1024&w=is&k=20&c=sfRAnSjXlDxAAAMZ0ZtYG5GpetUCOqETKyVc0Oz6kyU="
+          <Image
+            src={user?.profile || "https://media.istockphoto.com/id/1696167872/photo/aerial-view-of-forest-at-sunset-on-the-background-of-mountains-in-dolomites.jpg?s=1024x1024&w=is&k=20&c=sfRAnSjXlDxAAAMZ0ZtYG5GpetUCOqETKyVc0Oz6kyU="}
             alt="Background Banner"
             className="object-cover w-full h-full"
+            width={1000}
+            height={1000}
           />
           {/* Edit Button for Banner */}
           <button className="absolute bottom-2 right-2 bg-orange-500 text-white p-1 rounded-sm flex items-center space-x-1 hover:bg-orange-600">
@@ -23,10 +30,12 @@ const Profile = () => {
         {/* Profile Picture */}
         <div className="relative flex justify-center -mt-12">
           <div className="relative w-24 h-24 rounded-full border-4 border-white dark:border-gray-800 shadow-md overflow-hidden">
-            <img
-              src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            <Image
+              src={user?.profile || "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
               alt="Profile"
               className="object-cover w-full h-full rounded-full"
+              width={1000}
+              height={1000}
             />
             {/* Camera icon for profile image */}
             <button className="absolute bottom-1 right-1 bg-orange-500 text-white p-1 rounded-full hover:bg-orange-600">
@@ -37,7 +46,7 @@ const Profile = () => {
 
         {/* User Info Section */}
         <div className="text-center mt-4">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Danish Heilum</h2>
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">{user?.name}</h2>
           <p className="text-gray-500 dark:text-gray-400">UI/UX Designer</p>
         </div>
 

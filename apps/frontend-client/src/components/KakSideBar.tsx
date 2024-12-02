@@ -14,18 +14,19 @@ import {
   LineChart,
   PieChart,
   UserCircle,
-  Store,
-  ShoppingBag,
-  Inbox,
-  Send,
-  Archive,
-  FileText,
   UserCheck,
+  Calendar,
+  Sheet,
+  List,
+  BriefcaseBusiness,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { ScrollArea } from "./ui/scroll-area";
+import { useSidebarContext } from "../context/SidebarContext";
+
 interface Route {
   label: string;
   icon: any;
@@ -43,23 +44,28 @@ const routes: Route[] = [
   },
   {
     label: "Jobs",
-    icon: Users,
+    icon: BriefcaseBusiness,
     color: "text-pink-500",
     subRoutes: [
       {
+        label: "Lists",
+        icon: List,
+        href: "dashboard/jobs",
+      },
+      {
+        label: "View Jobs",
+        icon: Sheet,
+        href: "dashboard/viewJobs",
+      },
+      {
         label: "View Applicant",
         icon: UserCircle,
-        href: "dashboard/jobs",
+        href: "dashboard/applicant",
       },
       {
-        label: "Lists",
-        icon: UserCircle,
-        href: "dashboard/jobs",
-      },
-      {
-        label: "Leads",
+        label: "New Job",
         icon: Users,
-        href: "/dashboard/leads",
+        href: "/dashboard/posts",
       },
     ],
   },
@@ -70,10 +76,22 @@ const routes: Route[] = [
     href: "/dashboard/chat"
   },
   {
-    label: "Documents",
+    label: "Calendar",
+    icon: Calendar,
+    color: "text-yellow-300",
+    href: "/dashboard/calendar",
+  },
+  {
+    label: "Charts",
+    icon: LineChart,
+    color: "text-indigo-500",
+    href: "/dashboard/charts",
+  },
+  {
+    label : "Profile",
     icon: UserCheck,
-    color: "text-emerald-500",
-    href: "/dashboard/profile",
+    color: "text-rose-500",
+    href: "/dashboard/profile"
   },
   {
     label: "Settings",
@@ -106,7 +124,7 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
         <div
           onClick={handleClick}
           className={cn(
-            "flex p-4  w-full justify-start font-medium text-sm cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",
+            "flex p-4  w-full justify-start font-medium text-pretty cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",
             isRouteActive ? "text-white bg-[#FF7300]" : "text-muted-foreground",
             !isOpen && "justify-center",
             level > 0 && "ml-4"
@@ -118,7 +136,7 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
             !isOpen && "justify-center"
           )}>
             <route.icon className={cn(
-              "h-4 w-4", 
+              "h-6 w-6", 
               route.color, 
               isRouteActive && "text-white", 
               isOpen && "mr-3"
@@ -129,7 +147,7 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
                 {hasSubRoutes && (
                   <ChevronDown
                     className={cn(
-                      "h-4 w-4 transition-transform",
+                      "h-6 w-6 transition-transform",
                       isExpanded && "transform rotate-180"
                     )}
                   />
@@ -151,7 +169,7 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
                     : "text-muted-foreground"
                 )}
               >
-                <subRoute.icon className="h-4 w-4 mr-3" />
+                <subRoute.icon className="h-6 w-6 mr-3" />
                 {subRoute.label}
               </Link>
             ))}
@@ -167,14 +185,14 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
       <Link
         href={normalizeHref(route.href) ||"/dashboard"}
         className={cn(
-          "flex p-4 w-full justify-start items-center font-medium text-sm cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",
+          "flex p-4 w-full justify-start items-center font-medium text-pretty cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",
           isRouteActive
             ? "text-white bg-[#FF7300]"
             : "text-muted-foreground"
         )}
       >
         <route.icon className={cn(
-          "h-4 w-4 mr-3", 
+          "h-6 w-6 mr-3", 
           route.color, 
           isRouteActive && "text-white"
         )} />
@@ -193,7 +211,7 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
       title={route.label}
     >
       <route.icon className={cn(
-        "h-4 w-4", 
+        "h-6 w-6", 
         route.color, 
         isRouteActive && "text-white"
       )} />
@@ -202,14 +220,13 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
 }
 
 export default function KakSideBar() {
-  const [isOpen, setIsOpen] = useState(true);
-
+  const { isOpen } = useSidebarContext();
   return (
-    <div className="relative pt-16">
+    <ScrollArea className={cn("pt-16 h-screen transition-all duration-300" , isOpen ? "w-80" : "w-28" )}>
       <div
         className={cn(
           "space-y-4 flex flex-col h-full dark:bg-gray-900 text-gray-800 dark:text-white transition-all duration-300 border-r",
-          isOpen ? "w-64" : "w-20"
+          isOpen ? "w-full" : "w-full items-center"
         )}
       >
         <div className="px-3 py-2 flex-1">
@@ -218,23 +235,11 @@ export default function KakSideBar() {
               <SidebarItem key={route.label} route={route} isOpen={isOpen} />
             ))}
           </div>
-          <div className="flex items-center justify-between mb-14 pl-3">
-            {/* {isOpen && <h1 className="text-2xl font-bold">Dashboard</h1>} */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(!isOpen)}
-              className="h-8 w-8"
-            >
-              {isOpen ? (
-                <ChevronLeft className="h-4 w-4" />
-              ) : (
-                <ChevronRight className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
+          {/* <div className="flex items-center justify-between mb-14">
+          </div> */}
         </div>
       </div>
-    </div>
+
+    </ScrollArea>
   );
 }

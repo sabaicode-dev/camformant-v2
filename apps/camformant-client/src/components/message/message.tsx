@@ -4,7 +4,6 @@ import { IoMdSend } from "react-icons/io";
 import Background from "../background/background";
 import socket from "@/utils/socketClient"; // Import the socket instance
 import axiosInstance from "@/utils/axios";
-// import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { formatDistanceToNow } from "date-fns";
 import React from "react";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
@@ -74,7 +73,10 @@ const Message = React.memo(
     const [messages, setMessages] = useState<Message[] | []>();
     const [inputMessage, setInputMessage] = useState<string>("");
     const [conversationId, setConversationId] = useState<string>("");
-    const [page, setPage] = useState<number>(1);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+
     // Ref to track message container for scrolling
     const messageContainerRef = useRef<HTMLDivElement>(null);
     //
@@ -107,6 +109,21 @@ const Message = React.memo(
       }
     }, []);
 
+    const onScroll = useCallback(async () => {
+      if (!messageContainerRef.current) return;
+      const { scrollTop, scrollHeight, clientHeight } =
+        messageContainerRef.current;
+
+      if (scrollTop === 0 && hasMore && !isLoading && messages!.length > 0) {
+        await loadMoreData();
+      }
+    }, [hasMore, isLoading, messages, page]);
+    useEffect(() => {
+      const div = messageContainerRef.current;
+      if (!div) return;
+      div.addEventListener("scroll", onScroll);
+      return () => div.removeEventListener("scroll", onScroll);
+    }, [onScroll]);
     // Scroll to the bottom of the messages container
     const scrollToBottom = useCallback(() => {
       const container = messageContainerRef.current;
@@ -114,14 +131,12 @@ const Message = React.memo(
         container.scrollTop = container.scrollHeight;
       }
     }, []);
-    //todo: scrolling
     useEffect(() => {
       // Fetch messages
-      const fetchConversations = async () => {
+      const fetchMessages = async () => {
         try {
-          //NEXT_PUBLIC_CONVERSATION_ENDPOINT
           const response = await axiosInstance.get(
-            `${API_ENDPOINTS.GET_MESSAGE}/${receiverId}?page=${page}&limit=7`
+            `${API_ENDPOINTS.GET_MESSAGE}/${receiverId}`
           );
           const data = await response.data;
           if (response.status === 200 && data) {
@@ -136,33 +151,84 @@ const Message = React.memo(
               skip: data.skip,
               totalMessages: data.totalMessages,
             });
+            if (data.currentPage === data.totalPage) {
+              setHasMore(false);
+            }
             setMessages(conversation.messages);
+            scrollToBottom();
           } else if (response.status === 404) {
-            console.log("res::", response);
-
             handleError("Message not found");
           }
         } catch (error) {
           console.error("chat error: ", error);
           handleError("Failed to fetch messages data");
+        } finally {
+          setIsLoading(false);
         }
       };
       if (receiverId) {
-        fetchConversations();
+        fetchMessages();
       }
     }, [receiverId, handleError]);
+    const loadMoreData = useCallback(async () => {
+      if (!hasMore || isLoading) return; // Prevent fetching if no more data or already loading
+
+      setIsLoading(true);
+      try {
+        const nextPage = page + 1;
+        // const query = buildQuery(nextPage, selectedPosition);
+        const res = await axiosInstance.get(
+          `${API_ENDPOINTS.GET_MESSAGE}/${receiverId}?page=${nextPage}`
+        );
+
+        const data = await res.data; // Adjust based on your actual response structure
+        console.log("data::,", data);
+
+        if (res.status === 200 && data) {
+          const conversation = data.conversation;
+          setConversations(conversation);
+
+          setPaginationMessage({
+            currentPage: data.currentPage,
+            totalPage: data.totalPage,
+            limit: data.limit,
+            skip: data.skip,
+            totalMessages: data.totalMessages,
+          });
+          if (data.currentPage === data.totalPage) {
+            setHasMore(false);
+          }
+
+          setMessages((prevMessage) => {
+            const allMessages: Message[] = [
+              ...conversation.messages,
+              ...prevMessage!,
+            ];
+
+            return allMessages;
+          });
+          setPage(nextPage);
+          const container = messageContainerRef.current;
+          if (container) {
+            container.scrollTop = 5;
+          }
+        } else if (res.status === 404) {
+          handleError("Message not found");
+        }
+      } catch (error) {
+        console.error("Error fetching more conversations:", error);
+        handleError(
+          "Failed to load more conversations. Please try again later."
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    }, [hasMore, isLoading, page]);
     // Join the room of conversation
     // useEffect(() => {
     //   if (!conversationId) return;
 
     //   socket.emit("joinRoom", { conversationId });
-
-    //   const handleReceiveMessage = (message: Message) => {
-    //     console.log("Received message:", message);
-    //     setMessages((prevMessages) => [...prevMessages, message]);
-    //     scrollToBottom(); // Ensure the latest message is visible
-    //     playNotificationSound();
-    //   };
 
     //   socket.on("receiveMessage", handleReceiveMessage);
 
@@ -173,37 +239,12 @@ const Message = React.memo(
     //   };
     // }, [conversationId, playNotificationSound, scrollToBottom]);
 
-    // Fetch messages when roomId changes
-    // useEffect(() => {
-    //   if (!conversationId) return;
-
-    //   // Fetch messages from the backend
-    //   const fetchMessages = async () => {
-    //     try {
-    //       const response = await axiosInstance.get(
-    //         `${API_ENDPOINTS.CONVERSATIONS}/${conversationId}/messages`
-    //       );
-    //       setMessages(response.data.data);
-    //     } catch (error) {
-    //       console.error("Failed to fetch messages:", error);
-    //     }
-    //   };
-
-    //   fetchMessages();
-    //   setIsSend(false);
-    // }, [conversationId, isSend]);
-
-    // Scroll to the bottom whenever messages change
-    // useEffect(() => {
-    //   scrollToBottom();
-    // }, [messages, scrollToBottom]);
     useEffect(() => {
       // Listen for real-time messages
       socket.on("receiveMessage", (newMessage: Message) => {
         setMessages([...messages!, newMessage]);
-        console.log("message called");
-
-        // scrollToBottom();
+        playNotificationSound();
+        scrollToBottom();
       });
 
       return () => {
@@ -212,7 +253,6 @@ const Message = React.memo(
     }, [messages, setMessages, socket]);
     const sendMessage = async () => {
       if (inputMessage.trim() === "") return;
-      //todo: send message
       const newMessage: Message = {
         message: inputMessage,
         senderId: userId!,
@@ -240,6 +280,11 @@ const Message = React.memo(
         </div>
       );
     }
+    const LoadingIndicator = () => (
+      <div className="py-2 text-center">
+        <div className="inline-block border-2 border-orange-500 rounded-full size-8 animate-spin border-r-transparent"></div>
+      </div>
+    );
 
     return (
       <>
@@ -249,6 +294,7 @@ const Message = React.memo(
             className="overflow-auto w-screen h-[70vh] p-4 rounded-md xl:h-[60vh] pb-10"
             ref={messageContainerRef} // Add ref here
           >
+            {isLoading && hasMore && <LoadingIndicator />}
             {messages?.length === 0 && (
               <p className="text-lg font-semibold text-center text-gray-600">
                 {"Please Send Message to Start"}

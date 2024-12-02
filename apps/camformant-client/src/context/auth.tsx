@@ -53,7 +53,7 @@ export const AuthProvider = ({
   isLogin: boolean;
 }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [lastUser, setLastUser] = useState<User | null>(user);

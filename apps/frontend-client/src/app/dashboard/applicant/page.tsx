@@ -26,8 +26,6 @@ const ApplicantPage = () => {
 
   return (
     <>
-      <DynamicBreadcrumb />
-      Jobs
       <div className="  bg-yellow-100">
       <DataTable data={data} columns={columns} />
       </div>
