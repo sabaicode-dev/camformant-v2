@@ -46,7 +46,6 @@ const client = new CognitoIdentityProviderClient({
   },
 });
 
-
 class AuthService {
   // Generate the SECRET_HASH
   private generateSecretHash(username: string): string {
@@ -143,7 +142,7 @@ class AuthService {
       const userInfo = await this.getUserByUsername(username);
       const role =
         userInfo.UserAttributes?.find((attr) => attr.Name === "custom:role")
-          ?.Value || "company";
+          ?.Value || "user";
 
       // Add the user to the group based on the `role` attribute
       await this.addToGroup(username, role);

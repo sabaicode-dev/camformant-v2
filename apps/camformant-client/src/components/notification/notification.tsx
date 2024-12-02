@@ -7,7 +7,7 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { useEffect, useState } from "react";
 import { MdCircleNotifications } from "react-icons/md";
 
-export default function Notification({
+export default function NotificationComponent({
   addNotification,
 }: {
   addNotification: (
@@ -25,13 +25,26 @@ export default function Notification({
 
   console.log("isAuthentication", isAuthenticated);
   console.log("sub:::", subscription);
-
+  //function checkPermission notification
+  async function checkPermission() {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") {
+      addNotification("Notification Access Dined", "error");
+      console.log("access denied");
+    } else {
+      addNotification("Notification Allowed", "success");
+      console.log("notification accepted");
+    }
+  }
   // Register Notification When User Login
   useEffect(() => {
     if (isAuthenticated) {
       if ("serviceWorker" in navigator && "PushManager" in window) {
         setIsSupported(true);
         registerServiceWorker();
+        //check permission only when click on notification when user not enable or have no service worker
+        checkPermission();
+        console.log("checked register sw");
       }
     }
   }, [isAuthenticated]);
@@ -43,8 +56,7 @@ export default function Notification({
       setTimeout(() => setIsVisible(false), 8000); // Hide after 5s
     }
   }, [isSupported]);
-  console.log("suppoorted::",isSupported);
-  
+  console.log("suppoorted::", isSupported);
 
   async function registerServiceWorker() {
     // Check if service worker is already registered
@@ -56,6 +68,7 @@ export default function Notification({
         scope: "/",
         updateViaCache: "none",
       });
+      console.log("new register, you not register yet");
     }
   }
 
@@ -70,6 +83,7 @@ export default function Notification({
       ),
     });
     setSubscription(sub);
+    console.log("2sub:::", sub);
 
     const subscriptionObject = sub.toJSON();
     // @ts-ignore
@@ -105,13 +119,13 @@ export default function Notification({
   }
 
   const handleToggle = async () => {
-    if (subscription) {
-      await unsubscribeFromPush();
+    if (!isAuthenticated) {
+      addNotification("Please login to enable notification!", "error");
     } else {
-      if (!isAuthenticated) {
-        addNotification("Please login to enable notification!", "error");
-      } else {
+      if (!subscription) {
         await subscribeToPush();
+      } else {
+        await unsubscribeFromPush();
       }
     }
   };
@@ -151,8 +165,7 @@ export default function Notification({
         <input
           type="checkbox"
           className="sr-only peer"
-          checked={isDisable === false ? false : true} //todo: related
-          // checked={!!subscription}
+          checked={isDisable ? false : !!subscription} //todo: related
           onChange={handleToggle}
           disabled={isDisable} // Disable during loading state
         />

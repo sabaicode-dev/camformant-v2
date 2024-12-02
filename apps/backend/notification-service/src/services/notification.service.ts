@@ -22,7 +22,7 @@ export interface NotificationErrorResponse {
 class NotficationService {
   constructor() {
     webpush.setVapidDetails(
-      "mailto:sokritha.dev@gmail.com",
+      "mailto:khunkimhab7@gmail.com",
       configs.vapidPublicKey,
       configs.vapidPrivateKey
     );
