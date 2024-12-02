@@ -47,11 +47,12 @@ const authenticateToken = async (
   try {
     const { methodConfig } = req;
 
-    if (methodConfig.authRequired) {
-      // console.log("req cookie:::", req.cookies);
+    console.log("authRequired:::", methodConfig.authRequired);
 
+    if (methodConfig.authRequired) {
+      console.log("req cookie:::", req.cookies);
       // Step 1
-      console.log("need authicated");
+      // console.log("need authicated");
       // Step 2
       const token = req.cookies?.["access_token"];
       if (!token) {
@@ -67,7 +68,7 @@ const authenticateToken = async (
 
       let role: string[] = [];
       const userPayload = await jwtDecode(req.cookies?.["id_token"]);
-      // console.log("userPayload", userPayload);
+      console.log("userPayload", userPayload);
 
       // @ts-ignore
       if (userPayload["cognito:username"].includes("google")) {
@@ -81,7 +82,7 @@ const authenticateToken = async (
               },
             }
           );
-          // console.log("data", data.data.role);
+          // console.log("data", data.data);
           role.push(data.data.role);
         } else {
           // @ts-ignore
@@ -194,6 +195,7 @@ const routeConfigMiddleware = (
   const { path, method } = req;
 
   console.log("path:::", path, " method1111111111:::", method);
+  if (path !== "/socket.io/") console.log("yessssssss:");
 
   // Step 1
   let routeConfig = null;
@@ -202,18 +204,18 @@ const routeConfigMiddleware = (
     // console.log("routeConfig", routeConfig);
     if (routeConfig) break;
   }
-  console.log("routeConfig", routeConfig);
+  // console.log("routeConfig", routeConfig);
   if (!routeConfig) {
     return next(new NotFoundError("Route not found"));
   }
   // Step 2
   const methodConfig = routeConfig.methods?.[method];
-  console.log(methodConfig);
+  // console.log(methodConfig);
   if (!methodConfig) {
     return next(new NotFoundError("Method not allowed"));
   }
 
-  console.log("routeConfig", routeConfig);
+  // console.log("routeConfig", routeConfig);
 
   // Attach the route configuration and method config to the request object
   req.routeConfig = routeConfig;
