@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { Upload } from 'lucide-react';
 import type { ProfileData } from '../../../types/profile';
 import { PersonalInfoSection } from './PersonalInfoSection';
 import { LocationSection } from './LocationSection';
 import { SocialLinksSection } from './SocialLinksSection';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Input } from '@/components/ui/input';
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from '@/lib/utils';
-
+import { ImageUpload } from './ImageUpload';
 interface EditProfileFormProps {
   initialData?: ProfileData;
   onSubmit: (data: ProfileData) => void;
@@ -16,7 +14,7 @@ interface EditProfileFormProps {
 
 export function EditProfileForm({ initialData, onSubmit }: EditProfileFormProps) {
   const [formData, setFormData] = useState<ProfileData | null>(initialData || null);
-  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -26,18 +24,28 @@ export function EditProfileForm({ initialData, onSubmit }: EditProfileFormProps)
     }));
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setProfileImage(file);
-    }
+  const handleUploadStart = () => {
+    setIsUploading(true);
+    
+  };
+
+  const handleUploadComplete = (url: string) => {
+    setIsUploading(false);
+    setFormData(prev => ({
+      ...prev,
+      profile: url 
+    }));
+  };
+
+  const handleUploadError = (error: Error) => {
+    setIsUploading(false);
+    console.error('Error uploading file:', error);
+    
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData) {
-      onSubmit(formData);
-    }
+    onSubmit(formData as ProfileData);
   };
 
   return (
@@ -51,29 +59,11 @@ export function EditProfileForm({ initialData, onSubmit }: EditProfileFormProps)
           onChange={handleInputChange}
         />
 
-        <div className="space-y-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Add Your Photo
-          </label>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="hidden"
-              id="profile-image"
-            />
-            <label
-              htmlFor="profile-image"
-              className="cursor-pointer flex flex-col items-center space-y-2"
-            >
-              <Upload className="h-10 w-10 text-gray-400" />
-              <span className="text-sm text-gray-500">
-                Choose File or drag and drop SVG, PNG, JPG or GIF (max. 800 X 800px)
-              </span>
-            </label>
-          </div>
-        </div>
+        <ImageUpload
+          onUploadStart={handleUploadStart}
+          onUploadComplete={handleUploadComplete}
+          onUploadError={handleUploadError}
+        />
 
         <div className="space-y-4">
           <label className="block text-sm font-medium text-gray-700">
@@ -101,11 +91,12 @@ export function EditProfileForm({ initialData, onSubmit }: EditProfileFormProps)
         />
 
         <div className="flex justify-end">
-          <button
+   <button
             type="submit"
-            className="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+            disabled={isUploading}
+            className="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Save Changes
+            {isUploading ? 'Uploading...' : 'Save Changes'}
           </button>
         </div>
       </div>

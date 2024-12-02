@@ -12,7 +12,7 @@ import getCroppedImg from "@/components/profile/crop";
 import HeaderBasic from "@/components/cv-rating-card/router-page/basic/header-basic";
 import ButtonSignOut from "@/components/login-logout/sign-out";
 import { useNotification } from "@/hooks/user-notification";
-import Notification from "@/components/notification/notification";
+import NotificationComponent from "@/components/notification/notification";
 import { useAuth } from "@/context/auth";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/utils/axios";
@@ -202,7 +202,7 @@ const Page: React.FC = () => {
                     <div className="pl-1">favorite</div>
                   </span>
                 </Link>
-                <Notification addNotification={addNotification} />
+                <NotificationComponent addNotification={addNotification} />
               </div>
             )}
             <ButtonSignOut

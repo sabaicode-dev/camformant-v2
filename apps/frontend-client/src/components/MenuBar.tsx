@@ -1,7 +1,7 @@
 "use client";
 import { useRef } from "react";
 import { Menubar } from "@/components/ui/menubar";
-import { SidebarGroup, SidebarGroupLabel, SidebarTrigger } from "./ui/sidebar";
+import { SidebarGroup, SidebarGroupLabel } from "./ui/sidebar";
 import { ModeToggle } from "./ui/modeToggle";
 import { Bell, ChevronLeft, ChevronRight, Mail, SearchCheckIcon } from "lucide-react";
 import { Input } from "./ui/input";
@@ -26,39 +26,25 @@ export const MenuBar = () => {
 
   return (
     <Menubar className="w-full py-8 bg-white fixed top-0 z-40">
-      {/* logo */}
       <div className="w-1/6 flex items-center">
         <SidebarGroup>
           <SidebarGroupLabel>
             <div>
-              <Image src={user?.profile || SabaiROkLogo} width={100} height={100} alt="logo" />
+              <Image src={SabaiROkLogo} width={100} height={100} alt="logo" />
             </div>
           </SidebarGroupLabel>
         </SidebarGroup>
       </div>
-      {/* cover all left on navbar */}
       <div className="w-5/6 flex justify-between h-[50px] px-5 items-center">
-        {/* search button */}
         <div className="flex items-center gap-2">
-          {/* <SidebarTrigger /> */}
-          <Button
-              variant="ghost"
-              size="icon"
-              className="h-10 w-10"
-              onClick={toggleSidebar}
-            >
+          <Button variant="ghost"size="icon"className="h-10 w-10"onClick={toggleSidebar}>
               {isOpen ? (
                 <ChevronLeft className="h-6 w-6" />
               ) : (
                 <ChevronRight className="h-6 w-6" />
               )}
             </Button>
-
-
-
-          <SearchCheckIcon
-            onClick={handleSearch}
-            className="cursor-pointer"
+          <SearchCheckIcon onClick={handleSearch} className="cursor-pointer"
           />
           <div className="h-[40px] border w-[319px] border-gray-300  dark:border dark:border-gray-100 rounded-md">
             <Input ref={inputRef} placeholder="Search..." className="h-full" />
