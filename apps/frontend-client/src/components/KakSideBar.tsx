@@ -91,13 +91,8 @@ const routes: Route[] = [
     label : "Profile",
     icon: UserCheck,
     color: "text-rose-500",
-    href: "/dashboard/profile"
-  },
-  {
-    label: "Settings",
-    icon: Settings,
-    href: "/dashboard/settings",
-  },
+    href: "/dashboard/profile",
+  }
 ];
 
 function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boolean; level?: number }) {
