@@ -63,7 +63,7 @@ const Page = () => {
         surname,
         lastname,
         career,
-        email:user?.email,
+        email: user?.email,
         phonenumber: phone,
         dob: date, // Date of birth from state
         address, // Address from state
@@ -182,7 +182,7 @@ const Page = () => {
         <Sheet
           isOpen={isOpen}
           onClose={() => setOpen(false)}
-          snapPoints={[400, 200, 100, 0]}
+          snapPoints={[500, 400, 100, 0]}
         >
           <Sheet.Container>
             <Sheet.Header />

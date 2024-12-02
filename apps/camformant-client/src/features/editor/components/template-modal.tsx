@@ -51,7 +51,6 @@ const TemplateModal: React.FC<{
   }, []);
   const resetCvContent = (index: number) => {
     editor?.loadJson(cvData[index].json, cvData[index].style, userData);
-    console.log(" cvData[index].style", cvData[index].style) 
     setCvContent((previous: CvContentParams) => {
       return {
         ...previous,

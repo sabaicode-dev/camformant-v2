@@ -1,6 +1,12 @@
 import {
+  BodyUpdateJobApply,
+  GetApplyJobResLimit,
+  GetJobApplyResponse,
+  JobApplyQueriesController,
+  JobApplyResponse,
   JobGetAllControllerParams,
   JobParams,
+  PostJobApplyBody,
 } from "@/src/controllers/types/job-controller.type";
 import { IJob } from "@/src/database/models/job.model";
 import jobService from "@/src/services/job.service";
@@ -81,6 +87,18 @@ export class JobController extends Controller {
       throw error;
     }
   }
+  @Post("/jobApply")
+  public async postJobApply(@Body() body: PostJobApplyBody) {
+    try {
+      const data = await jobService.createJobApply(body);
+      return sendResponse<JobApplyResponse | {}>({
+        message: "Create successfuly",
+        data,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
   //
   @SuccessResponse("201", "Created")
   @Post("/")
@@ -136,6 +154,48 @@ export class JobController extends Controller {
       return sendResponse<string[]>({ message: "success", data: response });
     } catch (error) {
       throw error;
+    }
+  }
+  @Get("/jobApply")
+  public async getJobApply(
+    @Queries()
+    queries: JobApplyQueriesController
+  ) {
+    try {
+      const data = await jobService.getJobApply(queries);
+      return sendResponse<GetJobApplyResponse[]|GetApplyJobResLimit>({
+        message: "Fetched is successfully",
+        data: data,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+  @Put("/jobApply/:applyId")
+  public async putJobApply(
+    @Path() applyId: string,
+    @Body() body: BodyUpdateJobApply
+  ) {
+    try {
+      const data = await jobService.updateJobApply(applyId, body);
+      return sendResponse<JobApplyResponse | {} | null>({
+        message: "Update successfuly",
+        data,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+  @SuccessResponse("204", "Deleted")
+  @Delete("/jobApply/:applyId")
+  public async deleteJobApply(@Path() applyId: string) {
+    try {
+      await jobService.deleteJobApply(applyId);
+      return {
+        message: "Delete successfuly",
+      };
+    } catch (err) {
+      throw err;
     }
   }
 

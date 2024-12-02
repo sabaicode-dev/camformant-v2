@@ -42,6 +42,9 @@
 					"companyId": {
 						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 					},
+					"profile": {
+						"type": "string"
+					},
 					"title": {
 						"type": "string"
 					},
@@ -132,6 +135,113 @@
 				},
 				"required": [
 					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"StatusMode": {
+				"enum": [
+					"Apply",
+					"Review",
+					"Shortlist",
+					"Interview",
+					"Accept"
+				],
+				"type": "string"
+			},
+			"ApplyUserInfo": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"profile": {
+						"type": "string"
+					},
+					"status": {
+						"$ref": "#/components/schemas/StatusMode"
+					},
+					"cv": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"profile",
+					"status",
+					"cv"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApplyCompanyResp": {
+				"properties": {
+					"startDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"interviewDate": {
+						"type": "string"
+					},
+					"interviewLocation": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"JobApplyResponse": {
+				"properties": {
+					"_id": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"userId": {
+						"type": "string"
+					},
+					"jobId": {
+						"type": "string"
+					},
+					"userInfo": {
+						"$ref": "#/components/schemas/ApplyUserInfo"
+					},
+					"companyResponse": {
+						"$ref": "#/components/schemas/ApplyCompanyResp"
+					},
+					"appliedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updateAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"userId",
+					"jobId",
+					"userInfo"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"PostJobApplyBody": {
+				"properties": {
+					"userId": {
+						"type": "string"
+					},
+					"jobId": {
+						"type": "string"
+					},
+					"userInfo": {
+						"$ref": "#/components/schemas/ApplyUserInfo"
+					},
+					"companyResponse": {
+						"$ref": "#/components/schemas/ApplyCompanyResp"
+					}
+				},
+				"required": [
+					"userId",
+					"jobId",
+					"userInfo"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -309,6 +419,9 @@
 					"_id": {
 						"type": "string"
 					},
+					"companyId": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
 					"title": {
 						"type": "string"
 					},
@@ -433,6 +546,139 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"GetApplyJobResLimit": {
+				"properties": {
+					"applyData": {
+						"items": {
+							"$ref": "#/components/schemas/JobApplyResponse"
+						},
+						"type": "array"
+					},
+					"totalPages": {
+						"type": "number",
+						"format": "double"
+					},
+					"currentPage": {
+						"type": "number",
+						"format": "double"
+					},
+					"skip": {
+						"type": "number",
+						"format": "double"
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"applyData",
+					"totalPages",
+					"currentPage",
+					"skip",
+					"limit"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GetJobApplyResponse": {
+				"properties": {
+					"_id": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"userId": {
+						"type": "string"
+					},
+					"jobId": {
+						"type": "string"
+					},
+					"userInfo": {
+						"$ref": "#/components/schemas/ApplyUserInfo"
+					},
+					"companyResponse": {
+						"$ref": "#/components/schemas/ApplyCompanyResp"
+					},
+					"appliedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updateAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"jobInfo": {
+						"$ref": "#/components/schemas/IJob"
+					}
+				},
+				"required": [
+					"userId",
+					"jobId",
+					"userInfo",
+					"jobInfo"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"JobApplyQueriesController": {
+				"properties": {
+					"userId": {
+						"type": "string"
+					},
+					"jobId": {
+						"type": "string"
+					},
+					"page": {
+						"type": "number",
+						"format": "double"
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					},
+					"filter": {
+						"type": "string"
+					},
+					"sort": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"BodyUpdateJobApply": {
+				"properties": {
+					"status": {
+						"$ref": "#/components/schemas/StatusMode"
+					},
+					"startDate": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"interviewDate": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"interviewLocation": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -476,6 +722,151 @@
 						}
 					}
 				}
+			}
+		},
+		"/v1/jobs/jobApply": {
+			"post": {
+				"operationId": "PostJobApply",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"anyOf": [
+												{
+													"properties": {},
+													"type": "object"
+												},
+												{
+													"$ref": "#/components/schemas/JobApplyResponse"
+												}
+											]
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PostJobApplyBody"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetJobApply",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"anyOf": [
+												{
+													"$ref": "#/components/schemas/GetApplyJobResLimit"
+												},
+												{
+													"items": {
+														"$ref": "#/components/schemas/GetJobApplyResponse"
+													},
+													"type": "array"
+												}
+											]
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "userId",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "jobId",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "page",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "filter",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "sort",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/v1/jobs": {
@@ -670,6 +1061,104 @@
 				],
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/v1/jobs/jobApply/{applyId}": {
+			"put": {
+				"operationId": "PutJobApply",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"anyOf": [
+												{
+													"properties": {},
+													"type": "object"
+												},
+												{
+													"$ref": "#/components/schemas/JobApplyResponse"
+												}
+											]
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "applyId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/BodyUpdateJobApply"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteJobApply",
+				"responses": {
+					"204": {
+						"description": "Deleted",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "applyId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/v1/jobs/{jobId}": {

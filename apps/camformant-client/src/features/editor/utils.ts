@@ -160,7 +160,7 @@ export const setFetchData = (
           const fabricObject = searchObject(canvas, nameForSearch) as
             | fabric.Textbox
             | fabric.Group;
-          if (innerKey == "academic") {
+          if (innerKey == "academic" && innerValue!="highschool") {
             educationAcademic =
               (innerValue as string).trim() + " of " + item.major.trim();
           }

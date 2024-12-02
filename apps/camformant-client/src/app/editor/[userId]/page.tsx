@@ -5,11 +5,9 @@ import "@/app/globals.css";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { CvContentParams } from "@/features/editor/types";
-import { FaBullseye } from "react-icons/fa";
 import SkeletonLoader from "@/components/cv-rating-card/router-page/basic/skeleton";
 import { setStructureUserdata } from "@/features/editor/utils";
 import CallToAction from "@/components/calltoaction/call-to-action";
-import HeaderBasic from "@/components/cv-rating-card/router-page/basic/header-basic";
 import { BackButton_md } from "@/components/back/BackButton";
 import Link from "next/link";
 
