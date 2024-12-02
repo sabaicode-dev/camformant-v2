@@ -136,30 +136,54 @@ const ROUTE_PATHS: RoutesConfig = {
       },
     ],
   },
-  CORPORATE_JOBS: {
-    path: "/v1/corporate",
-    target: configs.jobServiceUrl,
+  CORPORATE_SERVICE: {
+    path: "/v1/corporator",
+    target: configs.userServiceUrl,
     methods: {
       GET: {
         authRequired: true,
-        roles: ["company"],
+        roles: ["user", "company"],
       },
     },
     nestedRoutes: [
       {
-        path: "/job",
+        path: "/companies",
         methods: {
           GET: {
             authRequired: false,
           },
+        },
+      },
+      {
+        path: "/profile/me",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
+      },
+      {
+        path: "/getMulti/Profile",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
+      },
+      {
+        path: "/profile",
+        methods: {
           POST: {
             authRequired: true,
             roles: ["company"],
           },
+          GET: {
+            authRequired: false,
+          },
         },
         nestedRoutes: [
           {
-            path: "/:jobId",
+            path: "/:corporateId",
             methods: {
               GET: {
                 authRequired: false,
@@ -167,9 +191,20 @@ const ROUTE_PATHS: RoutesConfig = {
               PUT: {
                 authRequired: false,
               },
+              DELETE: {
+                authRequired: false,
+              },
             },
           },
         ],
+      },
+      {
+        path: "/getMulti/Profile",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
       },
     ],
   },
@@ -287,7 +322,7 @@ const ROUTE_PATHS: RoutesConfig = {
         ],
       },
       {
-        path: "/cvstyle/:style",
+        path: "/cvstyle",
         methods: {
           GET: {
             authRequired: true,
@@ -296,11 +331,15 @@ const ROUTE_PATHS: RoutesConfig = {
         },
       },
       {
-        path: "/profile/me",
+        path: "/customCv",
         methods: {
           GET: {
             authRequired: true,
-            roles: ["company"],
+            roles: ["user", "admin"],
+          },
+          PUT: {
+            authRequired: true,
+            roles: ["user", "admin"],
           },
         },
       },
@@ -316,6 +355,14 @@ const ROUTE_PATHS: RoutesConfig = {
     },
     nestedRoutes: [
       {
+        path: "/job",
+        methods: {
+          POST: {
+            authRequired: false,
+          },
+        },
+      },
+      {
         path: "/health",
         methods: {
           GET: {
@@ -327,6 +374,9 @@ const ROUTE_PATHS: RoutesConfig = {
         path: "/:id",
         methods: {
           GET: {
+            authRequired: false,
+          },
+          DELETE: {
             authRequired: false,
           },
         },
@@ -348,6 +398,15 @@ const ROUTE_PATHS: RoutesConfig = {
           },
         },
       },
+      {
+        path: "/corporator",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
+      },
+    
     ],
   },
   COMPANY_SERVICE: {

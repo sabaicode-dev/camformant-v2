@@ -62,3 +62,21 @@ export interface MongoError extends Error {
   code?: number;
   keyPattern?: { [key: string]: number };
 }
+export interface companiesForJobs {
+  _id?: string;
+  profile?: string;
+  name?: string;
+  location?: {
+    address?: string;
+    city?: string;
+    country?: string;
+  };
+  description?: string;
+  contact?: {
+    phone_number?: string;
+    website?: string;
+  };
+  email?: string;
+  job_openings_count?: number;
+  job_closings_count?: number;
+}

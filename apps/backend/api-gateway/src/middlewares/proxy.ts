@@ -4,7 +4,7 @@ import express, { Response } from "express";
 import { ClientRequest, IncomingMessage } from "http";
 import { createProxyMiddleware, Options } from "http-proxy-middleware";
 // import { gatewayLogger } from "@/src/server";
-import corsOptions from "@/src/middlewares/cors";
+import corsOptions, { allowedOrigins } from "@/src/middlewares/cors";
 
 interface ProxyConfig {
   [context: string]: Options<IncomingMessage, Response>;
@@ -29,12 +29,15 @@ const proxyConfigs: ProxyConfig = {
         //   path: proxyReq.path
         // });
       },
-      proxyRes: (_proxyRes, _req, res) => {
-        res.setHeader("Access-Control-Allow-Origin", corsOptions.origin);
+      proxyRes: (_proxyRes, req, res) => {
+        const requestOrigin = req.headers.origin;
+        if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+          res.setHeader("Access-Control-Allow-Origin", requestOrigin);
+        }
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader(
           "Access-Control-Allow-Methods",
-          corsOptions.methods.join(", ")
+          (corsOptions!.methods as string[]).join(", ")
         );
         res.setHeader(
           "Access-Control-Allow-Headers",
@@ -60,88 +63,15 @@ const proxyConfigs: ProxyConfig = {
         //   path: proxyReq.path,
         // });
       },
-      proxyRes: (_proxyRes, _req, res) => {
-        res.setHeader("Access-Control-Allow-Origin", corsOptions.origin);
-        res.setHeader("Access-Control-Allow-Credentials", "true");
-        res.setHeader(
-          "Access-Control-Allow-Methods",
-          corsOptions.methods.join(", ")
-        );
-        res.setHeader(
-          "Access-Control-Allow-Headers",
-          "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-        );
-      },
-    },
-  },
-  // [ROUTE_PATHS.CORPORATE_SERVICE.path]: {
-  //   target: ROUTE_PATHS.CORPORATE_SERVICE.target,
-  //   pathRewrite: (path, _req) => {
-  //     return `${ROUTE_PATHS.CORPORATE_SERVICE.path}${path}`;
-  //   },
-  //   on: {
-  //     proxyReq: (
-  //       proxyReq: ClientRequest,
-  //       req: IncomingMessage & {
-  //         currentUser?: {
-  //           username?: string;
-  //           role: string[] | undefined;
-  //         };
-  //       },
-  //       _res: Response
-  //     ) => {
-  //       console.log("Proxy is running ---1-1-1-1-1-");
-  //       const { currentUser } = req;
-
-  //       if (currentUser) {
-  //         // Add headers to proxyReq for forwarding to the target service
-  //         proxyReq.setHeader("currentUser", JSON.stringify(currentUser)); // Another header as specified
-  //       }
-  //     },
-  //     proxyRes: (_proxyRes, _req, res) => {
-  //       res.setHeader("Access-Control-Allow-Origin", corsOptions.origin);
-  //       res.setHeader("Access-Control-Allow-Credentials", "true");
-  //       res.setHeader(
-  //         "Access-Control-Allow-Methods",
-  //         corsOptions.methods.join(", ")
-  //       );
-  //       res.setHeader(
-  //         "Access-Control-Allow-Headers",
-  //         "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  //       );
-  //     },
-  //   },
-  // },
-  [ROUTE_PATHS.CORPORATE_JOBS.path]: {
-    target: ROUTE_PATHS.CORPORATE_JOBS.target,
-    pathRewrite: (path, _req) => {
-      return `${ROUTE_PATHS.CORPORATE_JOBS.path}${path}`;
-    },
-    on: {
-      proxyReq: (
-        proxyReq: ClientRequest,
-        req: IncomingMessage & {
-          currentUser?: {
-            username?: string;
-            role: string[] | undefined;
-          };
-        },
-        _res: Response
-      ) => {
-        console.log("Proxy is running");
-        const { currentUser } = req;
-
-        if (currentUser) {
-          // Add headers to proxyReq for forwarding to the target service
-          proxyReq.setHeader("currentUser", JSON.stringify(currentUser)); // Another header as specified
+      proxyRes: (_proxyRes, req, res) => {
+        const requestOrigin = req.headers.origin;
+        if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+          res.setHeader("Access-Control-Allow-Origin", requestOrigin);
         }
-      },
-      proxyRes: (_proxyRes, _req, res) => {
-        res.setHeader("Access-Control-Allow-Origin", corsOptions.origin);
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader(
           "Access-Control-Allow-Methods",
-          corsOptions.methods.join(", ")
+          (corsOptions!.methods as string[]).join(", ")
         );
         res.setHeader(
           "Access-Control-Allow-Headers",
@@ -166,12 +96,15 @@ const proxyConfigs: ProxyConfig = {
         //   path: proxyReq.path,
         // });
       },
-      proxyRes: (_proxyRes, _req, res) => {
-        res.setHeader("Access-Control-Allow-Origin", corsOptions.origin);
+      proxyRes: (_proxyRes, req, res) => {
+        const requestOrigin = req.headers.origin;
+        if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+          res.setHeader("Access-Control-Allow-Origin", requestOrigin);
+        }
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader(
           "Access-Control-Allow-Methods",
-          corsOptions.methods.join(", ")
+          (corsOptions!.methods as string[]).join(", ")
         );
         res.setHeader(
           "Access-Control-Allow-Headers",
@@ -196,12 +129,15 @@ const proxyConfigs: ProxyConfig = {
         //   path: proxyReq.path,
         // });
       },
-      proxyRes: (_proxyRes, _req, res) => {
-        res.setHeader("Access-Control-Allow-Origin", corsOptions.origin);
+      proxyRes: (_proxyRes, req, res) => {
+        const requestOrigin = req.headers.origin;
+        if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+          res.setHeader("Access-Control-Allow-Origin", requestOrigin);
+        }
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader(
           "Access-Control-Allow-Methods",
-          corsOptions.methods.join(", ")
+          (corsOptions!.methods as string[]).join(", ")
         );
         res.setHeader(
           "Access-Control-Allow-Headers",
@@ -228,12 +164,15 @@ const proxyConfigs: ProxyConfig = {
         //   path: proxyReq.path,
         // });
       },
-      proxyRes: (_proxyRes, _req, res) => {
-        res.setHeader("Access-Control-Allow-Origin", corsOptions.origin);
+      proxyRes: (_proxyRes, req, res) => {
+        const requestOrigin = req.headers.origin;
+        if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+          res.setHeader("Access-Control-Allow-Origin", requestOrigin);
+        }
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader(
           "Access-Control-Allow-Methods",
-          corsOptions.methods.join(", ")
+          (corsOptions!.methods as string[]).join(", ")
         );
         res.setHeader(
           "Access-Control-Allow-Headers",
@@ -269,12 +208,15 @@ const proxyConfigs: ProxyConfig = {
         //   path: proxyReq.path,
         // });
       },
-      proxyRes: (_proxyRes, _req, res) => {
-        res.setHeader("Access-Control-Allow-Origin", corsOptions.origin);
+      proxyRes: (_proxyRes, req, res) => {
+        const requestOrigin = req.headers.origin;
+        if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+          res.setHeader("Access-Control-Allow-Origin", requestOrigin);
+        }
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader(
           "Access-Control-Allow-Methods",
-          corsOptions.methods.join(", ")
+          (corsOptions!.methods as string[]).join(", ")
         );
         res.setHeader(
           "Access-Control-Allow-Headers",
@@ -283,7 +225,53 @@ const proxyConfigs: ProxyConfig = {
       },
     },
   },
+  [ROUTE_PATHS.CORPORATE_SERVICE.path]: {
+    target: ROUTE_PATHS.CORPORATE_SERVICE.target,
+    pathRewrite: (path, _req) => {
+      return `${ROUTE_PATHS.CORPORATE_SERVICE.path}${path}`;
+    },
+    on: {
+      proxyReq: (
+        proxyReq: ClientRequest,
+        req: IncomingMessage & {
+          currentUser?: {
+            username?: string;
+            role: string[] | undefined;
+          };
+        },
+        _res: Response
+      ) => {
+        const { currentUser } = req;
 
+        if (currentUser) {
+          // Add headers to proxyReq for forwarding to the target service
+          proxyReq.setHeader("currentUser", JSON.stringify(currentUser)); // Another header as specified
+        }
+
+        // @ts-ignore
+        // logRequest(gatewayLogger, proxyReq, {
+        //   protocol: proxyReq.protocol,
+        //   host: proxyReq.getHeader("host"),
+        //   path: proxyReq.path,
+        // });
+      },
+      proxyRes: (_proxyRes, req, res) => {
+        const requestOrigin = req.headers.origin;
+        if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+          res.setHeader("Access-Control-Allow-Origin", requestOrigin);
+        }
+        res.setHeader("Access-Control-Allow-Credentials", "true");
+        res.setHeader(
+          "Access-Control-Allow-Methods",
+          (corsOptions!.methods as string[]).join(", ")
+        );
+        res.setHeader(
+          "Access-Control-Allow-Headers",
+          "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+        );
+      },
+    },
+  },
   [ROUTE_PATHS.CHAT_SERVICE.path]: {
     target: ROUTE_PATHS.CHAT_SERVICE.target,
     ws: true,

@@ -221,6 +221,7 @@ const routeConfigMiddleware = (
   // Attach the route configuration and method config to the request object
   req.routeConfig = routeConfig;
   req.methodConfig = methodConfig;
+  console.log("method", methodConfig);
 
   next();
 };

@@ -20,6 +20,7 @@ import {
 import axiosInstance from "@/utils/axios";
 import { useAuth } from "@/context/auth";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { useNotification } from "@/hooks/user-notification";
 
 const Page: React.FC = () => {
   const [skillEntries, setSkillEntries] = useState<SkillParams[]>([
@@ -44,6 +45,7 @@ const Page: React.FC = () => {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [next, setNext] = useState<boolean>(false);
   const [isPut, setIsPut] = useState<boolean>(false); //for check if our page have any change that must put or not
+  const { addNotification, NotificationDisplay } = useNotification();
 
   // const ip = 'http://172.20.10.5:3030'
   // const ip = 'http://localhost:3040'
@@ -96,6 +98,7 @@ const Page: React.FC = () => {
 
   return (
     <div className="pb-20">
+      <NotificationDisplay />
       <HeaderBasic
         title="Ability"
         {...(isPut ? { next: PostData } : {})}
@@ -114,14 +117,36 @@ const Page: React.FC = () => {
               txt={key} // Helper function to get label text if needed
               typeofInput={key.includes("date") ? "date" : "text"} // Set type based on key
               setValues={(newValue) => {
-                handleInputChange(
-                  setSkillEntries,
-                  skillEntries,
-                  index,
-                  key,
-                  newValue
-                );
-                newValue == value.toString() || setIsPut(true);
+                if (key == "percent") {
+                  if (!isNaN(Number(newValue))) {
+                    if (Number(newValue) > 100) {
+                      addNotification(
+                        "Percent should be less than 100",
+                        "error"
+                      );
+                    } else {
+                      handleInputChange(
+                        setSkillEntries,
+                        skillEntries,
+                        index,
+                        key,
+                        newValue
+                      );
+                      newValue == value.toString() || setIsPut(true);
+                    }
+                  } else {
+                    addNotification("Percent should be a number", "error");
+                  }
+                } else {
+                  handleInputChange(
+                    setSkillEntries,
+                    skillEntries,
+                    index,
+                    key,
+                    newValue
+                  );
+                  newValue == value.toString() || setIsPut(true);
+                }
               }}
               valuesFouce={`skill-${key}-${index}`}
             />

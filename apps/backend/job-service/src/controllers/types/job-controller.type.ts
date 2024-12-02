@@ -58,4 +58,5 @@ export interface JobGetAllRepoParams {
   sort?: JobSortParams;
   search?: string;
   userFav?: string[];
+  companyId?: string;
 }

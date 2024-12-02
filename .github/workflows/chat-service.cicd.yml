@@ -112,6 +112,8 @@ jobs:
             echo "NODE_ENV=${{ secrets.NODE_ENV }}" > /home/ubuntu/apps/chat-service/build/configs/.env.production
             echo "PORT=${{ secrets.CHAT_PORT }}" >> /home/ubuntu/apps/chat-service/build/configs/.env.production
             echo "MONGODB_URL=${{ secrets.CHAT_MONGODB_URL }}" >> /home/ubuntu/apps/chat-service/build/configs/.env.production
+            echo "USERS_API_ENDPOINT=${{ secrets.USERS_API_ENDPOINT }}" >> /home/ubuntu/apps/chat-service/build/configs/.env.production
+            echo "CORPORATOR_API_ENDPOINT=${{ secrets.CORPORATOR_API_ENDPOINT }}" >> /home/ubuntu/apps/chat-service/build/configs/.env.production
             echo "CLIENT_URL=${{ secrets.CLIENT_URL }}" >> /home/ubuntu/apps/chat-service/build/configs/.env.production
 
       - name: Install Dependencies and Restart PM2

@@ -51,8 +51,6 @@ const Page: React.FC = () => {
   const { user, loading, logout, isAuthenticated, setUser } = useAuth();
 
   const RefFile = useRef<HTMLInputElement | null>(null);
-  const [pic, setPic] = useState<File | string | null>(null);
-  const [Upload, setUpload] = useState<File | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -105,13 +103,9 @@ const Page: React.FC = () => {
       const response = await fetch(croppedImage);
       const blob = await response.blob();
       const file = new File([blob], "cropped-image.png", { type: "image/png" });
-      setUpload(file);
-      const imagefile=URL.createObjectURL(file)
-      setPic(imagefile)
       setIsCropping(false);
       const image = await uploadToS3(file);
       if (image) {
-        setPic(image);
         changeProfile(image);
       }
     } catch (error) {
@@ -136,7 +130,7 @@ const Page: React.FC = () => {
                 className={` w-32 h-32 rounded-full overflow-hidden bg-white`}
               >
                 <Image
-                  className="object-cover"
+                  className={`object-cover`}
                   src={user?.profile || "/images/def-user-profile.png"}
                   height={200}
                   width={200}
@@ -163,7 +157,7 @@ const Page: React.FC = () => {
 
             {/* ==================== CROPPING IMAGE  ================================*/}
             {isCropping && (
-              <div className="fixed inset-0 z-40 flex items-center justify-center w-full bg-black bg-opacity-60 ">
+              <div className="fixed inset-0 z-40 flex items-center justify-center w-full bg- bg-opacity-60 ">
                 <div className="relative h-screen p-4 rounded w-96">
                   <Cropper
                     image={imageSrc || ""}

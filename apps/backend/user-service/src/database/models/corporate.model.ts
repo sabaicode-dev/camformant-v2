@@ -1,41 +1,146 @@
-import { Schema, model } from "mongoose";
+import mongoose from "mongoose";
 
-export interface ICorporateModel {
-    _id: string;
-    sub: string;
-    username: string;
-    email: string;
-    role: "company";
-    corporateProfileId?: string;
-    favorites: string[];
-    createdAt: Date;
-    updatedAt: Date;
+export interface ICorporatorProfile {
+  _id?: string;
+  sub?: string;
+  name?: string;
+  email?: string;
+  role?: "company";
+  profile?: string;
+  location?: {
+    address?: string;
+    city?: string;
+    country?: string;
+  };
+  contact?: {
+    phone_number?: string;
+    website?: string;
+  };
+  social_links?: {
+    linkedin?: string;
+    twitter?: string;
+    facebook?: string;
+  };
+  description?: string;
+  employee_count?: number;
+  job_openings_count?: number;
+  job_closings_count?: number;
+  completed?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-const corporateSchema = new Schema<ICorporateModel>({
-    sub: { type: String },
-    username: { type: String, required: true },
-    email: { type: String, unique: true },
-    role: { type: String, default: "company" },
-    corporateProfileId: { type: String },
-    favorites: { type: [String], default: [] },
-}, {
+// Create the schema
+const CorporatorSchema = new mongoose.Schema<ICorporatorProfile>(
+  {
+    sub: {
+      type: String,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      match: [/.+@.+\..+/, "Please fill a valid email address"],
+    },
+    role: {
+      type: String,
+      default: "company",
+    },
+    profile: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    location: {
+      address: {
+        type: String,
+        default: "",
+
+      },
+      city: {
+        type: String,
+        default: "",
+
+      },
+      country: {
+        type: String,
+        default: "",
+
+      },
+    },
+    contact: {
+      phone_number: {
+        type: String,
+      },
+      website: {
+        type: String,
+        default: "",
+
+      },
+    },
+    social_links: {
+      linkedin: {
+        type: String,
+        default: "",
+
+      },
+      twitter: {
+        type: String,
+        default: "",
+
+      },
+      facebook: {
+        type: String,
+        default: "",
+
+      },
+    },
+    description: {
+      type: String,
+      default: "",
+
+    },
+
+    employee_count: {
+      type: Number,
+      default: 0,
+
+    },
+    job_openings_count: {
+      type: Number,
+      default: 0,
+
+    },
+    job_closings_count: {
+      type: Number,
+      default: 0,
+
+    },
+    completed: {
+      type: Number,
+      default: 0,
+
+    },
+  },
+  {
     timestamps: true,
     toObject: {
-        transform: function (_doc, ret) {
-            delete ret.__v;
-            ret._id = ret._id.toString();
-        }
-    }
-});
+      transform: function (_doc, ret) {
+        delete ret.__v;
+        ret._id = ret._id.toString();
+      },
+    },
+    versionKey: false,
+  }
+);
 
-corporateSchema.index({ email: 1 }, { unique: true });
-
-corporateSchema.path("email").validate(function (value) {
-    if (!value) {
-        return false;
-    }
-    return true;
-}, "Email is required.");
-
-export const CorporateModel = model<ICorporateModel>("corporates", corporateSchema);
+const CorporatorModel = mongoose.model<ICorporatorProfile>(
+  "Corporator",
+  CorporatorSchema
+);
+export default CorporatorModel;

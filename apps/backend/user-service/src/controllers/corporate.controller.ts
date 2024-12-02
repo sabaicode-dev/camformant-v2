@@ -1,119 +1,172 @@
 import {
   Controller,
-  Get,
   Post,
-  Path,
   Route,
   SuccessResponse,
   Body,
-  Middlewares,
-  Request,
   Tags,
+  Get,
+  Path,
   Put,
+  Delete,
+  Queries,
+  Request,
 } from "tsoa";
 import CorporateService from "@/src/services/corporate.service";
 import sendResponse from "@/src/utils/send-response";
-import validateRequest from "@/src/middewares/validate-input";
-import { prettyObject } from "@sabaicode-dev/camformant-libs";
+import { APIResponse, prettyObject } from "@sabaicode-dev/camformant-libs";
+import { ICorporatorProfile } from "../database/models/corporate.model";
 import { Request as ExpressRequest } from "express";
-import axios from "axios";
-import {
-  CorporateProfileResponse,
-  CorporateProfileResponseCreate,
-  CorporateProfileResquestParams,
-} from "./types/corporate-controller.type";
-import corporateJoiSchema from "../schemas/corporate.schema";
 
-@Tags("Corporate")
-@Route("v1/corporate")
+@Tags("Corporator")
+@Route("v1/corporator")
 export class CorporateController extends Controller {
+  //todo: get multi company for jobs
+  @Get("/companies")
+  public async getMultiCompanies(@Queries() query: { companiesId?: string }) {
+    try {
+      const res = await CorporateService.getMultiCompanies(query.companiesId!);
+      return res;
+    } catch (error) {
+      throw error;
+    }
+  }
+  @SuccessResponse("200", "Success")
+  @Get("/profile/me")
+  public async getCorporateProfileWithJobs(
+    @Request() request: ExpressRequest,
+  ) {
+    try {
+      const corporateSub = request.cookies["username"];
+      if (!corporateSub) {
+        console.log(
+          "CorporateController - getCorporateProfileWithJobs() method error : Authorization is missing"
+        );
+        return null;
+      }
+
+      if (!corporateSub) {
+        console.log(
+          "CorporateController - getCorporateProfileWithJobs() method error : corporateSub is missing"
+        );
+        return null;
+      }
+
+      const corporateProfileWithJobs = await CorporateService.getProfileBySub(corporateSub);
+      if (!corporateProfileWithJobs) {
+        console.log("No corporate profile found.");
+        return [];
+      }
+      return sendResponse<ICorporatorProfile>({
+        message: "success",
+        data: corporateProfileWithJobs,
+      });
+    } catch (error) {
+      console.error(
+        `CorporateController - getCorporateProfileWithJobs() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
+  @Get("/getMulti/Profile")
+  public async getMultiProfileCompany(
+    @Queries() query: { companiesId?: string }
+  ) {
+    try {
+      const res = await CorporateService.getMultiProfileCompany(
+        query.companiesId!
+      );
+      return res;
+    } catch (error) {
+      throw error;
+    }
+  }
   @SuccessResponse("201", "Created")
-  @Post()
-  @Middlewares(validateRequest(corporateJoiSchema))
-  public async createCorporate(
-    @Body() requestBody: CorporateProfileResquestParams
-  ): Promise<CorporateProfileResponseCreate> {
+  @Post("/profile")
+  public async createCorporateProfile(
+    @Body() body: ICorporatorProfile
+  ): Promise<APIResponse<ICorporatorProfile>> {
     try {
-      // Create New User
-      const newCorporate = await CorporateService.createCorporate(requestBody);
+      const newCompany = await CorporateService.createProfile(body);
 
-      this.setStatus(201); // set return status 201
-      return sendResponse({
-        message: "success",
-        data: newCorporate,
-      }) as CorporateProfileResponseCreate;
+      return sendResponse<ICorporatorProfile>({
+        message: "Company was created successfully!",
+        data: newCompany,
+      });
     } catch (error) {
       console.error(
-        `CorporateController - createUser() method error: `,
+        `CorporateController - createCorporateProfile() method error: `,
         prettyObject(error as {})
       );
       throw error;
     }
   }
-
-  @Get()
-  public async getAllCorporates(): Promise<CorporateProfileResponse> {
+  @SuccessResponse("200", "Success")
+  @Get("/profile")
+  public async getCorporateProfiles(): Promise<{
+    message: string;
+    data: ICorporatorProfile[];
+  }> {
     try {
-      console.log("getAllCorporates called");
-      const response = await CorporateService.getAllCorporates();
-      return sendResponse({
+      const result = await CorporateService.getAllProfiles();
+      if (!result) {
+        console.log(
+          "CorporateController - getCorporateProfiles() method error : No corporate profiles found."
+        );
+        return { message: "No corporate profiles found.", data: [] };
+      }
+      return sendResponse<ICorporatorProfile[]>({
         message: "success",
-        data: response,
-      }) as unknown as CorporateProfileResponse;
+        data: result,
+      });
     } catch (error) {
       console.error(
-        `CorporateController - getAllCorporates() method error: `,
+        `CorporateController - getCorporateProfiles() method error: `,
         prettyObject(error as {})
       );
       throw error;
     }
   }
-
-  @Get("/{corporateId}")
-  public async getCorporateBySub(
-    @Path() corporateId: string
-  ): Promise<CorporateProfileResponse> {
+  @SuccessResponse("200", "Success")
+  @Get("/profile/{corporateSub}")
+  public async getCorporateProfilesBySub(@Path() corporateSub: string) {
     try {
-      console.log("getCorporateById called with corporateId: ", corporateId);
-      const response = await CorporateService.getCorporateBySub(corporateId);
+      const corporateProfile = await CorporateService.getProfileBySub(corporateSub);
+      if (!corporateProfile) {
+        console.log(
+          "CorporateController - getCorporateProfilesById() method error : CorporateProfile not found"
+        );
+        return sendResponse({
+          message: "corporateProfile not found",
+          data: [],
+        });
+      }
       return sendResponse({
-        message: "success",
-        data: response,
-      }) as unknown as CorporateProfileResponse;
+        message: "Find corporateProfile successfully",
+        data: corporateProfile,
+      });
     } catch (error) {
       console.error(
-        `CorporateController - getCorporateById() method error: `,
+        `CorporateController - getCorporateProfilesById() method error: `,
         prettyObject(error as {})
       );
       throw error;
     }
   }
-
+  @SuccessResponse("204", "Updated Successfully")
   @Put("/profile/{corporateId}")
   public async updateCorporateProfile(
     @Path() corporateId: string,
-    @Body() requestBody: { corporateProfileId: string }
-  ): Promise<CorporateProfileResponseCreate> {
+    @Body() updateDataCorporateProfile: ICorporatorProfile
+  ) {
     try {
-      if (!corporateId) {
-        console.error("Corporate ID not found in cookies");
-        throw new Error(
-          "Authentication error: Corporate ID not found in cookies"
+      const updateCorporateProfile =
+        await CorporateService.updateCorporateProfile(
+          corporateId,
+          updateDataCorporateProfile
         );
-      }
-      console.log(
-        "updateCorporateProfile called with corporateId: ",
-        corporateId
-      );
-      const { corporateProfileId } = requestBody;
-      const response = await CorporateService.updateCorporateProfile(
-        corporateId,
-        corporateProfileId
-      );
-      return sendResponse({
-        message: "success",
-        data: response,
-      }) as unknown as CorporateProfileResponseCreate;
+      return sendResponse({ message: "success", data: updateCorporateProfile });
     } catch (error) {
       console.error(
         `CorporateController - updateCorporateProfile() method error: `,
@@ -123,64 +176,22 @@ export class CorporateController extends Controller {
     }
   }
 
-  @Get("/profile/me")
-  public async getCorporateMe(
-    @Request() request: ExpressRequest
-  ): Promise<CorporateProfileResponse> {
+  @SuccessResponse("200", "Delete Successfully")
+  @Delete("/profile/{corporateId}")
+  public async deleteCorporateProfile(
+    @Path() corporateId: string
+  ): Promise<{ message: string }> {
     try {
-      console.log("this is profile me....");
-      const sub = request.cookies["username"];
-      const access_token = request.cookies["access_token"];
-      if (!sub) {
-        console.error("Username not found in cookies");
-        throw new Error("Authentication error: Username not found in cookies");
-      }
-      const userProfile = await CorporateService.getCorporateBySub(sub);
-      console.log("userProfile::: ", userProfile);
-      if (!userProfile) {
-        console.log(
-          "CorporateController - getCorporateMe() : User profile not found"
-        );
-        return sendResponse({
-          message: "Corporate profile fetched successfully",
-          data: {
-            user: {} as any,
-            jobs: [],
-          },
-        }) as CorporateProfileResponse;
-      }
-      const companyJobs = await axios.get(
-        `http://localhost:4003/v1/corporate`,
-        {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-            Cookie: `username=${sub}; access_token=${access_token}`,
-          },
-          withCredentials: true,
-        }
-      );
-      if (!companyJobs.data) {
-        console.log(
-          "CorporateController - getCorporateMe() : Company jobs not found"
-        );
-        return sendResponse({
-          message: "Corporate profile fetched successfully",
-          data: {
-            user: userProfile,
-            jobs: [],
-          },
-        }) as CorporateProfileResponse;
-      }
-      return sendResponse({
-        message: "Corporate profile fetched successfully",
-        data: {
-          user: userProfile,
-          jobs: [],
-        },
-      }) as CorporateProfileResponse;
+      await CorporateService.deleteCorporateProfile(corporateId);
+      return { message: "Corporate Profile was deleted successfully" };
     } catch (error) {
-      console.error("CorporateController - getCorporateMe() error:", error);
+      console.error(
+        `CorporateController - deleteCorporateProfile() method error: `,
+        prettyObject(error as {})
+      );
       throw error;
     }
   }
+
+
 }

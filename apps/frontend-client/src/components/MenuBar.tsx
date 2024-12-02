@@ -56,7 +56,7 @@ export const MenuBar = () => {
           </div>
           <UserProfile
             avatarImage={user?.profile||"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCO2sR3EtGqpIpIa-GTVnvdrDHu0WxuzpA8g&s"}
-            fallback={user?.username}
+            fallback={user?.name}
           />
         </div>
       </div>

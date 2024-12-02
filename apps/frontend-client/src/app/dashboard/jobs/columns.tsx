@@ -3,28 +3,10 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Eye, MoreHorizontal, SquarePen, Trash } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-
-export type Jobs = {
-  _id?: string;
-  company_id?: string;
-  title?: string;
-  position?: string[];
-  workMode?: string[];
-  requirement?: string;
-  location?: string;
-  job_opening?: number;
-  max_salary?: number;
-  min_salary?: number;
-  description?: string;
-  address?: string;
-  type?: string[];
-  schedule?: string[];
-  required_experience?: string[];
-  benefit?: string[];
-  deadline?: string;
-  createdAt?: string;
-  updatedAt?: string;
-};
+import axiosInstance from "@/utils/axios";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Jobs } from "@/utils/types/form-type";
 
 export const columns: ColumnDef<Jobs>[] = [
   {
@@ -84,7 +66,7 @@ export const columns: ColumnDef<Jobs>[] = [
     accessorKey: "type",
     cell: ({ row }) => {
       const types = row.original.type;
-      console.log("type",types)
+      console.log("type", types);
       return (
         <>
           {types && types.length > 0
@@ -149,14 +131,51 @@ export const columns: ColumnDef<Jobs>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const payment = row.original;
+      const jobFromCol = row.original;
 
+    
+      interface Job {
+        _id: string;
+        title: string;
+      }
+
+      const [jobs, setJobs] = useState<Job[]>([]); // Define state for jobs
+
+      const handleDelete = async () => {
+        if (!jobFromCol._id) {
+          alert("Invalid job ID.");
+          return;
+        }
+        try {
+          const response = await axiosInstance.delete(
+            `/v1/jobs/${jobFromCol._id}`
+          );
+          console.log("Delete Response:", response.data);
+          // Assuming setJobs is a state updater for the list of jobs
+          setJobs((prevJobs) =>
+            prevJobs.filter((job) => job._id !== jobFromCol._id)
+          );
+          alert("Job deleted successfully!");
+        } catch (error) {
+          console.error("Error deleting job:", error);
+          alert("Failed to delete the job. Please try again.");
+        }
+      };
+      const router = useRouter();
       return (
         <>
           <div className="flex gap-2 ">
-            <Eye className=" h-[35px] w-[35px] p-2 bg-green-100 text-green-500 rounded-full " />
-            <SquarePen className=" h-[35px] w-[35px] p-2 bg-green-100 text-green-900 rounded-full" />
-            <Trash className=" h-[35px] w-[35px] p-2 bg-red-100 text-red-500 rounded-full " />
+            <Eye className=" h-[35px] w-[35px] p-2 bg-green-100 hover:bg-green-200 text-green-500 rounded-full " />
+            <SquarePen
+              className=" h-[35px] w-[35px] p-2 bg-green-100 hover:bg-green-200 text-green-900 rounded-full"
+              onClick={() => {
+                router.push(`/dashboard/update/${jobFromCol._id}`);
+              }}
+            />
+            <Trash
+              onClick={handleDelete}
+              className=" h-[35px] w-[35px] p-2 bg-red-100 hover:bg-green-200 text-red-500 rounded-full "
+            />
           </div>
         </>
       );

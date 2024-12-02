@@ -1,7 +1,17 @@
+import { CustomCvDataParams } from "@/utils/types/user-profile";
 import { fabric } from "fabric";
 import { ITextboxOptions } from "fabric/fabric-impl";
 import * as material from "material-colors";
-
+import React, { SetStateAction } from "react";
+export interface CvContentParams {
+  style: string;
+  json: {
+    version: string;
+    objects: any[];
+    clipPath: any;
+  };
+  userData: CustomCvDataParams | {};
+}
 export const JSON_KEYS = [
   "name",
   "gradientAngle",
@@ -11,6 +21,7 @@ export const JSON_KEYS = [
   "editable",
   "extensionType",
   "extension",
+  "filters",
 ];
 
 export const filters = [
@@ -77,6 +88,10 @@ export const fonts = [
 ];
 
 export interface EditorHookProps {
+  setPatternImageSrc: React.Dispatch<React.SetStateAction<string | null>>;
+  setShowCropper: React.Dispatch<React.SetStateAction<boolean>>;
+  defaultState: CvContentParams;
+  setCvContent: React.Dispatch<SetStateAction<CvContentParams>>;
   clearSelectionCallback?: () => void;
 }
 
@@ -133,9 +148,18 @@ export type ActiveTool =
   | "format"
   | "fontSize"
   | "textcolor"
-  | "nudge";
+  | "nudge"
+  | "horizontal-align"
+  | "vertical-align"
+  ;
 
 export type BuildEditorProps = {
+  dataForUpdate: any;
+  setDataForUpdate: React.Dispatch<SetStateAction<any>>;
+  cvContent: CvContentParams;
+  setCvContent: React.Dispatch<SetStateAction<CvContentParams>>;
+  canvasHistory: React.MutableRefObject<string[]>;
+  setHistoryIndex: React.Dispatch<SetStateAction<number>>;
   moveLeft: () => void;
   moveRight: () => void;
   moveUp: () => void;
@@ -148,9 +172,8 @@ export type BuildEditorProps = {
   autoZoom: () => void;
   copy: () => void;
   paste: () => void;
-  setPatternImageSrc: React.Dispatch<React.SetStateAction<string|null>>;
+  setPatternImageSrc: React.Dispatch<React.SetStateAction<string | null>>;
   setShowCropper: React.Dispatch<React.SetStateAction<boolean>>;
-  cropperRef: HTMLImageElement | null;
   canvas: fabric.Canvas;
   fillColor: string;
   strokeColor: string;
@@ -166,15 +189,29 @@ export type BuildEditorProps = {
 };
 
 export interface Editor {
+  alignVerticalTop:()=>void;
+  alignVerticalBottom:()=>void;
+  alignVerticalCenter:()=>void;
+  alignHorizontalLeft:()=>void;
+  alignHorizontalRight:()=>void;
+  alignHorizontalCenter:()=>void;
+  setEditable: () => void;
+  setUneditable: () => void;
+  updateCv: () => void;
   onMoveLeft: () => void;
   onMoveRight: () => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
+  savePdf: () => void;
   savePng: () => void;
   saveJpg: () => void;
   saveSvg: () => void;
   saveJson: () => void;
-  loadJson: (json: string) => void;
+  loadJson: (
+    json: string,
+    style?: string,
+    userData?: CustomCvDataParams | {}
+  ) => void;
   onUndo: () => void;
   onRedo: () => void;
   canUndo: () => boolean;
@@ -190,8 +227,8 @@ export interface Editor {
   changeImageFilter: (value: string) => void;
   addImage: (value: string) => void;
   replaceImage: (value: string) => void;
-  enableCropping:()=>void;
-  handleCrop:()=>void
+  enableCropping: () => void;
+  handleCrop: (imageurl: string) => void;
   delete: () => void;
   getActiveFontSize: () => number;
   changeFontSize: (value: number) => void;

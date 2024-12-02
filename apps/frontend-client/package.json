@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.8",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
     "@radix-ui/react-avatar": "^1.1.1",
@@ -33,6 +34,7 @@
     "input-otp": "^1.4.0",
     "lucide-react": "^0.454.0",
     "moment-timezone": "^0.5.46",
+    "multiselect-react-dropdown": "^2.0.25",
     "next": "^14.2.17",
     "next-themes": "^0.3.0",
     "react": "^18",
@@ -47,6 +49,7 @@
   },
   "devDependencies": {
     "@types/globalize": "^1.5.5",
+    "@types/google.maps": "^3.58.1",
     "@types/node": "^20",
     "@types/react-dom": "^18",
     "@types/recharts": "^1.8.29",

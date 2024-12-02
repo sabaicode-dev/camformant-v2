@@ -262,6 +262,90 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"CvFileParams": {
+				"properties": {
+					"userId": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"cv": {
+						"items": {
+							"properties": {
+								"_id": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+										}
+									],
+									"nullable": true
+								},
+								"url": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"url"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CvFilePResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/CvFileParams"
+					}
+				},
+				"required": [
+					"message",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CvStyleParams": {
+				"properties": {
+					"_id": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"style": {
+						"type": "string"
+					},
+					"thumbnail": {
+						"type": "string"
+					},
+					"json": {
+						"properties": {
+							"objects": {
+								"items": {},
+								"type": "array"
+							},
+							"version": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"objects",
+							"version"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"_id",
+					"style",
+					"thumbnail",
+					"json"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"BasicParams": {
 				"properties": {
 					"surname": {
@@ -289,15 +373,6 @@
 						"type": "string"
 					}
 				},
-				"required": [
-					"surname",
-					"lastname",
-					"career",
-					"email",
-					"dob",
-					"address",
-					"phonenumber"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -311,10 +386,6 @@
 						"format": "double"
 					}
 				},
-				"required": [
-					"name",
-					"percent"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -327,10 +398,6 @@
 						"type": "string"
 					}
 				},
-				"required": [
-					"name",
-					"proficiency"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -343,10 +410,6 @@
 						"type": "string"
 					}
 				},
-				"required": [
-					"name",
-					"proficiency"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -365,12 +428,6 @@
 						"type": "string"
 					}
 				},
-				"required": [
-					"academic",
-					"school",
-					"major",
-					"year"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -389,10 +446,6 @@
 						"type": "string"
 					}
 				},
-				"required": [
-					"position",
-					"company"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -414,13 +467,6 @@
 						"type": "string"
 					}
 				},
-				"required": [
-					"name",
-					"career",
-					"company",
-					"email",
-					"phonenumber"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -433,10 +479,6 @@
 						"type": "string"
 					}
 				},
-				"required": [
-					"description",
-					"strength"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -475,37 +517,115 @@
 					},
 					"skills": {
 						"items": {
-							"$ref": "#/components/schemas/SkillParams"
+							"allOf": [
+								{
+									"$ref": "#/components/schemas/SkillParams"
+								},
+								{
+									"properties": {
+										"index": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"type": "object"
+								}
+							]
 						},
 						"type": "array"
 					},
 					"expertise": {
 						"items": {
-							"$ref": "#/components/schemas/ExpertiseParams"
+							"allOf": [
+								{
+									"$ref": "#/components/schemas/ExpertiseParams"
+								},
+								{
+									"properties": {
+										"index": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"type": "object"
+								}
+							]
 						},
 						"type": "array"
 					},
 					"languages": {
 						"items": {
-							"$ref": "#/components/schemas/LanguageParams"
+							"allOf": [
+								{
+									"$ref": "#/components/schemas/LanguageParams"
+								},
+								{
+									"properties": {
+										"index": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"type": "object"
+								}
+							]
 						},
 						"type": "array"
 					},
 					"educations": {
 						"items": {
-							"$ref": "#/components/schemas/EducationParams"
+							"allOf": [
+								{
+									"$ref": "#/components/schemas/EducationParams"
+								},
+								{
+									"properties": {
+										"index": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"type": "object"
+								}
+							]
 						},
 						"type": "array"
 					},
 					"experiences": {
 						"items": {
-							"$ref": "#/components/schemas/ExperienceParams"
+							"allOf": [
+								{
+									"$ref": "#/components/schemas/ExperienceParams"
+								},
+								{
+									"properties": {
+										"index": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"type": "object"
+								}
+							]
 						},
 						"type": "array"
 					},
 					"references": {
 						"items": {
-							"$ref": "#/components/schemas/ReferenceParams"
+							"allOf": [
+								{
+									"$ref": "#/components/schemas/ReferenceParams"
+								},
+								{
+									"properties": {
+										"index": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"type": "object"
+								}
+							]
 						},
 						"type": "array"
 					},
@@ -523,8 +643,27 @@
 							"$ref": "#/components/schemas/PortfolioParams"
 						},
 						"type": "array"
+					},
+					"cv": {
+						"type": "string"
 					}
 				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IUserProfileResposne": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/IUserProfile"
+					}
+				},
+				"required": [
+					"message",
+					"data"
+				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -540,6 +679,18 @@
 				"required": [
 					"_id",
 					"userId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CvParam": {
+				"properties": {
+					"cv": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"cv"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -602,6 +753,56 @@
 							"$ref": "#/components/schemas/CertificateParams"
 						},
 						"type": "array"
+					},
+					{
+						"$ref": "#/components/schemas/CvParam"
+					}
+				],
+				"nullable": true
+			},
+			"CustomCvResponse": {
+				"properties": {
+					"_id": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"style": {
+						"type": "string"
+					},
+					"json": {
+						"properties": {
+							"clipPath": {},
+							"objects": {
+								"items": {},
+								"type": "array"
+							},
+							"version": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"clipPath",
+							"objects",
+							"version"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"_id",
+					"style",
+					"json"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UnionCustomCvResponse": {
+				"anyOf": [
+					{
+						"$ref": "#/components/schemas/CustomCvResponse"
+					},
+					{
+						"properties": {},
+						"type": "object"
 					}
 				],
 				"nullable": true
@@ -637,40 +838,61 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"CvStyleParams": {
+			"companiesForJobs": {
 				"properties": {
 					"_id": {
-						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
-					},
-					"style": {
 						"type": "string"
 					},
-					"json": {
+					"profile": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"location": {
 						"properties": {
-							"objects": {
-								"items": {},
-								"type": "array"
+							"country": {
+								"type": "string"
 							},
-							"version": {
+							"city": {
+								"type": "string"
+							},
+							"address": {
 								"type": "string"
 							}
 						},
-						"required": [
-							"objects",
-							"version"
-						],
 						"type": "object"
+					},
+					"description": {
+						"type": "string"
+					},
+					"contact": {
+						"properties": {
+							"website": {
+								"type": "string"
+							},
+							"phone_number": {
+								"type": "string"
+							}
+						},
+						"type": "object"
+					},
+					"email": {
+						"type": "string"
+					},
+					"job_openings_count": {
+						"type": "number",
+						"format": "double"
+					},
+					"job_closings_count": {
+						"type": "number",
+						"format": "double"
 					}
 				},
-				"required": [
-					"_id",
-					"style",
-					"json"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ICorporateModel": {
+			"ICorporatorProfile": {
 				"properties": {
 					"_id": {
 						"type": "string"
@@ -678,7 +900,7 @@
 					"sub": {
 						"type": "string"
 					},
-					"username": {
+					"name": {
 						"type": "string"
 					},
 					"email": {
@@ -691,14 +913,66 @@
 						],
 						"nullable": false
 					},
-					"corporateProfileId": {
+					"profile": {
 						"type": "string"
 					},
-					"favorites": {
-						"items": {
-							"type": "string"
+					"location": {
+						"properties": {
+							"country": {
+								"type": "string"
+							},
+							"city": {
+								"type": "string"
+							},
+							"address": {
+								"type": "string"
+							}
 						},
-						"type": "array"
+						"type": "object"
+					},
+					"contact": {
+						"properties": {
+							"website": {
+								"type": "string"
+							},
+							"phone_number": {
+								"type": "string"
+							}
+						},
+						"type": "object"
+					},
+					"social_links": {
+						"properties": {
+							"facebook": {
+								"type": "string"
+							},
+							"twitter": {
+								"type": "string"
+							},
+							"linkedin": {
+								"type": "string"
+							}
+						},
+						"type": "object"
+					},
+					"description": {
+						"type": "string"
+					},
+					"employee_count": {
+						"type": "number",
+						"format": "double"
+					},
+					"job_openings_count": {
+						"type": "number",
+						"format": "double"
+					},
+					"job_closings_count": {
+						"type": "number",
+						"format": "double"
+					},
+					"completed": {
+						"type": "number",
+						"format": "double"
 					},
 					"createdAt": {
 						"type": "string",
@@ -709,89 +983,20 @@
 						"format": "date-time"
 					}
 				},
-				"required": [
-					"_id",
-					"sub",
-					"username",
-					"email",
-					"role",
-					"favorites",
-					"createdAt",
-					"updatedAt"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
-			"CorporateProfileResponse": {
+			"APIResponse_ICorporatorProfile_": {
 				"properties": {
 					"message": {
 						"type": "string"
 					},
 					"data": {
-						"properties": {
-							"jobs": {
-								"items": {
-									"type": "string"
-								},
-								"type": "array"
-							},
-							"user": {
-								"$ref": "#/components/schemas/ICorporateModel"
-							}
-						},
-						"required": [
-							"jobs",
-							"user"
-						],
-						"type": "object"
+						"$ref": "#/components/schemas/ICorporatorProfile"
 					}
 				},
 				"required": [
-					"message",
-					"data"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"CorporateProfileResponseCreate": {
-				"properties": {
-					"message": {
-						"type": "string"
-					},
-					"data": {
-						"$ref": "#/components/schemas/ICorporateModel"
-					}
-				},
-				"required": [
-					"message",
-					"data"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"CorporateProfileResquestParams": {
-				"properties": {
-					"sub": {
-						"type": "string"
-					},
-					"corporateProfileId": {
-						"type": "string"
-					},
-					"username": {
-						"type": "string"
-					},
-					"profile": {
-						"type": "string"
-					},
-					"email": {
-						"type": "string"
-					},
-					"role": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"username"
+					"message"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -916,7 +1121,9 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {}
+								"schema": {
+									"$ref": "#/components/schemas/CvFilePResponse"
+								}
 							}
 						}
 					}
@@ -970,9 +1177,9 @@
 				}
 			}
 		},
-		"/v1/users/profile-detail": {
+		"/v1/users/cvstyle": {
 			"get": {
-				"operationId": "GetProfileByID",
+				"operationId": "GetCVStyle",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -981,7 +1188,10 @@
 								"schema": {
 									"properties": {
 										"data": {
-											"$ref": "#/components/schemas/IUserProfile"
+											"items": {
+												"$ref": "#/components/schemas/CvStyleParams"
+											},
+											"type": "array"
 										},
 										"message": {
 											"type": "string"
@@ -992,6 +1202,25 @@
 										"message"
 									],
 									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/v1/users/profile-detail": {
+			"get": {
+				"operationId": "GetProfileByID",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IUserProfileResposne"
 								}
 							}
 						}
@@ -1036,13 +1265,102 @@
 					}
 				},
 				"security": [],
-				"parameters": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "query",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/IUserProfile"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/users/customCv": {
+			"get": {
+				"operationId": "GetCustomCv",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"$ref": "#/components/schemas/CustomCvResponse"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			},
+			"put": {
+				"operationId": "UpdateCustomCv",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"$ref": "#/components/schemas/UnionCustomCvResponse"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"json": {},
+									"style": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"json",
+									"style"
+								],
+								"type": "object"
 							}
 						}
 					}
@@ -1392,65 +1710,6 @@
 				]
 			}
 		},
-		"/v1/users/cvstyle/{style}": {
-			"get": {
-				"operationId": "GetCVStyle",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"data": {
-											"$ref": "#/components/schemas/CvStyleParams"
-										},
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"data",
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "style",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			}
-		},
-		"/v1/users/profile/me": {
-			"get": {
-				"operationId": "GetCorporateMe",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/CorporateProfileResponse"
-								}
-							}
-						}
-					}
-				},
-				"security": [],
-				"parameters": []
-			}
-		},
 		"/v1/users/health": {
 			"get": {
 				"operationId": "GetHealth",
@@ -1481,23 +1740,165 @@
 				"parameters": []
 			}
 		},
-		"/v1/corporate": {
-			"post": {
-				"operationId": "CreateCorporate",
+		"/v1/corporator/companies": {
+			"get": {
+				"operationId": "GetMultiCompanies",
 				"responses": {
-					"201": {
-						"description": "Created",
+					"200": {
+						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/CorporateProfileResponseCreate"
+									"properties": {
+										"companies": {
+											"items": {
+												"$ref": "#/components/schemas/companiesForJobs"
+											},
+											"type": "array"
+										}
+									},
+									"required": [
+										"companies"
+									],
+									"type": "object"
 								}
 							}
 						}
 					}
 				},
 				"tags": [
-					"Corporate"
+					"Corporator"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "companiesId",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v1/corporator/profile/me": {
+			"get": {
+				"operationId": "GetCorporateProfileWithJobs",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"items": {},
+											"type": "array"
+										},
+										{
+											"properties": {
+												"data": {
+													"$ref": "#/components/schemas/ICorporatorProfile"
+												},
+												"message": {
+													"type": "string"
+												}
+											},
+											"required": [
+												"data",
+												"message"
+											],
+											"type": "object"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporator"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/v1/corporator/getMulti/Profile": {
+			"get": {
+				"operationId": "GetMultiProfileCompany",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"companiesProfile": {
+											"items": {
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"profile": {
+														"type": "string"
+													},
+													"_id": {
+														"type": "string"
+													}
+												},
+												"required": [
+													"name",
+													"profile",
+													"_id"
+												],
+												"type": "object"
+											},
+											"type": "array"
+										}
+									},
+									"required": [
+										"companiesProfile"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporator"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "companiesId",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v1/corporator/profile": {
+			"post": {
+				"operationId": "CreateCorporateProfile",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIResponse_ICorporatorProfile_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporator"
 				],
 				"security": [],
 				"parameters": [],
@@ -1506,50 +1907,187 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/CorporateProfileResquestParams"
+								"$ref": "#/components/schemas/ICorporatorProfile"
 							}
 						}
 					}
 				}
 			},
 			"get": {
-				"operationId": "GetAllCorporates",
+				"operationId": "GetCorporateProfiles",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "Success",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/CorporateProfileResponse"
+									"properties": {
+										"data": {
+											"items": {
+												"$ref": "#/components/schemas/ICorporatorProfile"
+											},
+											"type": "array"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
 								}
 							}
 						}
 					}
 				},
 				"tags": [
-					"Corporate"
+					"Corporator"
 				],
 				"security": [],
 				"parameters": []
 			}
 		},
-		"/v1/corporate/{corporateId}": {
+		"/v1/corporator/profile/{corporateSub}": {
 			"get": {
-				"operationId": "GetCorporateBySub",
+				"operationId": "GetCorporateProfilesBySub",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "Success",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/CorporateProfileResponse"
+									"anyOf": [
+										{
+											"properties": {
+												"data": {
+													"$ref": "#/components/schemas/ICorporatorProfile"
+												},
+												"message": {
+													"type": "string"
+												}
+											},
+											"required": [
+												"data",
+												"message"
+											],
+											"type": "object"
+										},
+										{
+											"properties": {
+												"data": {
+													"items": {},
+													"type": "array"
+												},
+												"message": {
+													"type": "string"
+												}
+											},
+											"required": [
+												"data",
+												"message"
+											],
+											"type": "object"
+										}
+									]
 								}
 							}
 						}
 					}
 				},
 				"tags": [
-					"Corporate"
+					"Corporator"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "corporateSub",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v1/corporator/profile/{corporateId}": {
+			"put": {
+				"operationId": "UpdateCorporateProfile",
+				"responses": {
+					"204": {
+						"description": "Updated Successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"$ref": "#/components/schemas/ICorporatorProfile"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporator"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "corporateId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ICorporatorProfile"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteCorporateProfile",
+				"responses": {
+					"200": {
+						"description": "Delete Successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporator"
 				],
 				"security": [],
 				"parameters": [
@@ -1562,77 +2100,6 @@
 						}
 					}
 				]
-			}
-		},
-		"/v1/corporate/profile/{corporateId}": {
-			"put": {
-				"operationId": "UpdateCorporateProfile",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/CorporateProfileResponseCreate"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Corporate"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "corporateId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"properties": {
-									"corporateProfileId": {
-										"type": "string"
-									}
-								},
-								"required": [
-									"corporateProfileId"
-								],
-								"type": "object"
-							}
-						}
-					}
-				}
-			}
-		},
-		"/v1/corporate/profile/me": {
-			"get": {
-				"operationId": "GetCorporateMe",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/CorporateProfileResponse"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Corporate"
-				],
-				"security": [],
-				"parameters": []
 			}
 		}
 	},

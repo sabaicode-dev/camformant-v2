@@ -79,19 +79,23 @@ const Chat = () => {
   }, [hasMore, isLoading, page]);
 
   const onScroll = useCallback(async () => {
+    if (!divRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = divRef.current;
     if (
-      divRef.current?.clientHeight! + window.scrollY >=
-        divRef.current?.clientHeight! &&
+      scrollHeight - scrollTop <= clientHeight + 70 &&
       hasMore &&
       !isLoading &&
       conversations.length > 0
     ) {
-      console.log("hi");
-
       await loadMoreData();
     }
   }, [hasMore, isLoading, loadMoreData, conversations]);
-
+  useEffect(() => {
+    const div = divRef.current;
+    if (!div) return;
+    div.addEventListener("scroll", onScroll);
+    return () => div.removeEventListener("scroll", onScroll);
+  }, [onScroll]);
   useEffect(() => {
     const getConversations = async () => {
       try {
@@ -101,6 +105,7 @@ const Chat = () => {
         setConversations([]);
         const res = await axiosInstance.get(API_ENDPOINTS.GET_CONVERSATIONS);
         const conversations: RespondGetConversations = res.data;
+
         setPagination({
           totalConversation: conversations.totalConversation,
           currentPage: conversations.currentPage,
@@ -124,12 +129,6 @@ const Chat = () => {
     };
     getConversations();
   }, []);
-  console.log("hasmore", hasMore);
-  console.log("height", divRef.current?.clientHeight);
-  console.log("window::", window.innerHeight);
-  console.log("window.scrollY::", window.scrollY);
-  console.log("document.body.scrollHeight::", document.body.scrollHeight);
-  console.log("conss", conversations);
 
   const handleConversationClick = (conId: string) => {
     router.push(`/chat/${conId}`);
@@ -144,7 +143,7 @@ const Chat = () => {
               Contact
             </p>
 
-            {isLoading ? (
+            {isLoading && conversations.length === 0 ? (
               <>
                 <SkeletonCard />
                 <SkeletonCard />
@@ -185,19 +184,30 @@ const Chat = () => {
                       onlineUsers.includes(con.receiver) && (
                         <span className="absolute bottom-0 right-0 bg-green-500 border-2 border-white rounded-full size-4"></span>
                       )}
-                    {con.profile && (
+                    {
                       <Image
-                        src={con.profile}
+                        src={
+                          con.profile || "https://sabaicode.com/sabaicode.jpg"
+                        }
                         alt={`${con.name} profile`}
                         width={7087}
                         height={7087}
                         className="object-cover rounded-full size-16"
                       />
-                    )}
+                    }
                   </div>
                   <p>{con.name}</p>
                 </div>
               ))
+            )}
+            {isLoading && hasMore && conversations.length !== 0 && (
+              <>
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
+              </>
             )}
           </div>
         </div>

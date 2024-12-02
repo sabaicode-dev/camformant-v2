@@ -16,7 +16,6 @@ interface FeedbackParams {
   feedbackDesc: MatchParams[];
 }
 const SelfDescription: React.FC = () => {
-  const { user } = useAuth();
   const [isPut, setIsPut] = useState<boolean>(false);
   const [strength, setStrength] = useState("");
   const [description, setDescription] = useState("");
@@ -46,6 +45,7 @@ const SelfDescription: React.FC = () => {
   };
   useEffect(() => {
     async function GetData() {
+      console.log("fetch data::::::");
       try {
         setNext(true);
         const response = await axiosInstance.get(
@@ -65,7 +65,7 @@ const SelfDescription: React.FC = () => {
       }
     }
     GetData();
-  }, [feedbacks]);
+  }, []);
 
   async function PostData() {
     try {

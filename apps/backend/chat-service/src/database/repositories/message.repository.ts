@@ -9,7 +9,10 @@ import {
   query,
   RespondGetConversations,
   RespondGetConversationsPagination,
+  messType,
 } from "./types/messages.repository.types";
+import configs from "@/src/config";
+import axios from "axios";
 
 export class MessageRepository {
   async sendMessage(makeMessage: {
@@ -56,6 +59,7 @@ export class MessageRepository {
     }
   }
   //todo: reduce / structure type
+  //todo: sort for frontend
   async getMessage(
     userToChatId: string,
     senderId: string,
@@ -63,7 +67,6 @@ export class MessageRepository {
     senderRole: "User" | "Company",
     receiverRole: "User" | "Company"
   ): Promise<null | conversationRespond> {
-    //conversation
     const { limit = 7, page = 1 } = query;
 
     const skip = (page - 1) * limit;
@@ -78,11 +81,32 @@ export class MessageRepository {
         },
       }).populate({
         path: "messages",
-        options: { limit, skip, sort: { createdAt: 1 } },
-        // model: MessageModel,
-        // select: "_id senderId receiverId message createdAt updatedAt",
+        options: {
+          limit,
+          skip,
+          sort: { createdAt: -1 },
+        },
       });
+      //todo: handle if no receiverFound will not create conversation
       if (!conversation) {
+        const endpoint =
+          senderRole === "User"
+            ? `${configs.corporatorApiEndpoint}/getMulti/Profile?companiesId=`
+            : `${configs.userUrl}/`;
+        const data = (await axios.get(`${endpoint}${userToChatId}`)).data;
+
+        const receiverData = data.companiesProfile || data.usersProfile;
+
+        if (!receiverData) {
+          return {
+            conversation: [],
+            currentPage: page,
+            totalMessages: 0,
+            totalPage: 1,
+            limit: limit,
+            skip: skip,
+          };
+        }
         const roomId = [senderId, userToChatId].sort().join("_");
         const participants = [
           {
@@ -111,6 +135,13 @@ export class MessageRepository {
           skip: skip,
         };
       }
+
+      conversation.messages = (
+        conversation.messages as unknown as messType[]
+      ).sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      ) as unknown as typeof conversation.messages;
 
       // Step 2: Count total messages for the conversation separately
       const totalMessages = await MessageModel.countDocuments({
@@ -207,21 +238,20 @@ export class MessageRepository {
       //declare endpoint and query to get participant Profile Detail from endpoint
       let fetchQuery: string = "";
       let api_endpoint: string = "";
-      //todo: user/company fetch data
       if (senderRole === "User") {
         fetchQuery =
           participantsId.length === 0 ? "" : `?companiesId=${participantsId}`;
-        api_endpoint = "http://localhost:4003/v1/companies/getMulti/Profile";
+        api_endpoint = `${configs.corporatorApiEndpoint}/getMulti/Profile`;
       } else if (senderRole === "Company") {
-        //TODO: fetch to user to get profile
         fetchQuery =
           participantsId.length === 0 ? "" : `?usersId=${participantsId}`;
-        api_endpoint = "http://localhost:4005/v1/users/getMulti/Profile";
+        api_endpoint = `${configs.userUrl}/getMulti/Profile`;
       }
 
       const res = await fetch(`${api_endpoint}${fetchQuery}`);
 
       const data = await res.json();
+
       //declare
       let participantsProfile:
         | {
@@ -235,6 +265,7 @@ export class MessageRepository {
       } else if (data.usersProfile) {
         participantsProfile = data.usersProfile;
       }
+
       //check compare the participant from db and fetching must be match to ensure correctly
       if (participantsProfile! && participantsProfile.length !== 0) {
         for (let i = 0; i < participantsProfile!.length; i++) {

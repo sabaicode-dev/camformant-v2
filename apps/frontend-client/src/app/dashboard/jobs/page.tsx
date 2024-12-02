@@ -2,26 +2,33 @@
 import DynamicBreadcrumb from "@/components/DynamicBreadcrumb";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
-
-
+import axiosInstance from "@/utils/axios";
 
 const JobsPage = () => {
-  const { jobs } = useAuth();
-
-  const jobsData = jobs?.jobStats.recentJobs;
- console.log(jobsData)
+  const [jobsData, setJobsData] = useState([]);
   useEffect(() => {
-    console.log("jobs:::::::::::::::::::::::::;", jobs?.jobStats.recentJobs);
-  }, [jobs]);
+    const fetchData = async () => {
+      try {
+        const res = await axiosInstance.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/v1/jobs/corporator`
+        );
+        setJobsData(res.data.data);
+      } catch (error) {
+        console.error("Fetch jobs failed:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  console.log("jobsDatalikdsjhfloiuahlsioudhfas", jobsData);
 
   return (
     <>
       <DynamicBreadcrumb />
       <h1>hello world</h1>
-     <div className="font-roboto"> Jobs hello world</div>
-      <DataTable data={jobsData||[]} columns={columns} />
+      <div className="font-roboto"> Jobs hello world</div>
+      <DataTable data={jobsData || []} columns={columns} />
     </>
   );
 };

@@ -64,6 +64,8 @@ export class MessageController extends Controller {
         username?: string;
         role?: string[];
       };
+
+      // Fetch the result from the service
       const result = await this.MessageService.getMessage(
         userToChatId,
         cookieHeader!,
@@ -71,11 +73,29 @@ export class MessageController extends Controller {
         currentUser
       );
 
-      return result;
+      // Modify the messages array to move the specific message to the last index
+      if (result?.conversation?.messages) {
+        const messages = result.conversation.messages;
+
+        // Find the most recent message (you can use any condition here)
+        const mostRecentIndex = messages.findIndex(
+          msg => msg.message === "Hello ME " // Replace with your condition
+        );
+
+        if (mostRecentIndex !== -1) {
+          // Remove the most recent message and push it to the end
+          const [mostRecentMessage] = messages.splice(mostRecentIndex, 1);
+          messages.push(mostRecentMessage);
+        }
+      }
+
+      return result; // Return the modified result
     } catch (error) {
+      console.error("Error in getMessages:", error);
       throw error;
     }
   }
+
   @Get("/conversation/{conversationId}")
   public async getConversationById(@Path() conversationId: string) {
     try {
@@ -94,17 +114,6 @@ export class MessageController extends Controller {
   ) {
     try {
       const cookieHeader = request.headers.cookie;
-      console.log(
-        typeof request.headers.currentuser,
-        "request.headers.currentuser:::",
-        request.headers.currentuser
-      );
-
-      console.log(
-        typeof request.headers.cookie,
-        "request.headers::???",
-        request.headers
-      );
 
       const currentUser = JSON.parse(request.headers.currentuser as string) as {
         username?: string;

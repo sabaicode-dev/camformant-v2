@@ -3,11 +3,11 @@ import React, { useEffect, useState } from "react";
 import MiniCardResume from "../resume/mini-card-resume";
 import { BackButton_md } from "../back/BackButton";
 import { ImCheckmark } from "react-icons/im";
-import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import axiosInstance from "@/utils/axios";
+import SkeletonLoader from "@/components/cv-rating-card/router-page/basic/skeleton";
+import CallToAction from "@/components/calltoaction/call-to-action";
 import { CvData } from "@/utils/types/user-profile";
-import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
-import CallToAction from "../calltoaction/call-to-action";
 
 const SelectCV = () => {
   const [cvs, setCvs] = useState<CvData | null>(null);
@@ -21,7 +21,9 @@ const SelectCV = () => {
         const check_cv = await axiosInstance.get(
           API_ENDPOINTS.USER_SERVICE_CV_FILE
         );
+
         if (check_cv.status === 200) {
+          setCvs(check_cv.data.data);
           setCvs(check_cv.data.data);
         }
       } catch (error) {
@@ -36,7 +38,7 @@ const SelectCV = () => {
     try {
       const response = await axiosInstance.put(
         API_ENDPOINTS.USER_PROFILE_DETAIL,
-        { cv: item }
+        { cv: item.url }
       );
       console.log("cv into user detial", response);
     } catch (error) {
