@@ -16,7 +16,7 @@ const events = [
   },
 ];
 
-const Page = () => {
+const CalendarPage = () => {
   return (
     <div>
       <h1>My Calendar</h1>
@@ -25,4 +25,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default CalendarPage;

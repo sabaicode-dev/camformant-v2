@@ -155,6 +155,21 @@ class JobRepository {
       throw error;
     }
   }
+  public async getAllJobsWithCorporator(companyId: string) {
+    try {
+      const result = await JobModel.find({ companyId: companyId });
+      if (!result) {
+        throw new NotFoundError("No jobs found for this company.");
+      }
+      return result;
+    } catch (error) {
+      console.error(
+        `JobRepository - getAllJobs() method error:`,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
 
   public async findJobById(jobId: string) {
     try {
@@ -345,7 +360,9 @@ class JobRepository {
       throw err;
     }
   }
-  public async createJobApply(body: PostJobApplyBody) {
+  public async createJobApply(
+    body: PostJobApplyBody
+  ): Promise<JobApplyResponse | {}> {
     try {
       const response: JobApplyResponse | {} = await ApplyModel.create(body);
       console.log("response", response);
@@ -354,7 +371,10 @@ class JobRepository {
       throw err;
     }
   }
-  public async updateJobApply(applyId: string, body: BodyUpdateJobApply) {
+  public async updateJobApply(
+    applyId: string,
+    body: BodyUpdateJobApply
+  ): Promise<JobApplyResponse | {} | null> {
     try {
       const updateFields = Object.keys(body).reduce(
         (acc: Record<string, string | Date | undefined>, key: string) => {
@@ -362,16 +382,19 @@ class JobRepository {
             body[key as keyof BodyUpdateJobApply] !== undefined &&
             body[key as keyof BodyUpdateJobApply] !== null
           ) {
-            if (key === "status")
+            if (key === "status") {
               acc[`userInfo.${key}`] = body[key as keyof BodyUpdateJobApply];
-            else
+              console.log("key::::", key);
+              acc[`statusDate.${body[key as keyof BodyUpdateJobApply]}`] =
+                new Date();
+              console.log("date::::", acc);
+            } else
               acc[`companyResponse.${key}`] = [
                 "interviewDate",
                 "startDate",
               ].includes(key)
                 ? new Date(body[key as keyof BodyUpdateJobApply]!)
                 : body[key as keyof BodyUpdateJobApply];
-            acc["updatedAt"] = new Date();
           }
           return acc;
         },

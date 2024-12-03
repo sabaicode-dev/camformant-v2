@@ -124,7 +124,7 @@ export const RecommendationPost: React.FC = () => {
                     _id={job._id}
                     title={job.title}
                     position={job.position}
-                    profile={job.company.profile}
+                    profile={job.company?.profile || ""}
                     min_salary={job.min_salary}
                     max_salary={job.max_salary}
                     job_opening={job.job_opening}

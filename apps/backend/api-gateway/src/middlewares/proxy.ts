@@ -46,7 +46,59 @@ const proxyConfigs: ProxyConfig = {
       },
     },
   },
+  [ROUTE_PATHS.NOTIFICATION_SERVICE.path]: {
+    target: ROUTE_PATHS.NOTIFICATION_SERVICE.target,
+    pathRewrite: (path, _req) => {
+      console.log(
+        "::::",
+        `${ROUTE_PATHS.NOTIFICATION_SERVICE.path}${path}`,
+        ROUTE_PATHS.NOTIFICATION_SERVICE.target
+      );
 
+      return `${ROUTE_PATHS.NOTIFICATION_SERVICE.path}${path}`;
+    },
+    on: {
+      proxyReq: (
+        proxyReq: ClientRequest,
+        req: IncomingMessage & {
+          currentUser?: {
+            username?: string;
+            role: string[] | undefined;
+          };
+        },
+        _res: Response
+      ) => {
+        const { currentUser } = req;
+
+        if (currentUser) {
+          // Add headers to proxyReq for forwarding to the target service
+          proxyReq.setHeader("currentUser", JSON.stringify(currentUser)); // Another header as specified
+        }
+
+        // @ts-ignore
+        // logRequest(gatewayLogger, proxyReq, {
+        //   protocol: proxyReq.protocol,
+        //   host: proxyReq.getHeader("host"),
+        //   path: proxyReq.path,
+        // });
+      },
+      proxyRes: (_proxyRes, req, res) => {
+        const requestOrigin = req.headers.origin;
+        if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+          res.setHeader("Access-Control-Allow-Origin", requestOrigin);
+        }
+        res.setHeader("Access-Control-Allow-Credentials", "true");
+        res.setHeader(
+          "Access-Control-Allow-Methods",
+          (corsOptions!.methods as string[]).join(", ")
+        );
+        res.setHeader(
+          "Access-Control-Allow-Headers",
+          "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+        );
+      },
+    },
+  },
   [ROUTE_PATHS.USER_SERVICE.path]: {
     target: ROUTE_PATHS.USER_SERVICE.target,
     pathRewrite: (path, _req) => `${ROUTE_PATHS.USER_SERVICE.path}${path}`,
@@ -146,41 +198,7 @@ const proxyConfigs: ProxyConfig = {
       },
     },
   },
-  [ROUTE_PATHS.NOTIFICATION_SERVICE.path]: {
-    target: ROUTE_PATHS.NOTIFICATION_SERVICE.target,
-    pathRewrite: (_path, _req) => {
-      return `${ROUTE_PATHS.NOTIFICATION_SERVICE.path}${_path}`;
-    },
-    on: {
-      proxyReq: (
-        _proxyReq: ClientRequest,
-        _req: IncomingMessage,
-        _res: Response
-      ) => {
-        // @ts-ignore
-        // logRequest(gatewayLogger, proxyReq, {
-        //   protocol: proxyReq.protocol,
-        //   host: proxyReq.getHeader("host"),
-        //   path: proxyReq.path,
-        // });
-      },
-      proxyRes: (_proxyRes, req, res) => {
-        const requestOrigin = req.headers.origin;
-        if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
-          res.setHeader("Access-Control-Allow-Origin", requestOrigin);
-        }
-        res.setHeader("Access-Control-Allow-Credentials", "true");
-        res.setHeader(
-          "Access-Control-Allow-Methods",
-          (corsOptions!.methods as string[]).join(", ")
-        );
-        res.setHeader(
-          "Access-Control-Allow-Headers",
-          "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-        );
-      },
-    },
-  },
+
   [ROUTE_PATHS.CONVERSATION.path]: {
     target: ROUTE_PATHS.CONVERSATION.target,
     pathRewrite: (path, _req) => `${ROUTE_PATHS.CONVERSATION.path}${path}`,

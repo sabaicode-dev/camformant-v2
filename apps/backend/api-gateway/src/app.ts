@@ -41,7 +41,10 @@ app.get("/v1/gateway-health", (_req: Request, res: Response) => {
 app.use(routeConfigMiddleware);
 app.use(authenticateToken);
 app.use(authorizeRole);
-
+app.use((_req, _res, next) => {
+  console.log("passed checked all");
+  next();
+});
 // =======================
 // Proxy Routes
 // =======================

@@ -210,9 +210,30 @@
 						"type": "string",
 						"format": "date-time"
 					},
-					"updateAt": {
-						"type": "string",
-						"format": "date-time"
+					"statusDate": {
+						"properties": {
+							"Apply": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Review": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Shortlist": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Interview": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Accept": {
+								"type": "string",
+								"format": "date-time"
+							}
+						},
+						"type": "object"
 					}
 				},
 				"required": [
@@ -529,6 +550,24 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"APIResponse_IJob-Array_": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/IJob"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"APIResponse_string-Array_": {
 				"properties": {
 					"message": {
@@ -603,9 +642,30 @@
 						"type": "string",
 						"format": "date-time"
 					},
-					"updateAt": {
-						"type": "string",
-						"format": "date-time"
+					"statusDate": {
+						"properties": {
+							"Apply": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Review": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Shortlist": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Interview": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Accept": {
+								"type": "string",
+								"format": "date-time"
+							}
+						},
+						"type": "object"
 					},
 					"jobInfo": {
 						"$ref": "#/components/schemas/IJob"
@@ -677,6 +737,9 @@
 						"type": "string"
 					}
 				},
+				"required": [
+					"status"
+				],
 				"type": "object",
 				"additionalProperties": false
 			}
@@ -1017,6 +1080,28 @@
 						}
 					}
 				]
+			}
+		},
+		"/v1/jobs/corporator": {
+			"get": {
+				"operationId": "GetAllJobsWithCorporator",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIResponse_IJob-Array_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": []
 			}
 		},
 		"/v1/jobs/search-history": {

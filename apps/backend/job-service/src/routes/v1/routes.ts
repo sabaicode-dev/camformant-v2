@@ -105,7 +105,7 @@ const models: TsoaRoute.Models = {
             "userInfo": {"ref":"ApplyUserInfo","required":true},
             "companyResponse": {"ref":"ApplyCompanyResp"},
             "appliedAt": {"dataType":"datetime"},
-            "updateAt": {"dataType":"datetime"},
+            "statusDate": {"dataType":"nestedObjectLiteral","nestedProperties":{"Apply":{"dataType":"datetime"},"Review":{"dataType":"datetime"},"Shortlist":{"dataType":"datetime"},"Interview":{"dataType":"datetime"},"Accept":{"dataType":"datetime"}}},
         },
         "additionalProperties": false,
     },
@@ -200,6 +200,15 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "APIResponse_IJob-Array_": {
+        "dataType": "refObject",
+        "properties": {
+            "message": {"dataType":"string","required":true},
+            "data": {"dataType":"array","array":{"dataType":"refObject","ref":"IJob"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "APIResponse_string-Array_": {
         "dataType": "refObject",
         "properties": {
@@ -230,7 +239,7 @@ const models: TsoaRoute.Models = {
             "userInfo": {"ref":"ApplyUserInfo","required":true},
             "companyResponse": {"ref":"ApplyCompanyResp"},
             "appliedAt": {"dataType":"datetime"},
-            "updateAt": {"dataType":"datetime"},
+            "statusDate": {"dataType":"nestedObjectLiteral","nestedProperties":{"Apply":{"dataType":"datetime"},"Review":{"dataType":"datetime"},"Shortlist":{"dataType":"datetime"},"Interview":{"dataType":"datetime"},"Accept":{"dataType":"datetime"}}},
             "jobInfo": {"ref":"IJob","required":true},
         },
         "additionalProperties": false,
@@ -252,7 +261,7 @@ const models: TsoaRoute.Models = {
     "BodyUpdateJobApply": {
         "dataType": "refObject",
         "properties": {
-            "status": {"ref":"StatusMode"},
+            "status": {"ref":"StatusMode","required":true},
             "startDate": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"string"}]},
             "interviewDate": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"string"}]},
             "interviewLocation": {"dataType":"string"},
@@ -388,6 +397,36 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'getAllJobs',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/v1/jobs/corporator',
+            ...(fetchMiddlewares<RequestHandler>(JobController)),
+            ...(fetchMiddlewares<RequestHandler>(JobController.prototype.getAllJobsWithCorporator)),
+
+            async function JobController_getAllJobsWithCorporator(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new JobController();
+
+              await templateService.apiHandler({
+                methodName: 'getAllJobsWithCorporator',
                 controller,
                 response,
                 next,

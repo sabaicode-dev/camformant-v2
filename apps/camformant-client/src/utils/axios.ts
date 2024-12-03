@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+
 interface FailedRequests {
   resolve: (value: AxiosResponse) => void;
   reject: (value: AxiosError) => void;
@@ -30,6 +31,7 @@ async function refreshToken(): Promise<{
 }> {
   try {
     const headers = isServer ? { Cookie: await getServerCookies() } : {};
+
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/auth/refresh-token`,
       null,
@@ -71,7 +73,7 @@ function extractTokensFromResponse(response: AxiosResponse): {
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true, // Include cookies in the request
+  withCredentials: true, // Include cookies in the request,
 });
 
 // TODO: handle axios interceptors for refresh token

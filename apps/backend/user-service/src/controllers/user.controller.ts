@@ -46,7 +46,6 @@ import {
 } from "@/src/controllers/types/user-cv-controller.type";
 import { error } from "console";
 import { Types } from "mongoose";
-// import { unionProfileType } from "./types/userprofile.type";
 export interface UserCreationRequestParams2 {
   sub?: string;
   googleSub?: string;
@@ -128,7 +127,7 @@ export class UsersController extends Controller {
   ): Promise<UserProfileResponse> {
     try {
       const sub = request.cookies["username"];
-      console.log("hi======", sub);
+      // console.log("hi======", sub);
 
       const response = await UserService.getUserBySub(sub);
 

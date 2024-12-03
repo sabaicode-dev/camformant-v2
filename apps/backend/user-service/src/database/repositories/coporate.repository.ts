@@ -145,11 +145,13 @@ class CorporateRepository {
       throw error;
     }
   }
-  public async findProfileById(
-    companyId: string
+  public async findProfileBySub(
+    companySub: string
   ): Promise<ICorporatorProfile | null> {
     try {
-      const profile = CorporatorModel.findById(companyId);
+      const profile = CorporatorModel.findOne({
+        $or: [{ sub: companySub }],
+      });
       if (!profile) {
         console.log(
           "CompanyJobRepository - findProfileById() method error: Profile not found"

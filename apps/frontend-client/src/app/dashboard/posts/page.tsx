@@ -5,7 +5,8 @@ import DynamicBreadcrumb from "@/components/DynamicBreadcrumb";
 import InputForm from "./input-form";
 
 
-const Post = () => {
+
+const PostPage = () => {
   const pathname = usePathname();
   return (
     <>
@@ -16,4 +17,4 @@ const Post = () => {
   );
 };
 
-export default Post;
+export default PostPage;

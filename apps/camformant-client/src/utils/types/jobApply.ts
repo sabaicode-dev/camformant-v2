@@ -25,7 +25,7 @@ export interface ApplyParams {
   userInfo: ApplyUserInfoParams;
   companyResponse: ApplyCompanyResParams;
   appliedDate: Date;
-  updatedAt: Date;
+  statusDate:{ [key in StatusMode]?: Date }
   jobInfo: IJob;
 }
 

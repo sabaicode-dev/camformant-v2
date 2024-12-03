@@ -1,10 +1,10 @@
-import ChartPage from "./chart";
+import Chart from "./chart";
 
-const Page = () => {
+const ChartPage = () => {
   return (
     <>
-      <ChartPage />
+      <Chart />
     </>
   );
 };
-export default Page;
+export default ChartPage;
