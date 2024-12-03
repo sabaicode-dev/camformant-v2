@@ -49,10 +49,12 @@ const CorporatorSchema = new mongoose.Schema<ICorporatorProfile>(
     },
     profile: {
       type: String,
+      default: "",
     },
     role: {
       type: String,
-      default: "company",
+      default:
+        "https://camformant.s3.ap-southeast-2.amazonaws.com/user-service/upload/default_company.png",
     },
     location: {
       address: {
