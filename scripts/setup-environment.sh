@@ -1,4 +1,4 @@
-#!/bin/bash
+chmod +x /home/ubuntu/setup-environment.sh#!/bin/bash
 
 # Ensure NVM is installed
 if ! type nvm > /dev/null 2>&1; then
