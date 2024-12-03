@@ -15,7 +15,7 @@ RUN npm install && npm install -g nodemon
 COPY tsconfig.json ./
 COPY nodemon.json ./
 COPY src ./src
-COPY tsoa.json ./
+COPY tsoa.json ecosystem.config.js ./
 
 # Expose the application's port
 EXPOSE 4003

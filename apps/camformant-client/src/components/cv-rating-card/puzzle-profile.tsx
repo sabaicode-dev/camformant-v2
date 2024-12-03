@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import ProfileRating from "./profile-rating";
-// import { TypeProfile } from "../profile/typeProfile";
-import axios from "axios";
+import ProfileRating from "@/components/cv-rating-card/profile-rating"
 import { useAuth } from "@/context/auth";
 
 interface ProfileRating {
@@ -17,6 +15,7 @@ const PuzzleProfile: React.FC<ProfileRating> = ({ totalRating }) => {
         rating={totalRating}
         pic={user?.profile}
         username={user!.username}
+        userId={user!._id}
       />
     </div>
   );

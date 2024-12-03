@@ -87,6 +87,7 @@ export const AuthProvider = ({
   };
   useEffect(() => {
     if (isLogin) {
+      console.log("is login");
       checkAuthStatus();
     }
   }, []);
@@ -128,6 +129,7 @@ export const AuthProvider = ({
         last_name,
         [email ? "email" : "phone_number"]: email || phone_number,
         password,
+        role: "user",
       });
 
       // TODO: redirect to verify page with contact and method (email or phone_number)

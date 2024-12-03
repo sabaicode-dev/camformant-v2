@@ -206,13 +206,13 @@ const routeConfigMiddleware = (
     // console.log("routeConfig", routeConfig);
     if (routeConfig) break;
   }
-  // console.log("routeConfig", routeConfig);
+   console.log("routeConfig", routeConfig);
   if (!routeConfig) {
     return next(new NotFoundError("Route not found"));
   }
   // Step 2
   const methodConfig = routeConfig.methods?.[method];
-  // console.log(methodConfig);
+  console.log(methodConfig);
   if (!methodConfig) {
     return next(new NotFoundError("Method not allowed"));
   }

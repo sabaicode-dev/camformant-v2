@@ -13,8 +13,8 @@ async function run() {
     await agenda.start();
 
     app.listen(configs.port, () => {
-      console.log(`User Service running on Port:`, configs.port)
-    })
+      console.log(`User Service running on Port bek bek:`, configs.port);
+    });
   } catch (error) {
     console.error("Failed to start the application:", error);
     process.exit(1); // Exit with failure code

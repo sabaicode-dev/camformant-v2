@@ -13,8 +13,9 @@ export const FontSizeInput = ({ value, onChange }: FontSizeInputProps) => {
   const decrement = () => onChange(value - 1);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value, 10);
-    onChange(value);
+    const value = e.target.value.trim();
+    const parsedValue = value !== "" ? parseInt(value, 10) : 0;
+    onChange(parsedValue);
   };
 
   return (

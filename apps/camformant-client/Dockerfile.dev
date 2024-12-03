@@ -6,21 +6,23 @@ WORKDIR /app
 
 # Copy package.json
 COPY package.json ./
-COPY .npmrc ./
 
 # Install dependencies
-RUN npm install && npm install -g nodemon
+RUN npm install
 
 # Copy other files
 COPY tsconfig.json ./
-COPY nodemon.json ./
-COPY tsoa.json ecosystem.config.js ./
-
-# Copy source code folder
+COPY next.config.mjs ./
+COPY postcss.config.mjs ./
+COPY tailwind.config.ts ./
 COPY src ./src
+COPY public/ ./public
+
+#optional
+COPY service-worker.js ./service-worker.js
 
 # Expose the application's port
-EXPOSE 4004
+EXPOSE 3000
 
 # Command to run the application
 CMD ["npm", "run", "dev"]

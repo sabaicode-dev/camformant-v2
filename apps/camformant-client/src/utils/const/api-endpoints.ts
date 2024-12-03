@@ -27,6 +27,8 @@ export const API_ENDPOINTS = {
   // JOBS: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/job`,
   SEARCH_HISTORY: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/search-history`,
   SEARCH_TRENDING: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/search-trending`,
+  JOB_DETAIL: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/job-detail`,
+  JOB_APPLY: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/jobApply`,
 
   // CHAT SERVICE
   CONVERSATIONS: `${process.env.NEXT_PUBLIC_CONVERSATION_ENDPOINT}`,

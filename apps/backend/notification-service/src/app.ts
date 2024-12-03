@@ -15,19 +15,6 @@ const swaggerDocument = JSON.parse(
 // Initialize App Express
 // ========================
 const app = express();
-app.use((_req, _res, next) => {
-  console.log("reached notiiiiiiii service");
-  next();
-});
-// CORS configuration
-// const corsOptions = {
-//   origin: "*", // Allow requests from all origin
-//   methods: "GET,POST,PUT,DELETE", // Specify allowed HTTP methods
-//   allowedHeaders: "Content-Type,Authorization", // Specify allowed headers
-// };
-
-// Apply the CORS middleware
-// app.use(cors(corsOptions));
 // ========================
 // Security Middleware
 // ========================

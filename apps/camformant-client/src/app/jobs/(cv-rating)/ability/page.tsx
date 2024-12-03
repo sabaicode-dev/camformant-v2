@@ -204,7 +204,6 @@ const Page: React.FC = () => {
                   newValue == value || setIsPut(true);
                 }}
                 currentText={value}
-                title={"proficiency"}
                 arrText={["", "Beginner", "Intermediate", "Advanced"]}
               />
             )
@@ -257,13 +256,12 @@ const Page: React.FC = () => {
                     setLanguageEntries,
                     languageEntries,
                     index,
-                    key,
+                    key,eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeew
                     newValue
                   );
                   newValue == value || setIsPut(true);
                 }}
                 currentText={value}
-                title={"proficiency"}
                 arrText={["", "Beginner", "Native", "Fluent"]}
               />
             )

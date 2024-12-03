@@ -70,6 +70,11 @@ const nextConfig = {
         hostname: "camformant.s3.ap-southeast-2.amazonaws.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "sophornbucket.s3.us-west-2.amazonaws.com",
+        pathname: "/**",
+      }
     ],
   },
   async headers() {

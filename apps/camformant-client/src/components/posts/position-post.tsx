@@ -223,7 +223,7 @@ export const PositionPost: React.FC = () => {
             />
           </div>
         ))
-      ) : jobData.length === 0 ? (
+      ) : jobData.length === 0 && !isLoading && !error? (
         <div className="flex flex-col items-center w-full">
           <Image
             src={"/images/unavailable.png"}
