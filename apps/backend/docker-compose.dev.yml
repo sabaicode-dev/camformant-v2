@@ -12,13 +12,13 @@ services:
     environment:
       - DOCKER_ENV=true
       - AUTH_SERVICE_URL=http://auth:4001
-      - USER_SERVICE_URL=http://user:4005
-      - JOB_SERVICE_URL=http://job:4003
       - CHAT_SERVICE_URL=http://chat:4002
+      - JOB_SERVICE_URL=http://job:4003
       - NOTIFICATION_SERVICE_URL=http://notification:4004
+      - USER_SERVICE_URL=http://user:4005
     volumes:
       - ./api-gateway/src:/app/src # HOT RELOADING
-      
+
     networks:
       - custom-network
   auth:
@@ -37,7 +37,7 @@ services:
     volumes:
       - ./auth-service/src:/app/src # HOT RELOADING
     networks:
-      - custom-network  
+      - custom-network
   user:
     container_name: user_service_container
     build:
@@ -53,7 +53,7 @@ services:
     volumes:
       - ./user-service/src:/app/src # HOT RELOADING
     networks:
-      - custom-network  
+      - custom-network
   job:
     container_name: job_service_container
     build:
@@ -66,9 +66,9 @@ services:
     environment:
       - DOCKER_ENV=true
     volumes:
-      - ./job-service/src:/app/src # HOT RELOADING 
+      - ./job-service/src:/app/src # HOT RELOADING
     networks:
-      - custom-network  
+      - custom-network
   notification:
     container_name: notification_service_container
     build:
@@ -83,7 +83,7 @@ services:
     volumes:
       - ./notification-service/src:/app/src # HOT RELOADING
     networks:
-      - custom-network  
+      - custom-network
   chat:
     container_name: chat_service_container
     build:
@@ -102,8 +102,8 @@ services:
     volumes:
       - ./chat-service/src:/app/src # HOT RELOADING
     networks:
-      - custom-network  
+      - custom-network
 networks:
-   custom-network:
-      external: true  # Use an external, shared network 
+  custom-network:
+    external: true # Use an external, shared network
 
