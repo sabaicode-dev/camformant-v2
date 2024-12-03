@@ -110,6 +110,7 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
       );
       setIsExpanded(isAnySubRouteActive || false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, route.subRoutes]);
 
   if (hasSubRoutes) {
@@ -140,7 +141,7 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
               <Link
                 key={subRoute.href}
                 href={normalizeHref(subRoute.href)}
-                className={cn("flex p-3 pl-12 w-full justify-start items-center text-sm font-medium cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",pathname === normalizeHref(subRoute.href)? "text-white bg-[#FF7300]": "text-muted-foreground")}>
+                className={cn("flex p-3 pl-12 w-full justify-start items-center text-sm font-medium cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",pathname === normalizeHref(subRoute.href)? "text-[#FF7300]": "text-muted-foreground")}>
                 <subRoute.icon className="h-6 w-6 mr-3" />
                 {subRoute.label}
               </Link>

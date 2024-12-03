@@ -47,10 +47,10 @@ const authenticateToken = async (
   try {
     const { methodConfig } = req;
 
-    console.log("authRequired:::", methodConfig.authRequired);
+    // console.log("authRequired:::", methodConfig.authRequired);
 
     if (methodConfig.authRequired) {
-      console.log("req cookie:::", req.cookies);
+      // console.log("req cookie:::", req.cookies);
       // Step 1
       // console.log("need authicated");
       // Step 2
@@ -68,7 +68,7 @@ const authenticateToken = async (
 
       let role: string[] = [];
       const userPayload = await jwtDecode(req.cookies?.["id_token"]);
-      console.log("userPayload", userPayload);
+      // console.log("userPayload", userPayload);
 
       // @ts-ignore
       if (userPayload["cognito:username"].includes("google")) {
@@ -91,15 +91,15 @@ const authenticateToken = async (
       } else {
         role = payload["cognito:groups"] || [];
       }
-      console.log("role::: ", role);
-      console.log("payload::: ", payload.username);
+      // console.log("role::: ", role);
+      // console.log("payload::: ", payload.username);
 
       req.currentUser = {
         username: payload.username,
         role,
       };
     }
-    console.log("req.currentUser", req.currentUser);
+    // console.log("req.currentUser", req.currentUser);
 
     // Step 4
     next();
@@ -117,8 +117,8 @@ const authenticateToken = async (
 
 const authorizeRole = (req: Request, _res: Response, next: NextFunction) => {
   const { methodConfig, currentUser } = req;
-  console.log("ro le::: ", methodConfig);
-  console.log("currentUs er::: ", currentUser);
+  // console.log("role::: ", methodConfig);
+  // console.log("currentUser::: ", currentUser);
 
   // Check if the route requires specific roles
   if (methodConfig.roles) {
@@ -198,7 +198,6 @@ const routeConfigMiddleware = (
   const { path, method } = req;
 
   console.log("path:::", path, " method1111111111:::", method);
-  if (path !== "/socket.io/") console.log("yessssssss:");
 
   // Step 1
   let routeConfig = null;
@@ -218,7 +217,7 @@ const routeConfigMiddleware = (
     return next(new NotFoundError("Method not allowed"));
   }
 
-  // console.log("routeConfig", routeConfig);
+  console.log("routeConfig", routeConfig);
 
   // Attach the route configuration and method config to the request object
   req.routeConfig = routeConfig;

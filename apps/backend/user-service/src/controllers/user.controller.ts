@@ -127,7 +127,7 @@ export class UsersController extends Controller {
   ): Promise<UserProfileResponse> {
     try {
       const sub = request.cookies["username"];
-      console.log("hi======", sub);
+      // console.log("hi======", sub);
 
       const response = await UserService.getUserBySub(sub);
 

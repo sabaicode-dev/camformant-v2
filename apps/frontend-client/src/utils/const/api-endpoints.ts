@@ -12,7 +12,8 @@ export const API_ENDPOINTS = {
   USER_PROFILE: `${process.env.NEXT_PUBLIC_USER_ENDPOINT}/me`,
   USER_PROFILE_UPDATE: `${process.env.NEXT_PUBLIC_USER_ENDPOINT}/photo`,
   // JOB SERVICE
-  JOBS: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}`,
+  JOBS: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/corporator`,
+  JOB_APPLY: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/jobApply`,
   SEARCH_HISTORY: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/search-history`,
   SEARCH_TRENDING: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/search-trending`,
   // CHAT SERVICE

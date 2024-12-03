@@ -1,5 +1,4 @@
 "use client";
-import DynamicBreadcrumb from "@/components/DynamicBreadcrumb";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { useEffect, useState } from "react";

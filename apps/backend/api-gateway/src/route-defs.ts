@@ -459,7 +459,8 @@ const ROUTE_PATHS: RoutesConfig = {
         path: "/subscribe",
         methods: {
           POST: {
-            authRequired: false,
+            authRequired: true,
+            roles: ["user", "company"],
           },
         },
       },
