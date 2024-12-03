@@ -45,7 +45,7 @@ function loadConfig(): Config {
     clientUrl: envVars.CLIENT_URL,
     MessageUrl: envVars.SENDMESSAGE_API_ENDPOINT,
     corporatorApiEndpoint: envVars.CORPORATOR_API_ENDPOINT,
-    userUrl: envVars.SENDMESSAGE_API_ENDPOINT,
+    userUrl: envVars.USERS_API_ENDPOINT,
   };
 }
 

@@ -7,7 +7,7 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { useEffect, useState } from "react";
 import { MdCircleNotifications } from "react-icons/md";
 
-export default function Notification({
+export default function NotificationComponent({
   addNotification,
 }: {
   addNotification: (
@@ -25,13 +25,26 @@ export default function Notification({
 
   console.log("isAuthentication", isAuthenticated);
   console.log("sub:::", subscription);
-
+  //function checkPermission notification
+  async function checkPermission() {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") {
+      addNotification("Notification Access Dined", "error");
+      console.log("access denied");
+    } else {
+      addNotification("Notification Allowed", "success");
+      console.log("notification accepted");
+    }
+  }
   // Register Notification When User Login
   useEffect(() => {
     if (isAuthenticated) {
       if ("serviceWorker" in navigator && "PushManager" in window) {
         setIsSupported(true);
         registerServiceWorker();
+        //check permission only when click on notification when user not enable or have no service worker
+        checkPermission();
+        console.log("checked register sw");
       }
     }
   }, [isAuthenticated]);
@@ -43,6 +56,7 @@ export default function Notification({
       setTimeout(() => setIsVisible(false), 8000); // Hide after 5s
     }
   }, [isSupported]);
+  console.log("suppoorted::", isSupported);
 
   async function registerServiceWorker() {
     // Check if service worker is already registered
@@ -54,6 +68,7 @@ export default function Notification({
         scope: "/",
         updateViaCache: "none",
       });
+      console.log("new register, you not register yet");
     }
   }
 
@@ -68,6 +83,7 @@ export default function Notification({
       ),
     });
     setSubscription(sub);
+    console.log("2sub:::", sub);
 
     const subscriptionObject = sub.toJSON();
     // @ts-ignore
@@ -103,14 +119,13 @@ export default function Notification({
   }
 
   const handleToggle = async () => {
-    if (subscription) {
-      await unsubscribeFromPush();
+    if (!isAuthenticated) {
+      addNotification("Please login to enable notification!", "error");
     } else {
-      if (!isAuthenticated) {
-        console.log("hey");
-        addNotification("Please login to enable notification!", "error");
-      } else {
+      if (!subscription) {
         await subscribeToPush();
+      } else {
+        await unsubscribeFromPush();
       }
     }
   };
@@ -128,6 +143,15 @@ export default function Notification({
     );
   }
 
+  const isDisable = loading && !isAuthenticated ? true : false;
+  console.log(
+    "loading,",
+    loading,
+    "isAuth,",
+    isAuthenticated,
+    "disable,",
+    isDisable
+  );
   return (
     <div className={` flex items-center justify-between w-full  rounded-lg`}>
       {/* Left Section: Icon and Text */}
@@ -141,10 +165,9 @@ export default function Notification({
         <input
           type="checkbox"
           className="sr-only peer"
-          // checked={!!subscription}
+          checked={isDisable ? false : !!subscription} //todo: related
           onChange={handleToggle}
-          disabled={loading} // Disable during loading state
-          // disabled={!isAuthenticated}
+          disabled={isDisable} // Disable during loading state
         />
         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-orange-600"></div>
       </label>

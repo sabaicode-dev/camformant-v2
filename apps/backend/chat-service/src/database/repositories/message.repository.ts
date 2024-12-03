@@ -59,7 +59,6 @@ export class MessageRepository {
     }
   }
   //todo: reduce / structure type
-  //todo: sort for frontend
   async getMessage(
     userToChatId: string,
     senderId: string,
@@ -67,7 +66,7 @@ export class MessageRepository {
     senderRole: "User" | "Company",
     receiverRole: "User" | "Company"
   ): Promise<null | conversationRespond> {
-    const { limit = 7, page = 1 } = query;
+    const { limit = 12, page = 1 } = query;
 
     const skip = (page - 1) * limit;
 
@@ -87,7 +86,6 @@ export class MessageRepository {
           sort: { createdAt: -1 },
         },
       });
-      //todo: handle if no receiverFound will not create conversation
       if (!conversation) {
         const endpoint =
           senderRole === "User"

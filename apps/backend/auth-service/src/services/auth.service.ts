@@ -9,7 +9,6 @@ import {
   ConfirmSignUpCommand,
   GlobalSignOutCommand,
   GlobalSignOutCommandInput,
-  GlobalSignOutCommandOutput,
   InitiateAuthCommand,
   InitiateAuthCommandInput,
   InitiateAuthCommandOutput,
@@ -135,9 +134,9 @@ class AuthService {
     try {
       const command = new ConfirmSignUpCommand(params);
       await client.send(command);
-      console.log(
-        "AuthService verifyUser() method: User verified successfully"
-      );
+      // console.log(
+      //   "AuthService verifyUser() method: User verified successfully"
+      // );
 
       // Retrieve the user to get the `role` attribute
       const userInfo = await this.getUserByUsername(username);
@@ -199,7 +198,7 @@ class AuthService {
       const userInfo = await axios.get(
         `${configs.userServiceUrl}/v1/users/${congitoUsername.sub}`
       );
-      console.log("userInfo: ", userInfo);
+      // console.log("userInfo: ", userInfo);
 
       return {
         accessToken: result.AuthenticationResult?.AccessToken!,
@@ -238,8 +237,8 @@ class AuthService {
     };
     try {
       const command = new GlobalSignOutCommand(params);
-      const result: GlobalSignOutCommandOutput = await client.send(command);
-      console.log("result::: ", result);
+      await client.send(command);
+      // console.log("result::: ", result);
       return "success cleared cookies from cignito";
     } catch (error) {}
   }
@@ -320,6 +319,8 @@ class AuthService {
       const email = userInfo.email;
       const existingUser = await this.getUserByEmail(email);
       // console.log("existingUser: ", existingUser);
+      //todo:
+      console.log("1::");
 
       let userId: string;
 
@@ -374,8 +375,9 @@ class AuthService {
             // @ts-ignore
             profile: userInfo.profile,
             role: state,
+            sub: userInfo.sub,
           });
-          console.log("new user from google:", user);
+          // console.log("new user from google:", user);
           // Step 4.1: Update user info in Cognito
           await this.updateUserCongitoAttributes(userInfo.sub!, {
             "custom:role": state!,
@@ -670,7 +672,7 @@ class AuthService {
   async corporateVerifyUser(body: VerifyUserRequest): Promise<void> {
     const username = (body.email ||
       body.phone_number?.replace(/^\+/, "")) as string;
-    console.log("start verify service 1");
+    // console.log("start verify service 1");
 
     const params = {
       ClientId: configs.awsCognitoClientId,
@@ -682,13 +684,8 @@ class AuthService {
     try {
       const command = new ConfirmSignUpCommand(params);
       await client.send(command);
-      console.log(
-        "AuthService corporateVerifyUser() method: User verified successfully"
-      );
-      console.log("2::::");
 
       const userInfo = await this.getUserByUsername(username);
-      console.log("userInfo: ", userInfo);
 
       const role =
         userInfo.UserAttributes?.find((attr) => attr.Name === "company")
@@ -697,10 +694,8 @@ class AuthService {
       const userSub = userInfo.UserAttributes?.filter(
         (Name) => Name.Name === "sub"
       )[0].Value;
-      console.log("3:::::::");
 
       await this.addToGroup(userSub!, role);
-      console.log("4::::");
 
       await axios.post(`${configs.userServiceUrl}/v1/corporate`, {
         sub: userInfo.Username,
@@ -708,7 +703,6 @@ class AuthService {
         username: userInfo.UserAttributes?.find((attr) => attr.Name === "name")
           ?.Value,
       });
-      console.log("5::::");
     } catch (error) {
       console.log("AuthService corporateVerifyUser() method error:", error);
 

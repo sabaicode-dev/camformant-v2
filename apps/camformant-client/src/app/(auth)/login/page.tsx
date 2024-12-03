@@ -14,7 +14,7 @@ import { ContactSocialMedia } from "@/components/auth/contact-social-media/conta
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const Page: React.FC = () => {
-  const { login, loading } = useAuth();
+  const { login, loading, resStatus } = useAuth();
   const { addNotification, NotificationDisplay } = useNotification();
 
   const {
@@ -38,6 +38,9 @@ const Page: React.FC = () => {
         [contactMethod]: data.email,
         password: data.password,
       });
+      if (resStatus === 200) {
+        addNotification("Login Successful", "success");
+      }
     } catch (error) {
       if (isAPIErrorResponse(error)) {
         addNotification(error.response.data.message, "error");
