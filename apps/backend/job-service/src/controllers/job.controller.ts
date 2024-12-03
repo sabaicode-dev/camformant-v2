@@ -34,7 +34,21 @@ import configs from "../config";
 @Route("/v1/jobs")
 @Tags("Job")
 export class JobController extends Controller {
-
+  @Delete("{jobId}")
+  public async deleteJobById(
+    @Path() jobId: string
+  ): Promise<{ message: string }> {
+    try {
+      await jobService.deleteJobById(jobId);
+      return { message: "Job was deleted successfully" };
+    } catch (error) {
+      console.error(
+        `CompanyController deleteJobById() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
   //new post
   @SuccessResponse("201", "Created")
   @Post("/job")
@@ -228,7 +242,7 @@ export class JobController extends Controller {
   @Put("{jobId}")
   public async updateJobById(
     @Path() jobId: string,
-    @Body() updateDatJob: JobParams
+    @Body() updateDatJob: IJob
   ) {
     try {
       const updateJob = await jobService.updateJobById(jobId, updateDatJob);
@@ -241,21 +255,7 @@ export class JobController extends Controller {
     }
   }
 
-  @Delete("{jobId}")
-  public async deleteJobById(
-    @Path() jobId: string
-  ): Promise<{ message: string }> {
-    try {
-      await jobService.deleteJobById(jobId);
-      return { message: "Job was deleted successfully" };
-    } catch (error) {
-      console.error(
-        `CompanyController deleteJobById() method error: `,
-        prettyObject(error as {})
-      );
-      throw error;
-    }
-  }
+ 
 }
 
 export default new JobController();

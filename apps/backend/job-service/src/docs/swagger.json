@@ -335,6 +335,10 @@
 						},
 						"type": "array"
 					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
 					"benefit": {
 						"items": {
 							"type": "string"
@@ -344,10 +348,13 @@
 					"deadline": {
 						"type": "string",
 						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
 					}
 				},
 				"required": [
-					"companyId",
 					"title",
 					"position",
 					"workMode",
@@ -355,7 +362,8 @@
 					"requirement",
 					"address",
 					"min_salary",
-					"max_salary"
+					"max_salary",
+					"createdAt"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -820,7 +828,6 @@
 										}
 									},
 									"required": [
-										"data",
 										"message"
 									],
 									"type": "object"
@@ -1086,6 +1093,7 @@
 				"operationId": "GetSearchTrending",
 				"responses": {
 					"200": {
+						"description": "Ok",
 						"description": "Ok",
 						"content": {
 							"application/json": {
@@ -1357,8 +1365,10 @@
 				},
 				"tags": [
 					"Health"
+					"Health"
 				],
 				"security": [],
+				"parameters": []
 				"parameters": []
 			}
 		}
