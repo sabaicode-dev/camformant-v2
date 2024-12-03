@@ -2,49 +2,53 @@ import React, { useCallback } from 'react';
 import { Upload } from 'lucide-react';
 import { uploadToS3 } from '@/services/upload.service';
 import { Input } from '@/components/ui/input';
+import Image from 'next/image';
 
 interface ImageUploadProps {
-  onUploadComplete: (url: string) => void;
-  onUploadError: (error: Error) => void;
-  onUploadStart: () => void;
+  currentImage?: string;
+  onFileSelect: (file: File) => void;
 }
 
-export function ImageUpload({ onUploadComplete, onUploadError, onUploadStart }: ImageUploadProps) {
+
+export function ImageUpload({ currentImage, onFileSelect }: ImageUploadProps) {
   const handleFileChange = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    try {
-      onUploadStart(); // Indicate upload started
-
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        throw new Error('Please upload an image file');
-      }
-
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        throw new Error('File size should be less than 5MB');
-      }
-
-      const url = await uploadToS3(file);  // Upload the file and get the URL
-      if (url) {
-        onUploadComplete(url);  // Pass the URL to the parent component
-      } else {
-        throw new Error('Failed to upload file');
-      }
-    } catch (error) {
-      onUploadError(error instanceof Error ? error : new Error('Upload failed'));
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
     }
-  }, [onUploadComplete, onUploadError, onUploadStart]);
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size should be less than 5MB');
+      return;
+    }
+
+    onFileSelect(file);
+  }, [onFileSelect]);
 
   return (
     <div className="space-y-4">
       <label className="block text-sm font-medium text-gray-700">
-        Add Your Photo
+        Profile Picture
       </label>
+      
+      {/* Image Preview */}
+      {(currentImage ) && (
+        <div className="relative w-32 h-32 mx-auto mb-4">
+          <Image
+            src={currentImage}
+            alt="Profile preview"
+            className="w-full h-full object-cover rounded-full"
+            width={200}
+            height={200}
+          />
+        </div>
+      )}
+
       <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-        <Input
+        <input
           type="file"
           accept="image/*"
           onChange={handleFileChange}
@@ -57,7 +61,10 @@ export function ImageUpload({ onUploadComplete, onUploadError, onUploadStart }: 
         >
           <Upload className="h-10 w-10 text-gray-400" />
           <span className="text-sm text-gray-500">
-            Choose File or drag and drop SVG, PNG, JPG, or GIF (max. 5MB)
+            {currentImage ? 'Change picture' : 'Choose a profile picture'}
+          </span>
+          <span className="text-xs text-gray-400">
+            SVG, PNG, JPG or GIF (max. 5MB)
           </span>
         </label>
       </div>
