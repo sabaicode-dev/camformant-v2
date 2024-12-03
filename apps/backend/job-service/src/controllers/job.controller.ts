@@ -28,18 +28,17 @@ import configs from "../config";
 @Route("/v1/jobs")
 @Tags("Job")
 export class JobController extends Controller {
+
   //new post
   @SuccessResponse("201", "Created")
   @Post("/job")
-  public async postIJob(
-    @Request() request: ExpressRequest,
-    @Body() body: IJob
-  ): Promise<APIResponse<IJob>> {
+  public async postIJob(@Request() request: ExpressRequest, @Body() body: IJob): Promise<APIResponse<IJob>> {
     try {
       const corporateSub = request.cookies["username"];
+
       if (!corporateSub) {
         console.log(
-          "CorporateController - getCorporateProfileWithJobs() method error : Corporate ID is missing"
+          "CorporateController - getCorporateProfileWithJobs() method error : Corporate Sub is missing"
         );
         return sendResponse<IJob>({
           message: "Corporate ID is missing",
@@ -47,10 +46,10 @@ export class JobController extends Controller {
         });
       }
       const getCorporateProfileId = await axios.get(
-        `${configs.corporator_api_endpoint}/${corporateSub}`
+        `${configs.corporator_api_endpoint}/profile/${corporateSub}`
       );
-      const corporateProfileId =
-        getCorporateProfileId.data.data.corporateProfileId;
+
+      const corporateProfileId = getCorporateProfileId.data.data._id || null;
 
       if (!getCorporateProfileId || !corporateProfileId) {
         console.log(
@@ -107,6 +106,22 @@ export class JobController extends Controller {
         message: "success",
         data: response,
       };
+    } catch (error) {
+      throw error;
+    }
+  }
+  @Get("/corporator")
+  public async getAllJobsWithCorporator(
+    @Request() request: ExpressRequest,
+  ): Promise<APIResponse<IJob[]>> {
+    try {
+      const userSub = request.cookies["username"] || null;
+      const getCorporateProfile = await axios.get(`${configs.corporator_api_endpoint}/profile/${userSub}`);
+      const getCorporateProfileId = getCorporateProfile.data.data._id || null;
+
+      const response = await jobService.getAllJobsWithCorporator(getCorporateProfileId);
+
+      return sendResponse<IJob[]>({ message: "success", data: response });
     } catch (error) {
       throw error;
     }

@@ -108,12 +108,12 @@ class IJobRepository {
     // Adding search functionality
     const searchFilter = search
       ? {
-          $or: [
-            { title: { $regex: search, $options: "i" } },
-            { position: { $regex: search, $options: "i" } },
-            { "companyId.name": { $regex: search, $options: "i" } },
-          ],
-        }
+        $or: [
+          { title: { $regex: search, $options: "i" } },
+          { position: { $regex: search, $options: "i" } },
+          { "companyId.name": { $regex: search, $options: "i" } },
+        ],
+      }
       : {};
     type UserFavFilter = {
       _id?: {
@@ -302,14 +302,9 @@ class IJobRepository {
 
   public async findJobsByCompanyId(companyId: string): Promise<IJob[]> {
     try {
-      const result = await JobModel.find({
-        companyId: companyId,
-        status: "open",
-      });
+      const result = await JobModel.find({ companyId: companyId, status: 'open' });
       if (!result) {
-        console.log(
-          "IJobRepository - findJobsByCompanyId() method error : No jobs found for the company."
-        );
+        console.log("IJobRepository - findJobsByCompanyId() method error : No jobs found for the company.");
         return [] as any;
       }
       return result;

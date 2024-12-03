@@ -253,10 +253,10 @@ export class MessageRepository {
       //declare
       let participantsProfile:
         | {
-            _id: string;
-            profile: string;
-            name: string;
-          }[]
+          _id: string;
+          profile: string;
+          name: string;
+        }[]
         | [];
       if (data.companiesProfile) {
         participantsProfile = data.companiesProfile;

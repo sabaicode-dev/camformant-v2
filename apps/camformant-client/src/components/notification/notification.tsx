@@ -30,21 +30,20 @@ export default function NotificationComponent({
     const permission = await Notification.requestPermission();
     if (permission !== "granted") {
       addNotification("Notification Access Dined", "error");
-      console.log("access denied");
     } else {
       addNotification("Notification Allowed", "success");
-      console.log("notification accepted");
     }
   }
   // Register Notification When User Login
   useEffect(() => {
     if (isAuthenticated) {
       if ("serviceWorker" in navigator && "PushManager" in window) {
-        setIsSupported(true);
-        registerServiceWorker();
-        //check permission only when click on notification when user not enable or have no service worker
-        checkPermission();
-        console.log("checked register sw");
+        const serviceWorker = async () => {
+          setIsSupported(true);
+          checkPermission();
+          await registerServiceWorker();
+        };
+        serviceWorker();
       }
     }
   }, [isAuthenticated]);
@@ -58,45 +57,48 @@ export default function NotificationComponent({
   }, [isSupported]);
 
   async function registerServiceWorker() {
-    // Check if service worker is already registered
-    let registration = await navigator.serviceWorker.getRegistration("/");
-
-    if (!registration) {
-      // Register service worker if not registered
-      registration = await navigator.serviceWorker.register("/sw.js", {
-        scope: "/",
-        updateViaCache: "none",
-      });
-      console.log("new register, you not register yet");
+    if ("serviceWorker" in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.register("/sw.js", {
+          scope: "/",
+        });
+        console.log("Service Worker registered:", registration);
+        return registration;
+      } catch (error) {
+        console.error("Service Worker registration failed:", error);
+      }
+    } else {
+      console.warn("Service Worker is not supported in this browser.");
     }
   }
 
   async function subscribeToPush() {
     setLoading(true); // Set loading state
     const registration = await navigator.serviceWorker.ready;
-
     const sub = await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(
         process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
       ),
     });
+
     setSubscription(sub);
-    console.log("2sub:::", sub);
 
     const subscriptionObject = sub.toJSON();
     // @ts-ignore
     const { p256dh, auth } = subscriptionObject.keys;
 
     try {
-      // Send the subscription to your backend
-      await axiosInstance.post(API_ENDPOINTS.SUBSCRIBE, {
+      const body = {
         endpoint: subscriptionObject.endpoint,
         keys: {
           p256dh,
           auth,
         },
-      });
+      };
+
+      // Send the subscription to your backend
+      await axiosInstance.post(API_ENDPOINTS.SUBSCRIBE, body);
     } catch (error) {
       console.log("Subscribe Notification Error:::", error);
     } finally {
@@ -141,6 +143,7 @@ export default function NotificationComponent({
       </div>
     );
   }
+  console.log("support", isSupported);
 
   const isDisable = loading && !isAuthenticated ? true : false;
   console.log(

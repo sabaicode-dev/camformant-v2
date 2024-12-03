@@ -49,6 +49,8 @@ export class NotificationsController extends Controller {
       };
       await NotificationService.sendNotification(userId, welcomeMessage);
 
+      console.log("newSubscription:::", newSubscription);
+
       return sendResponse<INotification>({
         message: "Subscription successful",
         data: newSubscription,

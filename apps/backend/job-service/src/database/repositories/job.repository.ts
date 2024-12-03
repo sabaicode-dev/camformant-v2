@@ -78,12 +78,12 @@ class JobRepository {
     // Adding search functionality
     const searchFilter = search
       ? {
-          $or: [
-            { title: { $regex: search, $options: "i" } },
-            { position: { $regex: search, $options: "i" } },
-            { "companyId.name": { $regex: search, $options: "i" } },
-          ],
-        }
+        $or: [
+          { title: { $regex: search, $options: "i" } },
+          { position: { $regex: search, $options: "i" } },
+          { "companyId.name": { $regex: search, $options: "i" } },
+        ],
+      }
       : {};
     type UserFavFilter = {
       _id?: {
@@ -148,6 +148,22 @@ class JobRepository {
       throw error;
     }
   }
+  public async getAllJobsWithCorporator(companyId: string) {
+    try {
+      const result = await JobModel.find({ companyId: companyId });
+      if (!result) {
+        throw new NotFoundError("No jobs found for this company.");
+      }
+      return result;
+    } catch (error) {
+      console.error(
+        `JobRepository - getAllJobs() method error:`,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
+
 
   public async findJobById(jobId: string) {
     try {

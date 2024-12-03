@@ -271,7 +271,7 @@ const ROUTE_PATHS: RoutesConfig = {
         methods: {
           POST: {
             authRequired: true,
-            roles: ["user", "admin"],
+            roles: ["user", "company"],
           },
         },
       },
@@ -378,6 +378,14 @@ const ROUTE_PATHS: RoutesConfig = {
           },
         },
       },
+      {
+        path: "/corporator",
+        methods: {
+          GET: {
+            authRequired: false,
+          },
+        },
+      },
     ],
   },
   COMPANY_SERVICE: {
@@ -423,7 +431,8 @@ const ROUTE_PATHS: RoutesConfig = {
         path: "/subscribe",
         methods: {
           POST: {
-            authRequired: false,
+            authRequired: true,
+            roles: ["user", "company"],
           },
         },
       },

@@ -13,7 +13,12 @@ const nextConfig = {
   },
   images: {
     domains: ["sabaicode.com"],
+
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
       {
         protocol: "https",
         hostname: "optimise2.assets-servd.host",

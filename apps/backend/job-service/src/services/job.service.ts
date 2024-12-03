@@ -84,6 +84,23 @@ class JobService {
       throw error;
     }
   }
+  public async getAllJobsWithCorporator(
+    companyId: string
+  ) {
+    try {
+
+
+      const result = await jobRepository.getAllJobsWithCorporator(companyId);
+
+      return result;
+    } catch (error) {
+      console.error(
+        `JobService getAllJobs() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
 
   public async getJobById(jobId: string): Promise<IJob> {
     try {

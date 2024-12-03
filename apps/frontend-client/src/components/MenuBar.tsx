@@ -1,19 +1,22 @@
 "use client";
 import { useRef } from "react";
 import { Menubar } from "@/components/ui/menubar";
-import { SidebarGroup, SidebarGroupLabel, SidebarTrigger } from "./ui/sidebar";
+import { SidebarGroup, SidebarGroupLabel } from "./ui/sidebar";
 import { ModeToggle } from "./ui/modeToggle";
-import { Bell, Mail, SearchCheckIcon } from "lucide-react";
+import { Bell, ChevronLeft, ChevronRight, Mail, SearchCheckIcon } from "lucide-react";
 import { Input } from "./ui/input";
 import { ToolTip } from "./ToolTip";
 import { UserProfile } from "./UserProfile";
 import SabaiROkLogo from "../../public/logoSabaiRok.svg";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
+import { Button } from "./ui/button";
+import { useSidebarContext } from "@/context/SidebarContext";
 
 export const MenuBar = () => {
-  const {user}=useAuth()
-  const inputRef = useRef<HTMLInputElement>(null);
+  const {user }=useAuth()
+  const { isOpen, toggleSidebar } = useSidebarContext();
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleSearch = () => {
     if (inputRef.current) {
@@ -22,8 +25,7 @@ export const MenuBar = () => {
   };
 
   return (
-    <Menubar className="w-full py-8 z-40">
-      {/* logo */}
+    <Menubar className="w-full py-8 bg-white fixed top-0 z-40">
       <div className="w-1/6 flex items-center">
         <SidebarGroup>
           <SidebarGroupLabel>
@@ -33,20 +35,22 @@ export const MenuBar = () => {
           </SidebarGroupLabel>
         </SidebarGroup>
       </div>
-      {/* cover all left on navbar */}
       <div className="w-5/6 flex justify-between h-[50px] px-5 items-center">
-        {/* search button */}
         <div className="flex items-center gap-2">
-          <SidebarTrigger />
-          <SearchCheckIcon
-            onClick={handleSearch}
-            className="cursor-pointer"
+          <Button variant="ghost"size="icon"className="h-10 w-10"onClick={toggleSidebar}>
+              {isOpen ? (
+                <ChevronLeft className="h-6 w-6" />
+              ) : (
+                <ChevronRight className="h-6 w-6" />
+              )}
+            </Button>
+          <SearchCheckIcon onClick={handleSearch} className="cursor-pointer"
           />
           <div className="h-[40px] border w-[319px] border-gray-300  dark:border dark:border-gray-100 rounded-md">
             <Input ref={inputRef} placeholder="Search..." className="h-full" />
           </div>
         </div>
-        <div className="flex justify-between w-[200px]">
+        <div className="flex justify-between items-center gap-3">
           <div className=" flex items-center gap-2">
             <div className="">
               <ModeToggle />
@@ -54,9 +58,10 @@ export const MenuBar = () => {
             <ToolTip icon={<Bell />} text="Notification" />
             <ToolTip icon={<Mail />} text="Inbox" />
           </div>
+          <span className="text-sm"> {user?.name}</span>
           <UserProfile
-            avatarImage={user?.profile||"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCO2sR3EtGqpIpIa-GTVnvdrDHu0WxuzpA8g&s"}
-            fallback={user?.username}
+            avatarImage={user?.profile||"https://github.com/shadcn.png"}
+            fallback={user?.name}
           />
         </div>
       </div>

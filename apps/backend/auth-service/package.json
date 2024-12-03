@@ -15,7 +15,7 @@
     "db:insert": "ts-node src/database/scripts/insert-data",
     "db:dump": "ts-node src/database/scripts/dump-data"
   },
-  "dependencies": {    
+  "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.620.0",
     "axios": "^1.7.2",
     "cookie-parser": "^1.4.6",

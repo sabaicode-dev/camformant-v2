@@ -52,9 +52,9 @@ class CorporateService {
       throw error;
     }
   }
-  public async getProfileById(id: string): Promise<ICorporatorProfile | null> {
+  public async getProfileBySub(sub: string): Promise<ICorporatorProfile | null> {
     try {
-      const corporateProfile = await CorporateRepository.findProfileById(id);
+      const corporateProfile = await CorporateRepository.findProfileBySub(sub);
       if (!corporateProfile) {
         console.log(
           "CorporateService - getProfileById() method error: No corporate profile found"
@@ -145,38 +145,38 @@ class CorporateService {
     }
   }
   //todo: later
-  //   public async getProfileWithJobs(
-  //     companyId: string,
-  //     recentJobsLimit: number = 5
-  //   ) {
-  //     const profile = await CorporateRepository.findProfileById(companyId);
+  // public async getProfileWithJobs(
+  //   companyId: string,
+  //   // recentJobsLimit: number = 5
+  // ) {
+  //   const profile = await CorporateRepository.findProfileById(companyId);
 
-  //     if (!profile) {
-  //       console.log(
-  //         "CorporateService - getProfileWithJobs() method error: Profile not found"
-  //       );
-  //       return null;
-  //     }
-  //     //todo::: prepare from job service
-  //     const [totalJobs, recentJobs] = await Promise.all([
-  //       jobOpeningRepository.countJobsByCompanyId(companyId), // total jobs
-  //       jobOpeningRepository.findRecentJobsByCompanyId(
-  //         companyId,
-  //         recentJobsLimit
-  //       ), // recent jobs
-  //     ]);
-
-  //     const jobStats = {
-  //       total: totalJobs,
-  //       recentJobs: recentJobs,
-  //     };
-
-  //     const profileObject = (
-  //       profile as Document & { toObject: () => any }
-  //     ).toObject();
-
-  //     return { ...profileObject, jobStats };
+  //   if (!profile) {
+  //     console.log(
+  //       "CorporateService - getProfileWithJobs() method error: Profile not found"
+  //     );
+  //     return null;
   //   }
+  //   //todo::: prepare from job service
+  //   // const [totalJobs, recentJobs] = await Promise.all([
+  //   //   jobOpeningRepository.countJobsByCompanyId(companyId), // total jobs
+  //   //   jobOpeningRepository.findRecentJobsByCompanyId(
+  //   //     companyId,
+  //   //     recentJobsLimit
+  //   //   ), // recent jobs
+  //   // ]);
+
+  //   // const jobStats = {
+  //   //   total: totalJobs,
+  //   //   recentJobs: recentJobs,
+  //   // };
+
+  //   const profileObject = (
+  //     profile as Document & { toObject: () => any }
+  //   ).toObject();
+
+  //   return { ...profileObject };
+  // }
 }
 
 export default new CorporateService();

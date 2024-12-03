@@ -695,10 +695,10 @@ class AuthService {
 
       await this.addToGroup(userSub!, role);
 
-      await axios.post(`${configs.userServiceUrl}/v1/corporate`, {
+      await axios.post(`${configs.userServiceUrl}/v1/corporator/profile`, {
         sub: userInfo.Username,
         email: body.email,
-        username: userInfo.UserAttributes?.find((attr) => attr.Name === "name")
+        name: userInfo.UserAttributes?.find((attr) => attr.Name === "name")
           ?.Value,
       });
     } catch (error) {
@@ -741,7 +741,7 @@ class AuthService {
 
       // Get the user info from the user service
       const userInfo = await axios.get(
-        `${configs.userServiceUrl}/v1/corporate/${congitoUsername.sub}`
+        `${configs.userServiceUrl}/v1/corporator/profile/${congitoUsername.sub}`
       );
       console.log("userInfo: ", userInfo.data.data._id);
       return {

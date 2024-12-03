@@ -416,6 +416,24 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"APIResponse_IJob-Array_": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/IJob"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"APIResponse_string-Array_": {
 				"properties": {
 					"message": {
@@ -626,6 +644,28 @@
 						}
 					}
 				]
+			}
+		},
+		"/v1/jobs/corporator": {
+			"get": {
+				"operationId": "GetAllJobsWithCorporator",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIResponse_IJob-Array_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": []
 			}
 		},
 		"/v1/jobs/search-history": {
