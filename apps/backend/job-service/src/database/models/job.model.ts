@@ -40,7 +40,7 @@ export interface returnJobs {
   _id?: string;
   title?: string; // name of the job that company looking for. Example: Java Developer
   position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
-  workMode?: WorkMode[]; 
+  workMode?: WorkMode[];
   location?: string; // location could be phnom penh, kompong-cham, etc.
   requirement?: string;
   description?: string;

@@ -78,12 +78,12 @@ class JobRepository {
     // Adding search functionality
     const searchFilter = search
       ? {
-        $or: [
-          { title: { $regex: search, $options: "i" } },
-          { position: { $regex: search, $options: "i" } },
-          { "companyId.name": { $regex: search, $options: "i" } },
-        ],
-      }
+          $or: [
+            { title: { $regex: search, $options: "i" } },
+            { position: { $regex: search, $options: "i" } },
+            { "companyId.name": { $regex: search, $options: "i" } },
+          ],
+        }
       : {};
     type UserFavFilter = {
       _id?: {
@@ -163,7 +163,6 @@ class JobRepository {
       throw error;
     }
   }
-
 
   public async findJobById(jobId: string) {
     try {

@@ -10,7 +10,7 @@ import mongoose from "mongoose";
 
 // ========================
 export interface JobParams {
-  companyId: string | mongoose.Types.ObjectId;
+  companyId?: string | mongoose.Types.ObjectId;
   title: string;
   position: string[];
   workMode: WorkMode[];
@@ -24,8 +24,10 @@ export interface JobParams {
   type?: EmploymentType[];
   schedule?: EmploymentSchedule[];
   required_experience?: string[];
+  createdAt:Date,
   benefit?: string[];
   deadline?: Date;
+  updatedAt?:Date
 }
 
 export interface JobsFilterParams {

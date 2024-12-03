@@ -3,10 +3,10 @@ import { Jobs } from "@/utils/types/form-type";
 import { Loader } from "@googlemaps/js-api-loader";
 import React, { SetStateAction, useEffect, useRef, useState } from "react";
 
-
 const Map: React.FC<{
   setFormData: React.Dispatch<SetStateAction<Jobs>>;
-}> = ({ setFormData }) => {
+  existingMap?: string;
+}> = ({ setFormData, existingMap }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<google.maps.Marker | null>(null); // Store the marker reference
   const [initialLocation, setInitialLocation] =
@@ -30,10 +30,10 @@ const Map: React.FC<{
             return {
               ...prev,
               location: locationString,
-              address:`${location.lat},${location.lng}`
+              address: `${location.lat},${location.lng}`,
             };
           });
-          console.log("adree",locArr)
+          console.log("adree", locArr);
           setLocation(formattedAddress); // Set the current address state
         } else {
           console.error("No address found for this location.");
@@ -90,10 +90,19 @@ const Map: React.FC<{
         // Get user's current location with higher accuracy
         navigator.geolocation.getCurrentPosition(
           async (position) => {
-            const userLocation = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            };
+            let userLocation: { lat: number; lng: number };
+            if (existingMap) {
+              const arrMap = existingMap.split(",");
+              userLocation = {
+                lat: parseFloat(arrMap[0]),
+                lng: parseFloat(arrMap[1]),
+              };
+            } else {
+              userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              };
+            }
 
             console.log("User Location:", userLocation); // Log the location to verify it's correct
             setInitialLocation(userLocation); // Store the initial location

@@ -225,6 +225,10 @@
 						},
 						"type": "array"
 					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
 					"benefit": {
 						"items": {
 							"type": "string"
@@ -234,10 +238,13 @@
 					"deadline": {
 						"type": "string",
 						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
 					}
 				},
 				"required": [
-					"companyId",
 					"title",
 					"position",
 					"workMode",
@@ -245,7 +252,8 @@
 					"requirement",
 					"address",
 					"min_salary",
-					"max_salary"
+					"max_salary",
+					"createdAt"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -588,7 +596,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/JobParams"
+								"$ref": "#/components/schemas/IJob"
 							}
 						}
 					}

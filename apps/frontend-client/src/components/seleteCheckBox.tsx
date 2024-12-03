@@ -1,5 +1,4 @@
 import Multiselect from "multiselect-react-dropdown";
-import { useState } from "react";
 
 // Define the prop types for SeleteCheckBox
 interface SeleteCheckBoxProps {
@@ -15,6 +14,7 @@ const SeleteCheckBox = ({
   onSelect,
   onRemove,
 }: SeleteCheckBoxProps) => {
+  console.log("selecyed value", selectedValue);
   // Map selected values (strings) to option objects for display
   const selectedOptions = options.filter((opt) =>
     selectedValue.includes(opt.name)

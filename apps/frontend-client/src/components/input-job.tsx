@@ -6,33 +6,37 @@ import { Label } from "@/components/ui/label";
 import SeleteCheckBox from "@/components/seleteCheckBox";
 import axiosInstance from "@/utils/axios";
 import { Jobs } from "@/utils/types/form-type";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 
-interface Option {
-  name: string;                                                                                                                                                                                                                                                                             
-  id: number;
-}
-const InputForm:React.FC<{
-  formTitle:string,
-  existingData?:Jobs
-}> = ({formTitle,existingData}) => {
+const InputForm: React.FC<{
+  formTitle: string;
+  existingData?: Jobs;
+  typeOfForm?: string;
+}> = ({ formTitle, existingData, typeOfForm = "POST" }) => {
   const [formData, setFormData] = useState<Jobs>({
-    title: existingData?.title||"",
-    position: existingData?.position||[],
-    workMode: existingData?.workMode||[],
-    location: existingData?.location||"",
-    requirement: existingData?.requirement|| "",
-    description: existingData?.description|| "",
-    address: existingData?.address|| "",
-    min_salary: existingData?.min_salary|| 0,
-    max_salary: existingData?.max_salary|| 0,
-    job_opening: existingData?. job_opening|| 0,
-    type: existingData?.type|| [],
-    schedule:existingData?.schedule|| [],
-    required_experience: existingData?. required_experience|| [],
-    benefit: existingData?.benefit|| [],
-    deadline: existingData?.deadline|| "",
-    createdAt: existingData?.createdAt|| "",
-    updatedAt: existingData?.updatedAt|| "",
+    title: existingData?.title || "",
+    position: existingData?.position || [],
+    workMode: existingData?.workMode || [],
+    location: existingData?.location || "",
+    requirement: existingData?.requirement || "",
+    description: existingData?.description || "",
+    address: existingData?.address || "",
+    min_salary: existingData?.min_salary || 0,
+    max_salary: existingData?.max_salary || 0,
+    job_opening: existingData?.job_opening || 0,
+    type: existingData?.type || [],
+    schedule: existingData?.schedule || [],
+    required_experience: existingData?.required_experience || [],
+    benefit: existingData?.benefit || [],
+    deadline: existingData?.deadline
+      ? new Date(existingData.deadline).toISOString().split("T")[0]
+      : "",
+    createdAt: existingData?.createdAt
+      ? new Date(existingData.createdAt).toISOString().split("T")[0]
+      : "", // Default to an empty string if no value
+    updatedAt: existingData?.updatedAt
+      ? new Date(existingData.updatedAt).toISOString().split("T")[0]
+      : "",
   });
 
   const handleChange = (
@@ -45,7 +49,9 @@ const InputForm:React.FC<{
   };
 
   const handleChangeNum = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData({
@@ -53,7 +59,7 @@ const InputForm:React.FC<{
       [name]: value === "" ? null : Number(value),
     });
   };
-  
+
   const workTypeOptions = [
     { name: "Remote" },
     { name: "On-Site" },
@@ -71,6 +77,7 @@ const InputForm:React.FC<{
     { name: "Project-Based" },
   ];
   const [scheduleSelected, setscheduleSelected] = useState<string[]>([]);
+
   const handleArrayChange = (name: keyof Jobs, value: string[]) => {
     console.log("name:::", name, "values:::", value);
     setFormData((prevState) => ({
@@ -81,15 +88,21 @@ const InputForm:React.FC<{
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     console.log("Form submitted:", formData);
-
-    // Prepare the payload by excluding empty fields
-
+    event.preventDefault();
     try {
-      const response = await axiosInstance.post(
-        "http://localhost:4000/v1/jobs/job",
-        formData
-      );
-      console.log(response.data);
+      let response: any;
+      if (typeOfForm == "POST") {
+        response = await axiosInstance.post(
+          "http://localhost:4000/v1/jobs/job",
+          formData
+        );
+      } else {
+        response = await axiosInstance.put(
+          `${API_ENDPOINTS.JOBS}/${existingData!._id}`,
+          formData
+        );
+      }
+      // console.log(response.data);
       console.log(formData);
     } catch (error) {
       console.log("errror connect to server", error);
@@ -109,11 +122,15 @@ const InputForm:React.FC<{
           {/* company name and jobCategory */}
           <div className="flex w-full gap-4 mb-5 justify-center ">
             <div className="w-2/4">
-              <Label htmlFor="title" className="block text-black text-[16px] mb-1">
+              <Label
+                htmlFor="title"
+                className="block text-black text-[16px] mb-1"
+              >
                 Company Name
               </Label>
               <Input
                 placeholder="name"
+                value={formData.title}
                 name="title"
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
@@ -129,6 +146,7 @@ const InputForm:React.FC<{
               <Input
                 placeholder="job"
                 name="position"
+                value={formData.position}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
               />
@@ -146,18 +164,21 @@ const InputForm:React.FC<{
               </Label>
               <SeleteCheckBox
                 options={typeJobOptions}
-                selectedValue={typeJobSelected}
+                selectedValue={formData.type ? formData.type : []}
                 onSelect={(selected) => handleArrayChange("type", selected)}
                 onRemove={setTypeJobSelected}
               />
             </div>
             <div className="w-2/4">
-              <Label htmlFor="type" className="block text-black text-[16px] mb-1">
+              <Label
+                htmlFor="type"
+                className="block text-black text-[16px] mb-1"
+              >
                 schedule
               </Label>
               <SeleteCheckBox
                 options={scheduleOption}
-                selectedValue={scheduleSelected}
+                selectedValue={formData.schedule ? formData.schedule : []}
                 onSelect={(selected) => handleArrayChange("schedule", selected)}
                 onRemove={setscheduleSelected}
               />
@@ -166,12 +187,15 @@ const InputForm:React.FC<{
           {/* location workmode */}
           <div className="flex gap-4 mb-5">
             <div className="w-2/4">
-              <Label htmlFor="type" className="block text-black text-[16px] mb-1">
+              <Label
+                htmlFor="type"
+                className="block text-black text-[16px] mb-1"
+              >
                 workMode
               </Label>
               <SeleteCheckBox
                 options={workTypeOptions}
-                selectedValue={workTypeSelected}
+                selectedValue={formData.workMode ? formData.workMode : []}
                 onSelect={(selected) => handleArrayChange("workMode", selected)}
                 onRemove={setWorkTypeSelected}
               />
@@ -205,6 +229,7 @@ const InputForm:React.FC<{
               <DateInput
                 name="createdAt"
                 type="date"
+                value={formData.createdAt || ""} // Ensure controlled input
                 onChange={handleChange}
                 placeholder="YYYY-MM-DD"
               />
@@ -219,6 +244,7 @@ const InputForm:React.FC<{
               <DateInput
                 name="deadline"
                 type="date"
+                value={formData.deadline || ""} // Ensure controlled input
                 onChange={handleChange}
                 placeholder="YYYY-MM-DD"
               />
@@ -237,6 +263,7 @@ const InputForm:React.FC<{
               <Input
                 name="min_salary"
                 type="number"
+                value={formData.min_salary}
                 onChange={handleChangeNum}
                 placeholder="$"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
@@ -252,6 +279,7 @@ const InputForm:React.FC<{
               <Input
                 name="max_salary"
                 type="number"
+                value={formData.max_salary}
                 onChange={handleChangeNum}
                 placeholder="$"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
@@ -260,12 +288,16 @@ const InputForm:React.FC<{
           </div>
 
           <div className="mb-6">
-            <Label htmlFor="deadline" className="block text-black text-[16px] mb-1">
+            <Label
+              htmlFor="deadline"
+              className="block text-black text-[16px] mb-1"
+            >
               Update Date To Apply
             </Label>
             <DateInput
               name="updatedAt"
               type="date"
+              value={formData.updatedAt}
               onChange={handleChange}
               placeholder="YYYY-MM-DD"
             />
@@ -280,6 +312,7 @@ const InputForm:React.FC<{
             <textarea
               name="required_experience"
               onChange={handleChange}
+              value={formData.required_experience}
               placeholder="Type your Description"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
               rows={4}
@@ -295,6 +328,7 @@ const InputForm:React.FC<{
             <textarea
               name="requirement"
               onChange={handleChange}
+              value={formData.requirement}
               placeholder="Type your Description"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
               rows={4}
@@ -302,11 +336,15 @@ const InputForm:React.FC<{
           </div>
 
           <div className="mb-2">
-            <Label htmlFor="benefit" className="block text-black text-[16px] mb-1">
+            <Label
+              htmlFor="benefit"
+              className="block text-black text-[16px] mb-1"
+            >
               benefit
             </Label>
             <textarea
               name="benefit"
+              value={formData.benefit}
               onChange={handleChange}
               placeholder="Type your Description"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
@@ -325,13 +363,14 @@ const InputForm:React.FC<{
             <textarea
               name="description"
               onChange={handleChange}
+              value={formData.description}
               placeholder="Type your Description"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
               rows={4}
             ></textarea>
           </div>
 
-          <Map setFormData={setFormData} />
+          <Map setFormData={setFormData} existingMap={formData.address} />
           {/* Submit Button */}
           <button
             type="submit"
@@ -345,4 +384,4 @@ const InputForm:React.FC<{
   );
 };
 
-export default InputForm;
+export default InputForm

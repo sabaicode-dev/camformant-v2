@@ -379,6 +379,9 @@ const ROUTE_PATHS: RoutesConfig = {
           DELETE: {
             authRequired: false,
           },
+          PUT: {
+            authRequired: false,
+          },
         },
       },
       {
@@ -406,7 +409,6 @@ const ROUTE_PATHS: RoutesConfig = {
           },
         },
       },
-    
     ],
   },
   COMPANY_SERVICE: {

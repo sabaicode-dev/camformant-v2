@@ -9,21 +9,32 @@ import { Jobs } from "@/utils/types/form-type";
 
 const page = ({ params }: { params: { jobId: string } }) => {
   const pathname = usePathname();
-  const jobData = useState<Jobs>();
+  const [jobData, setJobData] = useState<Jobs>();
+  const [isLoading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     async function fetchData() {
-      const response = await axiosInstance.get(
-        `${API_ENDPOINTS.JOBS}/${params.jobId}`
-      );
-      console.log("response");
+      try {
+        setLoading(true);
+        const response = await axiosInstance.get(
+          `${API_ENDPOINTS.JOBS}/${params.jobId}`
+        );
+        console.log("response:", response);
+        setJobData(response.data.data);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
     }
     fetchData();
-  });
+  }, []);
   return (
     <>
       <DynamicBreadcrumb />
       {pathname}
-      <InputForm formTitle="Update Job" />
+      {!isLoading && (
+        <InputForm formTitle="Update Job" existingData={jobData} typeOfForm="PUT" />
+      )}
     </>
   );
 };
