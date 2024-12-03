@@ -9,13 +9,14 @@ import SkeletonLoader from "@/components/cv-rating-card/router-page/basic/skelet
 
 const PuzzleResume = () => {
   const route = useRouter();
+  const { user } = useAuth();
   return (
     <Background style="rounded-3xl bg-mybg-linear ">
       <div className="w-full h-full flex gap-4 flex-col  ">
         <button
           className=" mt-[-10%] w-full shadow-xl rounded-3xl flex justify-start p-10 items-center bg-white"
           onClick={() => {
-            route.push("/cv-ratingcvData[index]");
+            route.push(`/editor/${user?._id}`);
           }}
         >
           <span className=" pr-4 text-red-500">

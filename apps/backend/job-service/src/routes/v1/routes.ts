@@ -105,7 +105,7 @@ const models: TsoaRoute.Models = {
             "userInfo": {"ref":"ApplyUserInfo","required":true},
             "companyResponse": {"ref":"ApplyCompanyResp"},
             "appliedAt": {"dataType":"datetime"},
-            "updateAt": {"dataType":"datetime"},
+            "statusDate": {"dataType":"nestedObjectLiteral","nestedProperties":{"Apply":{"dataType":"datetime"},"Review":{"dataType":"datetime"},"Shortlist":{"dataType":"datetime"},"Interview":{"dataType":"datetime"},"Accept":{"dataType":"datetime"}}},
         },
         "additionalProperties": false,
     },
@@ -241,7 +241,7 @@ const models: TsoaRoute.Models = {
             "userInfo": {"ref":"ApplyUserInfo","required":true},
             "companyResponse": {"ref":"ApplyCompanyResp"},
             "appliedAt": {"dataType":"datetime"},
-            "updateAt": {"dataType":"datetime"},
+            "statusDate": {"dataType":"nestedObjectLiteral","nestedProperties":{"Apply":{"dataType":"datetime"},"Review":{"dataType":"datetime"},"Shortlist":{"dataType":"datetime"},"Interview":{"dataType":"datetime"},"Accept":{"dataType":"datetime"}}},
             "jobInfo": {"ref":"IJob","required":true},
         },
         "additionalProperties": false,
@@ -263,7 +263,7 @@ const models: TsoaRoute.Models = {
     "BodyUpdateJobApply": {
         "dataType": "refObject",
         "properties": {
-            "status": {"ref":"StatusMode"},
+            "status": {"ref":"StatusMode","required":true},
             "startDate": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"string"}]},
             "interviewDate": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"string"}]},
             "interviewLocation": {"dataType":"string"},

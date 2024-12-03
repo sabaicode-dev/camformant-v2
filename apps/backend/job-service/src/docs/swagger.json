@@ -210,9 +210,30 @@
 						"type": "string",
 						"format": "date-time"
 					},
-					"updateAt": {
-						"type": "string",
-						"format": "date-time"
+					"statusDate": {
+						"properties": {
+							"Apply": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Review": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Shortlist": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Interview": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Accept": {
+								"type": "string",
+								"format": "date-time"
+							}
+						},
+						"type": "object"
 					}
 				},
 				"required": [
@@ -629,9 +650,30 @@
 						"type": "string",
 						"format": "date-time"
 					},
-					"updateAt": {
-						"type": "string",
-						"format": "date-time"
+					"statusDate": {
+						"properties": {
+							"Apply": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Review": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Shortlist": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Interview": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Accept": {
+								"type": "string",
+								"format": "date-time"
+							}
+						},
+						"type": "object"
 					},
 					"jobInfo": {
 						"$ref": "#/components/schemas/IJob"
@@ -703,6 +745,9 @@
 						"type": "string"
 					}
 				},
+				"required": [
+					"status"
+				],
 				"type": "object",
 				"additionalProperties": false
 			}
