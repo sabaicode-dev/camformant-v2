@@ -106,7 +106,7 @@ const buildEditor = ({
       unit: "px",
       format: [options.width!, options.height!],
     });
-    const data = canvas.toDataURL({quality:1});
+    const data = canvas.toDataURL({ quality: 1 });
     // Scale the image to fit the PDF dimensions
     pdf.addImage(data, "PNG", 0, -50, options.width!, options.height!);
     //downloadFile(data, "pdf");
@@ -249,29 +249,68 @@ const buildEditor = ({
       canvas.setActiveObject(newActiveSelection); //setActiveObject is designed to set a single active object
       canvas.renderAll();
     },
-    alignVerticalBottom: () => {},
+    alignVerticalBottom: () => {
+      const selectedObjects = canvas.getActiveObjects();
+      const bottom = Math.max(
+        ...selectedObjects.map((obj) => obj.top! + obj.height! * obj.scaleY!)
+      );
+
+      selectedObjects.forEach((obj) => {
+        const objHeight = obj.height! * obj.scaleY!;
+        obj.top = bottom - objHeight;
+        obj.setCoords(); // Update object coordinates
+      });
+
+      canvas.requestRenderAll();
+    },
     alignVerticalCenter: () => {
       const selectedObjects = canvas.getActiveObjects();
       const highestHeightObject = selectedObjects.reduce((max, obj) => {
-        return max.height! < obj.height! ? obj : max;
+        const maxHeight = max.height! * max.scaleY!;
+        const objHeight = obj.height! * obj.scaleY!;
+        return maxHeight < objHeight ? obj : max;
       });
+
       let widthForAlign: number = selectedObjects[0].left!;
-      console.log("highest:", highestHeightObject.height);
+      console.log(
+        "highest:",
+        highestHeightObject.height! * highestHeightObject.scaleY!
+      );
+
       selectedObjects.forEach((object) => {
-        if (!(highestHeightObject === object)) {
+        const objectHeight = object.height! * object.scaleY!;
+        const highestHeight =
+          highestHeightObject.height! * highestHeightObject.scaleY!;
+
+        if (highestHeightObject !== object) {
           object.set({
             top:
-              highestHeightObject.top! +
-              (highestHeightObject.height! / 2 - object.height! / 2),
+              highestHeightObject.top! + (highestHeight / 2 - objectHeight / 2),
           });
         }
-        // object.set("left", widthForAlign);
-        widthForAlign += object.width!;
+
+        widthForAlign += object.width! * object.scaleX!;
       });
 
       resetSelection(selectedObjects);
     },
-    alignHorizontalCenter: () => {},
+    alignHorizontalCenter: () => {
+      const selectedObjects = canvas.getActiveObjects();
+      // Find the horizontal center position
+      const centerX = Math.min(
+        ...selectedObjects.map(
+          (obj) => obj.left! + (obj.width! * obj.scaleX!) / 2
+        )
+      );
+
+      selectedObjects.forEach((obj) => {
+        const objWidth = obj.width! * obj.scaleX!;
+        obj.left = centerX - objWidth / 2;
+        obj.setCoords();
+      });
+
+      resetSelection(selectedObjects);
+    },
     alignHorizontalRight: () => {
       const selectedObjects = canvas.getActiveObjects();
       const mainRight =
@@ -280,7 +319,7 @@ const buildEditor = ({
       selectedObjects.forEach((object: any) => {
         const objectWidth = object.width * object.scaleX;
         object.set("left", mainRight - objectWidth);
-        canvas.renderAll();
+        resetSelection(selectedObjects);
       });
     },
     alignHorizontalLeft: () => {
@@ -839,7 +878,6 @@ export const useEditor = ({
     setSelectedObjects,
     clearSelectionCallback,
   });
-
   useHotKeys({
     canvas,
     save,
@@ -866,7 +904,6 @@ export const useEditor = ({
   const editor = useMemo(() => {
     if (canvas) {
       // handleTouchEvents(); // Initialize touch events when canvas is ready
-      console.log("cv content to editor", defaultState);
       return buildEditor({
         dataForUpdate,
         setDataForUpdate,
@@ -906,6 +943,7 @@ export const useEditor = ({
     }
     return undefined;
   }, [
+    defaultState.style,
     moveLeft,
     canRedo,
     canUndo,
@@ -927,13 +965,20 @@ export const useEditor = ({
     moveDown,
     moveRight,
     moveUp,
-    // handleTouchEvents,
   ]);
   useEffect(() => {
     if (canvas) {
       canvas.on("text:editing:exited", (e: fabric.IEvent<Event>) => {
+        console.log("text edit");
         catchEditedData(e, setDataForUpdate, canvas);
         console.log("DATA FOR UPDATE", dataForUpdate);
+      });
+      canvas.on("object:scaling", (e: fabric.IEvent<Event>) => {
+        if (e.target instanceof fabric.Textbox) {
+          const withScalingValue: number =
+            e.target.get("fontSize")! * e.target.scaleY!;
+          e.target.set("fontSize", parseFloat(withScalingValue.toFixed(2)));
+        }
       });
     }
   }, [canvas]);
@@ -974,7 +1019,6 @@ export const useEditor = ({
       initialCanvas.add(initialWorkspace);
       initialCanvas.centerObject(initialWorkspace);
       initialCanvas.clipPath = initialWorkspace;
-      console.log(" inside build", initialState.current);
       setCanvas(initialCanvas);
       setContainer(initialContainer);
       const currentState = JSON.stringify(initialCanvas.toJSON(JSON_KEYS));

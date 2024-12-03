@@ -24,7 +24,6 @@ const SelectCV = () => {
 
         if (check_cv.status === 200) {
           setCvs(check_cv.data.data);
-          setCvs(check_cv.data.data);
         }
       } catch (error) {
       } finally {
@@ -51,13 +50,14 @@ const SelectCV = () => {
   return (
     <div className="w-full ">
       {reFetch && <SkeletonLoader text="loading..." />}
-      {cvs?.cv.length! <= 0 && (
-        <CallToAction
-          text="No Cv Please Upload"
-          buttonText="Upload Cv"
-          buttonLink="/resume"
-        />
-      )}
+      {cvs?.cv.length! <= 0 ||
+        (!cvs && (
+          <CallToAction
+            text="No Cv Please Upload"
+            buttonText="Upload Cv"
+            buttonLink="/resume"
+          />
+        ))}
       <span onClick={() => history.back()}>
         {" "}
         <BackButton_md styles="absolute bg-white p-3 px-4 rounded-xl top-9 left-4 " />

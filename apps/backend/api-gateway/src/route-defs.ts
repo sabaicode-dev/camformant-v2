@@ -354,6 +354,34 @@ const ROUTE_PATHS: RoutesConfig = {
         },
       },
       {
+        path: "/jobApply",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["user", "company"],
+          },
+          POST: {
+            authRequired: true,
+            roles: ["user", "company"],
+          },
+        },
+        nestedRoutes: [
+          {
+            path: "/:applyId",
+            methods: {
+              PUT: {
+                authRequired: true,
+                roles: ["company"],
+              },
+              DELETE: {
+                authRequired: true,
+                roles: ["company", "user"],
+              },
+            },
+          },
+        ],
+      },
+      {
         path: "/:id",
         methods: {
           GET: {

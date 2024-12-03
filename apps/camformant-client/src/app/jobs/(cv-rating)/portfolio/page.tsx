@@ -66,7 +66,7 @@ const Page = () => {
   return (
     <div>
       <HeaderBasic
-        title="Portfilo"
+        title="Portfolio"
         nextRoute={"/jobs/references"}
         {...(isPut ? { next: PostData } : {})}
       />

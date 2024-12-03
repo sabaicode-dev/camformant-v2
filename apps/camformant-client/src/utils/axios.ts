@@ -1,5 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 interface FailedRequests {
   resolve: (value: AxiosResponse) => void;
   reject: (value: AxiosError) => void;
@@ -11,21 +10,26 @@ interface FailedRequests {
 let isTokenRefreshing = false;
 let failedRequestsQueue: FailedRequests[] = [];
 
-const isServer = typeof window === 'undefined';
+const isServer = typeof window === "undefined";
 
 async function getServerCookies(): Promise<string | undefined> {
   if (isServer) {
-    const { cookies } = (await import("next/headers"));// dynamically imports the "next/headers" module from Next.js
+    const { cookies } = await import("next/headers"); // dynamically imports the "next/headers" module from Next.js
     const cookieStore = cookies();
-    return cookieStore.getAll().map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
+    return cookieStore
+      .getAll()
+      .map((cookie) => `${cookie.name}=${cookie.value}`)
+      .join("; ");
   }
   return undefined; // On the client side, cookies are automatically sent
 }
 
-async function refreshToken(): Promise<{ accessToken: string; idToken: string }> {
+async function refreshToken(): Promise<{
+  accessToken: string;
+  idToken: string;
+}> {
   try {
     const headers = isServer ? { Cookie: await getServerCookies() } : {};
-
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/auth/refresh-token`,
       null,
@@ -37,24 +41,26 @@ async function refreshToken(): Promise<{ accessToken: string; idToken: string }>
 
     const { accessToken, idToken } = extractTokensFromResponse(response);
     return { accessToken, idToken };
-
   } catch (error) {
     console.error("Error refreshing token:", error);
     throw error;
   }
 }
 
-function extractTokensFromResponse(response: AxiosResponse): { accessToken: string; idToken: string } {
-  let accessToken = '';
-  let idToken = '';
+function extractTokensFromResponse(response: AxiosResponse): {
+  accessToken: string;
+  idToken: string;
+} {
+  let accessToken = "";
+  let idToken = "";
 
-  const setCookieHeaders = response.headers['set-cookie'];
+  const setCookieHeaders = response.headers["set-cookie"];
   if (setCookieHeaders) {
     setCookieHeaders.forEach((cookie) => {
-      const [cookieName, cookieValue] = cookie.split(';')[0].split('=');
-      if (cookieName === 'access_token') {
+      const [cookieName, cookieValue] = cookie.split(";")[0].split("=");
+      if (cookieName === "access_token") {
         accessToken = cookieValue;
-      } else if (cookieName === 'id_token') {
+      } else if (cookieName === "id_token") {
         idToken = cookieValue;
       }
     });
@@ -85,7 +91,12 @@ axiosInstance.interceptors.response.use(
       // 1.1
       if (isTokenRefreshing) {
         return new Promise((resolve, reject) => {
-          failedRequestsQueue.push({ resolve, reject, config: originalRequest, error });
+          failedRequestsQueue.push({
+            resolve,
+            reject,
+            config: originalRequest,
+            error,
+          });
         });
       }
 
@@ -102,7 +113,11 @@ axiosInstance.interceptors.response.use(
           withCredentials: true,
           headers: {
             ...originalRequest.headers,
-            ...(isServer ? { Cookie: `${await getServerCookies()}; access_token=${accessToken}; id_token=${idToken}` } : {}),
+            ...(isServer
+              ? {
+                  Cookie: `${await getServerCookies()}; access_token=${accessToken}; id_token=${idToken}`,
+                }
+              : {}),
           },
         };
 
@@ -113,12 +128,10 @@ axiosInstance.interceptors.response.use(
         });
 
         return axiosInstance(newConfig);
-
       } catch (error) {
         // 1.4
         failedRequestsQueue.forEach(({ reject, error }) => reject(error));
         return Promise.reject(error);
-
       } finally {
         isTokenRefreshing = false;
         failedRequestsQueue = [];
@@ -130,6 +143,5 @@ axiosInstance.interceptors.response.use(
 );
 
 export default axiosInstance;
-
 
 // ref: https://blog.stackademic.com/refresh-access-token-with-axios-interceptors-in-react-js-with-typescript-bd7a2d035562

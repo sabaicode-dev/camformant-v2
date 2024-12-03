@@ -5,12 +5,14 @@ import "@/app/globals.css";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { CvContentParams } from "@/features/editor/types";
-import { FaBullseye } from "react-icons/fa";
 import SkeletonLoader from "@/components/cv-rating-card/router-page/basic/skeleton";
-import { useAuth } from "@/context/auth";
 import { setStructureUserdata } from "@/features/editor/utils";
+import CallToAction from "@/components/calltoaction/call-to-action";
+import { BackButton_md } from "@/components/back/BackButton";
+import Link from "next/link";
 
-const page = () => {
+const page = ({ params }: { params: { userId: string } }) => {
+  const { userId } = params;
   const [cvContent, setCvContent] = useState<CvContentParams>({
     style: "",
     json: {
@@ -21,7 +23,6 @@ const page = () => {
     userData: {},
   });
   const hasFetched = useRef(false);
-  const { user } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     async function fetchData() {
@@ -35,13 +36,11 @@ const page = () => {
         const { data } = await axiosInstance.get(
           API_ENDPOINTS.USER_PROFILE_DETAIL
         );
-        const userData = data.data;
 
         setCvContent({
           ...userTemplate.data.data,
           ...setStructureUserdata(data.data),
         });
-
       } catch (err) {
         console.log(err);
       } finally {
@@ -50,9 +49,23 @@ const page = () => {
     }
     fetchData();
   }, []);
-  // if (!user?._id) {
-  //   return <div>Please login</div>;
-  // }
+  if (!userId || userId == "undefined") {
+    console.log("userid", userId);
+    return (
+      <div>
+        <div className="h-10 mt-4 mb-8 mx-2 w-14">
+          <Link href={"/resume"}>
+            <BackButton_md styles="bg-primaryCam p-3 px-4 rounded-xl text-gray-200" />
+          </Link>
+        </div>
+        <CallToAction
+          text="Login To Generate Cv"
+          buttonText="Go to Login"
+          buttonLink="/login"
+        />
+      </div>
+    );
+  }
   return (
     <div className="h-full bg-muted-foreground">
       {loading ? (

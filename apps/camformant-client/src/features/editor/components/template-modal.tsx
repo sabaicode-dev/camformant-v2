@@ -40,9 +40,7 @@ const TemplateModal: React.FC<{
         if (hasFetched.current) return; // Prevent double-fetching
         hasFetched.current = true;
         setIsLoading(true);
-        console.log("fetch yeah::::::");
         const response = await axiosInstance.get(API_ENDPOINTS.USER_CV_STYLE);
-        console.log("respone:::", response);
         setCvData(response.data.data);
         setIsLoading(false);
       } catch (err) {
@@ -52,7 +50,6 @@ const TemplateModal: React.FC<{
     isOpen && fetchData();
   }, []);
   const resetCvContent = (index: number) => {
-    console.log("inside template and userData", userData);
     editor?.loadJson(cvData[index].json, cvData[index].style, userData);
     setCvContent((previous: CvContentParams) => {
       return {
