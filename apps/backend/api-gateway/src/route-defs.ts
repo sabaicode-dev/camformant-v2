@@ -289,7 +289,7 @@ const ROUTE_PATHS: RoutesConfig = {
             methods: {
               GET: {
                 authRequired: true,
-                roles: ["user", "admin"],
+                roles: ["user", "company"],
               },
             },
           },
