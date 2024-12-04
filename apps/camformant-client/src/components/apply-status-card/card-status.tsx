@@ -118,7 +118,6 @@ const CardStatus: React.FC<ApplyTotal> = ({
 
   return (
     <div className="pb-20">
-      <div>{attForUse.status}</div>
       {isModalOpen && (
         <PopUpModal
           bodyText={

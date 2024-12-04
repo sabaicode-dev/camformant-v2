@@ -39,7 +39,6 @@ const ApplicantPage = () => {
   useEffect(() => {
     fetchJobApplications();
   }, []);
-  console.log(jobApplications);
 
   if (isLoading) {
     return <div>Loading applications...</div>;
@@ -54,29 +53,6 @@ const ApplicantPage = () => {
       {jobApplications.length === 0 ? (
         <p>No applications found</p>
       ) : (
-        // <div className="space-y-4">
-        //   {jobApplications.map(application => (
-        //     <div 
-        //       key={application._id} 
-        //       className="bg-white shadow-md rounded-lg p-4"
-        //     >
-        //       <div className="flex items-center space-x-4">
-        //         <Image 
-        //           src={application.userInfo.profile} 
-        //           alt={application.userInfo.name}
-        //           className="w-16 h-16 rounded-full"
-        //           width={64}
-        //           height={64}
-        //         />
-        //         <div>
-        //           <h2 className="text-lg font-semibold">{application.userInfo.name}</h2>
-        //           <p>Applied on: {new Date(application.appliedAt).toLocaleDateString()}</p>
-        //           <p>Status: {application.userInfo.status}</p>
-        //         </div>
-        //       </div>
-        //     </div>
-        //   ))}
-        // </div>
         <DataTable data={jobApplications} columns={columns}/>
       )}
     </div>

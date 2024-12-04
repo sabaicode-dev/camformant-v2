@@ -17,9 +17,8 @@ export enum WorkMode {
 }
 
 export interface StatusDate {
-    status: "Apply" | "Review" | "Interview" | "Reject" | "Accept";
+    status: "Apply" | "Review" | "Interview" | "Shortlist" | "Accept";
 }
-
 export interface IJob {
     _id?: string;
     companyId?: string;

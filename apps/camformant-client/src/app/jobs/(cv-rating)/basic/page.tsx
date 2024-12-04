@@ -32,7 +32,7 @@ const Page = () => {
     async function GetData() {
       try {
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=basic`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=basic`
         );
         setLoading(true);
         const res = response.data.data.basic;

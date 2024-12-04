@@ -15,198 +15,120 @@ import Image from "next/image"
 import { JobApplication, StatusDate } from "@/utils/types/job"
 import { getStatusVariant } from "@/utils/getStatusVariant"
 import { ScrollArea } from "../ui/scroll-area"
+import { useEffect, useState } from "react"
+import { UserDetail } from "@/utils/types/user-profile"
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints"
+import axiosInstance from "@/utils/axios"
+import { BasicInfoSection } from "./basic-info"
+import { DescriptionsSection } from "./descriptions"
+import { SkillsExpertiseSection } from "./skills-expertise"
+import { EducationExperienceSection } from "./education-experience"
+import { LanguagesReferencesSection } from "./languages-references"
+import { PortfolioCertificatesSection } from "./portfolio-certificates"
 
 interface ViewApplicationProps {
   application: JobApplication
   status?: StatusDate["status"]
+  userId: string
 }
 
-const cv = {
-  contactInfo: {
-    name: "Mab Sothea",
-    phone: "+855 123 456 789",
-    email: "mabsothea@example.com",
-    address: "Phnom Penh, Cambodia",
-    website: "www.mabsothea.com"
-  },
-  experience: [
-    {
-      title: "Web Developer",
-      company: "SBK University",
-      location: "Phnom Penh, Cambodia",
-      duration: "2023 - January 15, 2024",
-      responsibilities: [
-        "Developed and maintained web applications.",
-        "Worked with the team to design and implement new features.",
-        "Collaborated with designers for UI/UX improvements."
-      ]
-    },
-    {
-      title: "Part-time Teacher in Information Technologies",
-      company: "SBK University",
-      location: "Phnom Penh, Cambodia",
-      duration: "February 1, 2024 - May 25, 2024",
-      responsibilities: [
-        "Taught C++, ReactJS, Node Express, Java, and Adobe Photoshop.",
-        "Created educational materials and assessments.",
-        "Provided one-on-one assistance to students."
-      ]
-    }
-  ],
-  education: [
-    {
-      degree: "Bachelor of Science in Computer Science",
-      institution: "SBK University",
-      location: "Phnom Penh, Cambodia",
-      graduationYear: 2023
-    }
-  ],
-  skills: [
-    "Full Stack Development",
-    "UI/UX Design",
-    "JavaScript, React, Node.js",
-    "Python, C++, Java",
-    "AWS, MongoDB, SQL"
-  ],
-  certifications: [
-    {
-      name: "Full Stack Development Bootcamp",
-      institution: "XYZ Bootcamp",
-      year: 2023
-    }
-  ],
-  languages: [
-    "English (Fluent)",
-    "Khmer (Native)"
-  ],
-  projects: [
-    {
-      title: "Data Visualization System",
-      description: "A project to visualize property data with real-time updates and filters.",
-      toolsUsed: ["React", "Django", "MongoDB", "Pandas"]
-    }
-  ],
-  interests: [
-    "Football",
-    "Tennis",
-    "Volleyball"
-  ]
-};
-
-
-
-export function ViewApplication({ application , status }: ViewApplicationProps) {
-  const variant = status ? getStatusVariant(status) : "default";
-
+export function ViewApplication({ application , status ,userId }: ViewApplicationProps) {
+  	const variant = status ? getStatusVariant(status) : "default";
+	const [userDetail, setUserDetail] = useState<UserDetail | null>(null);
+	const fetchUserDetail = async () => {
+		try {
+			const response = await axiosInstance.get(`${API_ENDPOINTS.USER_DETAIL}/${userId}`);
+			const data = await response.data.data;
+			setUserDetail(data);
+		} catch (error) {
+			console.error(error);	
+		}
+	}
+	useEffect( () => {
+		fetchUserDetail();
+	},[])	
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <Eye className="h-4 w-4" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-3xl bg-slate-50 h-full overflow-y-auto ">
-        <ScrollArea>
-
-        <DialogHeader >
-          <DialogTitle>Application Details</DialogTitle>
-          <DialogDescription>
-            View applicant information and CV
-          </DialogDescription>
-        </DialogHeader>
-        <Tabs defaultValue="info" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="info" className={""}>Applicant Info</TabsTrigger>
-            <TabsTrigger value="cv">CV</TabsTrigger>
-          </TabsList>
-          <TabsContent value="info" className="h-full overscroll-y-auto">
-            <Card>
-              <CardHeader className="flex flex-row items-center gap-4">
-                <Image src={application?.userInfo?.profile || ""} alt={application?.userInfo?.profile || ""} className={"w-20 h-20 rounded-full object-fill"} width={100} height={100}/>
-                <div className="flex flex-col">
-                  <CardTitle>{application?.userInfo?.name}</CardTitle>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Badge>{application?.jobInfo?.title}</Badge>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4 h-full">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-					<div>
-                    <h4 className="text-sm font-medium mb-2">Contact Information</h4>
-                    <div className="space-y-2 ml-5">
-                      <p className="text-[12px] list-item">Email: <span className="text-gray-500"> {cv.contactInfo.email}</span></p>
-                      <p className="text-[12px] list-item">Phone: <span className="text-gray-500"> {cv.contactInfo.phone}</span></p>
-                      <p className="text-[12px] list-item">Address: <span className="text-gray-500"> {cv.contactInfo.address}</span></p>
-                      <p className="text-[12px] list-item">Website: <span className="text-gray-500"> {cv.contactInfo.website}</span></p>
-                    </div>
+	<Dialog>
+		<DialogTrigger asChild>
+	<Button variant="ghost" size="icon" className=" h-[35px] w-[35px] p-2 bg-green-100 hover:bg-green-200 hover:text-white text-green-500 rounded-full " >
+	  <Eye />
+	</Button>
+  </DialogTrigger>
+	<DialogContent className="max-w-3xl bg-slate-50 h-full overflow-y-auto ">
+	  <ScrollArea>
+		<DialogHeader className="py-5">
+		  <DialogTitle>Application Details</DialogTitle>
+		  <DialogDescription>View applicant information and CV</DialogDescription>
+		</DialogHeader>
+		<Tabs defaultValue="info" className="w-full">
+		  <TabsList className="grid w-full grid-cols-2">
+			<TabsTrigger value="info" className={""}>
+			  Applicant Info
+			</TabsTrigger>
+			<TabsTrigger value="cv">CV</TabsTrigger>
+		  </TabsList>
+		  <TabsContent value="info" className="h-full overscroll-y-auto">
+			<div className="space-y-2">
+			<Card>
+			  <CardHeader className="flex gap-4">
+				<div className="flex justify-between">
+				  <div className="flex items-center gap-3">
+					<Image
+					  src={application?.userInfo?.profile || ""}
+					  alt={application?.userInfo?.profile || ""}
+					  className={"w-20 h-20 rounded-full object-fill"}
+					  width={100}
+					  height={100}
+					/>
+					<div className="flex flex-col">
+					  <CardTitle>
+						{userDetail?.basic?.surname} {userDetail?.basic?.lastname}
+					  </CardTitle>
 					</div>
-					<div>
-                  <h4 className="text-sm font-medium mb-2">Experience</h4>
-                  <div className="space-y-2 ml-5">
-                        {cv.experience.map((exp, index) => (
-                          <div key={index} className="space-y-2">
-                            <p className="text-[12px] font-medium">{exp.title}</p>
-                            <p className="text-[12px] list-item">{exp.company} ({exp.location})</p>
-                            <p className="text-[12px] list-item">{exp.duration}</p>
-                            <ul className="list-disc ml-5">
-                              {exp.responsibilities.map((resp, index) => (
-                                <li key={index} className="text-[12px] list-none"> - {resp}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
-                    </div>
-                </div>
-                <div>
-                  <h4 className="text-sm font-medium mb-2">Education</h4>
-                  {/* <p className="text-[12px]">{application?.education}</p> */}
-				  <div className="space-y-2 ml-5">
-					{cv.education.map((edu, index) => (
-					  <div key={index} className="space-y-2">
-						<p className="text-[12px] font-medium">{edu.degree}</p>
-						<p className="text-[12px] list-item">{edu.institution} ({edu.location})</p>
-						<p className="text-[12px] list-item">Graduated: {edu.graduationYear}</p>
-					  </div>
-					))}
-                </div>
-                </div>
+				  </div>
+				  <div className="">
+					<Badge variant={variant}>{status}</Badge>
+				  </div>
+				</div>
+			  </CardHeader>
+			</Card>
 
-                  </div>
-
-                  <div>
-
-                    <h4 className="text-sm font-medium mb-2">Application Details</h4>
-                    <div className="space-y-2">
-                      {/* <p className="text-sm">Applied: {application?.appliedOn}</p> */}
-                    <Badge variant={variant}>{status}</Badge>
-                    </div>
-                  </div>
-
-                </div>
-
-               
-				
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="cv">
-            <Card>
-              <CardContent className="pt-6">
-                <ScrollArea className="h-[500px] w-full rounded-md border p-4">
-                  <iframe
-                    src={application?.userInfo?.cv || ""}
-                    className="w-full h-full"
-                    title={`${application?.userInfo?.name}'s CV`}
-                  />
-                </ScrollArea>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-        </ScrollArea>
-      </DialogContent>
-    </Dialog>
+			  <BasicInfoSection basic={userDetail?.basic} />
+			  <DescriptionsSection descriptions={userDetail?.descriptions} />
+			  <SkillsExpertiseSection
+				skills={userDetail?.skills}
+				expertise={userDetail?.expertise}
+			  />
+			  <EducationExperienceSection
+				educations={userDetail?.educations}
+				experiences={userDetail?.experiences}
+			  />
+			  <LanguagesReferencesSection
+				languages={userDetail?.languages}
+				references={userDetail?.references}
+			  />
+			  <PortfolioCertificatesSection
+				portfolio={userDetail?.portfolio}
+				certificates={userDetail?.certificates}
+			  />
+			</div>
+		  </TabsContent>
+		  <TabsContent value="cv">
+			<Card>
+			  <CardContent className="pt-6">
+				<ScrollArea className="h-[500px] w-full rounded-md border p-4">
+				  <iframe
+					src={application?.userInfo?.cv || ""}
+					className="w-full h-full"
+					title={`${application?.userInfo?.name}'s CV`}
+				  />
+				</ScrollArea>
+			  </CardContent>
+			</Card>
+		  </TabsContent>
+		</Tabs>
+	  </ScrollArea>
+	</DialogContent>
+  </Dialog>
   )
 }

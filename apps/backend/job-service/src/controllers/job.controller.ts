@@ -34,25 +34,13 @@ import configs from "../config";
 @Route("/v1/jobs")
 @Tags("Job")
 export class JobController extends Controller {
-  @Delete("{jobId}")
-  public async deleteJobById(
-    @Path() jobId: string
-  ): Promise<{ message: string }> {
-    try {
-      await jobService.deleteJobById(jobId);
-      return { message: "Job was deleted successfully" };
-    } catch (error) {
-      console.error(
-        `CompanyController deleteJobById() method error: `,
-        prettyObject(error as {})
-      );
-      throw error;
-    }
-  }
   //new post
   @SuccessResponse("201", "Created")
   @Post("/job")
-  public async postIJob(@Request() request: ExpressRequest, @Body() body: IJob): Promise<APIResponse<IJob>> {
+  public async postIJob(
+    @Request() request: ExpressRequest,
+    @Body() body: IJob
+  ): Promise<APIResponse<IJob>> {
     try {
       const corporateSub = request.cookies["username"];
 
@@ -144,14 +132,18 @@ export class JobController extends Controller {
   }
   @Get("/corporator")
   public async getAllJobsWithCorporator(
-    @Request() request: ExpressRequest,
+    @Request() request: ExpressRequest
   ): Promise<APIResponse<IJob[]>> {
     try {
       const userSub = request.cookies["username"] || null;
-      const getCorporateProfile = await axios.get(`${configs.corporator_api_endpoint}/profile/${userSub}`);
+      const getCorporateProfile = await axios.get(
+        `${configs.corporator_api_endpoint}/profile/${userSub}`
+      );
       const getCorporateProfileId = getCorporateProfile.data.data._id || null;
 
-      const response = await jobService.getAllJobsWithCorporator(getCorporateProfileId);
+      const response = await jobService.getAllJobsWithCorporator(
+        getCorporateProfileId
+      );
 
       return sendResponse<IJob[]>({ message: "success", data: response });
     } catch (error) {
@@ -192,7 +184,7 @@ export class JobController extends Controller {
   ) {
     try {
       const data = await jobService.getJobApply(queries);
-      return sendResponse<GetJobApplyResponse[]|GetApplyJobResLimit>({
+      return sendResponse<GetJobApplyResponse[] | GetApplyJobResLimit>({
         message: "Fetched is successfully",
         data: data,
       });
@@ -211,6 +203,18 @@ export class JobController extends Controller {
         message: "Update successfuly",
         data,
       });
+    } catch (err) {
+      throw err;
+    }
+  }
+  @SuccessResponse("204", "Deleted")
+  @Delete("/jobApply/deleteMany/:jobId")
+  public async deleteManyJobApply(@Path() jobId: string) {
+    try {
+      await jobService.deleteManyJobApply(jobId);
+      return {
+        message: "Delete successfuly",
+      };
     } catch (err) {
       throw err;
     }
@@ -255,7 +259,7 @@ export class JobController extends Controller {
     }
   }
 
- 
+
 }
 
 export default new JobController();

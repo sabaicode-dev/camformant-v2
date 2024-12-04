@@ -58,8 +58,6 @@ const Page: React.FC = () => {
   const [isCropping, setIsCropping] = useState(false);
   const router = useRouter();
 
-  console.log("isLoading:::", loading);
-
   function handleImage() {
     RefFile.current?.click();
   }

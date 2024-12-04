@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { getStatusVariant } from "@/utils/getStatusVariant";
 import { Button } from "@/components/ui/button";
 import { ViewApplication } from "@/components/applicant/view-application";
+import { Eye } from "lucide-react";
+import { UpdateStatus } from "@/components/applicant/update-status";
 
 export const columns: ColumnDef<JobApplication>[] = [
   {
@@ -63,11 +65,13 @@ export const columns: ColumnDef<JobApplication>[] = [
   {
     header: "Actions",
     id: "actions",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <ViewApplication application={row.original} status={row.original.userInfo?.status as StatusDate["status"] || undefined} />
+    cell: ({ row }) => {
+      const userId = row.original.userId || "";
+     return <div className="flex items-center gap-2">
+        <ViewApplication application={row.original} status={row.original.userInfo?.status as StatusDate["status"] || undefined} userId={userId}/>
+        <UpdateStatus applyId={row.original._id ||""} />
       </div>
-    ),
+    },
     enableSorting: false,
     enableHiding: false,
   },
