@@ -16,6 +16,10 @@ export enum WorkMode {
     HYBRID = "Hybrid",
 }
 
+export interface StatusDate {
+    status: "Apply" | "Review" | "Interview" | "Reject" | "Accept";
+}
+
 export interface IJob {
     _id?: string;
     companyId?: string;
@@ -47,10 +51,12 @@ export interface UserInfo {
 }
 
 export interface JobApplication {
-    _id: string;
-    userId: string;
-    jobId: string;
-    userInfo: UserInfo;
-    appliedAt: string;
-    updatedAt: string;
+    _id?: string;
+    userId?: string;
+    jobId?: string;
+    userInfo?: UserInfo;
+    jobInfo?: IJob;
+    statusDate?: StatusDate;
+    appliedAt?: string;
+    updatedAt?: string;
 }

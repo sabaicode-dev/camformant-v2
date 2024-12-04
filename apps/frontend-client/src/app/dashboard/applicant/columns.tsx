@@ -1,35 +1,12 @@
 "use client";
-
+import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Avatar } from "@/components/ui/avatar";
-
-
-export interface UserInfo {
-  profile: string; // URL to profile picture
-  name: string;    // Applicant's name
-  status: string;  // Application status (e.g., 'Apply')
-  cv: string;      // URL to the applicant's CV
-}
-
-export interface JobApplication {
-  _id: string;         // Job application ID
-  userId: string;      // User ID who applied
-  jobId: string;       // Job ID being applied for
-  userInfo: UserInfo;  // Information about the applicant
-  appliedAt: string;   // Timestamp of application submission (ISO 8601)
-  updatedAt: string;   // Timestamp of last update to the application (ISO 8601)
-}
+import { JobApplication, StatusDate } from "@/utils/types/job";
+import { Badge } from "@/components/ui/badge";
+import { getStatusVariant } from "@/utils/getStatusVariant";
+import { Button } from "@/components/ui/button";
+import { ViewApplication } from "@/components/applicant/view-application";
 
 export const columns: ColumnDef<JobApplication>[] = [
   {
@@ -58,69 +35,39 @@ export const columns: ColumnDef<JobApplication>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "profile",
+    header: "Profile",
+    cell: ({ row }) => <Image src={row.original.userInfo?.profile || ""} alt="Profile" className="w-10 h-10 rounded-full object-cover" width={40} height={40}/>
+  },
+  {
+    header: "Name",
+    cell: ({ row }) => <div className="text-gray-700">{row.original.userInfo?.name}</div>
+    
+  },
+  {
+    header: "Job Title",
+    cell: ({ row }) => <div className="text-gray-700">{row.original.jobInfo?.title}</div>
+    
+  },
+  {
+    header: "Applied On",
+    cell: ({ row }) => <div className="text-gray-700">{row.original.appliedAt ? new Date(row.original.appliedAt).toLocaleDateString() : "N/A"}</div>
+  },
+  {
+    header: "Status",
     cell: ({ row }) => {
-      const profileImage = row.getValue("profile") as string;
-      return(
-        <img
-        src={profileImage}
-        alt="Profile"
-        className="w-10 h-10 rounded-full object-cover"
-      />
-      )
+      const status = row.original.userInfo?.status as StatusDate["status"] | undefined;
+      const variant = status ? getStatusVariant(status) : "default";
+      return (<Badge variant={variant}>{status || "Unknown"}</Badge>);
     }
-  },
+},
   {
-    accessorKey: "name",
-    header: ({ column }) => {
-      return <div className="">Name</div>;
-    },
-  },
-  {
-    accessorKey: "jobId",
-    header: ({ column }) => {
-      return <div className="">job</div>;
-    },
-  },
-  {
-    accessorKey: "mobile",
-    header: ({ column }) => {
-      return <div className="">mobile</div>;
-    },
-  },
-  {
-    accessorKey: "appliedAt",
-    header: ({ column }) => {
-      return <div className=" ">email</div>;
-    },
-  },
-  {
+    header: "Actions",
     id: "actions",
-    cell: ({ row }) => {
-      const payment = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment._id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <ViewApplication application={row.original} status={row.original.userInfo?.status as StatusDate["status"] || undefined} />
+      </div>
+    ),
     enableSorting: false,
     enableHiding: false,
   },
