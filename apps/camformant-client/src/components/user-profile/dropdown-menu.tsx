@@ -10,8 +10,8 @@ const DropDownMenu: React.FC<{
         value={currentText}
         onChange={(e) => setValue(e.target.value)}
       >
-        {arrText.map((text: string) => (
-          <option key={""} value={text}>
+        {arrText.map((text: string,index:number) => (
+          <option key={index} value={text}>
             {text}
           </option>
         ))}

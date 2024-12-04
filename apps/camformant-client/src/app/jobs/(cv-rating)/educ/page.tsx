@@ -69,7 +69,7 @@ const Page = () => {
       }
     }
     GetData();
-  }, []);
+  }, [user]);
 
   async function PostData() {
     try {
@@ -100,11 +100,11 @@ const Page = () => {
       />
       {next && <SkeletonLoader text="Loading ..." />}
       {educationEntries.map((entry, index) => (
-        <div key={""}>
+        <div key={`${index}`}>
           {Object.entries(entry).map(([key, value]) => {
             return key != "year" ? (
               <InputComponent
-                key={`education-${key}-${index}`}
+                // key={`education-${key}-${index}`}
                 values={value}
                 setFocused={setFocusedField}
                 focused={focusedField}
@@ -124,6 +124,7 @@ const Page = () => {
               />
             ) : (
               <InputDateField
+                key={`education-date-${index}`}
                 setOpen={() => {
                   setOpen(true);
                   setIndexForUdate(index);

@@ -292,7 +292,6 @@ export const buildObject = (
       console.log("new obj name:", newObj?.name);
       //if the textBox is percent so we set the left and top diff from other textbox
       if (objToClone?.name?.includes("percent")) {
-        console.log("inside percent oh:::::::");
         newObj.set({
           top: previousObject?.top! - previousObject?.height! / 2,
           left: previousSameTypeObj?.left!,

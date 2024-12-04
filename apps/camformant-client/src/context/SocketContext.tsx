@@ -38,7 +38,7 @@ export const SocketContextProvider = ({
         setSockets(null);
       }
     }
-  }, [userId]);
+  }, [userId, sockets]);
   console.log("online:::", onlineUsers);
 
   return (

@@ -12,8 +12,7 @@ interface UseLoadStateProps {
   initialState: React.MutableRefObject<any | undefined>;
   canvasHistory: React.MutableRefObject<string[]>;
   setHistoryIndex: React.Dispatch<React.SetStateAction<number>>;
-  userData:CustomCvDataParams|{}
-
+  userData: CustomCvDataParams | {};
 }
 
 export const useLoadState = ({
@@ -22,7 +21,7 @@ export const useLoadState = ({
   initialState,
   canvasHistory,
   setHistoryIndex,
-  userData
+  userData,
 }: UseLoadStateProps) => {
   const initialized = useRef(false);
 
@@ -32,12 +31,12 @@ export const useLoadState = ({
         const data = initialState.current;
 
         canvas.loadFromJSON(data, () => {
-          const currentState = JSON.stringify(canvas.toJSON(JSON_KEYS));
+          const currentState = JSON.stringify(canvas.toJSON());
 
           canvasHistory.current = [currentState];
           setHistoryIndex(0);
           autoZoom();
-          setFetchData(canvas,userData)
+          setFetchData(canvas, userData);
         });
         initialized.current = true;
       }
@@ -45,5 +44,10 @@ export const useLoadState = ({
     loadState();
   }, [
     canvas,
+    autoZoom,
+    canvasHistory,
+    initialState,
+    setHistoryIndex,
+    userData,
   ]);
 };

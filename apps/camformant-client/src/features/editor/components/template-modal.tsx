@@ -48,8 +48,10 @@ const TemplateModal: React.FC<{
       }
     }
     isOpen && fetchData();
-  }, []);
+  }, [isOpen]);
   const resetCvContent = (index: number) => {
+    console.log("user data", userData);
+
     editor?.loadJson(cvData[index].json, cvData[index].style, userData);
     setCvContent((previous: CvContentParams) => {
       return {
@@ -82,7 +84,7 @@ const TemplateModal: React.FC<{
       >
         {/* Close button */}
         <button
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+          className="absolute text-gray-500 top-3 right-3 hover:text-gray-700"
           onClick={closeModal}
         >
           <Cross2Icon className="w-5 h-5" />

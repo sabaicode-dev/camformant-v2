@@ -49,12 +49,6 @@ const proxyConfigs: ProxyConfig = {
   [ROUTE_PATHS.NOTIFICATION_SERVICE.path]: {
     target: ROUTE_PATHS.NOTIFICATION_SERVICE.target,
     pathRewrite: (path, _req) => {
-      console.log(
-        "::::",
-        `${ROUTE_PATHS.NOTIFICATION_SERVICE.path}${path}`,
-        ROUTE_PATHS.NOTIFICATION_SERVICE.target
-      );
-
       return `${ROUTE_PATHS.NOTIFICATION_SERVICE.path}${path}`;
     },
     on: {

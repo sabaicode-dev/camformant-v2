@@ -107,10 +107,10 @@ const Page: React.FC = () => {
       {next && <SkeletonLoader text="Loading ..." />}
       <CustomLabel text={"Skills"} />
       {skillEntries.map((entry, index) => (
-        <div key={""}>
+        <div key={`skill-${index}`}>
           {Object.entries(entry).map(([key, value]) => (
             <InputComponent
-              key={key}
+              key={`skill-${key}-${index}`}
               values={typeof value === "string" ? value : value?.toString()}
               setFocused={setFocusedField}
               focused={focusedField}
@@ -168,11 +168,11 @@ const Page: React.FC = () => {
       />
       <CustomLabel text={"Expertise"} />
       {expertiseEntries.map((entry, index) => (
-        <div key={""}>
+        <div key={`expertise-${index}`}>
           {Object.entries(entry).map(([key, value]) =>
             key != "proficiency" ? (
               <InputComponent
-                key={key}
+                key={`expertise-${key}-${index}`}
                 values={value}
                 setFocused={setFocusedField}
                 focused={focusedField}
@@ -192,7 +192,7 @@ const Page: React.FC = () => {
               />
             ) : (
               <DropDownMenu
-                key={""}
+                key={`expertise-${key}-${index}`}
                 setValue={(newValue) => {
                   handleInputChange(
                     setExpertiseEntries,
@@ -226,11 +226,11 @@ const Page: React.FC = () => {
       <CustomLabel text={"Langauges"} />
 
       {languageEntries.map((entry, index) => (
-        <div key={""}>
+        <div key={`lang-${index}`}>
           {Object.entries(entry).map(([key, value]) =>
             key != "proficiency" ? (
               <InputComponent
-                key={key}
+                key={`lang-${key}-${index}`}
                 values={value}
                 setFocused={setFocusedField}
                 focused={focusedField}
@@ -250,7 +250,7 @@ const Page: React.FC = () => {
               />
             ) : (
               <DropDownMenu
-                key={""}
+                key={`language-${key}-${index}`}
                 setValue={(newValue) => {
                   handleInputChange(
                     setLanguageEntries,

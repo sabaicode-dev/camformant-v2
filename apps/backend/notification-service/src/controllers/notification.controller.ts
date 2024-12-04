@@ -6,6 +6,7 @@ import {
   Request,
   Delete,
   SuccessResponse,
+  Get,
 } from "tsoa";
 import NotificationService, {
   NotificationPayload,
@@ -49,8 +50,6 @@ export class NotificationsController extends Controller {
       };
       await NotificationService.sendNotification(userId, welcomeMessage);
 
-      console.log("newSubscription:::", newSubscription);
-
       return sendResponse<INotification>({
         message: "Subscription successful",
         data: newSubscription,
@@ -77,9 +76,21 @@ export class NotificationsController extends Controller {
 
   @Delete("/unsubscribe")
   @SuccessResponse("204", "Unsubscribed")
-  public async unsubscribe(@Body() endpoint: string): Promise<void> {
+  public async unsubscribe(
+    @Body() reqBody: { endpoint: string }
+  ): Promise<void> {
     try {
-      await NotificationService.unsubscribe(endpoint);
+      await NotificationService.unsubscribe(reqBody.endpoint);
+    } catch (error) {
+      throw error;
+    }
+  }
+  @Get()
+  async getNotification(@Request() request: ExpressRequest) {
+    try {
+      const userId = request.cookies["user_id"];
+      const result = await NotificationService.getNotification(userId);
+      return result;
     } catch (error) {
       throw error;
     }

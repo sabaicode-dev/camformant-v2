@@ -25,7 +25,6 @@ const Page = () => {
           `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=certificates`
         );
         const data = response.data.data.certificates;
-        console.log(data);
         setLoading(true);
         data.length && setFilesEntries(data);
       } catch (err) {

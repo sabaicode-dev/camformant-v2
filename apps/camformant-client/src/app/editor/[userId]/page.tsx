@@ -12,7 +12,7 @@ import { BackButton_md } from "@/components/back/BackButton";
 import Link from "next/link";
 import { useAuth } from "@/context/auth";
 
-const page = ({ params }: { params: { userId: string } }) => {
+const Page = ({ params }: { params: { userId: string } }) => {
   const { userId } = params;
   const [cvContent, setCvContent] = useState<CvContentParams>({
     style: "",
@@ -55,7 +55,7 @@ const page = ({ params }: { params: { userId: string } }) => {
     console.log("userid", userId);
     return (
       <div>
-        <div className="h-10 mt-4 mb-8 mx-2 w-14">
+        <div className="h-10 mx-2 mt-4 mb-8 w-14">
           <Link href={"/resume"}>
             <BackButton_md styles="bg-primaryCam p-3 px-4 rounded-xl text-gray-200" />
           </Link>
@@ -79,4 +79,4 @@ const page = ({ params }: { params: { userId: string } }) => {
   );
 };
 
-export default page;
+export default Page;

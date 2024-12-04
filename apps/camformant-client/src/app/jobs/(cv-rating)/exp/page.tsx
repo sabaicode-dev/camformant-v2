@@ -43,9 +43,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     async function GetData() {
       try {
-        console.log(user);
         setNext(true);
-        console.log("user id", user!._id);
         const response = await axiosInstance.get(
           `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=experiences`
         );
@@ -96,7 +94,7 @@ const Page: React.FC = () => {
       />
       {next && <SkeletonLoader text="Loading ..." />}
       {experEntries.map((entry, index) => (
-        <div key={""}>
+        <div key={`${index}`}>
           {Object.entries(entry).map(([key, value]) => {
             return key != "year" ? (
               <InputComponent
@@ -115,7 +113,6 @@ const Page: React.FC = () => {
                     newValue
                   );
                   value == newValue || setIsPut(true);
-                  console.log("key", key);
                 }}
                 valuesFouce={`education-${key}-${index}`}
               />

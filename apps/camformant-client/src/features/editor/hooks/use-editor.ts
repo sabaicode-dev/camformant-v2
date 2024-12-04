@@ -103,12 +103,17 @@ const buildEditor = ({
     // Create jsPDF instance
     const pdf = new jsPDF({
       orientation: "portrait",
-      unit: "px",
-      format: [options.width!, options.height!],
+      unit: "pt",
+      format: "a4",
     });
-    const data = canvas.toDataURL({ quality: 1 });
-    // Scale the image to fit the PDF dimensions
-    pdf.addImage(data, "PNG", 0, -50, options.width!, options.height!);
+    const data = canvas.toDataURL({ format: "png", multiplier: 4 });
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pdfWidth;
+    const imgHeight = pdfHeight;
+    console.log(" img width:", imgWidth, " img height:", imgHeight);
+    pdf.addImage(data, "PNG", 0, 0, imgWidth, imgHeight);
     //downloadFile(data, "pdf");
     pdf.save("canvas.pdf");
 
@@ -140,14 +145,13 @@ const buildEditor = ({
   };
 
   const loadJson = (
-    json: string,
+    json: string | any,
     style?: string,
     userData?: CustomCvDataParams | {}
   ) => {
+    console.log("canvas in loadjson", canvas);
     const data = typeof json == "string" ? JSON.parse(json) : json;
     canvas.loadFromJSON(data, () => {
-      const currentState = JSON.stringify(canvas.toJSON(JSON_KEYS));
-      canvasHistory.current = [currentState];
       setHistoryIndex(0);
       autoZoom();
       if (style) {
@@ -390,7 +394,6 @@ const buildEditor = ({
           imageObject.applyFilters();
           canvas.renderAll();
         } else {
-          console.log("inside else:::");
           objects.forEach((object) => {
             if (object instanceof fabric.Circle) {
               const pattern = object.fill as fabric.Pattern;
@@ -943,7 +946,6 @@ export const useEditor = ({
     }
     return undefined;
   }, [
-    defaultState.style,
     moveLeft,
     canRedo,
     canUndo,
@@ -965,6 +967,11 @@ export const useEditor = ({
     moveDown,
     moveRight,
     moveUp,
+    canvasHistory,
+    dataForUpdate,
+    defaultState,
+    setCvContent,
+    setHistoryIndex,
   ]);
   useEffect(() => {
     if (canvas) {
@@ -981,7 +988,7 @@ export const useEditor = ({
         }
       });
     }
-  }, [canvas]);
+  }, [canvas, dataForUpdate]);
 
   const init = useCallback(
     async ({
