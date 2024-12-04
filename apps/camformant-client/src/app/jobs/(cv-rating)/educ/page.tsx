@@ -46,7 +46,7 @@ const Page = () => {
         console.log("user id", user!._id);
         setNext(true);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=educations`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=educations`
         );
 
         const data = response.data.data.educations;

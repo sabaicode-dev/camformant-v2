@@ -10,6 +10,7 @@ import SkeletonLoader from "@/components/cv-rating-card/router-page/basic/skelet
 import { checkGrammar } from "@/app/api/check-grammar";
 import { MatchParams } from "@/utils/types/user-profile";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useAuth } from "@/context/auth";
 
 interface FeedbackParams {
   feedbackStren: MatchParams[];
@@ -27,7 +28,7 @@ const SelfDescription: React.FC = () => {
   const [isOpen, setOpen] = useState(false);
   const [next, setNext] = useState<boolean>(false);
   const [selectedRecommendation, setSelectedRecommendation] = useState("");
-
+  const {user}=useAuth()
   const recommendations = [
     "I am a keen, hard working, reliable and excellent time keeper.",
     "I have strong communication skills and work well in a team.",
@@ -44,7 +45,7 @@ const SelfDescription: React.FC = () => {
       try {
         setNext(true);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=descriptions`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=descriptions`
         );
         const data = response.data.data.descriptions;
         setStrength(data.strength || "");

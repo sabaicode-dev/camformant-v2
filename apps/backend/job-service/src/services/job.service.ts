@@ -193,6 +193,13 @@ class JobService {
       throw err;
     }
   }
+  public async deleteManyJobApply(jobId: string) {
+    try {
+      await jobRepository.deleteManyJobApply(jobId);
+    } catch (err) {
+      throw err;
+    }
+  }
   public async deleteJobApply(applyId: string) {
     try {
       await jobRepository.deleteJobApply(applyId);

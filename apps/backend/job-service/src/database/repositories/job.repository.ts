@@ -387,7 +387,6 @@ class JobRepository {
               console.log("key::::", key);
               acc[`statusDate.${body[key as keyof BodyUpdateJobApply]}`] =
                 new Date();
-              console.log("date::::", acc);
             } else
               acc[`companyResponse.${key}`] = [
                 "interviewDate",
@@ -423,7 +422,19 @@ class JobRepository {
       throw err;
     }
   }
+  public async deleteManyJobApply(jobId: string) {
+    try {
+      console.log("inside delete many", jobId);
+      const response = ApplyModel.deleteMany({jobId: new mongoose.Types.ObjectId(jobId)});
+      console.log("response ", response);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
+
+
 //===function===
 async function fetchCompaniesProfile(
   companiesId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[] | undefined

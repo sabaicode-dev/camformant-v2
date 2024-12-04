@@ -173,13 +173,12 @@ export class UsersController extends Controller {
     }
   }
 
-  @Get("/profile-detail")
+  @Get("/profile-detail/:userId")
   public async getProfileByID(
-    @Request() request: ExpressRequest,
+    @Path() userId:string,
     @Query() category?: string
   ): Promise<IUserProfileResposne> {
     try {
-      const userId = request.cookies["user_id"];
       const userProfile = await UserService.getUserProfileById(
         userId,
         category

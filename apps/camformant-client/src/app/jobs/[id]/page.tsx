@@ -61,7 +61,7 @@ const Page: React.FC = () => {
       try {
         setNext(true);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=cv`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=cv`
         );
 
         setCV(response.data.data.cv);

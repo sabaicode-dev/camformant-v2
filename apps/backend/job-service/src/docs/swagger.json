@@ -1246,6 +1246,45 @@
 				]
 			}
 		},
+		"/v1/jobs/jobApply/deleteMany/{jobId}": {
+			"delete": {
+				"operationId": "DeleteManyJobApply",
+				"responses": {
+					"204": {
+						"description": "Deleted",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "jobId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
 		"/v1/jobs/{jobId}": {
 			"get": {
 				"operationId": "GetJobById",
