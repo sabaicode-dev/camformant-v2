@@ -943,7 +943,6 @@ export const useEditor = ({
     }
     return undefined;
   }, [
-    defaultState.style,
     moveLeft,
     canRedo,
     canUndo,
@@ -965,6 +964,11 @@ export const useEditor = ({
     moveDown,
     moveRight,
     moveUp,
+    canvasHistory,
+    dataForUpdate,
+    defaultState,
+    setCvContent,
+    setHistoryIndex,
   ]);
   useEffect(() => {
     if (canvas) {
@@ -981,7 +985,7 @@ export const useEditor = ({
         }
       });
     }
-  }, [canvas]);
+  }, [canvas, dataForUpdate]);
 
   const init = useCallback(
     async ({

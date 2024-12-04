@@ -256,7 +256,7 @@ const Page: React.FC = () => {
                     setLanguageEntries,
                     languageEntries,
                     index,
-                    key,eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeew
+                    key,
                     newValue
                   );
                   newValue == value || setIsPut(true);
