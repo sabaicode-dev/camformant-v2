@@ -1,8 +1,8 @@
 import React, { ReactNode } from "react";
 import { MenuBar } from "@/components/MenuBar";
 import { DynamicBreadcrumb } from "@/components/breadcrumb/dynamic-breadcrumb";
-import KakSideBar from "@/components/KakSideBar";
 import { SidebarProvider } from "@/context/SidebarContext";
+import SideBarCom from "@/components/SideBarCom";
 
 const layout = ({ children }: { children: ReactNode }) => {
   return (
@@ -12,7 +12,7 @@ const layout = ({ children }: { children: ReactNode }) => {
             <MenuBar />
           </div>
         <div className="flex">
-          <KakSideBar/>
+          <SideBarCom/>
           <div className="w-full h-screen overflow-y-auto pt-16 px-5 bg-slate-50">
             <DynamicBreadcrumb />
             {children}

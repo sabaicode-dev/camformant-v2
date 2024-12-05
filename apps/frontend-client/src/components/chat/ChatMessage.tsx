@@ -1,7 +1,5 @@
 "use client";
-
 import Image from "next/image";
-import Google from "@/../public/Google.png";
 interface ChatMessageProps {
   message: string;
   profile: string
