@@ -24,7 +24,7 @@ export function globalErrorHandler(
     const errors = error.errors;
 
     console.error(
-      `$UserService - globalErrorHandler() method error: `,
+      `$UserService - globalErrorHandler() method error:`,
       prettyObject(error)
     );
     return res.status(status).json({ message, error: errors });

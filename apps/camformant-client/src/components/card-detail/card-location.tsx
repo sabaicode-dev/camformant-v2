@@ -45,14 +45,16 @@ export const CardLocation: React.FC<CardLocationProps> = ({ address }) => {
       >
         <Marker position={center!} />
       </GoogleMap>
-      <a
-        href={googleMapsUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="oran hover:underline mt-4 inline-block"
-      >
-        Open in Google Maps
-      </a>
+      <div className="flex justify-center font-semibold">
+        <a
+          href={googleMapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primaryCam hover:underline mt-4 inline-block text-center"
+        >
+          Open in Google Maps
+        </a>
+      </div>
     </div>
   );
 };

@@ -84,8 +84,8 @@ const buildEditor = ({
       quality: 1,
       width,
       height,
-      left: 0,
-      top: 0,
+      left,
+      top,
     };
   };
 
@@ -152,10 +152,13 @@ const buildEditor = ({
     console.log("canvas in loadjson", canvas);
     const data = typeof json == "string" ? JSON.parse(json) : json;
     canvas.loadFromJSON(data, () => {
+      const currentState = JSON.stringify(canvas.toJSON());
+      canvasHistory.current = [currentState];
       setHistoryIndex(0);
       autoZoom();
       if (style) {
         setFetchData(canvas, userData);
+        save();
       }
     });
   };
@@ -946,6 +949,7 @@ export const useEditor = ({
     }
     return undefined;
   }, [
+    defaultState.style,
     moveLeft,
     canRedo,
     canUndo,

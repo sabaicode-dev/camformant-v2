@@ -70,6 +70,7 @@ const Editor: React.FC<{
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    console.log("inside useefect 9of editor");
     const canvas = new fabric.Canvas(canvasRef.current, {
       controlsAboveOverlay: true,
       preserveObjectStacking: true,
@@ -166,12 +167,13 @@ const Editor: React.FC<{
       isPinching = false; // Reset panning and zooming state
       canvas.selection = true; // Re-enable selection after the gesture ends
     });
-
-    !cvContent.style && setIsOpenTem(true);
     return () => {
       canvas.dispose(); // Dispose canvas when unmounting
+      if (cvContent.style) {
+        setIsOpenTem(true);
+      }
     };
-  }, [init, cvContent.style]);
+  }, [init]);
   //for cropper
   const handleCropComplete = (_croppedArea: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
