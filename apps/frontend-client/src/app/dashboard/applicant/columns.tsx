@@ -5,12 +5,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { JobApplication, StatusDate } from "@/utils/types/job";
 import { Badge } from "@/components/ui/badge";
 import { getStatusVariant } from "@/utils/getStatusVariant";
-import { Button } from "@/components/ui/button";
 import { ViewApplication } from "@/components/applicant/view-application";
-import { Eye } from "lucide-react";
 import { UpdateStatus } from "@/components/applicant/update-status";
 
-export const columns: ColumnDef<JobApplication>[] = [
+export const columns:(refetch?: () => Promise<void>) => ColumnDef<JobApplication>[] = (refetch) => [
   {
     id: "select",
     header: ({ table }) => (
@@ -41,9 +39,9 @@ export const columns: ColumnDef<JobApplication>[] = [
     cell: ({ row }) => <Image src={row.original.userInfo?.profile || ""} alt="Profile" className="w-10 h-10 rounded-full object-cover" width={40} height={40}/>
   },
   {
+    accessorKey: "userInfo.name",
     header: "Name",
-    cell: ({ row }) => <div className="text-gray-700">{row.original.userInfo?.name}</div>
-    
+    cell: ({ row }) => <div className="text-gray-700">{row.original.userInfo?.name}</div>,
   },
   {
     header: "Job Title",
@@ -61,7 +59,7 @@ export const columns: ColumnDef<JobApplication>[] = [
       const variant = status ? getStatusVariant(status) : "default";
       return (<Badge variant={variant}>{status || "Unknown"}</Badge>);
     }
-},
+  },
   {
     header: "Actions",
     id: "actions",
@@ -69,7 +67,7 @@ export const columns: ColumnDef<JobApplication>[] = [
       const userId = row.original.userId || "";
      return <div className="flex items-center gap-2">
         <ViewApplication application={row.original} status={row.original.userInfo?.status as StatusDate["status"] || undefined} userId={userId}/>
-        <UpdateStatus applyId={row.original._id ||""} />
+        <UpdateStatus applyId={row.original._id || ""} currentStatus={typeof row.original.userInfo?.status === 'string' ? row.original.userInfo?.status : undefined} onStatusUpdate={refetch} />
       </div>
     },
     enableSorting: false,

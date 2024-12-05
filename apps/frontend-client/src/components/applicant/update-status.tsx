@@ -26,17 +26,19 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints"
 interface UpdateStatusProps {
   applyId: string
   currentStatus?: string
+  onStatusUpdate?: () => Promise<void> 
 }
 
 type Status = "Apply" | "Review" | "Interview" | "Shortlist" | "Accept"
 
-export function UpdateStatus({ applyId, currentStatus = "Apply" }: UpdateStatusProps) {
+export function UpdateStatus({ applyId, currentStatus ,onStatusUpdate }: UpdateStatusProps) {
   const [status, setStatus] = useState<Status>(currentStatus as Status)
   const [startDate, setStartDate] = useState<Date>()
-  const [interviewDate, setInterviewDate] = useState<Date>()
+  const [interviewDate, setInterviewDate] = useState<Date>() 
   const [interviewLocation, setInterviewLocation] = useState("")
   const [isOpen, setIsOpen] = useState(false)
 
+  console.log("sdalkjkjfhoasudhlif",startDate)
   const handleSubmit = async () => {
     try {
         const response = await axiosInstance.put(`${API_ENDPOINTS.JOB_STATUS}/${applyId}`, {
@@ -47,6 +49,9 @@ export function UpdateStatus({ applyId, currentStatus = "Apply" }: UpdateStatusP
           })
       if (response) {
         setIsOpen(false)
+        if (onStatusUpdate) {
+         await onStatusUpdate()
+        }
       }
     } catch (error) {
       console.error("Failed to update status:", error)

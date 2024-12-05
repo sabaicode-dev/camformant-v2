@@ -44,9 +44,24 @@ export function ViewApplication({ application , status ,userId }: ViewApplicatio
 			console.error(error);	
 		}
 	}
+
+	const getMostRecentStatus = () => {
+	if (!application.statusDate) return null;
+	const statuses = Object.entries(application.statusDate);
+	if (statuses.length === 0) return null;
+	const sortedStatuses = statuses.sort((a, b) => new Date(b[1]).getTime() - new Date(a[1]).getTime());
+	return {
+		status: sortedStatuses[0][0],
+		timestamp: sortedStatuses[0][1]
+		};
+	};
+	const mostRecentStatus = getMostRecentStatus();
+
 	useEffect( () => {
 		fetchUserDetail();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	},[])	
+
   return (
 	<Dialog>
 		<DialogTrigger asChild>
@@ -68,7 +83,26 @@ export function ViewApplication({ application , status ,userId }: ViewApplicatio
 			<TabsTrigger value="cv">CV</TabsTrigger>
 		  </TabsList>
 		  <TabsContent value="info" className="h-full overscroll-y-auto">
-			<div className="space-y-2">
+
+
+		<div className="space-y-2">
+		<Card>
+ 		 <CardHeader className="flex gap-4">
+ 		   <div className="flex justify-between">
+ 		     <div className="flex items-center gap-3">
+ 		       {mostRecentStatus && (
+ 		         <h4 className="text-sm font-medium mb-1">
+ 		           {mostRecentStatus.status} at{" "}
+ 		           {new Date(mostRecentStatus.timestamp).toLocaleDateString()}
+ 		         </h4>
+ 		       )}
+ 		     </div>
+ 		     <div className="">
+ 		       <Badge variant={variant}>{status}</Badge>
+ 		     </div>
+ 		   </div>
+ 		 </CardHeader>
+		</Card>
 			<Card>
 			  <CardHeader className="flex gap-4">
 				<div className="flex justify-between">
@@ -86,15 +120,14 @@ export function ViewApplication({ application , status ,userId }: ViewApplicatio
 					  </CardTitle>
 					</div>
 				  </div>
-				  <div className="">
-					<Badge variant={variant}>{status}</Badge>
-				  </div>
 				</div>
 			  </CardHeader>
 			</Card>
 
 			  <BasicInfoSection basic={userDetail?.basic} />
+
 			  <DescriptionsSection descriptions={userDetail?.descriptions} />
+
 			  <SkillsExpertiseSection
 				skills={userDetail?.skills}
 				expertise={userDetail?.expertise}
@@ -111,15 +144,16 @@ export function ViewApplication({ application , status ,userId }: ViewApplicatio
 				portfolio={userDetail?.portfolio}
 				certificates={userDetail?.certificates}
 			  />
+			  
 			</div>
 		  </TabsContent>
 		  <TabsContent value="cv">
-			<Card>
-			  <CardContent className="pt-6">
-				<ScrollArea className="h-[500px] w-full rounded-md border p-4">
+			<Card className="relative">
+			  <CardContent className="pt-6  ">
+				<ScrollArea className="h-full w-full rounded-md border p-4">
 				  <iframe
 					src={application?.userInfo?.cv || ""}
-					className="w-full h-full"
+					className="w-full h-screen"
 					title={`${application?.userInfo?.name}'s CV`}
 				  />
 				</ScrollArea>
