@@ -3,12 +3,12 @@ name: CI/CD Pipeline for MS Libs
 on:
   pull_request:
     branches:
-      - main
+      - feature/camformant-libs
     paths:
       - "packages/libs/**"
   push:
     branches:
-      - main
+      - feature/camformant-libs
     paths:
       - "packages/libs/**"
 
