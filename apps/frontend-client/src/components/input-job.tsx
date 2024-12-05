@@ -7,6 +7,8 @@ import SeleteCheckBox from "@/components/seleteCheckBox";
 import axiosInstance from "@/utils/axios";
 import { Jobs } from "@/utils/types/form-type";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { jobFormSchema } from "@/schema/auth/formSchema";
+import { format } from "date-fns/format";
 
 const InputForm: React.FC<{
   formTitle: string;
@@ -34,9 +36,9 @@ const InputForm: React.FC<{
     createdAt: existingData?.createdAt
       ? new Date(existingData.createdAt).toISOString().split("T")[0]
       : "", // Default to an empty string if no value
-    updatedAt: existingData?.updatedAt
-      ? new Date(existingData.updatedAt).toISOString().split("T")[0]
-      : "",
+    // updatedAt: existingData?.updatedAt
+    //   ? new Date(existingData.updatedAt).toISOString().split("T")[0]
+    //   : "",
   });
 
   const handleChange = (
@@ -45,7 +47,26 @@ const InputForm: React.FC<{
     >
   ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    if (Array.isArray(formData[name as keyof Jobs])) {
+      console.log("value split", value.split(","));
+      setFormData({
+        ...formData,
+        [name]: value.split(","),
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+  };
+
+  const handleArrayChange = (name: keyof Jobs, value: string[]) => {
+    console.log("name:::", name, "values:::", value);
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value, // Directly assign the array of strings
+    }));
   };
 
   const handleChangeNum = (
@@ -78,34 +99,49 @@ const InputForm: React.FC<{
   ];
   const [scheduleSelected, setscheduleSelected] = useState<string[]>([]);
 
-  const handleArrayChange = (name: keyof Jobs, value: string[]) => {
-    console.log("name:::", name, "values:::", value);
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value, // Directly assign the array of strings
-    }));
-  };
-
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("Form submitted:", formData);
-    event.preventDefault();
+    // Validate the form data using zod
+    const result = jobFormSchema.safeParse({
+      ...formData,
+      min_salary: Number(formData.min_salary), // Ensure numeric input
+      max_salary: Number(formData.max_salary),
+    });
+
+    if (!result.success) {
+      event.preventDefault();
+      const newErrors: { [key: string]: string } = {};
+      result.error.errors.forEach((error) => {
+        if (error.path && error.path[0]) {
+          newErrors[error.path[0]] = error.message;
+        }
+      });
+      setErrors(newErrors); // Update the errors state
+      console.log("Parsed errors:", newErrors); // Debugging output
+      return;
+    } else {
+      setErrors({});
+      console.log("Form data is valid:", formData);
+    }
+
     try {
       let response: any;
-      if (typeOfForm == "POST") {
+
+      if (typeOfForm === "POST") {
         response = await axiosInstance.post(
           "http://localhost:4000/v1/jobs/job",
           formData
         );
+        console.log("post job", formData);
       } else {
         response = await axiosInstance.put(
           `${API_ENDPOINTS.JOBS}/${existingData!._id}`,
-          formData
+          { ...formData, companyId: existingData?.company?._id || "" }
         );
       }
-      // console.log(response.data);
-      console.log(formData);
+      console.log("Response:", response?.data);
     } catch (error) {
-      console.log("errror connect to server", error);
+      console.error("Error connecting to server:", error);
     }
   };
 
@@ -135,6 +171,9 @@ const InputForm: React.FC<{
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
               />
+              {errors.title && (
+                <p className="text-red-500 text-sm">{errors.title}</p>
+              )}
             </div>
             <div className="w-2/4">
               <Label
@@ -150,6 +189,9 @@ const InputForm: React.FC<{
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
               />
+              {errors.position && (
+                <p className="text-red-500 text-sm">{errors.position}</p>
+              )}
             </div>
           </div>
 
@@ -168,6 +210,9 @@ const InputForm: React.FC<{
                 onSelect={(selected) => handleArrayChange("type", selected)}
                 onRemove={setTypeJobSelected}
               />
+              {errors.type && (
+                <p className="text-red-500 text-sm">{errors.type}</p>
+              )}
             </div>
             <div className="w-2/4">
               <Label
@@ -182,9 +227,13 @@ const InputForm: React.FC<{
                 onSelect={(selected) => handleArrayChange("schedule", selected)}
                 onRemove={setscheduleSelected}
               />
+              {errors.schedule && (
+                <p className="text-red-500 text-sm">{errors.schedule}</p>
+              )}
             </div>
           </div>
-          {/* location workmode */}
+
+          {/* job_opening and workmode */}
           <div className="flex gap-4 mb-5">
             <div className="w-2/4">
               <Label
@@ -199,6 +248,9 @@ const InputForm: React.FC<{
                 onSelect={(selected) => handleArrayChange("workMode", selected)}
                 onRemove={setWorkTypeSelected}
               />
+              {errors.workMode && (
+                <p className="text-red-500 text-sm">{errors.workMode}</p>
+              )}
             </div>
             <div className="w-2/4">
               <Label
@@ -215,16 +267,19 @@ const InputForm: React.FC<{
                 placeholder="Number"
                 className="h-[38px]"
               />
+              {errors.job_opening && (
+                <p className="text-red-500 text-sm">{errors.job_opening}</p>
+              )}
             </div>
           </div>
-          {/* Dates */}
+          {/*  Post Date and Last Date */}
           <div className="flex gap-4 mb-5">
             <div className="w-2/4">
               <Label
-                htmlFor="createDate"
+                htmlFor="createdAt"
                 className="block text-black text-[16px] mb-1"
               >
-                Posted Date
+                Post Date
               </Label>
               <DateInput
                 name="createdAt"
@@ -233,13 +288,16 @@ const InputForm: React.FC<{
                 onChange={handleChange}
                 placeholder="YYYY-MM-DD"
               />
+              {errors.createdAt && (
+                <p className="text-red-500 text-sm">{errors.createdAt}</p>
+              )}
             </div>
             <div className="w-2/4">
               <Label
                 htmlFor="deadline"
                 className="block text-black text-[16px] mb-1"
               >
-                Last Date To Apply
+                Last Date
               </Label>
               <DateInput
                 name="deadline"
@@ -248,6 +306,9 @@ const InputForm: React.FC<{
                 onChange={handleChange}
                 placeholder="YYYY-MM-DD"
               />
+              {errors.deadline && (
+                <p className="text-red-500 text-sm">{errors.deadline}</p>
+              )}
             </div>
           </div>
 
@@ -263,11 +324,14 @@ const InputForm: React.FC<{
               <Input
                 name="min_salary"
                 type="number"
-                value={formData.min_salary}
+                value={formData.min_salary || ""}
                 onChange={handleChangeNum}
                 placeholder="$"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />
+              {errors.min_salary && (
+                <p className="text-red-500 text-sm">{errors.min_salary}</p>
+              )}
             </div>
             <div className="w-2/4">
               <Label
@@ -279,29 +343,38 @@ const InputForm: React.FC<{
               <Input
                 name="max_salary"
                 type="number"
-                value={formData.max_salary}
+                value={formData.max_salary || ""}
                 onChange={handleChangeNum}
                 placeholder="$"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />
+              {errors.max_salary && (
+                <p className="text-red-500 text-sm">{errors.max_salary}</p>
+              )}
             </div>
           </div>
 
-          <div className="mb-6">
+          {/* Update Date */}
+          {/* <div className="mb-6">
             <Label
-              htmlFor="deadline"
+              htmlFor="updatedAt"
               className="block text-black text-[16px] mb-1"
             >
-              Update Date To Apply
+              Update Date
             </Label>
             <DateInput
               name="updatedAt"
               type="date"
-              value={formData.updatedAt}
+              value={formData.updatedAt} 
               onChange={handleChange}
               placeholder="YYYY-MM-DD"
             />
-          </div>
+            {errors.updatedAt && (
+              <p className="text-red-500 text-sm">{errors.updatedAt}</p>
+            )}
+          </div> */}
+
+          {/* required_experience */}
           <div className="mb-2">
             <Label
               htmlFor="required_experience"
@@ -312,12 +385,23 @@ const InputForm: React.FC<{
             <textarea
               name="required_experience"
               onChange={handleChange}
-              value={formData.required_experience}
+              value={
+                formData.required_experience
+                  ? (formData.required_experience as string[]).join(",")
+                  : ""
+              }
               placeholder="Type your Description"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
               rows={4}
             ></textarea>
+            {errors.required_experience && (
+              <p className="text-red-500 text-sm">
+                {errors.required_experience}
+              </p>
+            )}
           </div>
+
+          {/* requirement */}
           <div className="mb-2">
             <Label
               htmlFor="SalaryFrom"
@@ -333,8 +417,12 @@ const InputForm: React.FC<{
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
               rows={4}
             ></textarea>
+            {errors.requirement && (
+              <p className="text-red-500 text-sm">{errors.requirement}</p>
+            )}
           </div>
 
+          {/* benefit */}
           <div className="mb-2">
             <Label
               htmlFor="benefit"
@@ -344,12 +432,17 @@ const InputForm: React.FC<{
             </Label>
             <textarea
               name="benefit"
-              value={formData.benefit}
+              value={
+                formData.benefit ? (formData.benefit as string[]).join(",") : ""
+              }
               onChange={handleChange}
               placeholder="Type your Description"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
               rows={4}
             ></textarea>
+            {errors.benefit && (
+              <p className="text-red-500 text-sm">{errors.benefit}</p>
+            )}
           </div>
 
           {/* Description */}
@@ -368,8 +461,12 @@ const InputForm: React.FC<{
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
               rows={4}
             ></textarea>
+            {errors.description && (
+              <p className="text-red-500 text-sm">{errors.description}</p>
+            )}
           </div>
 
+          {/* map */}
           <Map setFormData={setFormData} existingMap={formData.address} />
           {/* Submit Button */}
           <button
@@ -384,4 +481,4 @@ const InputForm: React.FC<{
   );
 };
 
-export default InputForm
+export default InputForm;

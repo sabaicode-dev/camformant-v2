@@ -43,25 +43,6 @@ export const columns: ColumnDef<Jobs>[] = [
       return <div>{title || "No Title Available"}</div>;
     },
   },
-  // {
-  //   accessorKey: "Position",
-  //   cell: ({ row }) => {
-  //     const positions = row.original.position;
-  //     console.log("Row data:", positions);
-  //     return (
-  //       <>
-  //         <div>
-  //           {positions && positions.length > 0
-  //             ? positions.join(", ") // Join array elements with a comma
-  //             : "No positions available"}{" "}
-  //           {/* Fallback text if the array is empty */}
-  //         </div>
-  //       </>
-  //     );
-  //   },
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
   {
     accessorKey: "type",
     cell: ({ row }) => {

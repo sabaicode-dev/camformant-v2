@@ -432,7 +432,7 @@ export function RegisterRoutes(app: Router) {
             async function JobController_updateJobById(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
                     jobId: {"in":"path","name":"jobId","required":true,"dataType":"string"},
-                    updateDatJob: {"in":"body","name":"updateDatJob","required":true,"ref":"IJob"},
+                    updateDatJob: {"in":"body","name":"updateDatJob","required":true,"ref":"JobParams"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

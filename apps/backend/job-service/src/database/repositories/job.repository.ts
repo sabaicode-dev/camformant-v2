@@ -236,10 +236,16 @@ class JobRepository {
 
   public async updateJobById(updateJob: IJob): Promise<IJob> {
     try {
+      console.log("inside repo:::");
       const { _id, ...updateNewJob } = updateJob;
-      const result = await JobModel.findByIdAndUpdate(_id, updateNewJob, {
-        new: true,
-      });
+      console.log("job id in repo::::", _id);
+      const result = await JobModel.findByIdAndUpdate(
+        _id,
+        { ...updateNewJob, updatedAt: new Date() },
+        {
+          new: true,
+        }
+      );
       if (!result) {
         throw new NotFoundError("The requested job was not found.");
       }

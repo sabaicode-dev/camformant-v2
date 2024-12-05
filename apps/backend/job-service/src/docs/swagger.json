@@ -596,7 +596,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/IJob"
+								"$ref": "#/components/schemas/JobParams"
 							}
 						}
 					}
