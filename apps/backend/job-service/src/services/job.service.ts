@@ -3,6 +3,7 @@ import {
   GetApplyJobResLimit,
   GetJobApplyResponse,
   JobApplyQueriesController,
+  JobApplyResponse,
   JobGetAllControllerParams,
   JobParams,
   PostJobApplyBody,
@@ -89,12 +90,8 @@ class JobService {
       throw error;
     }
   }
-  public async getAllJobsWithCorporator(
-    companyId: string
-  ) {
+  public async getAllJobsWithCorporator(companyId: string) {
     try {
-
-
       const result = await jobRepository.getAllJobsWithCorporator(companyId);
 
       return result;
@@ -123,7 +120,7 @@ class JobService {
 
   public async updateJobById(
     jobId: string,
-    updateJob: JobParams
+    updateJob: IJob
   ): Promise<IJob> {
     try {
       const newJob = await jobRepository.updateJobById({
@@ -153,7 +150,9 @@ class JobService {
       throw error;
     }
   }
-  public async getJobApply(queries: JobApplyQueriesController) :Promise<GetJobApplyResponse[]|GetApplyJobResLimit>{
+  public async getJobApply(
+    queries: JobApplyQueriesController
+  ): Promise<GetJobApplyResponse[] | GetApplyJobResLimit> {
     try {
       const { userId, jobId, page, limit, filter, sort } = queries;
       console.log("userId", userId);
@@ -171,19 +170,32 @@ class JobService {
       throw error;
     }
   }
-  public async createJobApply(body: PostJobApplyBody) {
+  public async createJobApply(body: PostJobApplyBody):Promise<JobApplyResponse | {}> {
     try {
       console.log("inside create apploy");
-      const response = await jobRepository.createJobApply(body);
+      const customBody = {
+        ...body,
+        statusDate: {
+          Apply: new Date(),
+        },
+      };
+      const response = await jobRepository.createJobApply(customBody);
       return response;
     } catch (err) {
       throw err;
     }
   }
-  public async updateJobApply(applyId: string, body: BodyUpdateJobApply) {
+  public async updateJobApply(applyId: string, body: BodyUpdateJobApply):Promise<JobApplyResponse | {} | null> {
     try {
       const response = await jobRepository.updateJobApply(applyId, body);
       return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  public async deleteManyJobApply(jobId: string) {
+    try {
+      await jobRepository.deleteManyJobApply(jobId);
     } catch (err) {
       throw err;
     }

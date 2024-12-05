@@ -11,6 +11,7 @@ import SkeletonCard from "@/components/skeleton/skeleton-card";
 import {
   ApplyParams,
   StatusLengthParams,
+  StatusMode,
   StatusType,
 } from "@/utils/types/jobApply";
 import axiosInstance from "@/utils/axios";
@@ -117,14 +118,13 @@ const CardStatus: React.FC<ApplyTotal> = ({
 
   return (
     <div className="pb-20">
-      <div>{attForUse.status}</div>
       {isModalOpen && (
         <PopUpModal
           bodyText={
             isInfoModal
               ? attForUse.status == "Interview"
                 ? "Interview Information:"
-                : "Congraulation! You can start at"
+                : "Congraulation! You can start on"
               : "Are you sure you want to delete it?"
           }
           {...(isInfoModal
@@ -209,8 +209,8 @@ const CardStatus: React.FC<ApplyTotal> = ({
                         text={text}
                         icon={icon}
                         date={
-                          status == item.userInfo.status
-                            ? item.updatedAt
+                          item.statusDate[status as StatusMode]
+                            ? item.statusDate[status as StatusMode]
                             : undefined
                         }
                         setIsInfoModal={() => {

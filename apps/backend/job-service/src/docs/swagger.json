@@ -210,9 +210,30 @@
 						"type": "string",
 						"format": "date-time"
 					},
-					"updateAt": {
-						"type": "string",
-						"format": "date-time"
+					"statusDate": {
+						"properties": {
+							"Apply": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Review": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Shortlist": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Interview": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Accept": {
+								"type": "string",
+								"format": "date-time"
+							}
+						},
+						"type": "object"
 					}
 				},
 				"required": [
@@ -335,6 +356,10 @@
 						},
 						"type": "array"
 					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
 					"benefit": {
 						"items": {
 							"type": "string"
@@ -344,10 +369,13 @@
 					"deadline": {
 						"type": "string",
 						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
 					}
 				},
 				"required": [
-					"companyId",
 					"title",
 					"position",
 					"workMode",
@@ -355,7 +383,8 @@
 					"requirement",
 					"address",
 					"min_salary",
-					"max_salary"
+					"max_salary",
+					"createdAt"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -621,9 +650,30 @@
 						"type": "string",
 						"format": "date-time"
 					},
-					"updateAt": {
-						"type": "string",
-						"format": "date-time"
+					"statusDate": {
+						"properties": {
+							"Apply": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Review": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Shortlist": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Interview": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Accept": {
+								"type": "string",
+								"format": "date-time"
+							}
+						},
+						"type": "object"
 					},
 					"jobInfo": {
 						"$ref": "#/components/schemas/IJob"
@@ -695,6 +745,9 @@
 						"type": "string"
 					}
 				},
+				"required": [
+					"status"
+				],
 				"type": "object",
 				"additionalProperties": false
 			}
@@ -1201,6 +1254,45 @@
 				]
 			}
 		},
+		"/v1/jobs/jobApply/deleteMany/{jobId}": {
+			"delete": {
+				"operationId": "DeleteManyJobApply",
+				"responses": {
+					"204": {
+						"description": "Deleted",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "jobId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
 		"/v1/jobs/{jobId}": {
 			"get": {
 				"operationId": "GetJobById",
@@ -1288,48 +1380,11 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/JobParams"
+								"$ref": "#/components/schemas/IJob"
 							}
 						}
 					}
 				}
-			},
-			"delete": {
-				"operationId": "DeleteJobById",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Job"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "jobId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
 			}
 		},
 		"/v1/jobs/health": {

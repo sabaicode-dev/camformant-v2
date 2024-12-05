@@ -11,7 +11,7 @@ import mongoose from "mongoose";
 
 // ========================
 export interface JobParams {
-  companyId: string | mongoose.Types.ObjectId;
+  companyId?: string | mongoose.Types.ObjectId;
   title: string;
   position: string[];
   workMode: WorkMode[];
@@ -25,8 +25,10 @@ export interface JobParams {
   type?: EmploymentType[];
   schedule?: EmploymentSchedule[];
   required_experience?: string[];
+  createdAt:Date,
   benefit?: string[];
   deadline?: Date;
+  updatedAt?:Date
 }
 
 export interface JobsFilterParams {
@@ -102,6 +104,7 @@ export interface PostJobApplyBody {
   userId: string;
   jobId: string;
   userInfo: ApplyUserInfo;
+
   companyResponse?: ApplyCompanyResp;
 }
 export interface JobApplyBody {
@@ -109,6 +112,7 @@ export interface JobApplyBody {
   jobId: string;
   userInfo: ApplyUserInfo;
   companyResponse?: ApplyCompanyResp;
+  statusDate?:{ [key in StatusMode]?: Date }
 }
 
 export interface JobApplyResponse {
@@ -118,7 +122,7 @@ export interface JobApplyResponse {
   userInfo: ApplyUserInfo;
   companyResponse?: ApplyCompanyResp;
   appliedAt?: Date;
-  updateAt?: Date;
+  statusDate?:{ [key in StatusMode]?: Date }
 }
 export interface GetJobApplyResponse extends JobApplyResponse {
   jobInfo: IJob;
@@ -131,7 +135,7 @@ export interface GetApplyJobResLimit {
   limit: number;
 }
 export interface BodyUpdateJobApply {
-  status?: StatusMode;
+  status: StatusMode;
   startDate?: Date | string;
   interviewDate?: Date | string;
   interviewLocation?: string;

@@ -54,23 +54,21 @@ const CorporatorSchema = new mongoose.Schema<ICorporatorProfile>(
     profile: {
       type: String,
       required: false,
-      default: "",
+      default:
+        "https://camformant.s3.ap-southeast-2.amazonaws.com/user-service/upload/default_company.png",
     },
     location: {
       address: {
         type: String,
         default: "",
-
       },
       city: {
         type: String,
         default: "",
-
       },
       country: {
         type: String,
         default: "",
-
       },
     },
     contact: {
@@ -80,51 +78,42 @@ const CorporatorSchema = new mongoose.Schema<ICorporatorProfile>(
       website: {
         type: String,
         default: "",
-
       },
     },
     social_links: {
       linkedin: {
         type: String,
         default: "",
-
       },
       twitter: {
         type: String,
         default: "",
-
       },
       facebook: {
         type: String,
         default: "",
-
       },
     },
     description: {
       type: String,
       default: "",
-
     },
 
     employee_count: {
       type: Number,
       default: 0,
-
     },
     job_openings_count: {
       type: Number,
       default: 0,
-
     },
     job_closings_count: {
       type: Number,
       default: 0,
-
     },
     completed: {
       type: Number,
       default: 0,
-
     },
   },
   {

@@ -161,6 +161,16 @@ const ApplyCompanyResSchema = new Schema(
     _id: false,
   }
 );
+const StatusDateSchema = new Schema(
+  {
+    [StatusMode.APPLY]: { type: Date, required: false },
+    [StatusMode.SHORTLIST]: { type: Date, required: false },
+    [StatusMode.REVIEW]: { type: Date, required: false },
+    [StatusMode.INTERVIEW]: { type: Date, required: false },
+    [StatusMode.ACCEPT]: { type: Date, required: false },
+  },
+  { _id: false }
+);
 
 const JobApplySchema = new Schema(
   {
@@ -168,9 +178,10 @@ const JobApplySchema = new Schema(
     jobId: mongoose.Types.ObjectId,
     companyResponse: ApplyCompanyResSchema,
     userInfo: ApplyUserInfoschema,
+    statusDate: StatusDateSchema,
   },
   {
-    timestamps: { createdAt: "appliedAt", updatedAt: "updatedAt" },
+    timestamps: { createdAt: "appliedAt", updatedAt: false },
     versionKey: false,
     toObject: {
       transform: function (_doc, ret) {

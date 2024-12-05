@@ -55,7 +55,7 @@ const Page: React.FC = () => {
       try {
         setNext(true);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=ability`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=ability`
         );
         const data = response.data.data;
         console.log("abiloty", data);

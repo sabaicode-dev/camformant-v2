@@ -6,7 +6,6 @@ import { ModeToggle } from "./ui/modeToggle";
 import { Bell, ChevronLeft, ChevronRight, Mail, SearchCheckIcon } from "lucide-react";
 import { Input } from "./ui/input";
 import { ToolTip } from "./ToolTip";
-import { UserProfile } from "./UserProfile";
 import SabaiROkLogo from "../../public/logoSabaiRok.svg";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
@@ -59,9 +58,7 @@ export const MenuBar = () => {
             <ToolTip icon={<Mail />} text="Inbox" />
           </div>
           <span className="text-sm"> {user?.name}</span>
-          <UserProfile
-            avatarImage={user?.profile||"https://github.com/shadcn.png"}
-            fallback={user?.name}
+          <Image src={user?.profile || ""} className={"w-11 h-11 rounded-full object-cover"}  alt={user?.name || ""}width={40} height={40}
           />
         </div>
       </div>

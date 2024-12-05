@@ -39,6 +39,14 @@ export default function RootLayout({
   const userCookie = cookieStore.get("refresh_token");
   return (
     <html lang="en">
+      <head>
+        {/* Add Google Maps API script here */}
+        <script
+          async
+          defer
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
+        ></script>
+      </head>
       <body className={inter.className}>
         <AuthProvider isLogin={!!userCookie}>
           {/* <NavigationBar /> */}

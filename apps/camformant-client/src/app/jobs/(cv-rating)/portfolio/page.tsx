@@ -18,6 +18,7 @@ const Page = () => {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [next, setNext] = useState<boolean>(false);
   const [isPut, setIsPut] = useState<boolean>(false);
+  const {user}=useAuth()
   const [portfoEntries, setPortfoEntries] = useState<PortfolioParam[]>([
     {
       name: "",
@@ -30,7 +31,7 @@ const Page = () => {
       try {
         setNext(true);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=portfolio`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=portfolio`
         );
         if (!response) {
           return null;

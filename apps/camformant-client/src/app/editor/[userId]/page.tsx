@@ -10,6 +10,7 @@ import { setStructureUserdata } from "@/features/editor/utils";
 import CallToAction from "@/components/calltoaction/call-to-action";
 import { BackButton_md } from "@/components/back/BackButton";
 import Link from "next/link";
+import { useAuth } from "@/context/auth";
 
 const Page = ({ params }: { params: { userId: string } }) => {
   const { userId } = params;
@@ -22,6 +23,7 @@ const Page = ({ params }: { params: { userId: string } }) => {
     },
     userData: {},
   });
+  const { user } = useAuth();
   const hasFetched = useRef(false);
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
@@ -34,7 +36,7 @@ const Page = ({ params }: { params: { userId: string } }) => {
           API_ENDPOINTS.USER_CUSTOM_CV
         );
         const { data } = await axiosInstance.get(
-          API_ENDPOINTS.USER_PROFILE_DETAIL
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}`
         );
 
         setCvContent({

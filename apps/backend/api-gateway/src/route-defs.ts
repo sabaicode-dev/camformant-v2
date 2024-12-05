@@ -278,15 +278,22 @@ const ROUTE_PATHS: RoutesConfig = {
       {
         path: "/profile-detail",
         methods: {
-          GET: {
-            authRequired: true,
-            roles: ["user", "admin"],
-          },
           PUT: {
             authRequired: true,
             roles: ["user", "admin"],
           },
         },
+        nestedRoutes: [
+          {
+            path: "/:userId",
+            methods: {
+              GET: {
+                authRequired: true,
+                roles: ["user", "company"],
+              },
+            },
+          },
+        ],
       },
       {
         path: "/cv",
@@ -346,6 +353,14 @@ const ROUTE_PATHS: RoutesConfig = {
     },
     nestedRoutes: [
       {
+        path: "/job",
+        methods: {
+          POST: {
+            authRequired: false,
+          },
+        },
+      },
+      {
         path: "/health",
         methods: {
           GET: {
@@ -367,6 +382,15 @@ const ROUTE_PATHS: RoutesConfig = {
         },
         nestedRoutes: [
           {
+            path: "/deleteMany/:applyId",
+            methods: {
+              DELETE: {
+                authRequired: true,
+                roles: ["company"],
+              },
+            },
+          },
+          {
             path: "/:applyId",
             methods: {
               PUT: {
@@ -385,6 +409,12 @@ const ROUTE_PATHS: RoutesConfig = {
         path: "/:id",
         methods: {
           GET: {
+            authRequired: false,
+          },
+          DELETE: {
+            authRequired: false,
+          },
+          PUT: {
             authRequired: false,
           },
         },

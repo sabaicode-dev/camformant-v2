@@ -85,12 +85,12 @@ class JobRepository {
     // Adding search functionality
     const searchFilter = search
       ? {
-        $or: [
-          { title: { $regex: search, $options: "i" } },
-          { position: { $regex: search, $options: "i" } },
-          { "companyId.name": { $regex: search, $options: "i" } },
-        ],
-      }
+          $or: [
+            { title: { $regex: search, $options: "i" } },
+            { position: { $regex: search, $options: "i" } },
+            { "companyId.name": { $regex: search, $options: "i" } },
+          ],
+        }
       : {};
     type UserFavFilter = {
       _id?: {
@@ -170,7 +170,6 @@ class JobRepository {
       throw error;
     }
   }
-
 
   public async findJobById(jobId: string) {
     try {
@@ -361,7 +360,9 @@ class JobRepository {
       throw err;
     }
   }
-  public async createJobApply(body: PostJobApplyBody) {
+  public async createJobApply(
+    body: PostJobApplyBody
+  ): Promise<JobApplyResponse | {}> {
     try {
       const response: JobApplyResponse | {} = await ApplyModel.create(body);
       console.log("response", response);
@@ -370,7 +371,10 @@ class JobRepository {
       throw err;
     }
   }
-  public async updateJobApply(applyId: string, body: BodyUpdateJobApply) {
+  public async updateJobApply(
+    applyId: string,
+    body: BodyUpdateJobApply
+  ): Promise<JobApplyResponse | {} | null> {
     try {
       const updateFields = Object.keys(body).reduce(
         (acc: Record<string, string | Date | undefined>, key: string) => {
@@ -378,16 +382,18 @@ class JobRepository {
             body[key as keyof BodyUpdateJobApply] !== undefined &&
             body[key as keyof BodyUpdateJobApply] !== null
           ) {
-            if (key === "status")
+            if (key === "status") {
               acc[`userInfo.${key}`] = body[key as keyof BodyUpdateJobApply];
-            else
+              console.log("key::::", key);
+              acc[`statusDate.${body[key as keyof BodyUpdateJobApply]}`] =
+                new Date();
+            } else
               acc[`companyResponse.${key}`] = [
                 "interviewDate",
                 "startDate",
               ].includes(key)
                 ? new Date(body[key as keyof BodyUpdateJobApply]!)
                 : body[key as keyof BodyUpdateJobApply];
-            acc["updatedAt"] = new Date();
           }
           return acc;
         },
@@ -416,7 +422,19 @@ class JobRepository {
       throw err;
     }
   }
+  public async deleteManyJobApply(jobId: string) {
+    try {
+      console.log("inside delete many", jobId);
+      const response = ApplyModel.deleteMany({jobId: new mongoose.Types.ObjectId(jobId)});
+      console.log("response ", response);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
+
+
 //===function===
 async function fetchCompaniesProfile(
   companiesId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[] | undefined

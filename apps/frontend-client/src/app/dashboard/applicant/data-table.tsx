@@ -46,13 +46,13 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
     searchParams.get("name")
-      ? [{ id: "name", value: searchParams.get("name") }]
+      ? [{ id: "userInfo.name", value: searchParams.get("userInfo.name") }]
       : []
   );
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
- const table = useReactTable({
+  const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
@@ -84,23 +84,23 @@ export function DataTable<TData, TValue>({
   }, [columnFilters, pathname, router]);
 
   return (
-    <div className=" w-full font-roboto float-end  border m-2 p-2 rounded-md">
+    <div className="w-full font-roboto float-end border m-2 p-2 rounded-md">
       <div className="flex justify-start items-center">
-        <div className="flex items-center py-4">
-          <Input
-            placeholder="Search Title..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("name")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm border border-gray-300"
-          />
+        <div className="flex items-center py-4 bg">
+        <Input
+  placeholder="Search Name..."
+  value={(table.getColumn("userInfo.name")?.getFilterValue() as string) ?? ""}
+  onChange={(event) =>
+    table.getColumn("userInfo.name")?.setFilterValue(event.target.value)
+  }
+  className="max-w-sm"
+/>
         </div>
 
         {/* Dropdown for column visibility */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="ml-auto bg-orange-400 hover:bg-orange-500">
+            <Button variant="orange" className="ml-auto">
               Filter
             </Button>
           </DropdownMenuTrigger>
@@ -125,16 +125,14 @@ export function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      {/* table of applicant */}
-      <div className="">
+      <div className="rounded-md border">
         <Table>
-            {/* head of table */}
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className="text-center">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -155,7 +153,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="text-center">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
