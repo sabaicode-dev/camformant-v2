@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, filterFns } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { JobApplication, StatusDate } from "@/utils/types/job";
 import { Badge } from "@/components/ui/badge";
@@ -42,6 +42,7 @@ export const columns:(refetch?: () => Promise<void>) => ColumnDef<JobApplication
     accessorKey: "userInfo.name",
     header: "Name",
     cell: ({ row }) => <div className="text-gray-700">{row.original.userInfo?.name}</div>,
+    filterFn: 'equals',
   },
   {
     header: "Job Title",

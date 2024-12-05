@@ -43,43 +43,45 @@ export function DataTable<TData, TValue>({
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
-    searchParams.get("name")
-      ? [{ id: "userInfo.name", value: searchParams.get("userInfo.name") }]
-      : []
-  );
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
 
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(() => {
+    const nameParam = searchParams.get("name");
+    return nameParam 
+      ? [{ id: "name", value: nameParam }] 
+      : [];
+  });
+
+  // Key Modification: Custom Filtering Function
+  const filterFn = React.useCallback((row: any, columnId: string, filterValue: string) => {
+    // Specifically target nested userInfo.name
+    const cellValue = row.original?.userInfo?.name ?? '';
+    return cellValue.toLowerCase().includes(filterValue.toLowerCase());
+  }, []);
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    onColumnFiltersChange: setColumnFilters,
     state: {
-      sorting,
       columnFilters,
-      columnVisibility,
-      rowSelection,
     },
+    globalFilterFn: filterFn, // Apply custom global filter
   });
 
+  // URL Synchronization Effect
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (columnFilters.length > 0 && columnFilters[0].value) {
-      const filterValue = columnFilters[0].value as string;
-      params.set("name", filterValue);
-      router.replace(`${pathname}?${params.toString()}`);
+    const nameFilter = columnFilters.find(filter => filter.id === "name");
+    
+    if (nameFilter && nameFilter.value) {
+      params.set("name", String(nameFilter.value));
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     } else {
       params.delete("name");
-      router.replace(`${pathname}?${params.toString()}`);
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     }
   }, [columnFilters, pathname, router]);
 
@@ -88,13 +90,13 @@ export function DataTable<TData, TValue>({
       <div className="flex justify-start items-center">
         <div className="flex items-center py-4 bg">
         <Input
-  placeholder="Search Name..."
-  value={(table.getColumn("userInfo.name")?.getFilterValue() as string) ?? ""}
-  onChange={(event) =>
-    table.getColumn("userInfo.name")?.setFilterValue(event.target.value)
-  }
-  className="max-w-sm"
-/>
+        placeholder="Search Name..."
+        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+        onChange={(event) =>
+          table.getColumn("name")?.setFilterValue(event.target.value)
+        }
+        className="max-w-sm"
+      />
         </div>
 
         {/* Dropdown for column visibility */}
