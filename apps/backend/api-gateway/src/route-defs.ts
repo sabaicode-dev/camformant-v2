@@ -476,6 +476,12 @@ const ROUTE_PATHS: RoutesConfig = {
   NOTIFICATION_SERVICE: {
     path: "/v1/notifications",
     target: configs.notificationServiceUrl,
+    methods: {
+      GET: {
+        authRequired: true,
+        roles: ["user", "company"],
+      },
+    },
     nestedRoutes: [
       {
         path: "/health",
@@ -489,6 +495,15 @@ const ROUTE_PATHS: RoutesConfig = {
         path: "/subscribe",
         methods: {
           POST: {
+            authRequired: true,
+            roles: ["user", "company"],
+          },
+        },
+      },
+      {
+        path: "/unsubscribe",
+        methods: {
+          DELETE: {
             authRequired: true,
             roles: ["user", "company"],
           },

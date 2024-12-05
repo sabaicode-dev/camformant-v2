@@ -42,13 +42,13 @@ const InputFile: React.FC<InputFileParams> = ({
       <div className="flex items-center w-full">
         <label
           htmlFor="file-upload"
-          className="px-5 py-2 bg-orange-500 text-white font-semibold rounded-lg cursor-pointer hover:bg-orange-600 whitespace-nowrap"
+          className="px-5 py-2 font-semibold text-white bg-orange-500 rounded-lg cursor-pointer hover:bg-orange-600 whitespace-nowrap"
         >
           Choose File
         </label>
 
         {/* Display selected file name */}
-        <span className="text-gray-600 ml-3 whitespace-nowrap overflow-hidden overflow-ellipsis">
+        <span className="ml-3 overflow-hidden text-gray-600 whitespace-nowrap overflow-ellipsis">
           {fileName}
         </span>
       </div>

@@ -90,7 +90,7 @@ export const AuthProvider = ({
       console.log("is login");
       checkAuthStatus();
     }
-  }, []);
+  }, [isLogin]);
   //lastUser?.favorites
 
   const login = async ({ email, phone_number, password }: LoginRequest) => {

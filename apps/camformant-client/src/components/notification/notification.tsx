@@ -25,28 +25,19 @@ export default function NotificationComponent({
 
   console.log("isAuthentication", isAuthenticated);
   console.log("sub:::", subscription);
-  //function checkPermission notification
-  async function checkPermission() {
-    const permission = await Notification.requestPermission();
-    if (permission !== "granted") {
-      addNotification("Notification Access Dined", "error");
-    } else {
-      addNotification("Notification Allowed", "success");
-    }
-  }
+
   // Register Notification When User Login
   useEffect(() => {
     if (isAuthenticated) {
       if ("serviceWorker" in navigator && "PushManager" in window) {
         const serviceWorker = async () => {
           setIsSupported(true);
-          checkPermission();
           await registerServiceWorker();
         };
         serviceWorker();
       }
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, addNotification]);
 
   // Show Popup when browser is not support push notification
   useEffect(() => {
@@ -57,21 +48,27 @@ export default function NotificationComponent({
   }, [isSupported]);
 
   async function registerServiceWorker() {
-    if ("serviceWorker" in navigator) {
-      try {
-        const registration = await navigator.serviceWorker.register("/sw.js", {
+    // Check if service worker is already registered
+    let registration = await navigator.serviceWorker.getRegistration("/");
+
+    if (!registration) {
+      // Register service worker if not registered
+      registration = await navigator.serviceWorker.register(
+        "/service-worker.js",
+        {
           scope: "/",
-        });
-        console.log("Service Worker registered:", registration);
-        return registration;
-      } catch (error) {
-        console.error("Service Worker registration failed:", error);
-      }
-    } else {
-      console.warn("Service Worker is not supported in this browser.");
+          updateViaCache: "none",
+        }
+      );
     }
   }
-
+  useEffect(() => {
+    async function getSubscription() {
+      const res = await axiosInstance.get(API_ENDPOINTS.NOTIFICATION);
+      setSubscription(res.data[0]);
+    }
+    if (isAuthenticated) getSubscription();
+  }, [isAuthenticated]);
   async function subscribeToPush() {
     setLoading(true); // Set loading state
     const registration = await navigator.serviceWorker.ready;
@@ -110,6 +107,9 @@ export default function NotificationComponent({
     setLoading(true); // Set loading state
 
     try {
+      await axiosInstance.delete(API_ENDPOINTS.UNSUBSCRIBE, {
+        data: { endpoint: subscription?.endpoint },
+      });
       await subscription?.unsubscribe();
     } catch (error) {
       console.log("Unsubscribe Notification Error:::", error);
@@ -120,11 +120,25 @@ export default function NotificationComponent({
   }
 
   const handleToggle = async () => {
+    //function checkPermission notification
+    async function checkPermission() {
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        addNotification("Notification Access Dined", "error");
+        return;
+      } else if (permission === "granted") {
+        addNotification("Notification Enabled", "success");
+        return "granted";
+      }
+    }
     if (!isAuthenticated) {
       addNotification("Please login to enable notification!", "error");
     } else {
       if (!subscription) {
-        await subscribeToPush();
+        const permission = await checkPermission();
+        if (permission === "granted") {
+          await subscribeToPush();
+        }
       } else {
         await unsubscribeFromPush();
       }

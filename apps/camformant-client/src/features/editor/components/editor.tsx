@@ -171,7 +171,7 @@ const Editor: React.FC<{
     return () => {
       canvas.dispose(); // Dispose canvas when unmounting
     };
-  }, [init]);
+  }, [init, cvContent.style]);
   //for cropper
   const handleCropComplete = (_croppedArea: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -319,14 +319,14 @@ const Editor: React.FC<{
               <div className="flex justify-around w-full mt-4">
                 <button
                   id="apply-crop"
-                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+                  className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-700"
                   onClick={handleCropSave}
                 >
                   Apply Crop
                 </button>
                 <button
                   id="Close"
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
+                  className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700"
                   onClick={() => setIsCropping(false)}
                 >
                   Close

@@ -108,68 +108,6 @@ const Message = React.memo(
         notificationTone.play();
       }
     }, []);
-
-    const onScroll = useCallback(async () => {
-      if (!messageContainerRef.current) return;
-      const { scrollTop, scrollHeight, clientHeight } =
-        messageContainerRef.current;
-
-      if (scrollTop === 0 && hasMore && !isLoading && messages!.length > 0) {
-        await loadMoreData();
-      }
-    }, [hasMore, isLoading, messages, page]);
-    useEffect(() => {
-      const div = messageContainerRef.current;
-      if (!div) return;
-      div.addEventListener("scroll", onScroll);
-      return () => div.removeEventListener("scroll", onScroll);
-    }, [onScroll]);
-    // Scroll to the bottom of the messages container
-    const scrollToBottom = useCallback(() => {
-      const container = messageContainerRef.current;
-      if (container) {
-        container.scrollTop = container.scrollHeight;
-      }
-    }, []);
-    useEffect(() => {
-      // Fetch messages
-      const fetchMessages = async () => {
-        try {
-          const response = await axiosInstance.get(
-            `${API_ENDPOINTS.GET_MESSAGE}/${receiverId}`
-          );
-          const data = await response.data;
-          if (response.status === 200 && data) {
-            const conversation = data.conversation;
-            setConversationId(conversation._id);
-            setConversations(conversation);
-
-            setPaginationMessage({
-              currentPage: data.currentPage,
-              totalPage: data.totalPage,
-              limit: data.limit,
-              skip: data.skip,
-              totalMessages: data.totalMessages,
-            });
-            if (data.currentPage === data.totalPage) {
-              setHasMore(false);
-            }
-            setMessages(conversation.messages);
-            scrollToBottom();
-          } else if (response.status === 404) {
-            handleError("Message not found");
-          }
-        } catch (error) {
-          console.error("chat error: ", error);
-          handleError("Failed to fetch messages data");
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      if (receiverId) {
-        fetchMessages();
-      }
-    }, [receiverId, handleError]);
     const loadMoreData = useCallback(async () => {
       if (!hasMore || isLoading) return; // Prevent fetching if no more data or already loading
 
@@ -223,7 +161,69 @@ const Message = React.memo(
       } finally {
         setIsLoading(false);
       }
-    }, [hasMore, isLoading, page]);
+    }, [hasMore, isLoading, page, receiverId, handleError]);
+    const onScroll = useCallback(async () => {
+      if (!messageContainerRef.current) return;
+      const { scrollTop, scrollHeight, clientHeight } =
+        messageContainerRef.current;
+
+      if (scrollTop === 0 && hasMore && !isLoading && messages!.length > 0) {
+        await loadMoreData();
+      }
+    }, [hasMore, isLoading, loadMoreData, messages]);
+    useEffect(() => {
+      const div = messageContainerRef.current;
+      if (!div) return;
+      div.addEventListener("scroll", onScroll);
+      return () => div.removeEventListener("scroll", onScroll);
+    }, [onScroll]);
+    // Scroll to the bottom of the messages container
+    const scrollToBottom = useCallback(() => {
+      const container = messageContainerRef.current;
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
+    }, []);
+    useEffect(() => {
+      // Fetch messages
+      const fetchMessages = async () => {
+        try {
+          const response = await axiosInstance.get(
+            `${API_ENDPOINTS.GET_MESSAGE}/${receiverId}`
+          );
+          const data = await response.data;
+          if (response.status === 200 && data) {
+            const conversation = data.conversation;
+            setConversationId(conversation._id);
+            setConversations(conversation);
+
+            setPaginationMessage({
+              currentPage: data.currentPage,
+              totalPage: data.totalPage,
+              limit: data.limit,
+              skip: data.skip,
+              totalMessages: data.totalMessages,
+            });
+            if (data.currentPage === data.totalPage) {
+              setHasMore(false);
+            }
+            setMessages(conversation.messages);
+            scrollToBottom();
+          } else if (response.status === 404) {
+            handleError("Message not found");
+          }
+        } catch (error) {
+          console.error("chat error: ", error);
+          handleError("Failed to fetch messages data");
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      if (receiverId) {
+        fetchMessages();
+      }
+    }, [receiverId, handleError, scrollToBottom]);
+
     // Join the room of conversation
     // useEffect(() => {
     //   if (!conversationId) return;
@@ -250,7 +250,7 @@ const Message = React.memo(
       return () => {
         socket.off("receiveMessage");
       };
-    }, [messages, setMessages, socket]);
+    }, [messages, setMessages, playNotificationSound, scrollToBottom]);
     const sendMessage = async () => {
       if (inputMessage.trim() === "") return;
       const newMessage: Message = {
