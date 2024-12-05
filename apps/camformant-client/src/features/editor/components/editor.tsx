@@ -173,6 +173,7 @@ const Editor: React.FC<{
         setIsOpenTem(true);
       }
     };
+    // eslint-disable-next-line
   }, [init]);
   //for cropper
   const handleCropComplete = (_croppedArea: Area, croppedAreaPixels: Area) => {

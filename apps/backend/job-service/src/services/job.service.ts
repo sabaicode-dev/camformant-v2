@@ -120,7 +120,7 @@ class JobService {
 
   public async updateJobById(
     jobId: string,
-    updateJob: JobParams
+    updateJob: IJob
   ): Promise<IJob> {
     try {
       const newJob = await jobRepository.updateJobById({

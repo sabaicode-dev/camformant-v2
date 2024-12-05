@@ -10,7 +10,7 @@ import { INotification } from "@/src/database/models/notification.model";
 export interface NotificationPayload {
   title: string;
   body: string;
-  data?: {};
+  data?: { url?: string };
 }
 
 export interface NotificationErrorResponse {

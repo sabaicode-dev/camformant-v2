@@ -1,22 +1,31 @@
 // Import Workbox library
 // import { precacheAndRoute } from "workbox-precaching";
-console.log("hello service worker is on");
+// console.log("hello service worker is on");
 
 // Precache all assets injected by `next-pwa`
 // precacheAndRoute(self.__WB_MANIFEST);
-
+self.addEventListener("install", (event) => {
+  console.log("Service Worker installed");
+  // Optionally skip waiting to activate immediately
+  self.skipWaiting();
+});
+self.addEventListener("activate", (event) => {
+  console.log("Service Worker activated");
+  event.waitUntil(self.clients.claim()); // Take control of all open clients
+});
 // Custom event listeners for push notifications and notification click handling
 self.addEventListener("push", (event) => {
   if (event.data) {
     const data = event.data.json();
     const title = data.title;
     const body = data.body;
-    const url = data.data?.url || "/";
+    const url = "/resume";
+    console.log("url", url);
 
     const notificationOptions = {
       body: body,
       tag: `notification-${Date.now()}`,
-      icon: "./icons/camformant-16.png",
+      icon: "https://english.mathrubhumi.com/image/contentid/policy:1.10120314:1732882988/banana-art-sun.jpg?$p=9e6d4c8&f=1x1&w=1080&q=0.8",
       vibrate: [100, 50, 100],
       data: {
         url: url, // Replace with the desired URL for redirecting user to the desired page
@@ -38,7 +47,8 @@ self.addEventListener("notificationclick", function (event) {
   event.notification.close();
 
   const notificationData = event.notification.data;
-  const urlToOpen = notificationData?.url || "/"; // Fallback to root if no URL is provided
+  const urlToOpen = "/resume"; // Fallback to root if no URL is provided
+  console.log("urlToOpen", urlToOpen);
 
   event.waitUntil(
     clients

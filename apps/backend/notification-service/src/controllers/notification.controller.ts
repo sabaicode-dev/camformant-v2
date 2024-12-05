@@ -66,7 +66,11 @@ export class NotificationsController extends Controller {
   ): Promise<void> {
     try {
       const userId = request.cookies["user_id"];
-
+      // const currentUser = JSON.parse(request.headers.currentuser as string) as {
+      //   username?: string;
+      //   role?: string[];
+      // };
+      //todo:
       console.log("Push Notification is trigger", userId);
       await NotificationService.sendNotification(userId, body);
     } catch (error) {

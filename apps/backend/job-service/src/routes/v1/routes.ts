@@ -124,7 +124,7 @@ const models: TsoaRoute.Models = {
     "JobParams": {
         "dataType": "refObject",
         "properties": {
-            "companyId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"ref":"mongoose.Types.ObjectId"}],"required":true},
+            "companyId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"ref":"mongoose.Types.ObjectId"}]},
             "title": {"dataType":"string","required":true},
             "position": {"dataType":"array","array":{"dataType":"string"},"required":true},
             "workMode": {"dataType":"array","array":{"dataType":"refEnum","ref":"WorkMode"},"required":true},
@@ -138,8 +138,10 @@ const models: TsoaRoute.Models = {
             "type": {"dataType":"array","array":{"dataType":"refEnum","ref":"EmploymentType"}},
             "schedule": {"dataType":"array","array":{"dataType":"refEnum","ref":"EmploymentSchedule"}},
             "required_experience": {"dataType":"array","array":{"dataType":"string"}},
+            "createdAt": {"dataType":"datetime","required":true},
             "benefit": {"dataType":"array","array":{"dataType":"string"}},
             "deadline": {"dataType":"datetime"},
+            "updatedAt": {"dataType":"datetime"},
         },
         "additionalProperties": false,
     },
@@ -655,7 +657,7 @@ export function RegisterRoutes(app: Router) {
             async function JobController_updateJobById(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
                     jobId: {"in":"path","name":"jobId","required":true,"dataType":"string"},
-                    updateDatJob: {"in":"body","name":"updateDatJob","required":true,"ref":"JobParams"},
+                    updateDatJob: {"in":"body","name":"updateDatJob","required":true,"ref":"IJob"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -668,36 +670,6 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'updateJobById',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: undefined,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.delete('/v1/jobs/:jobId',
-            ...(fetchMiddlewares<RequestHandler>(JobController)),
-            ...(fetchMiddlewares<RequestHandler>(JobController.prototype.deleteJobById)),
-
-            async function JobController_deleteJobById(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    jobId: {"in":"path","name":"jobId","required":true,"dataType":"string"},
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
-
-                const controller = new JobController();
-
-              await templateService.apiHandler({
-                methodName: 'deleteJobById',
                 controller,
                 response,
                 next,

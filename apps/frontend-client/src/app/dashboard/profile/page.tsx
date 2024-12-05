@@ -50,7 +50,7 @@ const ProfilePage = () => {
       <div className="container mx-auto">
       { isLoading ? ( 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="lg:sticky lg:top-12 lg:h-[calc(100vh-6rem)]">
+          <div className="lg:sticky lg:top-0 lg:h-[calc(100vh-8rem)]">
             <Profile user={user} />
           </div>
           <div className="h-screen">
@@ -59,7 +59,7 @@ const ProfilePage = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="lg:sticky lg:top-12 lg:h-[calc(100vh-6rem)]">
+          <div className="lg:sticky lg:top-0 lg:h-[calc(100vh-8rem)]">
             <ProfileSkeleton/>
           </div>
           <div className="">

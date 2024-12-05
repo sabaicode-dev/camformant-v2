@@ -59,7 +59,6 @@ class AuthService {
     const existingUser = await this.getUserByEmail(
       (body.email || body.phone_number) as string
     );
-    console.log("signup body:::::", body);
     if (existingUser) {
       throw new ResourceConflictError(
         AUTH_MESSAGES.AUTHENTICATION.ACCOUNT_ALREADY_EXISTS
@@ -75,7 +74,6 @@ class AuthService {
           return obj;
         }, {}),
     };
-    console.log("input body:::::", inputBody);
     const allowedAttributes = ["email", "phone_number", "name", "custom:role"];
 
     const attributes = Object.keys(inputBody)
@@ -84,7 +82,6 @@ class AuthService {
         Name: key === "role" ? "custom:role" : key,
         Value: inputBody[key as keyof typeof inputBody],
       }));
-    console.log("attributes:::", attributes);
     const username = (body.email || body.phone_number) as string;
 
     const params: SignUpCommandInput = {
@@ -319,8 +316,6 @@ class AuthService {
       const email = userInfo.email;
       const existingUser = await this.getUserByEmail(email);
       // console.log("existingUser: ", existingUser);
-      //todo:
-      console.log("1::");
 
       let userId: string;
 
@@ -366,6 +361,7 @@ class AuthService {
       else {
         try {
           console.log("doesnt need to link");
+          console.log("userInfo", userInfo);
 
           const user = await axios.post(`${configs.userServiceUrl}/v1/users`, {
             googleSub: userInfo.sub,
@@ -466,7 +462,6 @@ class AuthService {
   }
 
   async getUserByEmail(email: string): Promise<UserType | undefined> {
-    console.log("exisited");
     const params: ListUsersCommandInput = {
       Filter: `email = "${email}"`,
       UserPoolId: configs.awsCognitoUserPoolId,
@@ -476,6 +471,7 @@ class AuthService {
     try {
       const listUsersCommand = new ListUsersCommand(params);
       const response = await client.send(listUsersCommand);
+      if (response.Users) console.log("exisited");
       return response.Users && response.Users[0];
     } catch (error) {
       console.error("AuthService getUserByEmail() method error:", error);

@@ -370,7 +370,7 @@ const buildEditor = ({
       const workspace = getWorkspace();
       workspace?.set(value);
       autoZoom();
-      save(); //if save with db not use this save()
+      save(); //if save with db not use this save() 
       //TODO: save
     },
     changeBackground: (value: string) => {

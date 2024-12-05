@@ -6,15 +6,15 @@ export const uploadToS3 = async (file: File): Promise<string | undefined> => {
         return;
     }
     const formData = new FormData();
-    formData.append("file", file); // Append the file to the form data
+    formData.append("file", file);
     try {
         console.log("filename is perform :::::::", formData);
         const response = await axiosInstance.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/v1/users/uploadFile`, // Your API endpoint for file upload
+            `${process.env.NEXT_PUBLIC_API_URL}/v1/users/uploadFile`,
             formData,
             {
                 headers: {
-                    "Content-Type": "multipart/form-data", // Set the content type to multipart/form-data
+                    "Content-Type": "multipart/form-data",
                 },
             }
         );
@@ -23,7 +23,6 @@ export const uploadToS3 = async (file: File): Promise<string | undefined> => {
         if (!response) {
             console.log("something wrong with uploading");
         }
-        // Return the URL that the backend responds with (the S3 URL)
         return response.data;
     } catch (err) {
         console.error("Error during file upload:", err);

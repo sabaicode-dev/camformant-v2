@@ -1,18 +1,11 @@
 "use client";
-
 import { cn } from "@/lib/utils";
 import {
-  BarChart3,
   Users,
-  ShoppingCart,
   MessageSquare,
   LayoutDashboard,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
   ChevronDown,
   LineChart,
-  PieChart,
   UserCircle,
   UserCheck,
   Calendar,
@@ -22,8 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { Button } from "./ui/button";
+import { useEffect, useState } from "react";
 import { ScrollArea } from "./ui/scroll-area";
 import { useSidebarContext } from "../context/SidebarContext";
 
@@ -85,7 +77,7 @@ const routes: Route[] = [
     label: "Charts",
     icon: LineChart,
     color: "text-indigo-500",
-    href: "/dashboard/charts",
+    href: "/dashboard/chart",
   },
   {
     label : "Profile",
@@ -94,7 +86,6 @@ const routes: Route[] = [
     href: "/dashboard/profile",
   }
 ];
-
 function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boolean; level?: number }) {
   const pathname = usePathname();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -106,46 +97,39 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
     }
   };
 
-  // Normalize href to ensure it starts with a slash
-  const normalizeHref = (href?: string) => href && !href.startsWith('/') ? `/${href}` : href;
+  const normalizeHref = (href?: string) => href && !href.startsWith('/') ? `/${href}` : href || '/dashboard';
 
-  // Check if the route is active
-  const isRouteActive = pathname === normalizeHref(route.href);
+  const isRouteActive = hasSubRoutes 
+    ? route.subRoutes?.some(subRoute => pathname.includes(normalizeHref(subRoute.href)))
+    : pathname === normalizeHref(route.href);
 
-  // Render logic for routes with subroutes
+  useEffect(() => {
+    if (hasSubRoutes) {
+      const isAnySubRouteActive = route.subRoutes?.some(subRoute => 
+        pathname.includes(normalizeHref(subRoute.href))
+      );
+      setIsExpanded(isAnySubRouteActive || false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, route.subRoutes]);
+
   if (hasSubRoutes) {
     return (
       <div>
         <div
           onClick={handleClick}
-          className={cn(
-            "flex p-4  w-full justify-start font-medium text-pretty cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",
-            isRouteActive ? "text-white bg-[#FF7300]" : "text-muted-foreground",
-            !isOpen && "justify-center",
-            level > 0 && "ml-4"
-          )}
-          title={!isOpen ? route.label : undefined}
-        >
+          className={cn("flex p-4  w-full justify-start font-medium text-pretty cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",isRouteActive ? "text-white bg-[#FF7300]" : "text-muted-foreground",!isOpen && "justify-center",level > 0 && "ml-4")}title={!isOpen ? route.label : undefined} >
           <div className={cn(
             "flex items-center flex-1",
-            !isOpen && "justify-center"
+            !isOpen && "justify-end"
           )}>
-            <route.icon className={cn(
-              "h-6 w-6", 
-              route.color, 
-              isRouteActive && "text-white", 
-              isOpen && "mr-3"
-            )} />
+            <route.icon className={cn(!isOpen ? "h-6 w-6 mr-0" : "h-6 w-6 mr-3", route.color, isRouteActive && "text-white", )} />
             {isOpen && (
               <>
                 <span className="flex-1">{route.label}</span>
                 {hasSubRoutes && (
                   <ChevronDown
-                    className={cn(
-                      "h-6 w-6 transition-transform",
-                      isExpanded && "transform rotate-180"
-                    )}
-                  />
+                    className={cn("h-6 w-6 transition-transform",isExpanded && "transform rotate-180")}/>
                 )}
               </>
             )}
@@ -156,14 +140,8 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
             {route.subRoutes?.map((subRoute) => (
               <Link
                 key={subRoute.href}
-                href={normalizeHref(subRoute.href) || "#"}
-                className={cn(
-                  "flex p-3 pl-12 w-full justify-start items-center text-sm font-medium cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",
-                  pathname === normalizeHref(subRoute.href)
-                    ? "text-white bg-[#FF7300]"
-                    : "text-muted-foreground"
-                )}
-              >
+                href={normalizeHref(subRoute.href)}
+                className={cn("flex p-3 pl-12 w-full justify-start items-center text-sm font-medium cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",pathname === normalizeHref(subRoute.href)? "text-[#FF7300]": "text-muted-foreground")}>
                 <subRoute.icon className="h-6 w-6 mr-3" />
                 {subRoute.label}
               </Link>
@@ -174,43 +152,20 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
     );
   }
 
-  // Render logic for routes without subroutes
-  if (route.href && isOpen) {
-    return (
-      <Link
-        href={normalizeHref(route.href) ||"/dashboard"}
-        className={cn(
-          "flex p-4 w-full justify-start items-center font-medium text-pretty cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",
-          isRouteActive
-            ? "text-white bg-[#FF7300]"
-            : "text-muted-foreground"
-        )}
-      >
-        <route.icon className={cn(
-          "h-6 w-6 mr-3", 
-          route.color, 
-          isRouteActive && "text-white"
-        )} />
-        {route.label}
-      </Link>
-    );
-  }
-
-  // Fallback rendering for routes without href when sidebar is closed
   return (
-    <div
-      className={cn(
-        "flex p-4 w-full justify-start items-center font-light cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",
-        !isOpen && "justify-center"
-      )}
-      title={route.label}
-    >
-      <route.icon className={cn(
-        "h-6 w-6", 
-        route.color, 
-        isRouteActive && "text-white"
-      )} />
-    </div>
+    <Link href={normalizeHref(route.href)}
+    onClick={(e) => {
+      const target = e.target as HTMLElement;
+      const isChevronClicked = target.closest('svg');
+      if (isChevronClicked) {
+        e.preventDefault(); 
+        setIsExpanded(!isExpanded);
+      }
+    }}
+    className={cn("flex p-4 w-full justify-start font-medium text-pretty cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",pathname === normalizeHref(route.href) ? "text-white bg-[#FF7300]" : "text-muted-foreground",!isOpen && "justify-center",level > 0 && "ml-0")}>
+      <route.icon className={cn( !isOpen ? "h-6 w-6 mr-0" : "h-6 w-6 mr-3",route.color,  isRouteActive && "text-white")} />
+      {isOpen && route.label}
+    </Link>
   );
 }
 
@@ -219,19 +174,13 @@ export default function KakSideBar() {
   return (
     <ScrollArea className={cn("pt-16 h-screen transition-all duration-300" , isOpen ? "w-80" : "w-28" )}>
       <div
-        className={cn(
-          "space-y-4 flex flex-col h-full dark:bg-gray-900 text-gray-800 dark:text-white transition-all duration-300 border-r",
-          isOpen ? "w-full" : "w-full items-center"
-        )}
-      >
+        className={cn("space-y-4 flex flex-col h-full dark:bg-gray-900 text-gray-800 dark:text-white transition-all duration-300 border-r",isOpen ? "w-full" : "w-full items-center")}>
         <div className="px-3 py-2 flex-1">
           <div className="space-y-1">
             {routes.map((route) => (
               <SidebarItem key={route.label} route={route} isOpen={isOpen} />
             ))}
           </div>
-          {/* <div className="flex items-center justify-between mb-14">
-          </div> */}
         </div>
       </div>
 
