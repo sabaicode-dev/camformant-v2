@@ -102,7 +102,11 @@
 						"type": "string"
 					},
 					"data": {
-						"properties": {},
+						"properties": {
+							"url": {
+								"type": "string"
+							}
+						},
 						"type": "object"
 					}
 				},
