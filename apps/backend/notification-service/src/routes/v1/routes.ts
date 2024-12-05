@@ -50,7 +50,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "title": {"dataType":"string","required":true},
             "body": {"dataType":"string","required":true},
-            "data": {"dataType":"nestedObjectLiteral","nestedProperties":{}},
+            "data": {"dataType":"nestedObjectLiteral","nestedProperties":{"url":{"dataType":"string"}}},
         },
         "additionalProperties": false,
     },

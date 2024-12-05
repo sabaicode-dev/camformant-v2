@@ -50,7 +50,8 @@
     "socket.io-client": "^4.8.1",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "sst": "^2.43.1"
   },
   "devDependencies": {
     "@types/globalize": "^1.5.5",
