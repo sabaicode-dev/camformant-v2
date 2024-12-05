@@ -127,6 +127,7 @@ export default function NotificationComponent({
         addNotification("Notification Access Dined", "error");
         return;
       } else if (permission === "granted") {
+        // showNotification();
         addNotification("Notification Enabled", "success");
         return "granted";
       }
