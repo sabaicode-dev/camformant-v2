@@ -47,10 +47,12 @@ const authenticateToken = async (
   try {
     const { methodConfig } = req;
 
-    // console.log("req cookie:::", req.cookies);
+    // console.log("authRequired:::", methodConfig.authRequired);
 
-    // Step 1
     if (methodConfig.authRequired) {
+      // console.log("req cookie:::", req.cookies);
+      // Step 1
+      // console.log("need authicated");
       // Step 2
       const token = req.cookies?.["access_token"];
       if (!token) {
@@ -80,7 +82,7 @@ const authenticateToken = async (
               },
             }
           );
-          // console.log("data", data.data.role);
+          // console.log("data", data.data);
           role.push(data.data.role);
         } else {
           // @ts-ignore
@@ -89,13 +91,15 @@ const authenticateToken = async (
       } else {
         role = payload["cognito:groups"] || [];
       }
-      // console.log("role", role);
+      // console.log("role::: ", role);
+      // console.log("payload::: ", payload.username);
 
       req.currentUser = {
         username: payload.username,
         role,
       };
     }
+    // console.log("req.currentUser", req.currentUser);
 
     // Step 4
     next();
@@ -113,6 +117,8 @@ const authenticateToken = async (
 
 const authorizeRole = (req: Request, _res: Response, next: NextFunction) => {
   const { methodConfig, currentUser } = req;
+  // console.log("role::: ", methodConfig);
+  // console.log("currentUser::: ", currentUser);
 
   // Check if the route requires specific roles
   if (methodConfig.roles) {
@@ -200,19 +206,23 @@ const routeConfigMiddleware = (
     // console.log("routeConfig", routeConfig);
     if (routeConfig) break;
   }
-
+  //  console.log("routeConfig", routeConfig);
   if (!routeConfig) {
     return next(new NotFoundError("Route not found"));
   }
   // Step 2
   const methodConfig = routeConfig.methods?.[method];
+  // console.log(methodConfig);
   if (!methodConfig) {
     return next(new NotFoundError("Method not allowed"));
   }
 
+  // console.log("routeConfig", routeConfig);
+
   // Attach the route configuration and method config to the request object
   req.routeConfig = routeConfig;
   req.methodConfig = methodConfig;
+  console.log("method", methodConfig);
 
   next();
 };

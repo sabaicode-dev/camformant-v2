@@ -4,12 +4,14 @@ import {
   AdminGetUserCommand,
   AdminLinkProviderForUserCommand,
   AdminUpdateUserAttributesCommand,
-  AdminUpdateUserAttributesCommandInput,
   AuthFlowType,
   CognitoIdentityProviderClient,
   ConfirmSignUpCommand,
+  GlobalSignOutCommand,
+  GlobalSignOutCommandInput,
   InitiateAuthCommand,
   InitiateAuthCommandInput,
+  InitiateAuthCommandOutput,
   ListUsersCommand,
   ListUsersCommandInput,
   SignUpCommand,
@@ -72,7 +74,6 @@ class AuthService {
           return obj;
         }, {}),
     };
-
     const allowedAttributes = ["email", "phone_number", "name", "custom:role"];
 
     const attributes = Object.keys(inputBody)
@@ -81,7 +82,6 @@ class AuthService {
         Name: key === "role" ? "custom:role" : key,
         Value: inputBody[key as keyof typeof inputBody],
       }));
-
     const username = (body.email || body.phone_number) as string;
 
     const params: SignUpCommandInput = {
@@ -131,25 +131,19 @@ class AuthService {
     try {
       const command = new ConfirmSignUpCommand(params);
       await client.send(command);
-      console.log(
-        "AuthService verifyUser() method: User verified successfully"
-      );
+      // console.log(
+      //   "AuthService verifyUser() method: User verified successfully"
+      // );
 
       // Retrieve the user to get the `role` attribute
       const userInfo = await this.getUserByUsername(username);
-      console.log("userInfo: ", userInfo);
-
       const role =
         userInfo.UserAttributes?.find((attr) => attr.Name === "custom:role")
           ?.Value || "user";
 
-      const userSub = userInfo.UserAttributes?.filter(
-        (Name) => Name.Name === "sub"
-      )[0].Value;
       // Add the user to the group based on the `role` attribute
-      console.log("userSub: ", userSub);
+      await this.addToGroup(username, role);
 
-      await this.addToGroup(userSub!, role);
       // Send user info to the `User Service`
       await axios.post(`${configs.userServiceUrl}/v1/users`, {
         sub: userInfo.Username,
@@ -201,13 +195,13 @@ class AuthService {
       const userInfo = await axios.get(
         `${configs.userServiceUrl}/v1/users/${congitoUsername.sub}`
       );
-      console.log("userInfo: ", userInfo);
+      // console.log("userInfo: ", userInfo);
 
       return {
         accessToken: result.AuthenticationResult?.AccessToken!,
         idToken: result.AuthenticationResult?.IdToken!,
         refreshToken: result.AuthenticationResult?.RefreshToken!,
-        username: congitoUsername.sub,
+        sub: congitoUsername.sub,
         userId: userInfo.data.data._id,
       };
     } catch (error) {
@@ -234,8 +228,21 @@ class AuthService {
     }
   }
 
-  loginWithGoogle(state: string = "user"): string {
-    // const state = crypto.randomBytes(16).toString("hex");
+  async signout(access_token: string): Promise<string | undefined> {
+    const params: GlobalSignOutCommandInput = {
+      AccessToken: access_token,
+    };
+    try {
+      const command = new GlobalSignOutCommand(params);
+      await client.send(command);
+      // console.log("result::: ", result);
+      return "success cleared cookies from cignito";
+    } catch (error) {}
+  }
+
+  loginWithGoogle(state: string): string {
+    // const state = crypto.randomBytes(16).toString('hex')
+
     const params = new URLSearchParams({
       response_type: "code",
       client_id: configs.awsCognitoClientId,
@@ -245,10 +252,7 @@ class AuthService {
       state: state,
       prompt: "select_account",
     });
-    // console.log("params: ", params);
-
     const cognitoOAuthURL = `${configs.awsCognitoDomain}/oauth2/authorize?${params.toString()}`;
-    console.log(cognitoOAuthURL);
 
     return cognitoOAuthURL;
   }
@@ -290,7 +294,7 @@ class AuthService {
       // Step 1: Get the token from Cognito
       const res = await axios.post(
         `${configs.awsCognitoDomain}/oauth2/token`,
-        params.toString(),
+        params,
         {
           headers: {
             Authorization: authorizationHeader,
@@ -298,29 +302,26 @@ class AuthService {
           },
         }
       );
-      console.log(res.data);
 
       const token = {
         accessToken: res.data.access_token,
         idToken: res.data.id_token,
         refreshToken: res.data.refresh_token,
       };
+      // console.log("token::", token);
 
       // Step 2: Get the user info from token
       const userInfo = this.getUserInfoFromToken(token.idToken);
-      console.log("userInfo: ", userInfo);
-
       // @ts-ignore
       const email = userInfo.email;
-      console.log("email: ", email);
-
       const existingUser = await this.getUserByEmail(email);
-      console.log("existingUser: ", existingUser);
+      // console.log("existingUser: ", existingUser);
 
       let userId: string;
 
       // Step 3: Case User is already signin with Email | Phone Number / Password, but they try to signin with Google | Facebook
       if (existingUser && existingUser.UserStatus !== "EXTERNAL_PROVIDER") {
+        console.log("link with existing accoint");
         const isLinked = existingUser.Attributes?.some(
           (attr) => attr.Name === "identities" && attr.Value?.includes("Google")
         );
@@ -359,18 +360,21 @@ class AuthService {
       // Step 4: Case User is never signin with Google | Facebook
       else {
         try {
+          console.log("doesnt need to link");
+          console.log("userInfo", userInfo);
+
           const user = await axios.post(`${configs.userServiceUrl}/v1/users`, {
             googleSub: userInfo.sub,
             email,
             // @ts-ignore
-            username: userInfo["cognito:username"] || email,
+            username: userInfo.name,
             // @ts-ignore
             profile: userInfo.profile,
             role: state,
+            sub: userInfo.sub,
           });
-
+          // console.log("new user from google:", user);
           // Step 4.1: Update user info in Cognito
-          //TODO: solve role
           await this.updateUserCongitoAttributes(userInfo.sub!, {
             "custom:role": state!,
           });
@@ -392,8 +396,14 @@ class AuthService {
       }
 
       // Step 5: Check if the user is already in the group before adding
-      const groupExists = await this.checkUserInGroup(userInfo.sub!, state!);
+      const groupExists = await this.checkUserInGroup(
+        userInfo.sub!,
+        state || "user"
+      );
+      console.log("before group exist", groupExists);
       if (!groupExists) {
+        console.log("group exist");
+
         await this.addToGroup(userInfo.sub!, state!);
         console.log(`User ${userInfo.sub} added to group ${state}`);
       }
@@ -402,7 +412,7 @@ class AuthService {
         accessToken: token.accessToken,
         idToken: token.idToken,
         refreshToken: token.refreshToken,
-        username: userInfo.sub,
+        sub: userInfo.sub,
         userId,
       };
     } catch (error) {
@@ -412,11 +422,11 @@ class AuthService {
 
   getUserInfoFromToken(token: string) {
     const decodedToken = jwtDecode(token);
-    console.log("decodedToken: ", decodedToken);
+    // console.log("decodedToken: ", decodedToken);
     return decodedToken;
   }
 
-  async addToGroup(username: string, groupName: string = "user") {
+  async addToGroup(username: string, groupName: string) {
     const params = {
       GroupName: groupName,
       Username: username,
@@ -453,17 +463,15 @@ class AuthService {
 
   async getUserByEmail(email: string): Promise<UserType | undefined> {
     const params: ListUsersCommandInput = {
-      // AttributesToGet: ["email", "sub"],
       Filter: `email = "${email}"`,
       UserPoolId: configs.awsCognitoUserPoolId,
       Limit: 3,
     };
 
     try {
-      const command = new ListUsersCommand(params);
-      const response = await client.send(command);
-      console.log("res: ", response);
-
+      const listUsersCommand = new ListUsersCommand(params);
+      const response = await client.send(listUsersCommand);
+      if (response.Users) console.log("exisited");
       return response.Users && response.Users[0];
     } catch (error) {
       console.error("AuthService getUserByEmail() method error:", error);
@@ -475,7 +483,7 @@ class AuthService {
     username: string,
     attributes: { [key: string]: string }
   ): Promise<void> {
-    const params: AdminUpdateUserAttributesCommandInput = {
+    const params = {
       Username: username,
       UserPoolId: configs.awsCognitoUserPoolId,
       UserAttributes: Object.entries(attributes).map(([key, value]) => ({
@@ -483,8 +491,6 @@ class AuthService {
         Value: value,
       })),
     };
-
-    console.log("param: ", params);
 
     try {
       const command = new AdminUpdateUserAttributesCommand(params);
@@ -565,7 +571,7 @@ class AuthService {
       throw new AuthenticationError();
     }
 
-    const params = {
+    const params: InitiateAuthCommandInput = {
       AuthFlow: AuthFlowType.REFRESH_TOKEN_AUTH,
       ClientId: configs.awsCognitoClientId,
       AuthParameters: {
@@ -576,8 +582,7 @@ class AuthService {
 
     try {
       const command = new InitiateAuthCommand(params);
-      const result = await client.send(command);
-
+      const result: InitiateAuthCommandOutput = await client.send(command);
       return {
         accessToken: result.AuthenticationResult?.AccessToken!,
         idToken: result.AuthenticationResult?.IdToken!,
@@ -590,6 +595,181 @@ class AuthService {
 
       console.error("AuthService refreshToken() method error:", error);
       throw new Error(`Error refreshing token: ${error}`);
+    }
+  }
+
+  // corporate
+  async corporateSignup(body: SignupRequest): Promise<string> {
+    const existingUser = await this.getUserByEmail(
+      (body.email || body.phone_number) as string
+    );
+    if (existingUser) {
+      throw new ResourceConflictError(
+        AUTH_MESSAGES.AUTHENTICATION.ACCOUNT_ALREADY_EXISTS
+      );
+    }
+
+    // Define inputBody with only name, email, and custom role attribute
+    const inputBody = {
+      name: `${body.sur_name} ${body.last_name}`,
+      ...Object.keys(body)
+        .filter((key) => key !== "sur_name" && key !== "last_name")
+        .reduce<Record<string, any>>((obj, key) => {
+          obj[key] = body[key as keyof SignupRequest];
+          return obj;
+        }, {}),
+    };
+    // Allowed attributes
+    const allowedAttributes = ["email", "phone_number", "name", "custom:role"];
+
+    // Filter and map attributes
+    const attributes = Object.keys(inputBody)
+      .filter((key) => allowedAttributes.includes(key) || key === "role")
+      .map((key) => ({
+        Name: key === "role" ? "company" : key,
+        Value: inputBody[key as keyof typeof inputBody],
+      }));
+
+    const username = (body.email || body.phone_number) as string;
+
+    const params: SignUpCommandInput = {
+      ClientId: configs.awsCognitoClientId,
+      Username: username,
+      Password: body.password,
+      SecretHash: this.generateSecretHash(username),
+      UserAttributes: attributes,
+    };
+
+    try {
+      const command = new SignUpCommand(params);
+      const result = await client.send(command);
+
+      return `Corporate created successfully. Please check your ${result.CodeDeliveryDetails?.DeliveryMedium?.toLowerCase()} for a verification code.`;
+    } catch (error) {
+      console.error(`AuthService corporateSignup() method error: `, error);
+
+      if (error instanceof ApplicationError) {
+        throw error;
+      }
+
+      // Duplicate Account
+      if (typeof error === "object" && error !== null && "name" in error) {
+        if ((error as { name: string }).name === "UsernameExistsException") {
+          throw new ResourceConflictError(
+            AUTH_MESSAGES.AUTHENTICATION.ACCOUNT_ALREADY_EXISTS
+          );
+        }
+      }
+
+      throw new Error(`Error signing up user: ${error}`);
+    }
+  }
+
+  async corporateVerifyUser(body: VerifyUserRequest): Promise<void> {
+    const username = (body.email ||
+      body.phone_number?.replace(/^\+/, "")) as string;
+    // console.log("start verify service 1");
+
+    const params = {
+      ClientId: configs.awsCognitoClientId,
+      Username: username,
+      ConfirmationCode: body.code,
+      SecretHash: this.generateSecretHash(username),
+    };
+
+    try {
+      const command = new ConfirmSignUpCommand(params);
+      await client.send(command);
+
+      const userInfo = await this.getUserByUsername(username);
+
+      const role =
+        userInfo.UserAttributes?.find((attr) => attr.Name === "company")
+          ?.Value || "company";
+
+      const userSub = userInfo.UserAttributes?.filter(
+        (Name) => Name.Name === "sub"
+      )[0].Value;
+
+      await this.addToGroup(userSub!, role);
+
+      await axios.post(`${configs.userServiceUrl}/v1/corporator/profile`, {
+        sub: userInfo.Username,
+        email: body.email,
+        name: userInfo.UserAttributes?.find((attr) => attr.Name === "name")
+          ?.Value,
+      });
+    } catch (error) {
+      console.log("AuthService corporateVerifyUser() method error:", error);
+
+      // Mismatch Code
+      if (typeof error === "object" && error !== null && "name" in error) {
+        if ((error as { name: string }).name === "CodeMismatchException") {
+          throw new InvalidInputError({
+            message: AUTH_MESSAGES.MFA.VERIFICATION_FAILED,
+          });
+        }
+      }
+
+      throw new Error(`Error verifying user: ${error}`);
+    }
+  }
+
+  async corporateLogin(body: LoginRequest): Promise<CognitoToken> {
+    const username = (body.email || body.phone_number) as string;
+
+    const params: InitiateAuthCommandInput = {
+      AuthFlow: "USER_PASSWORD_AUTH",
+      ClientId: configs.awsCognitoClientId,
+      AuthParameters: {
+        USERNAME: username,
+        PASSWORD: body.password!,
+        SECRET_HASH: this.generateSecretHash(username),
+      },
+    };
+
+    try {
+      const command = new InitiateAuthCommand(params);
+      const result = await client.send(command);
+
+      // Get the user info
+      const congitoUsername = await this.getUserInfoFromToken(
+        result.AuthenticationResult?.IdToken!
+      );
+
+      // Get the user info from the user service
+      const userInfo = await axios.get(
+        `${configs.userServiceUrl}/v1/corporator/profile/${congitoUsername.sub}`
+      );
+      console.log("userInfo: ", userInfo.data.data._id);
+      return {
+        accessToken: result.AuthenticationResult?.AccessToken!,
+        idToken: result.AuthenticationResult?.IdToken!,
+        refreshToken: result.AuthenticationResult?.RefreshToken!,
+        sub: congitoUsername.sub,
+        userId: userInfo.data.data._id,
+      };
+    } catch (error) {
+      // Mismatch Password | Email or Phone Number
+      if (typeof error === "object" && error !== null && "name" in error) {
+        if ((error as { name: string }).name === "NotAuthorizedException") {
+          throw new InvalidInputError({
+            message: AUTH_MESSAGES.AUTHENTICATION.ACCOUNT_NOT_FOUND,
+          });
+        }
+      }
+
+      // Cognito Service Error
+      if (typeof error === "object" && error !== null && "name" in error) {
+        if ((error as { name: string }).name === "InternalErrorException") {
+          throw new InternalServerError({
+            message: AUTH_MESSAGES.ERRORS.TECHNICAL_ISSUE,
+          });
+        }
+      }
+
+      console.error("AuthService corporateLogin() method error:", error);
+      throw new Error(`Error verifying user: ${error}`);
     }
   }
 }

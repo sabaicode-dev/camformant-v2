@@ -12,27 +12,25 @@ import { CardReq } from "@/components/card-detail/card-requirement";
 import { CardDescription } from "@/components/card-detail/card-description";
 import { CardLocation } from "@/components/card-detail/card-location";
 import { JobPublisher } from "@/components/card-detail/card-publisher";
-import axios from "axios";
 import { BsPersonVcard } from "react-icons/bs";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import axiosInstance from "@/utils/axios";
 import { MdMessage } from "react-icons/md";
 import { useAuth } from "@/context/auth";
+import SkeletonLoader from "@/components/cv-rating-card/router-page/basic/skeleton";
 
 const Page: React.FC = () => {
   const { user } = useAuth();
   const params = useParams();
   const { id } = params;
   const router = useRouter();
-
   const [jobData, setJobData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [apply, setApply] = useState<boolean>(false);
   const [selected, setSelected] = useState<boolean>(false);
-  const [cv, setCV] = useState<boolean>(false);
+  const [cv, setCV] = useState<string>("");
   const [next, setNext] = useState<boolean>(false);
-  const [getIndexCv, setIndexCv] = useState<number>(0);
 
   // Fetch Job Detail
   useEffect(() => {
@@ -41,6 +39,7 @@ const Page: React.FC = () => {
         const response = await axiosInstance.get(`${API_ENDPOINTS.JOBS}/${id}`);
         if (response.status === 200 && response.data.data) {
           const job = response.data.data;
+
           job.createdAt = new Date(job.createdAt);
           setJobData([job]);
           setLoading(false);
@@ -58,22 +57,14 @@ const Page: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    const storedCvIndex = localStorage.getItem("selectedCvIndex");
-    if (storedCvIndex) {
-      setIndexCv(Number(storedCvIndex));
-    }
-  }, []);
-
-  useEffect(() => {
     async function getUserProfileAndCV() {
       try {
         setNext(true);
-
-        const cv = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/cv/`
+        const response = await axiosInstance.get(
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=cv`
         );
 
-        setCV(true);
+        setCV(response.data.data.cv);
       } catch (error) {
       } finally {
         setNext(false);
@@ -83,36 +74,35 @@ const Page: React.FC = () => {
   }, [user]);
 
   function popUpApply() {
-    setApply(true);
     if (!user) {
       router.push("/register");
-    } else if (!cv) {
-      router.push("/resume");
     }
+    setApply(true);
   }
 
   async function handleConfirm() {
     if (selected) {
       try {
-        // Post data when selected is true
         const data = {
+          userId: user?._id,
           jobId: id,
+          userInfo: {
+            name: user?.username,
+            profile: user?.profile,
+            status: "Apply",
+            cv: cv,
+          },
         };
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/apply/?apply=${getIndexCv}`,
+        const response = await axiosInstance.post(
+          API_ENDPOINTS.JOB_APPLY,
           data
         );
         if (response.status === 200) {
           console.log("Application submitted successfully");
-          setTimeout(() => {
-            router.push("/applied");
-          }, 600);
-        } else {
-          console.log("CV not Found");
-          setIndexCv(0);
-          localStorage.setItem("selectedCvIndex", "0");
+          console.log("response", response);
         }
       } catch (error) {
+        console.log("error in apply ", error);
         alert("Application Error ");
       } finally {
         setApply(false);
@@ -127,19 +117,19 @@ const Page: React.FC = () => {
 
   return (
     <div className="flex flex-col w-full h-full pb-28 ">
-      <Link href={"../"}>
+      <div onClick={() => router.back()}>
         <BackButton_md styles="absolute bg-white p-3 px-4 rounded-xl top-5 left-4 " />
-      </Link>
+      </div>
       <Background style="bg-mybg-image h-[250px] ">
         <div className=" w-full px-4 mt-[-97px] z-10 ">
           {jobData.map((x) => (
             <CardApply
               key={x?._id}
-              name={x?.companyId?.name}
-              location={x?.companyId?.location}
+              name={x?.company?.name}
+              location={x?.company?.address}
               deadline={x?.deadline}
               job_opening={x?.job_opening}
-              profile={x?.companyId?.profile}
+              profile={x?.company?.profile}
               createdAt={x?.createdAt}
             />
           ))}
@@ -176,11 +166,11 @@ const Page: React.FC = () => {
         {jobData.map((x) => (
           <JobPublisher
             key={x._id}
-            profile={x?.companyId?.profile}
-            name={x?.companyId?.name}
-            bio={x?.companyId?.bio}
-            phone_number={x?.companyId?.phone_number}
-            email={x?.companyId?.email}
+            profile={x?.company?.profile}
+            name={x?.company?.name}
+            bio={x?.company?.description}
+            phone_number={x?.company?.contact?.phone_number}
+            email={x?.company?.email}
           />
         ))}
       </div>
@@ -193,10 +183,11 @@ const Page: React.FC = () => {
           Apply Now
         </button>
         <span className="p-3 text-xl bg-white text-primaryCam drop-shadow-2xl rounded-2xl">
-          <Link href={`${id}/message`}>
-            {" "}
+          <Link
+            href={`/chat/${jobData[0]?.company ? jobData[0].company._id : ""}`}
+          >
             <MdMessage />
-          </Link>{" "}
+          </Link>
         </span>
       </div>
 
@@ -209,26 +200,29 @@ const Page: React.FC = () => {
         <Sheet.Container>
           <Sheet.Header />
           <Sheet.Content>
-            <div className="flex flex-col items-center justify-center w-full gap-5 pl-5 pr-5 h-ful ">
+            <div className="flex flex-col items-center justify-center w-full gap-5 pl-5 pr-5">
               <p className="w-full pl-5 text-gray-400 ">
                 Please select for apply{" "}
               </p>
-              <div
-                onClick={handleSelectCv}
-                className={` ${user ? "flex" : " hidden"} h-20 pl-5 w-full flex rounded-3xl
+              {next && <SkeletonLoader text="loading..." />}
+              {cv && (
+                <div
+                  onClick={handleSelectCv}
+                  className={` ${user ? "flex" : " hidden"} h-20 pl-5 w-full flex rounded-3xl
                              items-center
                                drop-shadow-xl ${selected ? "bg-orange-500" : "bg-white"} `}
-              >
-                <h1 className="flex items-center gap-5">
-                  {" "}
-                  <span
-                    className={`${selected ? "text-black" : "text-primaryCam  "} text-2xl `}
-                  >
-                    <BsPersonVcard />
-                  </span>{" "}
-                  Your CV Default {getIndexCv + 1}{" "}
-                </h1>
-              </div>
+                >
+                  <h1 className="flex items-center gap-5">
+                    {" "}
+                    <span
+                      className={`${selected ? "text-black" : "text-primaryCam  "} text-2xl `}
+                    >
+                      <BsPersonVcard />
+                    </span>{" "}
+                    Your CV Default
+                  </h1>
+                </div>
+              )}
               <Link
                 href={"/cv"}
                 className="flex items-center w-full h-20 pl-5 bg-white rounded-3xl drop-shadow-xl "

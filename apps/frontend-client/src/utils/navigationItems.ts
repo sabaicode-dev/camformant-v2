@@ -1,62 +1,50 @@
 import { PersonIcon } from "@radix-ui/react-icons";
-import { BriefcaseBusiness, Calendar, ChartNetwork, Home, Inbox, List, MessageSquare, Search, Settings, Users2 } from "lucide-react";
-
-// Menu Dashboard.
+import { LayoutDashboard, Sheet, LetterText, Calendar, ChartNetwork, UserPen, List, MessageSquare, Settings, Users2, User } from "lucide-react";
 
 const dashboard = [
     {
         title: "Dashboard",
         url: "/dashboard",
-        icon: Home,
+        icon: LayoutDashboard,
     }
 ];
 
 // Menu jobs.
-const jobs = [
+const Jobs = [
     {
-        title: "Jobs",
+        title: "Job List",
         url: "/dashboard/jobs",
-        icon: BriefcaseBusiness,
+        icon: Sheet,
     },
     {
-        title: "Lists",
-        url: "/dashboard/search",
-        icon: List,
+        title: "Job View",
+        url: "/dashboard/viewJobs",
+        icon: Sheet,
     },
-];
-
-// Menu Posts
-
-const posts = [
     {
-        title: "Posts",
+        title: "View Applicant",
+        url: "/dashboard/applicant",
+        icon: Sheet,
+    },
+    {
+        title: "New Job",
         url: "/dashboard/posts",
-        icon: Inbox,
-    },
-    {
-        title: "List",
-        url: "/dashboard/posts/list",
-        icon: List,
+        icon: LetterText,
     },
 ];
 
 // Menu users.
-
 const users = [
     {
         title: "Users",
         url: "/dashboard/users",
-        icon: Inbox,
+        icon: PersonIcon,
+        color: "text-pink-500",
     },
     {
         title: "Profile",
         url: "/dashboard/users/profile",
-        icon: PersonIcon,
-    },
-    {
-        title: "List",
-        url: "/dashboard/users/list",
-        icon: List,
+        icon: UserPen,
     },
 ];
 
@@ -79,12 +67,19 @@ const chart = [
         icon: ChartNetwork,
     },
 ];
-
-// Menu Chat.
-
-const chat = [
+const profile = [
     {
-        title: "Chat",
+        title: "Profile",
+        url: "/dashboard/profile",
+        icon: User,
+    },
+];
+
+// Menu Messages.
+
+const Messages = [
+    {
+        title: "Messages",
         url: "/dashboard/chat",
         icon: MessageSquare,
     },
@@ -104,25 +99,31 @@ export const itemsMenu = [
     {
         item: dashboard,
         triggerName: "Dashboard",
-        iconTrigger: Home,
+        iconTrigger: LayoutDashboard,
         isCollapsibleOpen: false,
     },
     {
         item: users,
         triggerName: "Users",
         iconTrigger: Users2,
-        isCollapsibleOpen: true,
+        isCollapsibleOpen: false,
     },
     {
-        item: jobs,
+        item: profile,
+        triggerName: "Profile",
+        iconTrigger: User,
+        isCollapsibleOpen: false,
+    },
+    // {
+    //     item: posts,
+    //     triggerName: "Posts",
+    //     iconTrigger: LetterText,
+    //     isCollapsibleOpen: false,
+    // },
+    {
+        item: Jobs,
         triggerName: "Jobs",
-        iconTrigger: BriefcaseBusiness,
-        isCollapsibleOpen: true,
-    },
-    {
-        item: posts,
-        triggerName: "Posts",
-        iconTrigger: Inbox,
+        iconTrigger: Sheet,
         isCollapsibleOpen: true,
     },
     {
@@ -132,15 +133,15 @@ export const itemsMenu = [
         isCollapsibleOpen: false,
     },
     {
-        item: chart,
-        triggerName: "Chart",
-        iconTrigger: ChartNetwork,
+        item: Messages,
+        triggerName: "Messages",
+        iconTrigger: User,
         isCollapsibleOpen: false,
     },
     {
-        item: chat,
-        triggerName: "Chat",
-        iconTrigger: MessageSquare,
+        item: chart,
+        triggerName: "Chart",
+        iconTrigger: ChartNetwork,
         isCollapsibleOpen: false,
     },
     {

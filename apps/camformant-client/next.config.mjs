@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+import { Domain } from "domain";
 import withPWA from "next-pwa";
 
 const nextConfig = {
@@ -12,7 +13,12 @@ const nextConfig = {
   },
   images: {
     domains: ["sabaicode.com"],
+
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
       {
         protocol: "https",
         hostname: "optimise2.assets-servd.host",
@@ -23,6 +29,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "i.pinimg.com",
         pathname: "/474x/36/9f/61/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cam-formant.s3.amazonaws.com",
+        pathname: "/**",
       },
       {
         protocol: "https",
@@ -41,6 +52,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "cam-formant.s3.amazonaws.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "microservice-sample-resource.s3.amazonaws.com",
         pathname: "/**",
       },
@@ -49,6 +65,16 @@ const nextConfig = {
         hostname: "lh3.googleusercontent.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "camformant.s3.ap-southeast-2.amazonaws.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "sophornbucket.s3.us-west-2.amazonaws.com",
+        pathname: "/**",
+      }
     ],
   },
   async headers() {

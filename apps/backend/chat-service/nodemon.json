@@ -6,6 +6,6 @@
   "ignore": [
     "src/**/*.spec.ts"
   ],
-  "exec": "nodemon --legacy-watch --exec ts-node src/server.ts",
+  "exec": "nodemon --legacy-watch --exec ts-node src/server.ts || ts-node /app/src/server.ts",
   "delay": "2000"
 }

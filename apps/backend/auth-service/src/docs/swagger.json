@@ -27,7 +27,7 @@
 					"role": {
 						"type": "string",
 						"enum": [
-							"admin",
+							"company",
 							"user"
 						]
 					}
@@ -78,6 +78,34 @@
 					},
 					"error": {
 						"type": "string"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CorporateSignupRequest": {
+				"properties": {
+					"sur_name": {
+						"type": "string"
+					},
+					"last_name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"phone_number": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					},
+					"role": {
+						"type": "string",
+						"enum": [
+							"company"
+						],
+						"nullable": false
 					}
 				},
 				"type": "object",
@@ -237,6 +265,35 @@
 				}
 			}
 		},
+		"/v1/auth/signout": {
+			"post": {
+				"operationId": "Signout",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
 		"/v1/auth/google": {
 			"get": {
 				"operationId": "LoginWithGoogle",
@@ -265,7 +322,16 @@
 					}
 				},
 				"security": [],
-				"parameters": []
+				"parameters": [
+					{
+						"in": "query",
+						"name": "state",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/v1/auth/facebook": {
@@ -284,28 +350,8 @@
 			"get": {
 				"operationId": "OauthCallback",
 				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"url": {
-											"type": "string"
-										},
-										"status": {
-											"type": "number",
-											"format": "double"
-										}
-									},
-									"required": [
-										"url",
-										"status"
-									],
-									"type": "object"
-								}
-							}
-						}
+					"204": {
+						"description": "No content"
 					}
 				},
 				"security": [],
@@ -378,6 +424,148 @@
 									}
 								},
 								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/auth/checkAuth": {
+			"get": {
+				"operationId": "CheckAuth",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/v1/auth/corporate/signup": {
+			"post": {
+				"operationId": "CorporateSignup",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CorporateSignupRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/auth/corporate/verify": {
+			"post": {
+				"operationId": "CorporateVerifyUser",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/VerifyUserRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/auth/corporate/login": {
+			"post": {
+				"operationId": "CorporateLogin",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/LoginRequest"
 							}
 						}
 					}

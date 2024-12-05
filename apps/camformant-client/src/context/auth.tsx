@@ -1,5 +1,4 @@
 "use client";
-
 import axiosInstance from "@/utils/axios";
 import {
   createContext,
@@ -29,6 +28,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   loading: boolean;
   user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
   login: ({ email, phone_number, password }: LoginRequest) => Promise<void>;
   logout: () => Promise<void>;
   signup: ({
@@ -40,34 +40,58 @@ interface AuthContextType {
   }: SignupRequest) => Promise<void>;
   verify: ({ email, phone_number, code }: VerifyUserRequest) => Promise<void>;
   siginWithGoogle: () => Promise<void>;
+  onChangeUser: (jobId: string) => void;
+  resStatus: number;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState(null);
+export const AuthProvider = ({
+  children,
+  isLogin,
+}: {
+  children: ReactNode;
+  isLogin: boolean;
+}) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [resStatus, setResStatus] = useState<number>(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const router = useRouter();
+  const [lastUser, setLastUser] = useState<User | null>(user);
+  const onChangeUser = (jobId: string) => {
+    if (user) {
+      setLastUser({
+        _id: user._id,
+        email: user.email,
+        profile: user.profile,
+        role: user.role,
+        username: user.username,
+        favorites: user?.favorites.filter((favId) => favId !== jobId),
+      });
+      setUser(lastUser);
+    }
+  };
+  const checkAuthStatus = async () => {
+    try {
+      setLoading(true);
 
+      const res = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
+      setUser(res.data?.data);
+      setIsAuthenticated(true);
+    } catch (error) {
+      setIsAuthenticated(false);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        setLoading(true);
-        const res = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
-
-        setUser(res.data.data);
-        setIsAuthenticated(true);
-      } catch (error) {
-        setIsAuthenticated(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuthStatus();
-  }, []);
+    if (isLogin) {
+      console.log("is login");
+      checkAuthStatus();
+    }
+  }, [isLogin]);
+  //lastUser?.favorites
 
   const login = async ({ email, phone_number, password }: LoginRequest) => {
     setLoading(true);
@@ -80,7 +104,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Fetch the user profile data after login
       const res = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
       setUser(res.data.data);
-
+      setResStatus(res.status);
       setIsAuthenticated(true);
       router.push("/");
     } catch (error) {
@@ -105,6 +129,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         last_name,
         [email ? "email" : "phone_number"]: email || phone_number,
         password,
+        role: "user",
       });
 
       // TODO: redirect to verify page with contact and method (email or phone_number)
@@ -155,10 +180,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
     }
   };
-
   const logout = async () => {
     setLoading(true);
     try {
+      await axiosInstance.post(API_ENDPOINTS.SIGN_OUT);
       // send logout to api
       setIsAuthenticated(false);
       setUser(null);
@@ -176,11 +201,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isAuthenticated,
         loading,
         user,
+        setUser,
         login,
         logout,
         signup,
         verify,
         siginWithGoogle,
+        onChangeUser,
+        resStatus,
       }}
     >
       {children}

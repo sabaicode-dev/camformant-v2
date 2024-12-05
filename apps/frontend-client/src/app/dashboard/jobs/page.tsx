@@ -1,37 +1,34 @@
-import DynamicBreadcrumb from "@/components/DynamicBreadcrumb";
+"use client";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { useEffect, useState } from "react";
+import axiosInstance from "@/utils/axios";
 
-async function getData() {
-    try {
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}${process.env.NEXT_PUBLIC_JOB_ENDPOINT}`,
-            { method: "GET" }
+const JobsPage = () => {
+  const [jobsData, setJobsData] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axiosInstance.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/v1/jobs/corporator`
         );
+        setJobsData(res.data.data);
+      } catch (error) {
+        console.error("Fetch jobs failed:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
-        const responseData = await response.json();
+  console.log("jobsDatalikdsjhfloiuahlsioudhfas", jobsData);
 
-        if (!response.ok) {
-            throw new Error(responseData.message || "Failed to fetch data");
-        }
-
-        const jobs = responseData.data.jobs;
-
-        return jobs.map((job: { companyId: string }) => job.companyId);
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        throw new Error("Failed to fetch data");
-    }
-}
-const Jobs = async () => {
-    const data = await getData();
-    return (
-        <>
-            <DynamicBreadcrumb />
-            Jobs
-            <DataTable data={data} columns={columns} />
-        </>
-    );
+  return (
+    <>
+      <h1>hello world</h1>
+      <div className="font-roboto"> Jobs hello world</div>
+      <DataTable data={jobsData || []} columns={columns} />
+    </>
+  );
 };
 
-export default Jobs;
+export default JobsPage;

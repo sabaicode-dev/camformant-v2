@@ -1,40 +1,134 @@
-'use client'
+"use client";
 
-import React, { useEffect, useState } from 'react'
-import NoApply from './no-apply'
+import React, { SetStateAction, useEffect, useRef, useState } from "react";
+import NoApply from "./no-apply";
 
-import CardStatus from './card-status'
+import CardStatus from "./card-status";
+import { useAuth } from "@/context/auth";
+import { IoArrowBack } from "react-icons/io5";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import CallToAction from "../calltoaction/call-to-action";
+import axiosInstance from "@/utils/axios";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import {
+  ApplyParams,
+  StatusLengthParams,
+  StatusType,
+} from "@/utils/types/jobApply";
+import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
+const ApplyStatus: React.FC = () => {
+  const [statusLength, setStatusLength] = useState<StatusLengthParams>({
+    Apply: 0,
+    Review: 0,
+    Shortlist: 0,
+    Interview: 0,
+    Accept: 0,
+  });
+  const [fetching, setFetching] = useState<boolean>(false);
+  const [allStatusData, setAllStatusData] = useState<ApplyParams[]>([]);
+  const { isAuthenticated, user } = useAuth();
+  const uniqueIds = useRef<string[]>([]); //for unnqiue id when count the length
+  const router = useRouter();
 
-
-
-
-const ApplyStatus:React.FC = () => {
-    const [apply, setApply] = useState<number>(1);
-    const [shortList, setShortList] = useState<number>(0);
-    const [interview, setInterview] = useState<number>(0);
-    const [status, setStatus] = useState<boolean>(true);
+  const setLength = (status: string, id: string) => {
+    if (!uniqueIds.current.includes(id)) {
+      uniqueIds.current.push(id);
+      setStatusLength((prevStatus: StatusLengthParams) => ({
+        ...prevStatus,
+        [status]: prevStatus[status as StatusType] + 1,
+      }));
+    }
+  };
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        if (!user) return;
+        setFetching(true);
+        const res = await axiosInstance.get(
+          `${API_ENDPOINTS.JOB_APPLY}?userId=${user!._id}`
+        );
+        setAllStatusData(res.data.data);
+        res.data.data.forEach((applyData: ApplyParams) => {
+          switch (applyData.userInfo.status) {
+            case "Apply": {
+              setLength("Apply", applyData._id);
+              break;
+            }
+            case "Shortlist": {
+              setLength("Shortlist", applyData._id);
+              break;
+            }
+            case "Interview": {
+              setLength("Interview", applyData._id);
+              break;
+            }
+            case "Review": {
+              setLength("Review", applyData._id);
+              break;
+            }
+            case "Accept": {
+              setLength("Accept", applyData._id);
+              break;
+            }
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching apply data:", error);
+      } finally {
+        setFetching(false);
+      }
+    }
+    fetchData();
+  }, [user]);
+  if (!isAuthenticated) {
     return (
-        <div className=" ipse:text-sm ipx:text-base container pt-12 h-screen flex flex-col justify-start gap-5 ">
-
-            <div className=" flex gap-10 bg-white p-4 drop-shadow-md rounded-xl items-center justify-center">
-                <div className="flex flex-col gap-1 items-center justify-center ">
-                    <span>{apply}</span>
-                    <span>Job Applied</span>
-                </div>
-                <div className="flex flex-col gap-1 items-center justify-center ">
-                    <span>{interview}</span>
-                    <span>Interview</span>
-                </div>
-                <div className="flex flex-col gap-1 items-center justify-center ">
-                    <span>{shortList}</span>
-                    <span>Short List</span>
-                </div>
-
-            </div>
-            {apply === 0 ? <NoApply /> : <div ><CardStatus setTotal={setApply} total={apply}  /></div> }
-           
+      <div className="flex flex-col items-center justify-center px-8 gap-y-10">
+        <div className="flex items-center justify-start w-full mt-20 text-xl">
+          <span
+            className="p-2 text-3xl text-white rounded-lg hover:cursor-pointer bg-primaryCam"
+            onClick={() => router.back()}
+          >
+            <IoArrowBack />
+          </span>
         </div>
-    )
-}
+        <CallToAction
+          text="Please Login to your Account"
+          buttonLink="/login"
+          buttonText="Login"
+        />
+      </div>
+    );
+  }
+  return (
+    <div className="container flex flex-col justify-start h-screen gap-5 pt-12 ipse:text-sm ipx:text-base">
+      <div className="flex items-center justify-center gap-5 p-4 bg-white drop-shadow-md rounded-xl">
+        {Object.entries(statusLength).map(([key, value]) => {
+          return (
+            <div
+              key={key}
+              className="flex flex-col items-center justify-center gap-1"
+            >
+              <span>{value}</span>
+              <span className="text-sm">{key}</span>
+            </div>
+          );
+        })}
+      </div>
+      {!allStatusData.length && !fetching ? (
+        <NoApply />
+      ) : (
+        <div>
+          <CardStatus
+            applyData={allStatusData}
+            isLoading={fetching}
+            setApplyData={setAllStatusData}
+            setStatusLength={setStatusLength}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
 
-export default ApplyStatus
+export default ApplyStatus;

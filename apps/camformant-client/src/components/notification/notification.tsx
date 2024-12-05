@@ -7,7 +7,7 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { useEffect, useState } from "react";
 import { MdCircleNotifications } from "react-icons/md";
 
-export default function Notification({
+export default function NotificationComponent({
   addNotification,
 }: {
   addNotification: (
@@ -30,11 +30,14 @@ export default function Notification({
   useEffect(() => {
     if (isAuthenticated) {
       if ("serviceWorker" in navigator && "PushManager" in window) {
-        setIsSupported(true);
-        registerServiceWorker();
+        const serviceWorker = async () => {
+          setIsSupported(true);
+          await registerServiceWorker();
+        };
+        serviceWorker();
       }
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, addNotification]);
 
   // Show Popup when browser is not support push notification
   useEffect(() => {
@@ -50,23 +53,32 @@ export default function Notification({
 
     if (!registration) {
       // Register service worker if not registered
-      registration = await navigator.serviceWorker.register("/sw.js", {
-        scope: "/",
-        updateViaCache: "none",
-      });
+      registration = await navigator.serviceWorker.register(
+        "/service-worker.js",
+        {
+          scope: "/",
+          updateViaCache: "none",
+        }
+      );
     }
   }
-
+  useEffect(() => {
+    async function getSubscription() {
+      const res = await axiosInstance.get(API_ENDPOINTS.NOTIFICATION);
+      setSubscription(res.data[0]);
+    }
+    if (isAuthenticated) getSubscription();
+  }, [isAuthenticated]);
   async function subscribeToPush() {
     setLoading(true); // Set loading state
     const registration = await navigator.serviceWorker.ready;
-
     const sub = await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(
         process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
       ),
     });
+
     setSubscription(sub);
 
     const subscriptionObject = sub.toJSON();
@@ -74,14 +86,16 @@ export default function Notification({
     const { p256dh, auth } = subscriptionObject.keys;
 
     try {
-      // Send the subscription to your backend
-      await axiosInstance.post(API_ENDPOINTS.SUBSCRIBE, {
+      const body = {
         endpoint: subscriptionObject.endpoint,
         keys: {
           p256dh,
           auth,
         },
-      });
+      };
+
+      // Send the subscription to your backend
+      await axiosInstance.post(API_ENDPOINTS.SUBSCRIBE, body);
     } catch (error) {
       console.log("Subscribe Notification Error:::", error);
     } finally {
@@ -93,6 +107,9 @@ export default function Notification({
     setLoading(true); // Set loading state
 
     try {
+      await axiosInstance.delete(API_ENDPOINTS.UNSUBSCRIBE, {
+        data: { endpoint: subscription?.endpoint },
+      });
       await subscription?.unsubscribe();
     } catch (error) {
       console.log("Unsubscribe Notification Error:::", error);
@@ -103,14 +120,28 @@ export default function Notification({
   }
 
   const handleToggle = async () => {
-    if (subscription) {
-      await unsubscribeFromPush();
+    //function checkPermission notification
+    async function checkPermission() {
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        addNotification("Notification Access Dined", "error");
+        return;
+      } else if (permission === "granted") {
+        // showNotification();
+        addNotification("Notification Enabled", "success");
+        return "granted";
+      }
+    }
+    if (!isAuthenticated) {
+      addNotification("Please login to enable notification!", "error");
     } else {
-      if (!isAuthenticated) {
-        console.log("hey");
-        addNotification("Please login to enable notification!", "error");
+      if (!subscription) {
+        const permission = await checkPermission();
+        if (permission === "granted") {
+          await subscribeToPush();
+        }
       } else {
-        await subscribeToPush();
+        await unsubscribeFromPush();
       }
     }
   };
@@ -127,9 +158,19 @@ export default function Notification({
       </div>
     );
   }
+  console.log("support", isSupported);
 
+  const isDisable = loading && !isAuthenticated ? true : false;
+  console.log(
+    "loading,",
+    loading,
+    "isAuth,",
+    isAuthenticated,
+    "disable,",
+    isDisable
+  );
   return (
-    <div className="flex items-center justify-between w-full bg-gray-100 rounded-lg shadow-sm">
+    <div className={` flex items-center justify-between w-full  rounded-lg`}>
       {/* Left Section: Icon and Text */}
       <div className="flex items-center w-full gap-5 text-lg">
         <MdCircleNotifications size={22} />
@@ -141,9 +182,9 @@ export default function Notification({
         <input
           type="checkbox"
           className="sr-only peer"
-          // checked={!!subscription}
+          checked={isDisable ? false : !!subscription} //todo: related
           onChange={handleToggle}
-          // disabled={loading} // Disable during loading state
+          disabled={isDisable} // Disable during loading state
         />
         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-orange-600"></div>
       </label>

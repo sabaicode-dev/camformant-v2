@@ -1,51 +1,51 @@
 "use client";
-import React, { useRef, useState, useEffect, useMemo } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useMemo,
+  SetStateAction,
+} from "react";
 import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
 import axios from "axios";
 import { FaFilePdf } from "react-icons/fa";
+import axiosInstance from "@/utils/axios";
+import { uploadToS3 } from "@/utils/functions/upload-to-s3";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 
 interface typeUploads {
   next: boolean;
   setNext: (next: boolean) => void;
+  setLoading: React.Dispatch<SetStateAction<boolean>>;
 }
 
-const AttachedCvs: React.FC<typeUploads> = ({ next, setNext }) => {
-  const [file, setFile] = useState<File | null>(null);
+const AttachedCvs: React.FC<typeUploads> = ({ next, setNext, setLoading }) => {
+  const [file, setFile] = useState<string | null>(null);
   const UploadsRef = useRef<HTMLInputElement | null>(null);
-  const config = useMemo(
-    () => ({
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      withCredentials: true,
-    }),
-    []
-  );
 
   function handleUploads() {
+    console.log("clicked");
     UploadsRef.current?.click();
   }
-  function handleSelectFile(event: React.ChangeEvent<HTMLInputElement>) {
+
+  async function handleSelectFile(event: React.ChangeEvent<HTMLInputElement>) {
     const cv = event.target.files?.[0];
-    if (cv) {
-      setFile(cv);
+    setLoading(true);
+    const file = await uploadToS3(cv!);
+    setLoading(false);
+    if (file) {
+      setFile(file);
     }
   }
-
   useEffect(() => {
     async function PostCV() {
       if (!file) return;
       try {
         setNext(true);
-        const formData = new FormData();
-        formData.append("file_path", file);
-
-        const res = await axios.put(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/cv/`, // Update this to your endpoint for conversion
-          formData,
-          config
+        const res = await axiosInstance.post(
+          API_ENDPOINTS.USER_SERVICE_CV_FILE, // Update this to your endpoint for conversion
+          { url: file }
         );
-
         if (res.status === 200) {
           console.log("Successfully");
         } else {
@@ -59,7 +59,7 @@ const AttachedCvs: React.FC<typeUploads> = ({ next, setNext }) => {
     }
 
     PostCV();
-  }, [file, config, setNext]);
+  }, [file, setNext]);
 
   return (
     <div>

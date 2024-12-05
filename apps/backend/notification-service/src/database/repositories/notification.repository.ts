@@ -26,10 +26,11 @@ class NotificationRepository {
     }
   }
 
-  async getSubscriptionsByUserId(userId: string) {
+  async getSubscriptionsByUserId(userId: string): Promise<INotification[]> {
     try {
       const notification = await NotificationModel.find({ userId });
-      return notification;
+
+      return notification as unknown as INotification[];
     } catch (error) {
       console.error(
         `NotificationRepository - getSubscriptionByUserId() method error: `,

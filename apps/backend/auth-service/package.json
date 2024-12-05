@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.620.0",
-    "@sabaicode-dev/camformant-libs": "0.0.1",
     "axios": "^1.7.2",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
@@ -28,7 +27,8 @@
     "jwt-decode": "^4.0.0",
     "mongoose": "^8.4.3",
     "swagger-ui-express": "^5.0.1",
-    "tsoa": "^6.3.1"
+    "tsoa": "^6.3.1",
+    "@sabaicode-dev/camformant-libs": "^0.0.1"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.7",

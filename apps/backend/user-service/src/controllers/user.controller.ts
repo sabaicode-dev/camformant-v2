@@ -9,8 +9,10 @@ import {
   Put,
   Delete,
   Queries,
+  Query,
   Middlewares,
   Request,
+  UploadedFile,
 } from "tsoa";
 import UserService from "@/src/services/user.service";
 import sendResponse from "@/src/utils/send-response";
@@ -19,15 +21,58 @@ import userJoiSchema from "@/src/schemas/user.schema";
 import {
   UsersPaginatedResponse,
   prettyObject,
-  UserCreationRequestParams,
+  // UserCreationRequestParams,
   UserProfileResponse,
   UserUpdateRequestParams,
   IUser,
+  AuthenticationError,
 } from "@sabaicode-dev/camformant-libs";
 import { UserGetAllControllerParams } from "@/src/controllers/types/user-controller.type";
 import { Request as ExpressRequest } from "express";
 import agenda from "@/src/utils/agenda";
 import { SCHEDULE_JOBS } from "@/src/jobs";
+import { uploadToS3 } from "@/src/utils/s3";
+import {
+  IUserProfile,
+  IUserProfileResposne,
+  UnionProfileType,
+} from "@/src/controllers/types/userprofile.type";
+import {
+  CustomCvResponse,
+  CvFileParams,
+  CvFilePResponse,
+  CvStyleParams,
+  UnionCustomCvResponse,
+} from "@/src/controllers/types/user-cv-controller.type";
+import { error } from "console";
+import { Types } from "mongoose";
+export interface UserCreationRequestParams2 {
+  sub?: string;
+  googleSub?: string;
+  facebookSub?: string;
+  username: string;
+  email?: string;
+  phone_number?: string;
+  profile?: string;
+  role?: string;
+  gender?: string;
+  age?: number;
+  favorites?: Types.ObjectId[];
+  createdAt?: Date;
+  updatedAt?: Date;
+  lastActive?: Date;
+  lastSeen?: Date;
+  sessions?: {
+    deviceId: string;
+    ipAddress: string;
+    lastLogin: Date;
+  }[];
+  privacySettings?: {
+    lastSeenVisibleTo: "everyone" | "contacts" | "nobody";
+    profilePhotoVisibleTo: "everyone" | "contacts" | "nobody";
+  };
+  contacts?: Types.ObjectId[];
+}
 
 @Route("v1/users")
 export class UsersController extends Controller {
@@ -52,7 +97,7 @@ export class UsersController extends Controller {
   @Post()
   @Middlewares(validateRequest(userJoiSchema))
   public async createUser(
-    @Body() requestBody: UserCreationRequestParams
+    @Body() requestBody: UserCreationRequestParams2
   ): Promise<UserProfileResponse> {
     try {
       // Create New User
@@ -82,6 +127,7 @@ export class UsersController extends Controller {
   ): Promise<UserProfileResponse> {
     try {
       const sub = request.cookies["username"];
+      // console.log("hi======", sub);
 
       const response = await UserService.getUserBySub(sub);
 
@@ -92,6 +138,131 @@ export class UsersController extends Controller {
         prettyObject(error as {})
       );
       throw error;
+    }
+  }
+  @Get("/cv")
+  public async getCvFiles(
+    @Request() request: ExpressRequest
+  ): Promise<CvFilePResponse> {
+    try {
+      console.log("inside get cv controller");
+      const userId = request.cookies["user_id"];
+      const data = await UserService.getCvFiles(userId);
+      return sendResponse<CvFileParams>({
+        message: "Fetch is successful",
+        data: data as CvFileParams,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+  //for cv generate
+  @Get("/cvstyle")
+  public async getCVStyle(): Promise<{
+    message: string;
+    data: CvStyleParams[];
+  }> {
+    try {
+      const data = await UserService.getCvStyle();
+      return sendResponse<CvStyleParams[]>({
+        message: "CV Style is fetched successfully",
+        data: data,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Get("/profile-detail/:userId")
+  public async getProfileByID(
+    @Path() userId:string,
+    @Query() category?: string
+  ): Promise<IUserProfileResposne> {
+    try {
+      const userProfile = await UserService.getUserProfileById(
+        userId,
+        category
+      );
+      return sendResponse<IUserProfile>({
+        message: "success",
+        data: userProfile,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+  @Put("/profile-detail")
+  public async updateUserProfile(
+    @Body() updateBody: IUserProfile,
+    @Request() request: ExpressRequest,
+    @Query() query?: string
+  ) {
+    try {
+      const userId = request.cookies["user_id"];
+      const userData = await UserService.updateUserProfile(
+        userId,
+        updateBody,
+        query
+      );
+
+      return sendResponse<UnionProfileType>({
+        message: "Data is updated successfully",
+        data: userData,
+      });
+    } catch (err) {
+      throw error;
+    }
+  }
+  @Get("/customCv")
+  public async getCustomCv(@Request() request: ExpressRequest) {
+    try {
+      const userId = request.cookies["user_id"];
+      if (userId) {
+        const data = await UserService.getCustomCvByUserId(userId);
+        return sendResponse<CustomCvResponse | null | undefined>({
+          message: "Fetch is successful",
+          data,
+        });
+      }
+      throw new AuthenticationError("Please login");
+    } catch (err) {
+      throw err;
+    }
+  }
+  @Put("/customCv")
+  public async updateCustomCv(
+    @Request() request: ExpressRequest,
+    @Body() bodyData: { style: string; json: any }
+  ) {
+    const userId = request.cookies["user_id"];
+    try {
+      if (userId) {
+        const data = await UserService.updateCustomCvByUserId(userId, bodyData);
+        return sendResponse<UnionCustomCvResponse>({
+          message: "Update is successful",
+          data,
+        });
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Put("/me/photo")
+  public async changePhoto(
+    @Request() request: ExpressRequest,
+    @Body() bodyData: { photo: string }
+  ): Promise<UserProfileResponse> {
+    try {
+      const photo: string = bodyData.photo;
+      const userId = request.cookies["user_id"];
+      const response = await UserService.changeProfilePic(photo, userId);
+      return sendResponse<IUser>({
+        message: "Image is updated successfully",
+        data: response,
+      });
+    } catch (err) {
+      throw err;
     }
   }
 
@@ -137,7 +308,6 @@ export class UsersController extends Controller {
       throw error;
     }
   }
-
   @Delete("/me/favorites/{jobId}")
   public async removeFavorite(
     @Request() request: ExpressRequest,
@@ -166,7 +336,6 @@ export class UsersController extends Controller {
     @Path() userId: string
   ): Promise<UserProfileResponse> {
     try {
-      console.log("userId: ", userId);
       const response = await UserService.getUserBySub(userId);
 
       return sendResponse<IUser>({ message: "success", data: response });
@@ -185,7 +354,7 @@ export class UsersController extends Controller {
     @Body() updateUserInfo: UserUpdateRequestParams
   ): Promise<UserProfileResponse> {
     try {
-      const newUpdateUserInfo = { id: userId, ...updateUserInfo };
+      const newUpdateUserInfo = { _id: userId, ...updateUserInfo };
       const response = await UserService.updateUserBySub(newUpdateUserInfo);
 
       return sendResponse<IUser>({ message: "success", data: response });
@@ -209,6 +378,72 @@ export class UsersController extends Controller {
         prettyObject(error as {})
       );
       throw error;
+    }
+  }
+  @Get("/getMulti/Profile")
+  public async getMultiProfileUser(@Queries() query: { usersId?: string }) {
+    try {
+      const res = await UserService.getMultiProfileUser(query.usersId!);
+      return res;
+    } catch (error) {
+      throw error;
+    }
+  }
+  //
+  @Post("/uploadFile")
+  public async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Request() request: ExpressRequest
+  ): Promise<string | undefined> {
+    try {
+      const userId = request.cookies["user_id"];
+      const response: string = await uploadToS3(file, `user-service/${userId}`);
+      return response;
+    } catch (error) {
+      if ((error as { code: string }).code == "LIMIT_FILE_SIZE") {
+        console.log("multer error");
+        throw new Error((error as { message: string }).message);
+      }
+      throw error;
+    }
+  }
+
+  //cv endpoint
+
+  @Post("/cv")
+  public async updateCvFiles(
+    @Request() request: ExpressRequest,
+    @Body() bodyData: { url: string }
+  ) {
+    try {
+      const userId = request.cookies["user_id"];
+      if (!bodyData.url) throw new Error("Invalid URL format");
+      const data = await UserService.insertCvFile(userId, bodyData.url);
+      return sendResponse<any>({
+        message: "Insert is successful",
+        data,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+  @Delete("/cv/:cvId")
+  public async deleteCvFile(
+    @Request() request: ExpressRequest,
+    @Path() cvId: string
+  ) {
+    try {
+      const userId = request.cookies["user_id"];
+      const data = await UserService.deleteCvFile(userId, cvId);
+      if (!data) {
+        throw new Error("CV file not found or could not be deleted.");
+      }
+      return sendResponse<any>({
+        message: "Delete is successful",
+        data,
+      });
+    } catch (err) {
+      throw err;
     }
   }
 }

@@ -1,28 +1,48 @@
-import mongoose, { Schema, Types } from "mongoose";
-
-export interface IMessage {
-  text: string;
-  senderId: string;
-  recipientId: string;
-  conversationId: string;
+import mongoose from "mongoose";
+interface IMessage {
+  senderId: mongoose.Schema.Types.ObjectId;
+  receiverId: mongoose.Schema.Types.ObjectId;
+  message: string;
   createdAt?: Date;
   updatedAt?: Date;
+  conversationId: mongoose.Schema.Types.ObjectId;
 }
 
-const MessageSchema: Schema = new Schema(
+const messageSchema = new mongoose.Schema<IMessage>(
   {
-    text: { type: String, required: true },
-    senderId: { type: String, required: true },
-    recipientId: { type: String, required: true },
+    senderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      require: true,
+      unique: false,
+    },
+    receiverId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      require: true,
+      unique: false,
+    },
+    message: {
+      type: String,
+      require: true,
+    },
     conversationId: {
-      type: Types.ObjectId,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Conversation",
     },
   },
-  { timestamps: true }
+  //createAt,updateAt
+  {
+    timestamps: true,
+    toObject: {
+      transform: function (_doc, ret) {
+        delete ret.__v;
+        ret._id = ret._id.toString();
+      },
+    },
+    versionKey: false,
+  }
 );
 
-const MessageModel = mongoose.model<IMessage>("Message", MessageSchema);
-
+const MessageModel = mongoose.model<IMessage>("Message", messageSchema);
 export default MessageModel;

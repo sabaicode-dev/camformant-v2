@@ -1,96 +1,77 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { SetStateAction, useEffect, useRef, useState } from "react";
 import { Card } from "../card/card";
-import ProcessApply from "./process-apply";
 import { BiSolidChat } from "react-icons/bi";
 import { BsFileTextFill } from "react-icons/bs";
 import { IoEyeSharp } from "react-icons/io5";
 import { MdFactCheck } from "react-icons/md";
 import { PiTextAlignLeftFill } from "react-icons/pi";
-import axios from "axios";
-import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import SkeletonCard from "@/components/skeleton/skeleton-card";
+import {
+  ApplyParams,
+  StatusLengthParams,
+  StatusMode,
+  StatusType,
+} from "@/utils/types/jobApply";
+import axiosInstance from "@/utils/axios";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import PopUpModal from "../popup-modal/popup-modal";
+import ProcessApply from "./process-apply";
+import { formatDate } from "@/utils/functions/date-to-string";
 
 // Process Template Mapping
-const processTemplate: { [key: string]: { text: string; icon: JSX.Element } } =
-  {
-    "1": { text: "Application Submitted", icon: <BsFileTextFill /> },
-    "2": { text: "Under Review", icon: <IoEyeSharp /> },
-    "3": { text: "Shortlisted", icon: <PiTextAlignLeftFill /> },
-    "4": { text: "Interview Scheduled", icon: <BiSolidChat /> },
-    "5": { text: "Accepted", icon: <MdFactCheck /> },
-  };
-
+const processTemplate: {
+  [key: string]: { text: string; status: string; icon: JSX.Element };
+} = {
+  "1": {
+    text: "Application Submitted",
+    status: "Apply",
+    icon: <BsFileTextFill />,
+  },
+  "2": { text: "Under Review", status: "Review", icon: <IoEyeSharp /> },
+  "3": {
+    text: "Shortlisted",
+    status: "Shortlist",
+    icon: <PiTextAlignLeftFill />,
+  },
+  "4": {
+    text: "Interview Scheduled",
+    status: "Interview",
+    icon: <BiSolidChat />,
+  },
+  "5": { text: "Accepted", status: "Accept", icon: <MdFactCheck /> },
+};
+interface attForUpDateParams {
+  id?: string;
+  status?: string;
+  interviewDate?: string;
+  interviewLocation?: string;
+  startDate?: string;
+}
 interface ApplyTotal {
-  total: number;
-  setTotal: (value: number) => void;
+  applyData: ApplyParams[];
+  setApplyData: React.Dispatch<SetStateAction<ApplyParams[]>>;
+  setStatusLength: React.Dispatch<SetStateAction<StatusLengthParams>>;
+  isLoading: boolean;
 }
 
-const CardStatus: React.FC<ApplyTotal> = ({ total, setTotal }) => {
-  const [status, setStatus] = useState<number | undefined | null>(0);
-  const [jobData, setJobData] = useState<any>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [love, setLove] = useState<boolean>(false);
-
-  useEffect(() => {
-    async function GetData() {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true, // Make sure cookies are handled properly
-      };
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/applied/`,
-          config
-        );
-        const responseData = res.data;
-
-        // Extract the data array from responseData
-        const data = responseData.data;
-
-        let favorites = [];
-        const favoritesResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/favorites/`,
-          config
-        );
-        favorites = favoritesResponse.data;
-
-        // Check if extracted data is an array
-        if (Array.isArray(data)) {
-          const updatedJobs = data.map((item: any) => {
-            const { job, company } = item;
-            const fav = favorites.find((favor: any) => favor.jobId === job._id);
-            return {
-              ...item,
-              favorite: fav ? fav.favorite : false,
-            };
-          });
-
-          // Update jobData with the modified favorite status
-          setJobData(updatedJobs);
-          setTotal(updatedJobs.length); // Update total count
-        } else {
-          console.error("Expected data to be an array but received:", data);
-        }
-
-        setIsLoading(false); // Stop loading once data is fetched
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setIsLoading(false); // Stop loading even if there's an error
-      }
-    }
-
-    GetData();
-  }, [setTotal]);
-
+const CardStatus: React.FC<ApplyTotal> = ({
+  applyData,
+  isLoading,
+  setApplyData,
+  setStatusLength,
+}) => {
+  const [status, setStatus] = useState<string | undefined | null>("");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isInfoModal, setIsInfoModal] = useState<boolean>(false);
+  const prevStatusArr: string[] = [];
+  let [attForUse, setAttForUse] = useState<attForUpDateParams>({});
   const refToStart = useRef<(HTMLDivElement | null)[]>([]);
 
-  const handleClick = async (id: number | undefined, index: number) => {
-    if (status === 0) {
-      setStatus(0);
+  const handleClick = async (id: string | undefined, index: number) => {
+    if (status === "") {
+      setStatus("");
       setTimeout(() => {
         setStatus(id);
         refToStart.current[index]?.scrollIntoView({
@@ -99,81 +80,164 @@ const CardStatus: React.FC<ApplyTotal> = ({ total, setTotal }) => {
         });
       }, 500);
     } else if (status === id) {
-      setStatus(0);
+      setStatus("");
     } else {
-      setStatus(0);
+      setStatus("");
       setTimeout(() => {
         setStatus(id);
         refToStart.current[index]?.scrollIntoView({
           behavior: "smooth",
           block: "center",
         });
-      }, 500);
+      }, 300);
     }
   };
 
-  function handleClick_Heart(id: any) {
-    setJobData(
-      jobData.map((item: any) => {
-        const { job, company, favorite } = item;
-        if (job._id === id) {
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await axiosInstance.delete(
+        `${API_ENDPOINTS.JOB_APPLY}/${id}`
+      );
+      if (res.status === 204) {
+        setApplyData((prev: ApplyParams[]) => {
+          return prev.filter((element: ApplyParams) => {
+            return element._id !== id;
+          });
+        });
+        setStatusLength((prev: StatusLengthParams) => {
           return {
-            ...item,
-            favorite: !favorite,
+            ...prev,
+            [attForUse!.status!]: prev[attForUse.status as StatusType] - 1,
           };
-        }
-        return item;
-      })
-    );
-  }
+        });
+      }
+    } catch (err) {
+      throw err;
+    }
+  };
 
   return (
     <div className="pb-20">
+      {isModalOpen && (
+        <PopUpModal
+          bodyText={
+            isInfoModal
+              ? attForUse.status == "Interview"
+                ? "Interview Information:"
+                : "Congraulation! You can start on"
+              : "Are you sure you want to delete it?"
+          }
+          {...(isInfoModal
+            ? {}
+            : { actionFunc: () => handleDelete(attForUse!.id!) })}
+          closeModal={() => {
+            setIsModalOpen(false);
+            isInfoModal && setIsInfoModal(false);
+          }}
+          {...(isInfoModal
+            ? attForUse.status == "Interview"
+              ? { date: attForUse.interviewDate }
+              : { date: attForUse.startDate }
+            : {})}
+          {...(isInfoModal && attForUse.status == "Interview"
+            ? { location: attForUse.interviewLocation }
+            : {})}
+          isInfoModal={isInfoModal}
+        />
+      )}
       {isLoading
-        ? Array(5)
+        ? Array(3)
             .fill(0)
             .map((_, index) => (
               <div key={index} className="mb-5 rounded-xl drop-shadow-md">
                 <SkeletonCard />
               </div>
             ))
-        : jobData?.map((item: any, index: any) => {
-            const { job, company, favorite } = item; // Include favorite status here
+        : applyData?.map((item: ApplyParams, index: number) => {
+            prevStatusArr.length = 0;
+            for (let i = 0; i < Object.values(processTemplate).length; i++) {
+              const process = Object.values(processTemplate)[i];
+
+              if (process.status !== item.userInfo.status)
+                prevStatusArr.push(process.status);
+              else break;
+            }
+
             return (
               <div
                 ref={(el: any) => (refToStart.current[index] = el)}
-                // onClick={() => handleClick(job._id, index)}
                 className="container w-full p-1"
-                key={job._id}
+                key={item.jobId}
               >
                 <Card
-                  _id={job._id}
-                  title={job.title}
-                  position={job.position}
-                  profile={company?.profile}
-                  min_salary={job.min_salary}
-                  max_salary={job.max_salary}
-                  job_opening={job.job_opening}
-                  type={job.type}
-                  schedule={job.schedule}
-                  location={job.location}
-                  deadline={new Date(job.deadline)}
-                  setHeart={() => handleClick_Heart(job._id)} // You can implement the favorite toggle logic here
-                  heart={favorite} // Pass the favorite status to the Card component
+                  _id={item.jobId}
+                  title={item.jobInfo.title}
+                  position={item.jobInfo.position}
+                  profile={item.jobInfo.profile}
+                  min_salary={item.jobInfo.min_salary}
+                  max_salary={item.jobInfo.max_salary}
+                  job_opening={item.jobInfo.job_opening}
+                  type={item.jobInfo.type}
+                  schedule={item.jobInfo.schedule}
+                  location={item.jobInfo.location}
+                  deadline={new Date(item.jobInfo.deadline || new Date())}
+                  deleteFunc={() => {
+                    setAttForUse({
+                      id: item._id,
+                      status: item.userInfo.status,
+                    });
+                    setIsModalOpen(true);
+                  }}
+                  handleDropDownClick={(event: React.MouseEvent) => {
+                    event.preventDefault();
+                    handleClick(item._id, index);
+                  }}
                 />
                 <div
-                  className={`${status !== job._id ? "hidden" : "block"} h-full w-full pb-7`}
+                  className={`${status !== item._id ? "hidden" : "block"} h-full w-full pb-7`}
                 >
-                  {job.process?.map((x: any, i: number) => (
-                    <ProcessApply
-                      key={i}
-                      status={x.status}
-                      date={x.date}
-                      month={x.month}
-                      text={x.text}
-                      icon={x.icon}
-                    />
-                  ))}
+                  {Object.entries(processTemplate).map(
+                    ([key, { text, status, icon }], i) => (
+                      <ProcessApply
+                        key={i}
+                        status={
+                          status == item.userInfo.status ||
+                          prevStatusArr.some((word) => status.includes(word))
+                            ? true
+                            : false
+                        }
+                        text={text}
+                        icon={icon}
+                        date={
+                          item.statusDate[status as StatusMode]
+                            ? item.statusDate[status as StatusMode]
+                            : undefined
+                        }
+                        setIsInfoModal={() => {
+                          if (
+                            status == item.userInfo.status &&
+                            ["Interview", "Accept"].includes(status)
+                          ) {
+                            console.log("item::::", item);
+                            setAttForUse({
+                              status: item.userInfo.status,
+                              interviewDate: formatDate(
+                                item.companyResponse?.interviewDate
+                              ),
+                              interviewLocation:
+                                item.companyResponse?.interviewLocation,
+                              startDate: formatDate(
+                                item.companyResponse?.startDate
+                              ),
+                            });
+                            console.log("date:::", attForUse.interviewLocation);
+                            setIsModalOpen(true);
+                            setIsInfoModal(true);
+                          }
+                        }}
+                      />
+                    )
+                  )}
                 </div>
               </div>
             );

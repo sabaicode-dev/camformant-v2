@@ -5,9 +5,11 @@ import { SwipeableHandlers, useSwipeable } from "react-swipeable";
 import Skeleton from "react-loading-skeleton";
 import { MdOutlineKeyboardDoubleArrowLeft } from "react-icons/md";
 import { BsPersonVcard } from "react-icons/bs";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import axiosInstance from "@/utils/axios";
 
 interface typeMiniCard {
-  name: string;
+  item:{url: string; _id: string }
   index: number;
   next: boolean;
   setNext: (next: boolean) => void;
@@ -18,7 +20,7 @@ interface typeMiniCard {
 }
 
 const MiniCardResume: React.FC<typeMiniCard> = ({
-  name = "#",
+  item,
   index,
   next,
   setNext,
@@ -33,19 +35,12 @@ const MiniCardResume: React.FC<typeMiniCard> = ({
     onSwipedRight: () => setIsSwiped(false),
     preventScrollOnSwipe: true,
     trackMouse: true,
-  });
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-  };
+  })
   const handleDelete = async () => {
     try {
       setNext(true);
-      const res = await axios.delete(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/user/cv/?index=${index}`,
-        config
+      const res = await axiosInstance.delete(
+        `${API_ENDPOINTS.USER_SERVICE_CV_FILE}/${item._id}`,
       );
       if (res.status === 200) {
         console.log("CV deleted successfully");
@@ -75,7 +70,7 @@ const MiniCardResume: React.FC<typeMiniCard> = ({
             className={` z-10 duration-300 transition-all ${isSwiped ? style : "translate-x-0"} flex w-full max-w-lg p-6 items-center rounded-lg shadow-md gap-4 bg-white border border-gray-200 hover:shadow-lg transform hover:scale-105`}
           >
             <a
-              href={name}
+              href={item.url}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center w-full h-full gap-4"

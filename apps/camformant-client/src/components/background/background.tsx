@@ -11,15 +11,16 @@ const Background: React.FC<BackgroundProps> = ({
   children,
   style,
   bgImage,
-  childStyle
+  childStyle,
 }) => {
   return (
     <div className={`h-full w-full flex flex-col justify-start items-center `}>
       <div
-        className={`${bgImage} ${style ? style : " bg-mybg-linear "} w-full h-[20%]  `}/>
+        className={`${bgImage} ${style ? style : " bg-mybg-linear "} w-full h-[20%]  `}
+      />
       <div
-        className={ ` ${childStyle ? childStyle : "bg-white"} flex w-full flex-col  mt-[-50px]
-      rounded-3xl justify-center items-center ` }
+        className={` ${childStyle ? childStyle : "bg-white"} flex w-full flex-col  mt-[-50px]
+      rounded-3xl justify-center items-center `}
       >
         {children}
       </div>

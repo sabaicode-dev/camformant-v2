@@ -1,8 +1,12 @@
-"use client";
-import React from "react";
+'use client';
+import { Stats } from '@/components/Stats';
+import Chart from './chart/chart';
 
-const DashboardPage = () => {
-    return <>DashboardPage</>;
-};
-
-export default DashboardPage;
+export default function Dashboard() {
+    return (
+    <>
+        <Stats/>
+      <Chart />
+    </>
+    );
+}

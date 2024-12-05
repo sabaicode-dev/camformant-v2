@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { ActiveTool, Editor, STROKE_COLOR } from "@/features/editor/types";
 
 import { ColorPicker } from "@/features/editor/components/color-picker";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface StrokeColorSidebarProps {
   editor: Editor | undefined;
@@ -28,13 +29,13 @@ export const StrokeColorSidebar = ({
   return (
     <aside
       className={cn(
-        "bg-white border-r z-[40] flex absolute justify-center w-full",
+        "bg-white border-r flex absolute justify-start bottom-[108px] h-auto left-0 overflow-hidden right-0",
         activeTool === "stroke-color" ? "visible" : "hidden"
       )}
     >
-      <div className="w-full overflow-x-scroll bg-white h-[55px] flex justify-center items-center">
+      <ScrollArea>
         <ColorPicker value={value} onChange={onChange} />
-      </div>
+      </ScrollArea>
     </aside>
   );
 };

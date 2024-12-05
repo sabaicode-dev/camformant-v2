@@ -1,16 +1,47 @@
 import {
+  BodyUpdateJobApply,
+  GetApplyJobResLimit,
+  GetJobApplyResponse,
+  JobApplyQueriesController,
+  JobApplyResponse,
   JobGetAllControllerParams,
   JobParams,
+  PostJobApplyBody,
 } from "@/src/controllers/types/job-controller.type";
-import { IJob } from "@/src/database/models/job.model";
+import { IJob, returnJobs } from "@/src/database/models/job.model";
 import jobRepository from "@/src/database/repositories/job.repository";
 import searchService from "@/src/services/search.service";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
+import mongoose from "mongoose";
 
 class JobService {
+  //new post
+  public async createJob(companyId: string, jobData: any) {
+    try {
+      const newJob = await jobRepository.createJob({
+        ...jobData,
+        companyId: companyId,
+      });
+      if (!newJob) {
+        throw new Error("Job creation failed.");
+      }
+      return newJob;
+    } catch (error) {
+      console.error(
+        `JobOpeningService - createJob() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
+  //
   public async createNewJob(newInfo: JobParams): Promise<IJob> {
     try {
-      const jobs = await jobRepository.createNewJob(newInfo);
+      const newJobInfo = {
+        ...newInfo,
+        companyId: new mongoose.Types.ObjectId(newInfo.companyId),
+      };
+      const jobs = await jobRepository.createNewJob(newJobInfo);
       return jobs;
     } catch (error) {
       console.error(
@@ -20,10 +51,20 @@ class JobService {
       throw error;
     }
   }
-
-  public async getAllJobs(queries: JobGetAllControllerParams, userId = null) {
+  public async getAllJobs(
+    queries: JobGetAllControllerParams,
+    userId = null
+  ): Promise<{
+    jobs: returnJobs[];
+    totalJobs: number;
+    totalPages: number;
+    currentPage: number;
+    skip: number;
+    limit: number;
+  }> {
     try {
-      const { page, limit, filter, sort, search } = queries;
+      const { page, limit, filter, sort, search, userFav } = queries;
+      const searchUserFav = userFav?.split(",") || [];
 
       const newQueries = {
         page,
@@ -31,6 +72,7 @@ class JobService {
         filter: filter && JSON.parse(filter),
         sort: sort && JSON.parse(sort),
         search,
+        userFav: searchUserFav,
       };
 
       const result = await jobRepository.getAllJobs(newQueries);
@@ -38,6 +80,19 @@ class JobService {
       if (search) {
         await searchService.saveSearchHistory(userId, search);
       }
+
+      return result;
+    } catch (error) {
+      console.error(
+        `JobService getAllJobs() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
+  public async getAllJobsWithCorporator(companyId: string) {
+    try {
+      const result = await jobRepository.getAllJobsWithCorporator(companyId);
 
       return result;
     } catch (error) {
@@ -65,12 +120,13 @@ class JobService {
 
   public async updateJobById(
     jobId: string,
-    updateJob: JobParams
+    updateJob: IJob
   ): Promise<IJob> {
     try {
       const newJob = await jobRepository.updateJobById({
         _id: jobId,
         ...updateJob,
+        companyId: new mongoose.Types.ObjectId(updateJob.companyId),
       });
 
       return newJob;
@@ -92,6 +148,63 @@ class JobService {
         prettyObject(error as {})
       );
       throw error;
+    }
+  }
+  public async getJobApply(
+    queries: JobApplyQueriesController
+  ): Promise<GetJobApplyResponse[] | GetApplyJobResLimit> {
+    try {
+      const { userId, jobId, page, limit, filter, sort } = queries;
+      console.log("userId", userId);
+      const newQueries = {
+        userId,
+        jobId,
+        page,
+        limit,
+        filter,
+        sort: sort && JSON.parse(sort),
+      };
+      const response = await jobRepository.getJobApply(newQueries);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async createJobApply(body: PostJobApplyBody):Promise<JobApplyResponse | {}> {
+    try {
+      console.log("inside create apploy");
+      const customBody = {
+        ...body,
+        statusDate: {
+          Apply: new Date(),
+        },
+      };
+      const response = await jobRepository.createJobApply(customBody);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  public async updateJobApply(applyId: string, body: BodyUpdateJobApply):Promise<JobApplyResponse | {} | null> {
+    try {
+      const response = await jobRepository.updateJobApply(applyId, body);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  public async deleteManyJobApply(jobId: string) {
+    try {
+      await jobRepository.deleteManyJobApply(jobId);
+    } catch (err) {
+      throw err;
+    }
+  }
+  public async deleteJobApply(applyId: string) {
+    try {
+      await jobRepository.deleteJobApply(applyId);
+    } catch (err) {
+      throw err;
     }
   }
 }

@@ -1,30 +1,59 @@
-import mongoose, { Schema } from "mongoose";
-
-export interface IConversation {
-  participants: string[];
-  roomId: string;
-  username: string;
-  userProfile: string;
-  companyName: string;
-  companyProfile: string;
+import mongoose, { Document } from "mongoose";
+export interface Conversation extends Document {
+  participants: {
+    participantId: mongoose.Schema.Types.ObjectId;
+    participantType: string;
+  };
+  messages: mongoose.Schema.Types.ObjectId[];
   createdAt?: Date;
   updatedAt?: Date;
+  roomId: string;
 }
 
-const ConversationSchema: Schema = new Schema({
-  participants: { type: [String], required: true },
-  roomId: { type: String, required: true, unique: true },
-  username: String,
-  userProfile: String,
-  companyName: String,
-  companyProfile: String
-},
-  { timestamps: true }
-)
-
-// Add a unique compound index for participants
-ConversationSchema.index({ participants: 1 }, { unique: true });
-
-const ConversationModel = mongoose.model<IConversation>("Conversation", ConversationSchema)
-
-export default ConversationModel
+const conversationSchema = new mongoose.Schema<Conversation>(
+  {
+    participants: [
+      {
+        participantType: {
+          type: String,
+          required: true,
+          enum: ["User", "Company"], // Allowed collections for participants
+        },
+        participantId: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          refPath: "participants.participantType", // Dynamically reference User or Company based on participantType
+        },
+        _id: false,
+      },
+    ],
+    messages: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Message",
+        default: [],
+      },
+    ],
+    roomId: {
+      type: String,
+      unique: true,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+    toObject: {
+      transform: function (_doc, ret) {
+        delete ret.__v;
+        ret._id = ret._id.toString();
+      },
+    },
+    versionKey: false,
+  }
+);
+//
+const ConversationModel = mongoose.model<Conversation>(
+  "Conversation",
+  conversationSchema
+);
+export default ConversationModel;

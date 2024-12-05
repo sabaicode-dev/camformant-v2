@@ -1,3 +1,4 @@
+import { StatusMode } from "@/src/controllers/types/job-controller.type";
 import mongoose, { model, Schema } from "mongoose";
 
 export enum EmploymentType {
@@ -18,19 +19,36 @@ export enum WorkMode {
   HYBRID = "Hybrid",
 }
 
-export interface IJob {
+export interface companiesForJobs {
   _id?: string;
-  companyId?: string;
+  profile?: string;
+  name?: string;
+  location?: {
+    address?: string;
+    city?: string;
+    country?: string;
+  };
+  description?: string;
+  contact?: {
+    phone_number?: string;
+    website?: string;
+  };
+  email?: string;
+  job_openings_count?: number;
+  job_closings_count?: number;
+}
+export interface returnJobs {
+  _id?: string;
+  companyId?: mongoose.Types.ObjectId;
   title?: string; // name of the job that company looking for. Example: Java Developer
   position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
   workMode?: WorkMode[];
   location?: string; // location could be phnom penh, kompong-cham, etc.
   requirement?: string;
-  address?: string; // address could be the link address of the company (google link)
   description?: string;
+  address?: string; // address could be the link address of the company (google link)
   min_salary?: number;
   max_salary?: number;
-  deadline?: Date;
   job_opening?: number;
   type?: EmploymentType[];
   schedule?: EmploymentSchedule[];
@@ -38,15 +56,36 @@ export interface IJob {
   benefit?: string[];
   createdAt?: Date;
   updatedAt?: Date;
+  deadline?: Date;
+  company?: companiesForJobs;
+}
+
+export interface IJob {
+  _id?: string;
+  companyId?: mongoose.Types.ObjectId;
+  profile?: string;
+  title?: string; // name of the job that company looking for. Example: Java Developer
+  position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
+  workMode?: WorkMode[];
+  location?: string; // location could be phnom penh, kompong-cham, etc.
+  requirement?: string;
+  description?: string;
+  address?: string; // address could be the link address of the company (google link)
+  min_salary?: number;
+  max_salary?: number;
+  job_opening?: number;
+  type?: EmploymentType[];
+  schedule?: EmploymentSchedule[];
+  required_experience?: string[];
+  benefit?: string[];
+  createdAt?: Date;
+  updatedAt?: Date;
+  deadline?: Date;
 }
 
 const JobSchema: Schema = new Schema(
   {
-    companyId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "Company",
-    },
+    companyId: { type: mongoose.Types.ObjectId, required: true },
     title: { type: String, required: true },
     position: { type: [String], required: true },
     workMode: { type: [String], required: true, enum: Object.values(WorkMode) },
@@ -84,6 +123,8 @@ const JobSchema: Schema = new Schema(
     required_experience: { type: [String], required: true },
     benefit: { type: [String], required: true },
     deadline: { type: Date, required: true },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
   },
   {
     timestamps: true,
@@ -93,7 +134,63 @@ const JobSchema: Schema = new Schema(
         ret._id = ret._id.toString();
       },
     },
+    versionKey: false,
   }
 );
 
 export const JobModel = model<IJob>("Job", JobSchema);
+
+const ApplyUserInfoschema = new Schema(
+  {
+    profile: { type: String, required: true },
+    name: { type: String, required: true },
+    status: { type: String, required: true, enum: Object.values(StatusMode) },
+    cv: { type: String, required: true },
+  },
+  {
+    _id: false,
+  }
+);
+const ApplyCompanyResSchema = new Schema(
+  {
+    startDate: { type: Date },
+    interviewDate: { type: Date },
+    interviewLocation: { type: String },
+  },
+  {
+    _id: false,
+  }
+);
+const StatusDateSchema = new Schema(
+  {
+    [StatusMode.APPLY]: { type: Date, required: false },
+    [StatusMode.SHORTLIST]: { type: Date, required: false },
+    [StatusMode.REVIEW]: { type: Date, required: false },
+    [StatusMode.INTERVIEW]: { type: Date, required: false },
+    [StatusMode.ACCEPT]: { type: Date, required: false },
+  },
+  { _id: false }
+);
+
+const JobApplySchema = new Schema(
+  {
+    userId: { type: mongoose.Types.ObjectId },
+    jobId: mongoose.Types.ObjectId,
+    companyResponse: ApplyCompanyResSchema,
+    userInfo: ApplyUserInfoschema,
+    statusDate: StatusDateSchema,
+  },
+  {
+    timestamps: { createdAt: "appliedAt", updatedAt: false },
+    versionKey: false,
+    toObject: {
+      transform: function (_doc, ret) {
+        delete ret.__v;
+        ret._id = ret._id.toString();
+        ret.userId = ret.userId.toString();
+        ret.jobId = ret.jobId.toString();
+      },
+    },
+  }
+);
+export const ApplyModel = model("JobApply", JobApplySchema, "JobApply");
