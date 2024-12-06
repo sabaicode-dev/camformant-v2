@@ -173,6 +173,7 @@ const ChatDashboard: React.FC = () => {
         messageContainer.removeEventListener('scroll', handleScroll);
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedConversation, page, loading, hasMore]);
 
   useEffect(() => {
@@ -181,6 +182,7 @@ const ChatDashboard: React.FC = () => {
         scrollToBottom('smooth');
       }, 100); 
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedConversation, messages]);
   
   useEffect(() => {
