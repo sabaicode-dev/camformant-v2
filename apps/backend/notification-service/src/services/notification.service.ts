@@ -10,7 +10,7 @@ import { INotification } from "@/src/database/models/notification.model";
 export interface NotificationPayload {
   title: string;
   body: string;
-  data?: {};
+  data?: { url?: string };
 }
 
 export interface NotificationErrorResponse {
@@ -22,13 +22,13 @@ export interface NotificationErrorResponse {
 class NotficationService {
   constructor() {
     webpush.setVapidDetails(
-      "mailto:sokritha.dev@gmail.com",
+      "mailto:khunkimhab7@gmail.com",
       configs.vapidPublicKey,
       configs.vapidPrivateKey
     );
   }
 
-  async subscribe(subscription: INotification) {
+  async subscribe(subscription: INotification): Promise<any> {
     try {
       const newNotification =
         await NotificationRepository.saveSubscription(subscription);
@@ -49,6 +49,8 @@ class NotficationService {
     try {
       const notifications =
         await NotificationRepository.getSubscriptionsByUserId(userId);
+      console.log("payload:::", payload);
+
       if (!notifications) {
         throw new InvalidInputError({
           message: "Notification subscription not found",
@@ -104,6 +106,16 @@ class NotficationService {
         `NotificationService - unsubscribe() method error: `,
         prettyObject(error as {})
       );
+      throw error;
+    }
+  }
+
+  async getNotification(userId: string): Promise<INotification[]> {
+    try {
+      const notification =
+        await NotificationRepository.getSubscriptionsByUserId(userId);
+      return notification;
+    } catch (error) {
       throw error;
     }
   }

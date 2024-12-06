@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+.chat-container::-webkit-scrollbar {
+  width: 8px !important; /* Width of the scrollbar */
+  height: 8px !important; /* Height for horizontal scrollbar */
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background-color: rgba(128, 128, 128, 0.116) !important; /* Orange thumb color */
+  border-radius: 10px !important; /* Rounded corners for the thumb */
+  border: 2px solid #fff !important; /* Border around the thumb */
+}
+
+.chat-container::-webkit-scrollbar-track {
+  background: #f1f1f1 !important; /* Light gray track background */
+  border-radius: 10px !important; /* Rounded track corners */
+}
+
 @layer base {
   :root {
     --background: #334155 !important;
@@ -168,3 +184,5 @@ body {
     border-radius: 10px; /* Rounded track corners */
   }
 }
+
+

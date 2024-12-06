@@ -20,5 +20,4 @@ export type Jobs = {
   deadline?: string;
   createdAt?: string;
   updatedAt?: string;
-  // [key: string]: any; // Add index signature
 };

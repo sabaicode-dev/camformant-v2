@@ -14,7 +14,7 @@ RUN npm install && npm install -g nodemon
 # Copy other files
 COPY tsconfig.json ./
 COPY nodemon.json ./
-COPY tsoa.json ./
+COPY tsoa.json ecosystem.config.js ./
 
 # Copy source code folder
 COPY src ./src

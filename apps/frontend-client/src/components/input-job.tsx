@@ -8,7 +8,9 @@ import axiosInstance from "@/utils/axios";
 import { Jobs } from "@/utils/types/form-type";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { jobFormSchema } from "@/schema/auth/formSchema";
-import { format } from "date-fns/format";
+import { z } from "zod";
+
+type FormInputValue = z.infer<typeof jobFormSchema>;
 
 const InputForm: React.FC<{
   formTitle: string;
@@ -35,10 +37,7 @@ const InputForm: React.FC<{
       : "",
     createdAt: existingData?.createdAt
       ? new Date(existingData.createdAt).toISOString().split("T")[0]
-      : "", // Default to an empty string if no value
-    // updatedAt: existingData?.updatedAt
-    //   ? new Date(existingData.updatedAt).toISOString().split("T")[0]
-    //   : "",
+      : "",
   });
 
   const handleChange = (
@@ -46,6 +45,7 @@ const InputForm: React.FC<{
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
+    setErrorWithZod()
     const { name, value } = e.target;
     if (Array.isArray(formData[name as keyof Jobs])) {
       console.log("value split", value.split(","));
@@ -100,8 +100,7 @@ const InputForm: React.FC<{
   const [scheduleSelected, setscheduleSelected] = useState<string[]>([]);
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    // Validate the form data using zod
+  const setErrorWithZod = (event?: React.FormEvent<HTMLFormElement>) => {
     const result = jobFormSchema.safeParse({
       ...formData,
       min_salary: Number(formData.min_salary), // Ensure numeric input
@@ -109,7 +108,7 @@ const InputForm: React.FC<{
     });
 
     if (!result.success) {
-      event.preventDefault();
+      event && event.preventDefault();
       const newErrors: { [key: string]: string } = {};
       result.error.errors.forEach((error) => {
         if (error.path && error.path[0]) {
@@ -123,7 +122,11 @@ const InputForm: React.FC<{
       setErrors({});
       console.log("Form data is valid:", formData);
     }
+  };
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    // Validate the form data using zod
 
+    setErrorWithZod(event);
     try {
       let response: any;
 

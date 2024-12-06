@@ -22,9 +22,9 @@ export const useNotification = () => {
 
   const NotificationDisplay = useCallback(() => {
     if (!notification) return null;
-
+   
     return (
-      <div className="fixed top-5 left-1/2 transform -translate-x-1/2 w-full z-50">
+      <div className="fixed z-50 w-full transform -translate-x-1/2 top-5 left-1/2">
       <AnimatedList>
         <div
           key={notification.id}

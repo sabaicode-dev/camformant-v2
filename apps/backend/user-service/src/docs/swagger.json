@@ -1211,7 +1211,7 @@
 				"parameters": []
 			}
 		},
-		"/v1/users/profile-detail": {
+		"/v1/users/profile-detail/{userId}": {
 			"get": {
 				"operationId": "GetProfileByID",
 				"responses": {
@@ -1229,6 +1229,14 @@
 				"security": [],
 				"parameters": [
 					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
 						"in": "query",
 						"name": "category",
 						"required": false,
@@ -1237,7 +1245,9 @@
 						}
 					}
 				]
-			},
+			}
+		},
+		"/v1/users/profile-detail": {
 			"put": {
 				"operationId": "UpdateUserProfile",
 				"responses": {

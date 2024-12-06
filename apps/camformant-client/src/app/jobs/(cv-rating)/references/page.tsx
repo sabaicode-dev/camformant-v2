@@ -36,7 +36,7 @@ const Page = () => {
       try {
         setNext(true);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=references`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=references`
         );
         const data = response.data.data.references;
         data.length && setRefEntries(data);

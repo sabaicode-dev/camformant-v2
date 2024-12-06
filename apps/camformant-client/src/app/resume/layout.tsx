@@ -35,10 +35,10 @@ export default function RootLayout({
 }>) {
   return (
     <div>
-      <AuthProvider>
-        <NavigationBar />
-        {children}
-      </AuthProvider>
+      {/* <AuthProvider> */}
+      <NavigationBar />
+      {children}
+      {/* </AuthProvider> */}
     </div>
   );
 }

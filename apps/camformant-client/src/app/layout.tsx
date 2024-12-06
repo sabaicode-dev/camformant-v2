@@ -36,11 +36,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = cookies();
-  const userCookie = cookieStore.get("resfresh_token");
+  const userCookie = cookieStore.get("refresh_token");
   return (
     <html lang="en">
+      <head>
+        {/* Add Google Maps API script here */}
+        <script
+          async
+          defer
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
+        ></script>
+      </head>
       <body className={inter.className}>
-        <AuthProvider isLogin={!userCookie}>
+        <AuthProvider isLogin={!!userCookie}>
           {/* <NavigationBar /> */}
           <SocketContextProvider>{children}</SocketContextProvider>
         </AuthProvider>

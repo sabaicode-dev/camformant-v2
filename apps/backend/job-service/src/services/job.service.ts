@@ -1,6 +1,12 @@
 import {
+  BodyUpdateJobApply,
+  GetApplyJobResLimit,
+  GetJobApplyResponse,
+  JobApplyQueriesController,
+  JobApplyResponse,
   JobGetAllControllerParams,
   JobParams,
+  PostJobApplyBody,
 } from "@/src/controllers/types/job-controller.type";
 import { IJob, returnJobs } from "@/src/database/models/job.model";
 import jobRepository from "@/src/database/repositories/job.repository";
@@ -143,6 +149,63 @@ class JobService {
         prettyObject(error as {})
       );
       throw error;
+    }
+  }
+  public async getJobApply(
+    queries: JobApplyQueriesController
+  ): Promise<GetJobApplyResponse[] | GetApplyJobResLimit> {
+    try {
+      const { userId, jobId, page, limit, filter, sort } = queries;
+      console.log("userId", userId);
+      const newQueries = {
+        userId,
+        jobId,
+        page,
+        limit,
+        filter,
+        sort: sort && JSON.parse(sort),
+      };
+      const response = await jobRepository.getJobApply(newQueries);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async createJobApply(body: PostJobApplyBody):Promise<JobApplyResponse | {}> {
+    try {
+      console.log("inside create apploy");
+      const customBody = {
+        ...body,
+        statusDate: {
+          Apply: new Date(),
+        },
+      };
+      const response = await jobRepository.createJobApply(customBody);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  public async updateJobApply(applyId: string, body: BodyUpdateJobApply):Promise<JobApplyResponse | {} | null> {
+    try {
+      const response = await jobRepository.updateJobApply(applyId, body);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  public async deleteManyJobApply(jobId: string) {
+    try {
+      await jobRepository.deleteManyJobApply(jobId);
+    } catch (err) {
+      throw err;
+    }
+  }
+  public async deleteJobApply(applyId: string) {
+    try {
+      await jobRepository.deleteJobApply(applyId);
+    } catch (err) {
+      throw err;
     }
   }
 }

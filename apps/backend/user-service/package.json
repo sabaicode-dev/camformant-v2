@@ -11,7 +11,7 @@
     "start": "pm2 start ecosystem.config.js",
     "restart": "pm2 reload ecosystem.config.js",
     "test": "cross-env NODE_ENV=testing jest",
-    "test:watch": "cross-env NODE_ENV=testing jest --watch",
+    "test:watch": "cross-eenv NODE_ENV=testing jest --watch",
     "test:coverage": "cross-env NODE_ENV=testing jest --coverage",
     "db:insert": "ts-node src/database/scripts/insert-data",
     "db:dump": "ts-node src/database/scripts/dump-data"
@@ -30,7 +30,10 @@
     "mongoose": "^8.4.3",
     "swagger-ui-express": "^5.0.1",
     "tsoa": "^6.5.1",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "@sabaicode-dev/camformant-libs": "^0.0.1",
+    "@aws-sdk/client-s3": "^3.663.0",
+    "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.25.3",

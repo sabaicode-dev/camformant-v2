@@ -1,9 +1,16 @@
 import {
+  BodyUpdateJobApply,
+  GetApplyJobResLimit,
+  GetJobApplyResponse,
+  JobApplyQueriesRepo,
+  JobApplyResponse,
   JobGetAllRepoParams,
   JobParams,
   JobSortParams,
+  PostJobApplyBody,
 } from "@/src/controllers/types/job-controller.type";
 import {
+  ApplyModel,
   companiesForJobs,
   IJob,
   JobModel,
@@ -176,9 +183,9 @@ class JobRepository {
         await fetchCompaniesProfile(companiesId)
       )[0];
       //
-      //remove companyId property
       const {
         _id,
+        companyId,
         deadline,
         updatedAt,
         createdAt,
@@ -199,6 +206,7 @@ class JobRepository {
       } = result;
       const newJobReturn: returnJobs = {
         _id,
+        companyId,
         deadline,
         updatedAt,
         createdAt,
@@ -277,7 +285,162 @@ class JobRepository {
       throw error;
     }
   }
+  public async getJobApply(
+    queries: JobApplyQueriesRepo
+  ): Promise<GetJobApplyResponse[] | GetApplyJobResLimit> {
+    try {
+      const { limit, page = 1, sort = { appliedAt: "asc" }, filter } = queries;
+      let query: {
+        userId?: mongoose.Types.ObjectId;
+        jobId?: mongoose.Types.ObjectId;
+        [key: string]: string | null | mongoose.Types.ObjectId | undefined;
+      } = queries.userId
+        ? { userId: new mongoose.Types.ObjectId(queries.userId) }
+        : { jobId: new mongoose.Types.ObjectId(queries.jobId) };
+      if (filter !== undefined) {
+        //cause this can be undefined
+        query["userInfo.status"] = filter;
+      }
+      const buildSort = buildSortFields(sort!);
+      console.log("query", query);
+      if (limit) {
+        const skip = (page - 1) * limit;
+        const totalItems = await ApplyModel.countDocuments(query);
+        const response: any = await ApplyModel.find({
+          ...query,
+        })
+          .skip(skip)
+          .limit(limit)
+          .sort(buildSort);
+        if (!response.length) {
+          throw new NotFoundError("Job Apply was not found");
+        }
+        return {
+          applyData: response,
+          totalPages: Math.ceil(totalItems / limit),
+          currentPage: page,
+          skip: skip,
+          limit: limit,
+        };
+      }
+      const response = await ApplyModel.find(query).sort(buildSort);
+      //insert some job info response
+      const resWithJobData = await Promise.all(
+        response.map(async (applyJob) => {
+          const {
+            company,
+            title,
+            position,
+            min_salary,
+            max_salary,
+            job_opening,
+            type,
+            schedule,
+            location,
+            deadline,
+          } = await this.findJobById(applyJob.jobId!.toString());
+          return {
+            ...applyJob.toObject(),
+            jobInfo: {
+              profile: company?.profile,
+              title,
+              position,
+              min_salary,
+              max_salary,
+              job_opening,
+              type,
+              schedule,
+              location,
+              deadline,
+            },
+          } as GetJobApplyResponse;
+        })
+      );
+
+      return resWithJobData;
+    } catch (err) {
+      console.error(
+        `JobRepository - applyjob() method error:`,
+        prettyObject(err as {})
+      );
+      throw err;
+    }
+  }
+  public async createJobApply(
+    body: PostJobApplyBody
+  ): Promise<JobApplyResponse | {}> {
+    try {
+      const response: JobApplyResponse | {} = await ApplyModel.create(body);
+      console.log("response", response);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  public async updateJobApply(
+    applyId: string,
+    body: BodyUpdateJobApply
+  ): Promise<JobApplyResponse | {} | null> {
+    try {
+      const updateFields = Object.keys(body).reduce(
+        (acc: Record<string, string | Date | undefined>, key: string) => {
+          if (
+            body[key as keyof BodyUpdateJobApply] !== undefined &&
+            body[key as keyof BodyUpdateJobApply] !== null
+          ) {
+            if (key === "status") {
+              acc[`userInfo.${key}`] = body[key as keyof BodyUpdateJobApply];
+              console.log("key::::", key);
+              acc[`statusDate.${body[key as keyof BodyUpdateJobApply]}`] =
+                new Date();
+            } else
+              acc[`companyResponse.${key}`] = [
+                "interviewDate",
+                "startDate",
+              ].includes(key)
+                ? new Date(body[key as keyof BodyUpdateJobApply]!)
+                : body[key as keyof BodyUpdateJobApply];
+          }
+          return acc;
+        },
+        {}
+      );
+      const response = await ApplyModel.findByIdAndUpdate(
+        applyId,
+        { $set: { ...updateFields } },
+        { new: true, useFindAndModify: false }
+      );
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  public async deleteJobApply(applyId: string) {
+    try {
+      console.log("inside delete", applyId);
+      const response = ApplyModel.findByIdAndDelete(applyId);
+      if (!response) {
+        throw new NotFoundError(`JobApply with id ${applyId} not found`);
+      }
+      console.log("response ", response);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  public async deleteManyJobApply(jobId: string) {
+    try {
+      console.log("inside delete many", jobId);
+      const response = ApplyModel.deleteMany({jobId: new mongoose.Types.ObjectId(jobId)});
+      console.log("response ", response);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
+
+
 //===function===
 async function fetchCompaniesProfile(
   companiesId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[] | undefined
@@ -299,9 +462,17 @@ const buildSortFields = (sort: JobSortParams) => {
     (acc, key) => {
       const direction = sort[key as keyof JobSortParams];
       if (direction === "asc" || direction === "desc") {
-        acc[key as keyof JobSortParams] = direction === "asc" ? 1 : -1;
+        acc[
+          key != "name"
+            ? (key as keyof JobSortParams)
+            : ("userInfo.name" as keyof JobSortParams)
+        ] = direction === "asc" ? 1 : -1;
       } else if (direction === 1 || direction === -1) {
-        acc[key as keyof JobSortParams] = direction; // Directly use 1 or -1
+        acc[
+          key != "name"
+            ? (key as keyof JobSortParams)
+            : ("userInfo.name" as keyof JobSortParams)
+        ] = direction; // Directly use 1 or -1
       }
       return acc;
     },

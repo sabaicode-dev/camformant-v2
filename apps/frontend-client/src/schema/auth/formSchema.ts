@@ -24,6 +24,8 @@ export const jobFormSchema = z
         { message: "Deadline must be a valid future date" }
       ),
     description: z.string().min(1, "description is required"),
+    address: z.string().min(1, "description is required"),
+    location: z.string().min(1, "description is required"),
     benefit: z.array(z.string()).min(1, "benefit is required"),
     required_experience: z
       .array(z.string())

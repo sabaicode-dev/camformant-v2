@@ -12,7 +12,6 @@ import { useCallback, useEffect, useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
 import BackButton from "@/components/back/BackButton";
 import { useSocketContext } from "@/context/SocketContext";
-// import socket from "@/utils/socketClient";
 
 interface conversation {
   _id: string;
@@ -44,6 +43,7 @@ const MessagePage = () => {
   const router = useRouter();
   const socketContext = useSocketContext();
   const onlineUsers = socketContext ? socketContext.onlineUsers : [];
+  const socket = socketContext?.socket;
   //participant profile
   const [participantProfile, setParticipantProfile] = useState<{
     _id: string;
@@ -70,10 +70,8 @@ const MessagePage = () => {
           `${API_ENDPOINTS.GET_PROFILE_COMPANY}?companiesId=${receiverId}`
         );
         const data = (await response.data).companiesProfile;
-        console.log("hi1");
 
         const companiesProfile = data[0] || [];
-        console.log("hi2", companiesProfile);
         if (response.status === 200 && data && companiesProfile.length !== 0) {
           if (companiesProfile.name) {
             setParticipantProfile({
@@ -128,23 +126,6 @@ const MessagePage = () => {
     },
     [user]
   );
-  // Check Online & Offline Users
-  // useEffect(() => {
-  //   // Listen for userOnline and userOffline events
-  //   socket.on("userOnline", (userId: string) => {
-  //     setOnlineUsers((prevUsers) => [...prevUsers, userId]);
-  //   });
-
-  //   socket.on("userOffline", (userId: string) => {
-  //     setOnlineUsers((prevUsers) => prevUsers.filter((id) => id !== userId));
-  //   });
-
-  //   // Clean up
-  //   return () => {
-  //     socket.off("userOnline");
-  //     socket.off("userOffline");
-  //   };
-  // }, []);
 
   // if (error) {
   //   return (
@@ -203,35 +184,29 @@ const MessagePage = () => {
               </div>
 
               {/* Company profile image */}
-              {participantProfile.profile && (
-                <div className="relative w-20 h-20 -ml-5 rounded-full">
-                  <Image
-                    src={
-                      participantProfile.profile ||
-                      "https://sabaicode.com/sabaicode.jpg"
-                    }
-                    alt={`${participantProfile.name} profile`}
-                    width={200}
-                    height={200}
-                    className="object-cover w-full h-full rounded-full"
-                  />
-                  {Array.isArray(onlineUsers) &&
-                    onlineUsers.includes(participantProfile._id) && (
-                      <span className="absolute right-0 bg-green-500 border-2 border-white rounded-full bottom-2 size-4"></span>
-                    )}
-                </div>
-              )}
+
+              <div className="relative w-20 h-20 -ml-5 rounded-full">
+                <Image
+                  src={
+                    participantProfile.profile ||
+                    "https://sabaicode.com/sabaicode.jpg"
+                  }
+                  alt={`${participantProfile.name} profile`}
+                  width={200}
+                  height={200}
+                  className="object-cover w-full h-full rounded-full"
+                />
+                {Array.isArray(onlineUsers) &&
+                  onlineUsers.includes(participantProfile._id) && (
+                    <span className="absolute right-0 bg-green-500 border-2 border-white rounded-full bottom-2 size-4"></span>
+                  )}
+              </div>
 
               {/* Company name and online status */}
               <div className="flex flex-col -ml-5 text-center">
                 <p className="font-mono text-xl font-bold text-white xl:text-3xl">
                   {participantProfile.name || "No User"}
                 </p>
-                {/* <p className="mt-2 text-sm text-gray-700 ">
-                  {onlineUsers.includes(participantProfile._id)
-                    ? "online 🟢"
-                    : "offline 🔴"}
-                </p> */}
               </div>
             </div>
           )}

@@ -5,16 +5,18 @@ import { Sheet } from "react-modal-sheet";
 import { FaCheckCircle } from "react-icons/fa";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import axiosInstance from "@/utils/axios";
-import { useAuth } from "@/context/auth";
-import { truncateSync } from "fs";
+import SkeletonLoader from "@/components/cv-rating-card/router-page/basic/skeleton";
+// Import the debounce hook
 import { checkGrammar } from "@/app/api/check-grammar";
 import { MatchParams } from "@/utils/types/user-profile";
-import SkeletonLoader from "@/components/cv-rating-card/router-page/basic/skeleton";
+import { useDebounce } from "@/hooks/use-debounce";
+import { useAuth } from "@/context/auth";
 
 interface FeedbackParams {
   feedbackStren: MatchParams[];
   feedbackDesc: MatchParams[];
 }
+
 const SelfDescription: React.FC = () => {
   const [isPut, setIsPut] = useState<boolean>(false);
   const [strength, setStrength] = useState("");
@@ -26,40 +28,30 @@ const SelfDescription: React.FC = () => {
   const [isOpen, setOpen] = useState(false);
   const [next, setNext] = useState<boolean>(false);
   const [selectedRecommendation, setSelectedRecommendation] = useState("");
-
+  const {user}=useAuth()
   const recommendations = [
     "I am a keen, hard working, reliable and excellent time keeper.",
     "I have strong communication skills and work well in a team.",
     "I am highly motivated and always eager to learn new skills.",
   ];
 
-  const handleOptionClick = (option: string) => {
-    setSelectedRecommendation(option);
-  };
+  // Debounced values for strength and description
+  const debouncedStrength = useDebounce(strength, 3000); // 5 seconds debounce
+  const debouncedDescription = useDebounce(description, 3000);
 
-  const handleSelectButtonClick = () => {
-    setStrength(selectedRecommendation);
-    selectedRecommendation == strength || setIsPut(true);
-
-    setOpen(false);
-  };
   useEffect(() => {
+    // Fetch user profile data
     async function GetData() {
-      console.log("fetch data::::::");
       try {
         setNext(true);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=descriptions`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=descriptions`
         );
-        if (!response) {
-          return null;
-        }
-
         const data = response.data.data.descriptions;
-        setStrength(data.strength);
-        setDescription(data.description);
-        console.log("feedback", feedbacks);
+        setStrength(data.strength || "");
+        setDescription(data.description || "");
       } catch (error) {
+        console.error(error);
       } finally {
         setNext(false);
       }
@@ -67,39 +59,41 @@ const SelfDescription: React.FC = () => {
     GetData();
   }, []);
 
-  async function PostData() {
-    try {
-      setNext(true); // Trigger loading
-      const dataValue = {
-        description,
-        strength,
-      };
-
-      const response = await axiosInstance.put(
-        API_ENDPOINTS.USER_PROFILE_DETAIL,
-        { descriptions: { ...dataValue } }
-      );
-      return response;
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setNext(false); // Stop loading
+  useEffect(() => {
+    // Perform grammar check for debounced strength
+    if (debouncedStrength) {
+      checkGrammar(debouncedStrength).then((issues: MatchParams[]) => {
+        setFeedbacks((prev) => ({
+          ...prev,
+          feedbackStren: issues,
+        }));
+      });
     }
-  }
-  async function handleChange(
+  }, [debouncedStrength]);
+
+  useEffect(() => {
+    // Perform grammar check for debounced description
+    if (debouncedDescription) {
+      checkGrammar(debouncedDescription).then((issues: MatchParams[]) => {
+        setFeedbacks((prev) => ({
+          ...prev,
+          feedbackDesc: issues,
+        }));
+      });
+    }
+  }, [debouncedDescription]);
+
+  const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    setState: React.Dispatch<React.SetStateAction<string>>,
-    key: string
-  ) {
+    setState: React.Dispatch<React.SetStateAction<string>>
+  ) => {
     setState(e.target.value);
-    const issues: MatchParams[] = await checkGrammar(e.target.value);
-    setFeedbacks((prev: FeedbackParams) => {
-      return {
-        ...prev,
-        [key]: issues,
-      };
-    });
-  }
+    setIsPut(true); // Mark as changed for saving
+  };
+
+  const handleOptionClick = (option: string) => {
+    setSelectedRecommendation(option);
+  };
   function handleSuggestionClick(
     replacement: string,
     offset: number,
@@ -123,6 +117,28 @@ const SelfDescription: React.FC = () => {
       });
     });
   }
+  const handleSelectButtonClick = () => {
+    setStrength(selectedRecommendation);
+    setIsPut(true);
+    setOpen(false);
+  };
+
+  async function PostData() {
+    try {
+      setNext(true); // Trigger loading
+      const dataValue = {
+        description,
+        strength,
+      };
+      await axiosInstance.put(API_ENDPOINTS.USER_PROFILE_DETAIL, {
+        descriptions: { ...dataValue },
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setNext(false); // Stop loading
+    }
+  }
 
   return (
     <div>
@@ -132,46 +148,39 @@ const SelfDescription: React.FC = () => {
         nextRoute={"/jobs/certificate"}
         {...(isPut ? { next: PostData } : {})}
       />
-      <div className="p-5 font-sans ">
-        <div className="mb-4 ">
+      <div className="p-5 font-sans">
+        <div className="mb-4">
+          {/* Strength Input */}
           <div className="relative">
             <input
               type="text"
               className="w-full mb-4 border shadow-md p-7 rounded-3xl"
               value={strength}
-              onChange={(e) => {
-                handleChange(e, setStrength, "feedbackStren");
-                e.target.value == strength || setIsPut(true);
-              }}
+              onChange={(e) => handleInputChange(e, setStrength)}
               placeholder="Introduce your strengths in one sentence"
             />
-            {feedbacks.feedbackStren.length ? (
+            {feedbacks.feedbackStren.length > 0 && (
               <ul className="absolute top-[-10px] list-none flex bg-gray-300 rounded-lg">
                 <span className="mx-4 font-semibold">Mistake:</span>
-                {feedbacks.feedbackStren.map(
-                  (element: MatchParams, index: number) => (
-                    <li
-                      className="mr-5 cursor-pointer"
-                      key={element.offset}
-                      onClick={() =>
-                        handleSuggestionClick(
-                          element.replacements[0].value,
-                          element.offset,
-                          element.length,
-                          strength,
-                          setStrength,
-                          "feedbackStren"
-                        )
-                      }
-                    >
-                      {element.replacements[0]?.value &&
-                        element.replacements[0].value}
-                    </li>
-                  )
-                )}
+                {feedbacks.feedbackStren.map((issue, index) => (
+                  <li
+                    key={index}
+                    className="mr-5 cursor-pointer"
+                    onClick={() => {
+                      handleSuggestionClick(
+                        issue.replacements[0].value,
+                        issue.offset,
+                        issue.length,
+                        strength,
+                        setStrength,
+                        "feedbackStren"
+                      );
+                    }}
+                  >
+                    {issue.replacements[0]?.value}
+                  </li>
+                ))}
               </ul>
-            ) : (
-              <></>
             )}
           </div>
           <button
@@ -181,52 +190,46 @@ const SelfDescription: React.FC = () => {
             Show Recommendation
           </button>
 
+          {/* Description Input */}
           <div className="relative">
             <input
               type="text"
               className="w-full mt-5 mb-4 border shadow-md p-7 rounded-3xl"
               value={description}
-              onChange={(e) => {
-                handleChange(e, setDescription, "feedbackDesc");
-                e.target.value == description || setIsPut(true);
-              }}
+              onChange={(e) => handleInputChange(e, setDescription)}
               placeholder="Describe about yourself"
             />
-            {feedbacks.feedbackDesc.length ? (
+            {feedbacks.feedbackDesc.length > 0 && (
               <ul className="absolute top-[-10px] list-none flex bg-gray-300 rounded-lg">
                 <span className="mx-4 font-semibold">Mistake:</span>
-                {feedbacks.feedbackDesc.map(
-                  (element: MatchParams, index: number) => (
-                    <li
-                      className="mr-5 cursor-pointer"
-                      key={element.offset}
-                      onClick={() =>
-                        handleSuggestionClick(
-                          element.replacements[0].value,
-                          element.offset,
-                          element.length,
-                          description,
-                          setDescription,
-                          "feedbackDesc"
-                        )
-                      }
-                    >
-                      {element.replacements[0]?.value &&
-                        element.replacements[0].value}
-                    </li>
-                  )
-                )}
+                {feedbacks.feedbackDesc.map((issue, index) => (
+                  <li
+                    key={index}
+                    className="mr-5 cursor-pointer"
+                    onClick={() => {
+                      handleSuggestionClick(
+                        issue.replacements[0].value,
+                        issue.offset,
+                        issue.length,
+                        description,
+                        setDescription,
+                        "feedbackDesc"
+                      );
+                    }}
+                  >
+                    {issue.replacements[0]?.value}
+                  </li>
+                ))}
               </ul>
-            ) : (
-              <></>
             )}
           </div>
         </div>
 
+        {/* Recommendation Modal */}
         <Sheet
           isOpen={isOpen}
           onClose={() => setOpen(false)}
-          snapPoints={[500, 100, 400, 0]}
+          snapPoints={[500, 400, 100, 0]}
         >
           <Sheet.Container>
             <Sheet.Header />
@@ -235,25 +238,17 @@ const SelfDescription: React.FC = () => {
                 <div>
                   <div className="overflow-y-auto">
                     {recommendations.map((rec, index) => (
-                      <div key={index}>
-                        <p className="absolute ml-6 mt-[-9px] text-xs text-gray-400 bg-white">
-                          Introduce your strengths in one sentence
-                        </p>
-                        <div
-                          className={`flex m-auto w-96 p-5 mb-10 border rounded-3xl shadow-md cursor-pointer xl:w-full xl:left-0 xl:p-7 }`}
-                          onClick={() => handleOptionClick(rec)}
-                        >
-                          <div className="flex items-center justify-between ">
-                            <span>{rec}</span>
-                            {selectedRecommendation === rec && (
-                              <span className="absolute mt-10  right-4">
-                                <div className="text-xl text-orange-500">
-                                  <FaCheckCircle />
-                                </div>
-                              </span>
-                            )}
-                          </div>
-                        </div>
+                      <div
+                        key={index}
+                        className="flex m-auto w-96 p-5 mb-10 border rounded-3xl shadow-md cursor-pointer"
+                        onClick={() => handleOptionClick(rec)}
+                      >
+                        <span>{rec}</span>
+                        {selectedRecommendation === rec && (
+                          <span className="absolute mt-10 right-4 text-xl text-orange-500">
+                            <FaCheckCircle />
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>

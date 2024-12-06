@@ -1,35 +1,23 @@
 "use client";
-
 import { cn } from "@/lib/utils";
 import {
-  BarChart3,
   Users,
-  ShoppingCart,
   MessageSquare,
   LayoutDashboard,
-  Settings,
-  Package,
-  Mail,
-  CalendarDays,
-  TicketIcon,
-  ChevronLeft,
-  ChevronRight,
   ChevronDown,
-  CircleDot,
   LineChart,
-  PieChart,
   UserCircle,
-  Store,
-  ShoppingBag,
-  Inbox,
-  Send,
-  Archive,
-  FileText,
+  UserCheck,
+  Calendar,
+  Sheet,
+  List,
+  BriefcaseBusiness,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { Button } from "./ui/button";
+import { useEffect, useState } from "react";
+import { ScrollArea } from "./ui/scroll-area";
+import { useSidebarContext } from "../context/SidebarContext";
 
 interface Route {
   label: string;
@@ -44,72 +32,32 @@ const routes: Route[] = [
     label: "Dashboards",
     icon: LayoutDashboard,
     color: "text-sky-500",
-    subRoutes: [
-      {
-        label: "Analytics",
-        icon: CircleDot,
-        href: "/",
-      },
-      {
-        label: "eCommerce",
-        icon: CircleDot,
-        href: "/ecommerce-dashboard",
-      },
-      {
-        label: "CRM",
-        icon: CircleDot,
-        href: "/crm-dashboard",
-      },
-    ],
+    href: "/dashboard",
   },
   {
-    label: "Analytics",
-    icon: BarChart3,
-    color: "text-violet-500",
-    subRoutes: [
-      {
-        label: "Reports",
-        icon: LineChart,
-        href: "/analytics/reports",
-      },
-      {
-        label: "Statistics",
-        icon: PieChart,
-        href: "/analytics/statistics",
-      },
-    ],
-  },
-  {
-    label: "CRM",
-    icon: Users,
+    label: "Jobs",
+    icon: BriefcaseBusiness,
     color: "text-pink-500",
     subRoutes: [
       {
-        label: "Customers",
+        label: "Lists",
+        icon: List,
+        href: "dashboard/jobs",
+      },
+      {
+        label: "View Jobs",
+        icon: Sheet,
+        href: "dashboard/viewJobs",
+      },
+      {
+        label: "View Applicant",
         icon: UserCircle,
-        href: "/crm/customers",
+        href: "dashboard/applicant",
       },
       {
-        label: "Leads",
+        label: "New Job",
         icon: Users,
-        href: "/crm/leads",
-      },
-    ],
-  },
-  {
-    label: "eCommerce",
-    icon: ShoppingCart,
-    color: "text-orange-500",
-    subRoutes: [
-      {
-        label: "Products",
-        icon: Store,
-        href: "/ecommerce/products",
-      },
-      {
-        label: "Orders",
-        icon: ShoppingBag,
-        href: "/ecommerce/orders",
+        href: "/dashboard/posts",
       },
     ],
   },
@@ -117,36 +65,27 @@ const routes: Route[] = [
     label: "Messages",
     icon: MessageSquare,
     color: "text-emerald-500",
-    subRoutes: [
-      {
-        label: "Inbox",
-        icon: Inbox,
-        href: "/messages/inbox",
-      },
-      {
-        label: "Sent",
-        icon: Send,
-        href: "/messages/sent",
-      },
-      {
-        label: "Archive",
-        icon: Archive,
-        href: "/messages/archive",
-      },
-    ],
+    href: "/dashboard/chat"
   },
   {
-    label: "Documents",
-    icon: FileText,
-    href: "/documents",
+    label: "Calendar",
+    icon: Calendar,
+    color: "text-yellow-300",
+    href: "/dashboard/calendar",
   },
   {
-    label: "Settings",
-    icon: Settings,
-    href: "/settings",
+    label: "Charts",
+    icon: LineChart,
+    color: "text-indigo-500",
+    href: "/dashboard/chart",
   },
+  {
+    label : "Profile",
+    icon: UserCheck,
+    color: "text-rose-500",
+    href: "/dashboard/profile",
+  }
 ];
-
 function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boolean; level?: number }) {
   const pathname = usePathname();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -158,88 +97,85 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
     }
   };
 
-  return (
-    <div>
-      <div
-        onClick={handleClick}
-        className={cn(
-          "flex p-3 w-full justify-start font-medium cursor-pointer hover:text-primary hover:bg-primary/10 rounded-lg transition",
-          pathname === route.href ? "text-primary bg-primary/10" : "text-muted-foreground",
-          !isOpen && "justify-center",
-          level > 0 && "ml-4"
+  const normalizeHref = (href?: string) => href && !href.startsWith('/') ? `/${href}` : href || '/dashboard';
+
+  const isRouteActive = hasSubRoutes 
+    ? route.subRoutes?.some(subRoute => pathname.includes(normalizeHref(subRoute.href)))
+    : pathname === normalizeHref(route.href);
+
+  useEffect(() => {
+    if (hasSubRoutes) {
+      const isAnySubRouteActive = route.subRoutes?.some(subRoute => 
+        pathname.includes(normalizeHref(subRoute.href))
+      );
+      setIsExpanded(isAnySubRouteActive || false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, route.subRoutes]);
+
+  if (hasSubRoutes) {
+    return (
+      <div>
+        <div
+          onClick={handleClick}
+          className={cn("flex p-4  w-full justify-start font-medium text-pretty cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",isRouteActive ? "text-white bg-[#FF7300]" : "text-muted-foreground",!isOpen && "justify-center",level > 0 && "ml-4")}title={!isOpen ? route.label : undefined} >
+          <div className={cn(
+            "flex items-center flex-1",
+            !isOpen && "justify-end"
+          )}>
+            <route.icon className={cn(!isOpen ? "h-6 w-6 mr-0" : "h-6 w-6 mr-3", route.color, isRouteActive && "text-white", )} />
+            {isOpen && (
+              <>
+                <span className="flex-1">{route.label}</span>
+                {hasSubRoutes && (
+                  <ChevronDown
+                    className={cn("h-6 w-6 transition-transform",isExpanded && "transform rotate-180")}/>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+        {isOpen && hasSubRoutes && isExpanded && (
+          <div className="mt-1">
+            {route.subRoutes?.map((subRoute) => (
+              <Link
+                key={subRoute.href}
+                href={normalizeHref(subRoute.href)}
+                className={cn("flex p-3 pl-12 w-full justify-start items-center text-sm font-medium cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",pathname === normalizeHref(subRoute.href)? "text-[#FF7300]": "text-muted-foreground")}>
+                <subRoute.icon className="h-6 w-6 mr-3" />
+                {subRoute.label}
+              </Link>
+            ))}
+          </div>
         )}
-        title={!isOpen ? route.label : undefined}
-      >
-        <div className={cn(
-          "flex items-center flex-1",
-          !isOpen && "justify-center"
-        )}>
-          <route.icon className={cn("h-5 w-5", route.color, isOpen && "mr-3")} />
-          {isOpen && (
-            <>
-              <span className="flex-1">{route.label}</span>
-              {hasSubRoutes && (
-                <ChevronDown
-                  className={cn(
-                    "h-4 w-4 transition-transform",
-                    isExpanded && "transform rotate-180"
-                  )}
-                />
-              )}
-            </>
-          )}
-        </div>
       </div>
-      {isOpen && hasSubRoutes && isExpanded && (
-        <div className="mt-1">
-          {route.subRoutes?.map((subRoute) => (
-            <Link
-              key={subRoute.href}
-              href={subRoute.href || "#"}
-              className={cn(
-                "flex p-3 pl-12 w-full justify-start text-sm font-medium cursor-pointer hover:text-primary hover:bg-primary/10 rounded-lg transition",
-                pathname === subRoute.href
-                  ? "text-primary bg-primary/10"
-                  : "text-muted-foreground"
-              )}
-            >
-              <subRoute.icon className="h-4 w-4 mr-3" />
-              {subRoute.label}
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
+    );
+  }
+
+  return (
+    <Link href={normalizeHref(route.href)}
+    onClick={(e) => {
+      const target = e.target as HTMLElement;
+      const isChevronClicked = target.closest('svg');
+      if (isChevronClicked) {
+        e.preventDefault(); 
+        setIsExpanded(!isExpanded);
+      }
+    }}
+    className={cn("flex p-4 w-full justify-start font-medium text-pretty cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",pathname === normalizeHref(route.href) ? "text-white bg-[#FF7300]" : "text-muted-foreground",!isOpen && "justify-center",level > 0 && "ml-0")}>
+      <route.icon className={cn( !isOpen ? "h-6 w-6 mr-0" : "h-6 w-6 mr-3",route.color,  isRouteActive && "text-white")} />
+      {isOpen && route.label}
+    </Link>
   );
 }
 
 export default function KakSideBar() {
-  const [isOpen, setIsOpen] = useState(true);
-
+  const { isOpen } = useSidebarContext();
   return (
-    <div className="relative">
+    <ScrollArea className={cn("pt-16 h-screen transition-all duration-300" , isOpen ? "w-80" : "w-28" )}>
       <div
-        className={cn(
-          "space-y-4 py-4 flex flex-col h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-white transition-all duration-300",
-          isOpen ? "w-64" : "w-20"
-        )}
-      >
+        className={cn("space-y-4 flex flex-col h-full dark:bg-gray-900 text-gray-800 dark:text-white transition-all duration-300 border-r",isOpen ? "w-full" : "w-full items-center")}>
         <div className="px-3 py-2 flex-1">
-          <div className="flex items-center justify-between mb-14 pl-3">
-            {isOpen && <h1 className="text-2xl font-bold">Dashboard</h1>}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(!isOpen)}
-              className="h-8 w-8"
-            >
-              {isOpen ? (
-                <ChevronLeft className="h-4 w-4" />
-              ) : (
-                <ChevronRight className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
           <div className="space-y-1">
             {routes.map((route) => (
               <SidebarItem key={route.label} route={route} isOpen={isOpen} />
@@ -247,6 +183,7 @@ export default function KakSideBar() {
           </div>
         </div>
       </div>
-    </div>
+
+    </ScrollArea>
   );
 }

@@ -4,78 +4,46 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SignInData, SignUpData, VerifyCodeData } from "@/types/auth";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
-
-interface User {
-  _id?: string;
-  sub?: string;
-  name?: string;
-  email?: string;
-  role?: string;
-  profile?: string;
-  location?: {
-    address?: string;
-    city?: string;
-    country?: string;
-  };
-  contact?: {
-    phone_number?: string;
-    website?: string;
-  };
-  social_links?: {
-    linkedin?: string;
-    twitter?: string;
-    facebook?: string;
-  };
-  description?: string;
-  employee_count?: number;
-  job_openings_count?: number;
-  job_closings_count?: number;
-  completed?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
+import { User } from "@/types/user";
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   user: User | null;
+  fetchUser : () => void;
   signUp: ({ sur_name , last_name , email , phone_number , password }: SignUpData) => Promise<void>;
   verifyCode: ({ email , phone_number , code }: VerifyCodeData) => Promise<void>;
   signIn: ({ email , phone_number , password }: SignInData) => Promise<void>;
   signOut: () => Promise<void>;
 }
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children , isLogin }: { children: React.ReactNode ,isLogin: boolean }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(true); 
   const router = useRouter();
 
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        setIsLoading(true); 
-        const res = await axiosInstance.get(`${process.env.NEXT_PUBLIC_API_URL}/v1/corporator/profile/me`);
-        setUser(res.data.data);
-        setIsAuthenticated(true);
-      } catch (error) {
-        console.error("Check auth status failed:", error);
-        setIsAuthenticated(false);
-        setUser(null);
-      } finally {
-        setIsLoading(false); 
-      }
-    };
-    if (isLogin) {
-      checkAuthStatus();
+  const fetchUser = async () => {
+    try {
+      setIsLoading(false); 
+      const res = await axiosInstance.get(`${process.env.NEXT_PUBLIC_API_URL}/v1/corporator/profile/me`);
+      setUser(res.data.data);
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error("Check auth status failed:", error);
+      setIsAuthenticated(false);
+      setUser(null);
+    } finally {
+      setIsLoading(true); 
     }
-    // if (isAuthenticated) {
-    //   checkAuthStatus();
-    // } else {
-    //   setIsLoading(false); 
-    // }
+  };
+
+  useEffect(() => {
+    if (isLogin) {
+      fetchUser();
+    } else {
+      setIsLoading(false);
+    }
   }, [isLogin]);
 
   const signUp = async (data: SignUpData) => {
@@ -119,11 +87,9 @@ export function AuthProvider({ children , isLogin }: { children: React.ReactNode
     setIsLoading(true);
     try {
       await axiosInstance.post(API_ENDPOINTS.CORPARATE_SIGNIN, data);
-      // Fetch user info after successful sign-in
       const res = await axiosInstance.get(API_ENDPOINTS.CORPARATE_PROFILE_ME);
-      console.log("res:::::::::::::::::::::::::;", res.data);
       setUser(res.data.data);
-      setIsAuthenticated(true); // Trigger useEffect by updating isAuthenticated state
+      setIsAuthenticated(true); 
       router.push("/dashboard");
     } catch (error) {
       console.error("Sign in failed:", error);
@@ -156,6 +122,7 @@ export function AuthProvider({ children , isLogin }: { children: React.ReactNode
         isAuthenticated,
         isLoading,
         user,
+        fetchUser,
         signUp,
         verifyCode,
         signIn,

@@ -14,7 +14,7 @@ import { RegisterProps, UserSchema } from "@/schema/register";
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const Page: React.FC = () => {
-  const { signup, loading } = useAuth();
+  const { signup, loading, resStatus } = useAuth();
   const { addNotification, NotificationDisplay } = useNotification();
 
   const {
@@ -37,6 +37,9 @@ const Page: React.FC = () => {
 
     try {
       await signup({ ...data, [contactMethod]: data.contact });
+      if (resStatus === 200) {
+        addNotification("Register Successful", "success");
+      }
     } catch (error) {
       if (isAPIErrorResponse(error)) {
         addNotification(error.response.data.message, "error");

@@ -1,9 +1,8 @@
 const DropDownMenu: React.FC<{
   setValue: (value: string) => void;
   currentText: string;
-  title: string;
   arrText: string[];
-}> = ({ setValue, currentText, title, arrText }) => {
+}> = ({ setValue, currentText, arrText }) => {
   return (
     <div className="container w-full pt-10">
       <select

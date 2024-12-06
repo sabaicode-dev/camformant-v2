@@ -30,6 +30,10 @@ function loadConfig(): Config {
     CORPORATOR_API_ENDPOINT: Joi.string().required(),
     NOTIFICATION_SERVICE_URL: Joi.string().required(),
     GLITCHTIP_DNS: Joi.string().required(),
+    AWS_S3_BUCKET_NAME: Joi.string().required(),
+    AWS_REGION: Joi.string().required(),
+    AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+    AWS_ACCESS_KEY_ID: Joi.string().required(),
   })
     .unknown()
     .required();

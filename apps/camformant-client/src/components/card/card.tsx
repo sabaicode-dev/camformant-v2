@@ -2,11 +2,12 @@
 import { MdCalendarToday } from "react-icons/md";
 import { dateFormat } from "@/utils/date";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import Link from "next/link";
 import "react-loading-skeleton/dist/skeleton.css";
 import Heart from "./heart";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { ImCross } from "react-icons/im";
+import React, { SetStateAction } from "react";
 
 interface CardProps {
   userId?: string;
@@ -17,14 +18,16 @@ interface CardProps {
   profile?: string;
   min_salary?: number;
   max_salary?: number;
-  job_opening?: string;
+  job_opening?: string | number;
   type?: string[];
   schedule?: string[];
   location?: string;
   day?: number | string;
   isFavorite?: boolean;
-  setHeart: () => void;
-  heart: boolean;
+  setHeart?: () => void;
+  heart?: boolean;
+  deleteFunc?: () => void;
+  handleDropDownClick?: (e: React.MouseEvent) => void;
 }
 
 export const Card: React.FC<CardProps> = (props) => {
@@ -42,15 +45,21 @@ export const Card: React.FC<CardProps> = (props) => {
     type,
     heart,
     setHeart,
+    deleteFunc,
+    handleDropDownClick,
   } = props;
   const router = useRouter();
-
   return (
     <div className="p-5 bg-white shadow drop-shadow-md rounded-2xl">
-      <div className="flex justify-between">
+      <div
+        className="flex justify-between"
+        onClick={() => {
+          if (deleteFunc) router.push(`/jobs/${_id}`);
+        }}
+      >
         <section className="flex items-center gap-x-5">
           <Image
-            src={profile!}
+            src={profile||""}
             alt={title! || profile!}
             width={48}
             height={48}
@@ -64,11 +73,27 @@ export const Card: React.FC<CardProps> = (props) => {
           </div>
         </section>
 
-        <section>
-          <Heart heart={heart} handleLove={setHeart} />
-        </section>
+        {heart != undefined && setHeart && (
+          <section>
+            <Heart heart={heart} handleLove={setHeart} />
+          </section>
+        )}
+        {deleteFunc && (
+          <ImCross
+            className="text-red-600 mt-2"
+            onClick={(event: React.MouseEvent) => {
+              event.stopPropagation();
+              deleteFunc();
+            }}
+          />
+        )}
       </div>
-      <Link href={`/jobs/${_id}`}>
+      <div
+        onClick={(e: React.MouseEvent) => {
+          if (handleDropDownClick) handleDropDownClick(e);
+          else router.push(`/jobs/${_id}`);
+        }}
+      >
         <div>
           <div className="flex flex-wrap space-x-2 text-xs text-primaryCam ">
             {type &&
@@ -118,7 +143,7 @@ export const Card: React.FC<CardProps> = (props) => {
             </div>
           )}
         </div>
-      </Link>
+      </div>
     </div>
   );
 };
