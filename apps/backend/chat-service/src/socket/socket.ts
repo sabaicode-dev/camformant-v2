@@ -51,7 +51,7 @@ const setupSocketIO = (io: Server) => {
       const online = Object.keys(userSocketMap);
       //todo: when done remove online.push this is for test only
       //test if this company online
-      online.push("674535e502cd5277dce74f5b");
+      online.push("674d6ea12c4d2fa1b92db9e0");
       //io.emit() use to send any event to connected users
       io.emit("getOnlineUsers", online);
       console.log("user is online:::", online);
