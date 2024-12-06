@@ -15,21 +15,21 @@ async function run() {
     const httpServer = http.createServer(app);
 
     // Set up Socket.io
-    const io = new Server(httpServer, {
-      path: "/socket.io",
-      cors: {
-        credentials: true,
-        methods: ["GET", "POST"],
-      },
-    });
     // const io = new Server(httpServer, {
     //   path: "/socket.io",
     //   cors: {
-    //     origin: configs.clientUrl,
-    //     methods: ["GET", "POST"],
     //     credentials: true,
+    //     methods: ["GET", "POST"],
     //   },
     // });
+    const io = new Server(httpServer, {
+      path: "/socket.io",
+      cors: {
+        origin: configs.clientUrl,
+        methods: ["GET", "POST"],
+        credentials: true,
+      },
+    });
 
     // Initialize chatSocket with Socket.IO server instance
     setupSocketIO(io);

@@ -1,14 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-import DynamicBreadcrumb from "@/components/DynamicBreadcrumb";
 import InputForm from "@/components/input-job";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { Jobs } from "@/utils/types/form-type";
 
-const page = ({ params }: { params: { jobId: string } }) => {
-  const pathname = usePathname();
+const UpdateJobPage = ({ params }: { params: { jobId: string } }) => {
   const [jobData, setJobData] = useState<Jobs>();
   const [isLoading, setLoading] = useState<boolean>(false);
   useEffect(() => {
@@ -27,11 +24,10 @@ const page = ({ params }: { params: { jobId: string } }) => {
       }
     }
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <>
-      <DynamicBreadcrumb />
-      {pathname}
       {!isLoading && (
         <InputForm formTitle="Update Job" existingData={jobData} typeOfForm="PUT" />
       )}
@@ -39,4 +35,4 @@ const page = ({ params }: { params: { jobId: string } }) => {
   );
 };
 
-export default page;
+export default UpdateJobPage;

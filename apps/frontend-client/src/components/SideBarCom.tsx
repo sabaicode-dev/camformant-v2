@@ -169,7 +169,7 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
   );
 }
 
-export default function KakSideBar() {
+export default function SideBarCom() {
   const { isOpen } = useSidebarContext();
   return (
     <ScrollArea className={cn("pt-16 h-screen transition-all duration-300" , isOpen ? "w-80" : "w-28" )}>
