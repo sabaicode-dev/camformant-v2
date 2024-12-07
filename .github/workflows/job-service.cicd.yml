@@ -124,8 +124,6 @@ jobs:
             echo "MONGODB_URL=${{ secrets.JOB_MONGODB_URL }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
             echo "CLIENT_URL=${{ secrets.CLIENT_URL }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
             echo "CORPORATOR_API_ENDPOINT=${{ secrets.CORPORATOR_API_ENDPOINT }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
-            echo "S3_REGION=${{ secrets.S3_REGION }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
-            echo "S3_BUCKET=${{ secrets.S3_BUCKET }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
             echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
             echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
 

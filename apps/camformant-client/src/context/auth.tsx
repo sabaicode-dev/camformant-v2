@@ -41,6 +41,7 @@ interface AuthContextType {
   verify: ({ email, phone_number, code }: VerifyUserRequest) => Promise<void>;
   siginWithGoogle: () => Promise<void>;
   onChangeUser: (jobId: string) => void;
+  resStatus: number;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -53,7 +54,8 @@ export const AuthProvider = ({
   isLogin: boolean;
 }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [resStatus, setResStatus] = useState<number>(0);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [lastUser, setLastUser] = useState<User | null>(user);
@@ -70,18 +72,13 @@ export const AuthProvider = ({
       setUser(lastUser);
     }
   };
-  //todo: make fetch /me only when logged in and refetch on toggle favorite
   const checkAuthStatus = async () => {
     try {
       setLoading(true);
 
-      ///TODO: mean cookie ot => expired? !=expired => fetch
-
-      const res2 = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
-      setUser(res2.data?.data);
+      const res = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
+      setUser(res.data?.data);
       setIsAuthenticated(true);
-      // setUserState(res2.data?.data);
-      // }
     } catch (error) {
       setIsAuthenticated(false);
     } finally {
@@ -90,9 +87,10 @@ export const AuthProvider = ({
   };
   useEffect(() => {
     if (isLogin) {
+      console.log("is login");
       checkAuthStatus();
     }
-  }, []);
+  }, [isLogin]);
   //lastUser?.favorites
 
   const login = async ({ email, phone_number, password }: LoginRequest) => {
@@ -106,7 +104,7 @@ export const AuthProvider = ({
       // Fetch the user profile data after login
       const res = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
       setUser(res.data.data);
-
+      setResStatus(res.status);
       setIsAuthenticated(true);
       router.push("/");
     } catch (error) {
@@ -131,6 +129,7 @@ export const AuthProvider = ({
         last_name,
         [email ? "email" : "phone_number"]: email || phone_number,
         password,
+        role: "user",
       });
 
       // TODO: redirect to verify page with contact and method (email or phone_number)
@@ -209,6 +208,7 @@ export const AuthProvider = ({
         verify,
         siginWithGoogle,
         onChangeUser,
+        resStatus,
       }}
     >
       {children}

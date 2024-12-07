@@ -17,9 +17,12 @@ const models: TsoaRoute.Models = {
     "INotification": {
         "dataType": "refObject",
         "properties": {
+            "_id": {"dataType":"string"},
             "userId": {"dataType":"string","required":true},
             "endpoint": {"dataType":"string","required":true},
             "keys": {"dataType":"nestedObjectLiteral","nestedProperties":{"auth":{"dataType":"string","required":true},"p256dh":{"dataType":"string","required":true}},"required":true},
+            "updatedAt": {"dataType":"datetime"},
+            "createdAt": {"dataType":"datetime"},
         },
         "additionalProperties": false,
     },
@@ -47,7 +50,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "title": {"dataType":"string","required":true},
             "body": {"dataType":"string","required":true},
-            "data": {"dataType":"nestedObjectLiteral","nestedProperties":{}},
+            "data": {"dataType":"nestedObjectLiteral","nestedProperties":{"url":{"dataType":"string"}}},
         },
         "additionalProperties": false,
     },
@@ -137,7 +140,7 @@ export function RegisterRoutes(app: Router) {
 
             async function NotificationsController_unsubscribe(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    endpoint: {"in":"body","name":"endpoint","required":true,"dataType":"string"},
+                    reqBody: {"in":"body","name":"reqBody","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"endpoint":{"dataType":"string","required":true}}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -155,6 +158,36 @@ export function RegisterRoutes(app: Router) {
                 next,
                 validatedArgs,
                 successStatus: 204,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/v1/notifications',
+            ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
+            ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.getNotification)),
+
+            async function NotificationsController_getNotification(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new NotificationsController();
+
+              await templateService.apiHandler({
+                methodName: 'getNotification',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
               });
             } catch (err) {
                 return next(err);

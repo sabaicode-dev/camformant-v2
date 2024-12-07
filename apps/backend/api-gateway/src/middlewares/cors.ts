@@ -21,6 +21,6 @@ const corsOptions: CorsOptions = {
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"], // Allowed HTTP methods
 };
 
-console.log("Allowed Origins:", allowedOrigins);
+// console.log("Allowed Origins:", allowedOrigins);
 
 export default corsOptions;

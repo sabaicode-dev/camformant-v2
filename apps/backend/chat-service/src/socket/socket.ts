@@ -23,7 +23,6 @@ const setupSocketIO = (io: Server) => {
   io.on("connection", (socket: Socket) => {
     console.log("user socket id:::", socket.id);
 
-    //todo: forward current user role from request to here
     // Check if the cookies exist in the socket handshake headers
     const cookies = socket.handshake.headers["cookie"];
     // console.log("cookies:::", cookies);
@@ -57,13 +56,10 @@ const setupSocketIO = (io: Server) => {
       console.log("user is online:::", online);
     }
 
-    //todo: send message
     // Handle incoming messages
     socket.on("sendMessage", async (data: Message) => {
       const cookies = socket.handshake.headers["cookie"];
       try {
-        console.log("data:::", data);
-        //bug::
         if (cookies) {
           const response = await axios.post(
             `${configs.MessageUrl}/send/${data.receiverId}`,

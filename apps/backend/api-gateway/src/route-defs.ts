@@ -271,22 +271,29 @@ const ROUTE_PATHS: RoutesConfig = {
         methods: {
           POST: {
             authRequired: true,
-            roles: ["user", "admin"],
+            roles: ["user", "company"],
           },
         },
       },
       {
         path: "/profile-detail",
         methods: {
-          GET: {
-            authRequired: true,
-            roles: ["user", "admin"],
-          },
           PUT: {
             authRequired: true,
             roles: ["user", "admin"],
           },
         },
+        nestedRoutes: [
+          {
+            path: "/:userId",
+            methods: {
+              GET: {
+                authRequired: true,
+                roles: ["user", "company"],
+              },
+            },
+          },
+        ],
       },
       {
         path: "/cv",
@@ -346,6 +353,14 @@ const ROUTE_PATHS: RoutesConfig = {
     },
     nestedRoutes: [
       {
+        path: "/job",
+        methods: {
+          POST: {
+            authRequired: false,
+          },
+        },
+      },
+      {
         path: "/health",
         methods: {
           GET: {
@@ -354,9 +369,52 @@ const ROUTE_PATHS: RoutesConfig = {
         },
       },
       {
+        path: "/jobApply",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["user", "company"],
+          },
+          POST: {
+            authRequired: true,
+            roles: ["user", "company"],
+          },
+        },
+        nestedRoutes: [
+          {
+            path: "/deleteMany/:applyId",
+            methods: {
+              DELETE: {
+                authRequired: true,
+                roles: ["company"],
+              },
+            },
+          },
+          {
+            path: "/:applyId",
+            methods: {
+              PUT: {
+                authRequired: true,
+                roles: ["company"],
+              },
+              DELETE: {
+                authRequired: true,
+                roles: ["company", "user"],
+              },
+            },
+          },
+        ],
+      },
+      {
         path: "/:id",
         methods: {
           GET: {
+            authRequired: false,
+          },
+          DELETE: {
+            authRequired: false,
+          },
+          PUT: {
             authRequired: false,
           },
         },
@@ -418,6 +476,12 @@ const ROUTE_PATHS: RoutesConfig = {
   NOTIFICATION_SERVICE: {
     path: "/v1/notifications",
     target: configs.notificationServiceUrl,
+    methods: {
+      GET: {
+        authRequired: true,
+        roles: ["user", "company"],
+      },
+    },
     nestedRoutes: [
       {
         path: "/health",
@@ -431,7 +495,17 @@ const ROUTE_PATHS: RoutesConfig = {
         path: "/subscribe",
         methods: {
           POST: {
-            authRequired: false,
+            authRequired: true,
+            roles: ["user", "company"],
+          },
+        },
+      },
+      {
+        path: "/unsubscribe",
+        methods: {
+          DELETE: {
+            authRequired: true,
+            roles: ["user", "company"],
           },
         },
       },

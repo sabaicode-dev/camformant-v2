@@ -16,7 +16,9 @@ export const API_ENDPOINTS = {
   USER_CV_STYLE: `${process.env.NEXT_PUBLIC_USER_ENDPOINT}/cvstyle`,
   USER_CUSTOM_CV: `${process.env.NEXT_PUBLIC_USER_ENDPOINT}/customCv`,
   // PUSH NOTIFICATION SERVICE
+  NOTIFICATION: `${process.env.NEXT_PUBLIC_PUSH_NOTIFICATION_ENDPOINT}`,
   SUBSCRIBE: `${process.env.NEXT_PUBLIC_PUSH_NOTIFICATION_ENDPOINT}/subscribe`,
+  UNSUBSCRIBE: `${process.env.NEXT_PUBLIC_PUSH_NOTIFICATION_ENDPOINT}/unsubscribe`,
 
   // FAVORITE
   FAVORITE: `${process.env.NEXT_PUBLIC_USER_ENDPOINT}/me/favorites`,
@@ -27,6 +29,8 @@ export const API_ENDPOINTS = {
   // JOBS: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/job`,
   SEARCH_HISTORY: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/search-history`,
   SEARCH_TRENDING: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/search-trending`,
+  JOB_DETAIL: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/job-detail`,
+  JOB_APPLY: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/jobApply`,
 
   // CHAT SERVICE
   CONVERSATIONS: `${process.env.NEXT_PUBLIC_CONVERSATION_ENDPOINT}`,

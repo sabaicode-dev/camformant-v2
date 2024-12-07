@@ -195,8 +195,6 @@ export class AuthController extends Controller {
   @Post("/corporate/verify")
   public async corporateVerifyUser(@Body() body: VerifyUserRequest) {
     try {
-      console.log("start verify");
-
       await AuthService.corporateVerifyUser(body);
       return sendResponse({ message: `You've verified successfully` });
     } catch (error) {

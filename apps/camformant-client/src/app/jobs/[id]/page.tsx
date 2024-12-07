@@ -12,7 +12,6 @@ import { CardReq } from "@/components/card-detail/card-requirement";
 import { CardDescription } from "@/components/card-detail/card-description";
 import { CardLocation } from "@/components/card-detail/card-location";
 import { JobPublisher } from "@/components/card-detail/card-publisher";
-import axios from "axios";
 import { BsPersonVcard } from "react-icons/bs";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import axiosInstance from "@/utils/axios";
@@ -25,7 +24,6 @@ const Page: React.FC = () => {
   const params = useParams();
   const { id } = params;
   const router = useRouter();
-
   const [jobData, setJobData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +31,6 @@ const Page: React.FC = () => {
   const [selected, setSelected] = useState<boolean>(false);
   const [cv, setCV] = useState<string>("");
   const [next, setNext] = useState<boolean>(false);
-  const [getIndexCv, setIndexCv] = useState<number>(0);
 
   // Fetch Job Detail
   useEffect(() => {
@@ -60,19 +57,11 @@ const Page: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    const storedCvIndex = localStorage.getItem("selectedCvIndex");
-    if (storedCvIndex) {
-      setIndexCv(Number(storedCvIndex));
-    }
-  }, []);
-
-  useEffect(() => {
     async function getUserProfileAndCV() {
       try {
         setNext(true);
-
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=cv`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=cv`
         );
 
         setCV(response.data.data.cv);
@@ -94,25 +83,26 @@ const Page: React.FC = () => {
   async function handleConfirm() {
     if (selected) {
       try {
-        // Post data when selected is true
         const data = {
+          userId: user?._id,
           jobId: id,
+          userInfo: {
+            name: user?.username,
+            profile: user?.profile,
+            status: "Apply",
+            cv: cv,
+          },
         };
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/apply/?apply=${getIndexCv}`,
+        const response = await axiosInstance.post(
+          API_ENDPOINTS.JOB_APPLY,
           data
         );
         if (response.status === 200) {
           console.log("Application submitted successfully");
-          setTimeout(() => {
-            router.push("/applied");
-          }, 600);
-        } else {
-          console.log("CV not Found");
-          setIndexCv(0);
-          localStorage.setItem("selectedCvIndex", "0");
+          console.log("response", response);
         }
       } catch (error) {
+        console.log("error in apply ", error);
         alert("Application Error ");
       } finally {
         setApply(false);
@@ -127,9 +117,9 @@ const Page: React.FC = () => {
 
   return (
     <div className="flex flex-col w-full h-full pb-28 ">
-      <Link href={"../home"}>
+      <div onClick={() => router.back()}>
         <BackButton_md styles="absolute bg-white p-3 px-4 rounded-xl top-5 left-4 " />
-      </Link>
+      </div>
       <Background style="bg-mybg-image h-[250px] ">
         <div className=" w-full px-4 mt-[-97px] z-10 ">
           {jobData.map((x) => (

@@ -39,6 +39,7 @@ export interface TypeProcess {
 export interface IJob {
   _id?: string;
   companyId?: string;
+  profile?:string
   title?: string; // name of the job that company looking for. Example: Java Developer
   position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
   workMode?: string[];

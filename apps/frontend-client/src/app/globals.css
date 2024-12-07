@@ -3,19 +3,19 @@
 @tailwind utilities;
 
 .chat-container::-webkit-scrollbar {
-  width: 8px; /* Width of the scrollbar */
-  height: 8px; /* Height for horizontal scrollbar */
+  width: 8px !important; /* Width of the scrollbar */
+  height: 8px !important; /* Height for horizontal scrollbar */
 }
 
 .chat-container::-webkit-scrollbar-thumb {
-  background-color: rgba(128, 128, 128, 0.116); /* Orange thumb color */
-  border-radius: 10px; /* Rounded corners for the thumb */
-  border: 2px solid #fff; /* Border around the thumb */
+  background-color: rgba(128, 128, 128, 0.116) !important; /* Orange thumb color */
+  border-radius: 10px !important; /* Rounded corners for the thumb */
+  border: 2px solid #fff !important; /* Border around the thumb */
 }
 
 .chat-container::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Light gray track background */
-  border-radius: 10px; /* Rounded track corners */
+  background: #f1f1f1 !important; /* Light gray track background */
+  border-radius: 10px !important; /* Rounded track corners */
 }
 
 @layer base {

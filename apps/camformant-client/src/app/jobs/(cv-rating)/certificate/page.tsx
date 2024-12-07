@@ -5,7 +5,7 @@ import InputFile from "@/components/user-profile/input-file";
 import UploadedFile from "@/components/user-profile/uploadedFile";
 import { useAuth } from "@/context/auth";
 import axiosInstance from "@/utils/axios";
-import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints"
 import { CertificateParams } from "@/utils/types/user-profile";
 import React, { useEffect, useState } from "react";
 
@@ -22,7 +22,7 @@ const Page = () => {
     async function getData() {
       try {
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=certificates`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=certificates`
         );
         const data = response.data.data.certificates;
         console.log(data);

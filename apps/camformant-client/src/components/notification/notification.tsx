@@ -7,7 +7,7 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { useEffect, useState } from "react";
 import { MdCircleNotifications } from "react-icons/md";
 
-export default function Notification({
+export default function NotificationComponent({
   addNotification,
 }: {
   addNotification: (
@@ -30,11 +30,14 @@ export default function Notification({
   useEffect(() => {
     if (isAuthenticated) {
       if ("serviceWorker" in navigator && "PushManager" in window) {
-        setIsSupported(true);
-        registerServiceWorker();
+        const serviceWorker = async () => {
+          setIsSupported(true);
+          await registerServiceWorker();
+        };
+        serviceWorker();
       }
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, addNotification]);
 
   // Show Popup when browser is not support push notification
   useEffect(() => {
@@ -59,17 +62,23 @@ export default function Notification({
       );
     }
   }
-
+  useEffect(() => {
+    async function getSubscription() {
+      const res = await axiosInstance.get(API_ENDPOINTS.NOTIFICATION);
+      setSubscription(res.data[0]);
+    }
+    if (isAuthenticated) getSubscription();
+  }, [isAuthenticated]);
   async function subscribeToPush() {
     setLoading(true); // Set loading state
     const registration = await navigator.serviceWorker.ready;
-
     const sub = await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(
         process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
       ),
     });
+
     setSubscription(sub);
 
     const subscriptionObject = sub.toJSON();
@@ -77,14 +86,16 @@ export default function Notification({
     const { p256dh, auth } = subscriptionObject.keys;
 
     try {
-      // Send the subscription to your backend
-      await axiosInstance.post(API_ENDPOINTS.SUBSCRIBE, {
+      const body = {
         endpoint: subscriptionObject.endpoint,
         keys: {
           p256dh,
           auth,
         },
-      });
+      };
+
+      // Send the subscription to your backend
+      await axiosInstance.post(API_ENDPOINTS.SUBSCRIBE, body);
     } catch (error) {
       console.log("Subscribe Notification Error:::", error);
     } finally {
@@ -96,6 +107,9 @@ export default function Notification({
     setLoading(true); // Set loading state
 
     try {
+      await axiosInstance.delete(API_ENDPOINTS.UNSUBSCRIBE, {
+        data: { endpoint: subscription?.endpoint },
+      });
       await subscription?.unsubscribe();
     } catch (error) {
       console.log("Unsubscribe Notification Error:::", error);
@@ -106,13 +120,28 @@ export default function Notification({
   }
 
   const handleToggle = async () => {
-    if (subscription) {
-      await unsubscribeFromPush();
+    //function checkPermission notification
+    async function checkPermission() {
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        addNotification("Notification Access Dined", "error");
+        return;
+      } else if (permission === "granted") {
+        // showNotification();
+        addNotification("Notification Enabled", "success");
+        return "granted";
+      }
+    }
+    if (!isAuthenticated) {
+      addNotification("Please login to enable notification!", "error");
     } else {
-      if (!isAuthenticated) {
-        addNotification("Please login to enable notification!", "error");
+      if (!subscription) {
+        const permission = await checkPermission();
+        if (permission === "granted") {
+          await subscribeToPush();
+        }
       } else {
-        await subscribeToPush();
+        await unsubscribeFromPush();
       }
     }
   };
@@ -129,6 +158,7 @@ export default function Notification({
       </div>
     );
   }
+  console.log("support", isSupported);
 
   const isDisable = loading && !isAuthenticated ? true : false;
   console.log(
@@ -152,8 +182,7 @@ export default function Notification({
         <input
           type="checkbox"
           className="sr-only peer"
-          checked={isDisable === false ? false : true} //todo: related
-          // checked={!!subscription}
+          checked={isDisable ? false : !!subscription} //todo: related
           onChange={handleToggle}
           disabled={isDisable} // Disable during loading state
         />

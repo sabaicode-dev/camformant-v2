@@ -12,12 +12,15 @@ services:
     environment:
       - DOCKER_ENV=true
       - AUTH_SERVICE_URL=http://auth:4001
-      - USER_SERVICE_URL=http://user:4005
-      - JOB_SERVICE_URL=http://job:4003
       - CHAT_SERVICE_URL=http://chat:4002
+      - JOB_SERVICE_URL=http://job:4003
       - NOTIFICATION_SERVICE_URL=http://notification:4004
+      - USER_SERVICE_URL=http://user:4005
     volumes:
       - ./api-gateway/src:/app/src # HOT RELOADING
+
+    networks:
+      - custom-network
   auth:
     container_name: auth_service_container
     build:
@@ -29,9 +32,12 @@ services:
     env_file: ./auth-service/src/configs/.env.development
     environment:
       - DOCKER_ENV=true
+      - CLIENT_URL=http://localhost:3000
       - USER_SERVICE_URL=http://user:4005
     volumes:
       - ./auth-service/src:/app/src # HOT RELOADING
+    networks:
+      - custom-network
   user:
     container_name: user_service_container
     build:
@@ -46,6 +52,8 @@ services:
       - NOTIFICATION_SERVICE_URL=http://notification:4004
     volumes:
       - ./user-service/src:/app/src # HOT RELOADING
+    networks:
+      - custom-network
   job:
     container_name: job_service_container
     build:
@@ -59,6 +67,8 @@ services:
       - DOCKER_ENV=true
     volumes:
       - ./job-service/src:/app/src # HOT RELOADING
+    networks:
+      - custom-network
   notification:
     container_name: notification_service_container
     build:
@@ -72,6 +82,8 @@ services:
       - DOCKER_ENV=true
     volumes:
       - ./notification-service/src:/app/src # HOT RELOADING
+    networks:
+      - custom-network
   chat:
     container_name: chat_service_container
     build:
@@ -83,6 +95,15 @@ services:
     env_file: ./chat-service/src/configs/.env.development
     environment:
       - DOCKER_ENV=true
+      - API_SENDMESSAGE_ENDPOINT=http://api-gateway:4000/v1/messages
+      - API_USERS_ENDPOINT=http://user:4005/v1/users
+      - API_COMPANY_ENDPOINT=http://job:4003/v1/companies
+      - CLIENT_URL=http://localhost:3000
     volumes:
       - ./chat-service/src:/app/src # HOT RELOADING
+    networks:
+      - custom-network
+networks:
+  custom-network:
+    external: true # Use an external, shared network
 

@@ -1,6 +1,12 @@
 import {
+  BodyUpdateJobApply,
+  GetApplyJobResLimit,
+  GetJobApplyResponse,
+  JobApplyQueriesController,
+  JobApplyResponse,
   JobGetAllControllerParams,
   JobParams,
+  PostJobApplyBody,
 } from "@/src/controllers/types/job-controller.type";
 import { IJob } from "@/src/database/models/job.model";
 import jobService from "@/src/services/job.service";
@@ -28,11 +34,13 @@ import configs from "../config";
 @Route("/v1/jobs")
 @Tags("Job")
 export class JobController extends Controller {
-
   //new post
   @SuccessResponse("201", "Created")
   @Post("/job")
-  public async postIJob(@Request() request: ExpressRequest, @Body() body: IJob): Promise<APIResponse<IJob>> {
+  public async postIJob(
+    @Request() request: ExpressRequest,
+    @Body() body: IJob
+  ): Promise<APIResponse<IJob>> {
     try {
       const corporateSub = request.cookies["username"];
 
@@ -80,6 +88,18 @@ export class JobController extends Controller {
       throw error;
     }
   }
+  @Post("/jobApply")
+  public async postJobApply(@Body() body: PostJobApplyBody) {
+    try {
+      const data = await jobService.createJobApply(body);
+      return sendResponse<JobApplyResponse | {}>({
+        message: "Create successfuly",
+        data,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
   //
   @SuccessResponse("201", "Created")
   @Post("/")
@@ -112,14 +132,18 @@ export class JobController extends Controller {
   }
   @Get("/corporator")
   public async getAllJobsWithCorporator(
-    @Request() request: ExpressRequest,
+    @Request() request: ExpressRequest
   ): Promise<APIResponse<IJob[]>> {
     try {
       const userSub = request.cookies["username"] || null;
-      const getCorporateProfile = await axios.get(`${configs.corporator_api_endpoint}/profile/${userSub}`);
+      const getCorporateProfile = await axios.get(
+        `${configs.corporator_api_endpoint}/profile/${userSub}`
+      );
       const getCorporateProfileId = getCorporateProfile.data.data._id || null;
 
-      const response = await jobService.getAllJobsWithCorporator(getCorporateProfileId);
+      const response = await jobService.getAllJobsWithCorporator(
+        getCorporateProfileId
+      );
 
       return sendResponse<IJob[]>({ message: "success", data: response });
     } catch (error) {
@@ -153,6 +177,60 @@ export class JobController extends Controller {
       throw error;
     }
   }
+  @Get("/jobApply")
+  public async getJobApply(
+    @Queries()
+    queries: JobApplyQueriesController
+  ) {
+    try {
+      const data = await jobService.getJobApply(queries);
+      return sendResponse<GetJobApplyResponse[] | GetApplyJobResLimit>({
+        message: "Fetched is successfully",
+        data: data,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+  @Put("/jobApply/:applyId")
+  public async putJobApply(
+    @Path() applyId: string,
+    @Body() body: BodyUpdateJobApply
+  ) {
+    try {
+      const data = await jobService.updateJobApply(applyId, body);
+      return sendResponse<JobApplyResponse | {} | null>({
+        message: "Update successfuly",
+        data,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+  @SuccessResponse("204", "Deleted")
+  @Delete("/jobApply/deleteMany/:jobId")
+  public async deleteManyJobApply(@Path() jobId: string) {
+    try {
+      await jobService.deleteManyJobApply(jobId);
+      return {
+        message: "Delete successfuly",
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+  @SuccessResponse("204", "Deleted")
+  @Delete("/jobApply/:applyId")
+  public async deleteJobApply(@Path() applyId: string) {
+    try {
+      await jobService.deleteJobApply(applyId);
+      return {
+        message: "Delete successfuly",
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
 
   @Get("{jobId}")
   public async getJobById(@Path() jobId: string) {
@@ -168,7 +246,7 @@ export class JobController extends Controller {
   @Put("{jobId}")
   public async updateJobById(
     @Path() jobId: string,
-    @Body() updateDatJob: JobParams
+    @Body() updateDatJob: IJob
   ) {
     try {
       const updateJob = await jobService.updateJobById(jobId, updateDatJob);
@@ -181,21 +259,7 @@ export class JobController extends Controller {
     }
   }
 
-  @Delete("{jobId}")
-  public async deleteJobById(
-    @Path() jobId: string
-  ): Promise<{ message: string }> {
-    try {
-      await jobService.deleteJobById(jobId);
-      return { message: "Job was deleted successfully" };
-    } catch (error) {
-      console.error(
-        `CompanyController deleteJobById() method error: `,
-        prettyObject(error as {})
-      );
-      throw error;
-    }
-  }
+
 }
 
 export default new JobController();

@@ -1,29 +1,16 @@
 "use client";
-import DynamicBreadcrumb from "@/components/DynamicBreadcrumb";
+import { useJob } from "@/context/JobContext";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import { useEffect, useState } from "react";
-import axiosInstance from "@/utils/axios";
+import { TableSkeleton } from "@/components/applicant/table-skeleton";
 
 const JobsPage = () => {
-    const [jobsData, setJobsData] = useState([]);
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await axiosInstance.get(`${process.env.NEXT_PUBLIC_API_URL}/v1/jobs/corporator`);
-                setJobsData(res.data.data);
-            } catch (error) {
-                console.error("Fetch jobs failed:", error);
-            }
-        };
-        fetchData();
-    } , []);
-
-    return (
-        <div className="w-full">
-            <DataTable data={jobsData || []} columns={columns} />
-        </div>
-    );
+  const {jobs, isLoading, fetchJobs} = useJob();
+  return ( 
+    <>
+      { isLoading ? (<TableSkeleton/>) : ( <DataTable data={jobs || []} columns={columns} /> ) }
+    </>
+   );
 };
 
 export default JobsPage;

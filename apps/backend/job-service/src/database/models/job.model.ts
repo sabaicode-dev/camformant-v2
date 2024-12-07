@@ -1,3 +1,4 @@
+import { StatusMode } from "@/src/controllers/types/job-controller.type";
 import mongoose, { model, Schema } from "mongoose";
 
 export enum EmploymentType {
@@ -38,6 +39,7 @@ export interface companiesForJobs {
 }
 export interface returnJobs {
   _id?: string;
+  companyId?: mongoose.Types.ObjectId;
   title?: string; // name of the job that company looking for. Example: Java Developer
   position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
   workMode?: WorkMode[];
@@ -61,6 +63,7 @@ export interface returnJobs {
 export interface IJob {
   _id?: string;
   companyId?: mongoose.Types.ObjectId;
+  profile?: string;
   title?: string; // name of the job that company looking for. Example: Java Developer
   position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
   workMode?: WorkMode[];
@@ -136,3 +139,58 @@ const JobSchema: Schema = new Schema(
 );
 
 export const JobModel = model<IJob>("Job", JobSchema);
+
+const ApplyUserInfoschema = new Schema(
+  {
+    profile: { type: String, required: true },
+    name: { type: String, required: true },
+    status: { type: String, required: true, enum: Object.values(StatusMode) },
+    cv: { type: String, required: true },
+  },
+  {
+    _id: false,
+  }
+);
+const ApplyCompanyResSchema = new Schema(
+  {
+    startDate: { type: Date },
+    interviewDate: { type: Date },
+    interviewLocation: { type: String },
+  },
+  {
+    _id: false,
+  }
+);
+const StatusDateSchema = new Schema(
+  {
+    [StatusMode.APPLY]: { type: Date, required: false },
+    [StatusMode.SHORTLIST]: { type: Date, required: false },
+    [StatusMode.REVIEW]: { type: Date, required: false },
+    [StatusMode.INTERVIEW]: { type: Date, required: false },
+    [StatusMode.ACCEPT]: { type: Date, required: false },
+  },
+  { _id: false }
+);
+
+const JobApplySchema = new Schema(
+  {
+    userId: { type: mongoose.Types.ObjectId },
+    jobId: mongoose.Types.ObjectId,
+    companyResponse: ApplyCompanyResSchema,
+    userInfo: ApplyUserInfoschema,
+    statusDate: StatusDateSchema,
+  },
+  {
+    timestamps: { createdAt: "appliedAt", updatedAt: false },
+    versionKey: false,
+    toObject: {
+      transform: function (_doc, ret) {
+        delete ret.__v;
+        ret._id = ret._id.toString();
+        ret.userId = ret.userId.toString();
+        ret.jobId = ret.jobId.toString();
+      },
+    },
+  }
+);
+export const ApplyModel = model("JobApply", JobApplySchema, "JobApply");

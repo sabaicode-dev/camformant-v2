@@ -1,14 +1,18 @@
 "use client";
-
+import Image from "next/image";
 interface ChatMessageProps {
   message: string;
+  profile: string
   timestamp: string;
   isCurrentUser: boolean;
 }
 
-export function ChatMessage({ message, timestamp, isCurrentUser }: ChatMessageProps) {
+export function ChatMessage({ message, timestamp, isCurrentUser , profile }: ChatMessageProps) {
   return (
-    <div className={`flex ${isCurrentUser ? 'justify-end':  'justify-start'}`}>
+    <div className={`flex ${isCurrentUser ? 'justify-end':  'justify-start'} items-center`}>
+      <div className="pr-2">
+      {!isCurrentUser && <Image src={profile} alt={profile} className="rounded-full object-cover" width={40} height={40} />}
+      </div>
       <div 
         className={`
           max-w-[50%] p-3 rounded-2xl

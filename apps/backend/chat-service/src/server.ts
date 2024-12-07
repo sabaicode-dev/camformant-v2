@@ -15,6 +15,13 @@ async function run() {
     const httpServer = http.createServer(app);
 
     // Set up Socket.io
+    // const io = new Server(httpServer, {
+    //   path: "/socket.io",
+    //   cors: {
+    //     credentials: true,
+    //     methods: ["GET", "POST"],
+    //   },
+    // });
     const io = new Server(httpServer, {
       path: "/socket.io",
       cors: {
@@ -29,7 +36,7 @@ async function run() {
 
     // Start the HTTP server
     httpServer.listen(configs.port, () => {
-      console.log(`chat-service running on Port: ${configs.port}`);
+      console.log(`chat-service running on Port:`, configs.port);
     });
   } catch (error) {
     console.error("Failed to start the application:", error);

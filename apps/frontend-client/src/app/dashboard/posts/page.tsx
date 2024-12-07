@@ -2,9 +2,7 @@
 import React from "react";
 import { usePathname } from "next/navigation";
 import DynamicBreadcrumb from "@/components/DynamicBreadcrumb";
-import InputForm from "./input-form";
-
-
+import InputForm from "@/components/input-job";
 
 const PostPage = () => {
   const pathname = usePathname();
@@ -12,7 +10,7 @@ const PostPage = () => {
     <>
       <DynamicBreadcrumb />
       {pathname}
-      <InputForm/>
+      <InputForm formTitle="Post Job"/>
     </>
   );
 };

@@ -13,7 +13,12 @@ const nextConfig = {
   },
   images: {
     domains: ["sabaicode.com"],
+
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
       {
         protocol: "https",
         hostname: "optimise2.assets-servd.host",
@@ -65,6 +70,11 @@ const nextConfig = {
         hostname: "camformant.s3.ap-southeast-2.amazonaws.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "sophornbucket.s3.us-west-2.amazonaws.com",
+        pathname: "/**",
+      }
     ],
   },
   async headers() {

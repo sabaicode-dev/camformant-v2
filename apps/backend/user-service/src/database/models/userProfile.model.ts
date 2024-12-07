@@ -6,11 +6,11 @@ const BasicSchema = new mongoose.Schema(
     surname: { type: String },
     lastname: { type: String },
     career: { type: String },
-    email: { type: String, unique: true },
+    email: { type: String },
     dob: { type: String },
     address: { type: String },
     phonenumber: { type: String },
-    martial: { type: String }, // Optional field
+    martial: { type: String },
   },
   {
     _id: false,
@@ -45,7 +45,7 @@ const EducationSchema = new mongoose.Schema(
     academic: { type: String },
     school: { type: String },
     major: { type: String },
-    year: { type: String }, // Optional field
+    year: { type: String },
   },
   {
     _id: false,
@@ -57,8 +57,8 @@ const ExperienceSchema = new mongoose.Schema(
   {
     position: { type: String },
     company: { type: String },
-    year: { type: String }, // Optional field
-    description: { type: String }, // Optional field
+    year: { type: String },
+    description: { type: String },
   },
   {
     _id: false,
@@ -132,7 +132,7 @@ const UserProfileSchema = new mongoose.Schema(
     descriptions: { type: DescriptionSchema },
     portfolio: { type: [Portfoliochema] },
     certificates: { type: [CertificateSchema] },
-    cv:{type:String}
+    cv: { type: String },
   },
   {
     toObject: {

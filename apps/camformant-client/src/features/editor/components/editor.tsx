@@ -32,7 +32,6 @@ import TemplateModal from "./template-modal";
 import Cropper, { Area } from "react-easy-crop";
 import { useNotification } from "@/hooks/user-notification";
 import getCroppedImg from "@/components/profile/crop";
-// import LayersList from "./LayersList";
 const Editor: React.FC<{
   cvContent: CvContentParams;
   setCvContent: React.Dispatch<SetStateAction<CvContentParams>>;
@@ -56,7 +55,6 @@ const Editor: React.FC<{
     },
     [activeTool] //get back activeTool callback to this global/editor state from child
   );
-
   const onClearSelection = useCallback(() => {
     if (selectionDependentTools.includes(activeTool)) {
       setActiveTool("select");
@@ -69,92 +67,109 @@ const Editor: React.FC<{
     setCvContent: setCvContent,
     clearSelectionCallback: onClearSelection,
   });
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current, {
-      //make the object out of container cannot control
       controlsAboveOverlay: true,
-      // selection: false,
-      preserveObjectStacking: true, // if false the selecting element will be front of all elements/objects
+      preserveObjectStacking: true,
+      enableRetinaScaling: true, // Optional: Improves scaling behavior
+      allowTouchScrolling: true,
     });
 
     init({
       initialCanvas: canvas,
       initialContainer: containerRef.current!,
     });
-    let lastTouchDistance = 0;
+
+    let lastPosX = 0;
+    let lastPosY = 0;
+    let lastDistance = 0; // To track the last distance between the two fingers
     let isPinching = false;
 
-    const lowerCanvasEl = (canvas as any).lowerCanvasEl;
+    // Handle mouse:move for two-finger panning and zooming
+    canvas.on("mouse:move", (event: fabric.IEvent) => {
+      const e = event.e as TouchEvent;
 
-    // Disable selection and object events during pinch
-    function disableInteraction() {
-      canvas.selection = false;
-      canvas.forEachObject((obj) => (obj.evented = false));
-    }
+      // Handle panning and zooming with two fingers
+      if (e.touches && e.touches.length === 2) {
+        // Disable selection during pan and zoom
+        canvas.selection = false;
 
-    // Restore interaction after pinch
-    function restoreInteraction() {
-      canvas.selection = true;
-      canvas.forEachObject((obj) => (obj.evented = true));
-    }
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
 
-    // Touch start: detect pinch start
-    lowerCanvasEl.addEventListener("touchstart", (e: TouchEvent) => {
-      if (e.touches.length === 2) {
-        const dist = getTouchDistance(e);
-        lastTouchDistance = dist;
+        // Calculate movement between the two touch points (for panning)
+        const deltaX = touch1.clientX - lastPosX;
+        const deltaY = touch1.clientY - lastPosY;
+
+        // Calculate the distance between the two touch points (for zooming)
+        const dx = touch2.clientX - touch1.clientX;
+        const dy = touch2.clientY - touch1.clientY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // If last distance exists, calculate zoom scale
+        if (lastDistance > 0) {
+          const scale = distance / lastDistance; // Calculate zoom scale
+          const newZoom = Math.max(0.5, Math.min(canvas.getZoom() * scale, 5)); // Clamp zoom level
+
+          // Calculate the midpoint between the two touch points
+          const midpointX = (touch1.clientX + touch2.clientX) / 2;
+          const midpointY = (touch1.clientY + touch2.clientY) / 2;
+
+          // Zoom to the midpoint between the two touch points
+          canvas.zoomToPoint(new fabric.Point(midpointX, midpointY), newZoom);
+          canvas.requestRenderAll();
+        }
+
+        // If zooming is happening, calculate panning (move the canvas)
+        if (isPinching) {
+          const vp = canvas.viewportTransform;
+          vp![4] += deltaX; // Move horizontally
+          vp![5] += deltaY; // Move vertically
+
+          canvas.setViewportTransform(vp!);
+          canvas.requestRenderAll();
+        }
+
+        // Update last positions and distance for panning and zooming
+        lastPosX = touch1.clientX;
+        lastPosY = touch1.clientY;
+        lastDistance = distance; // Update last distance for zooming
         isPinching = true;
-        disableInteraction();
+      } else {
+        lastPosX = 0; // Reset positions if not pinching
+        lastPosY = 0;
+        lastDistance = 0; // Reset distance if not pinching
+        isPinching = false; // Reset panning and zooming state
+        canvas.selection = true; // Re-enable selection when gesture ends
       }
     });
 
-    // Touch move: handle pinch zoom
-    lowerCanvasEl.addEventListener("touchmove", (e: TouchEvent) => {
-      if (e.touches.length === 2 && isPinching) {
-        const dist = getTouchDistance(e);
-        const zoomFactor = dist / lastTouchDistance;
-
-        // Calculate new zoom level
-        const currentZoom = canvas.getZoom();
-        let newZoom = currentZoom * zoomFactor;
-
-        // Constrain zoom level
-        if (newZoom > 10) newZoom = 10;
-        if (newZoom < 0.1) newZoom = 0.1;
-
-        canvas.zoomToPoint(
-          new fabric.Point(
-            (e.touches[0].pageX + e.touches[1].pageX) / 2,
-            (e.touches[0].pageY + e.touches[1].pageY) / 2
-          ),
-          newZoom
-        );
-
-        lastTouchDistance = dist;
-
-        e.preventDefault();
-        e.stopPropagation();
+    // Handle mouse:down to initialize pan tracking
+    canvas.on("mouse:down", (event: fabric.IEvent) => {
+      const e = event.e as TouchEvent;
+      if (e.touches && e.touches.length === 2) {
+        lastPosX = e.touches[0].clientX; // Record the initial position of touch 1
+        lastPosY = e.touches[0].clientY; // Record the initial position of touch 1
+        lastDistance = 0; // Reset last distance on touch start
+        isPinching = true; // Start tracking pan and zoom with two fingers
       }
     });
 
-    // Touch end: end pinch gesture
-    lowerCanvasEl.addEventListener("touchend", () => {
-      if (!isPinching) return;
-      isPinching = false;
-      restoreInteraction();
+    // Ensure selection is re-enabled when the gesture ends
+    canvas.on("mouse:up", () => {
+      // After mouse up, reset last positions and distance for accurate movement tracking
+      lastPosX = 0; // Reset positions
+      lastPosY = 0;
+      lastDistance = 0; // Reset zoom distance
+      isPinching = false; // Reset panning and zooming state
+      canvas.selection = true; // Re-enable selection after the gesture ends
     });
 
-    // Calculate distance between two touch points
-    function getTouchDistance(e: TouchEvent) {
-      const dx = e.touches[0].pageX - e.touches[1].pageX;
-      const dy = e.touches[0].pageY - e.touches[1].pageY;
-      return Math.sqrt(dx * dx + dy * dy);
-    }
-    if (!cvContent.style) setIsOpenTem(true);
+    !cvContent.style && setIsOpenTem(true);
     return () => {
-      canvas.dispose(); //set unmount by dispote to make canvas not zoom-in when click on any object in workspace canvas
+      canvas.dispose(); // Dispose canvas when unmounting
     };
   }, [init]);
   //for cropper
@@ -179,8 +194,6 @@ const Editor: React.FC<{
       // addNotification("Failed to crop image", "error");
     }
   };
-  //for set template to open
-  console.log("length of cv content", cvContent.style);
 
   return (
     <div className="relative flex flex-col w-full h-full">
@@ -306,14 +319,14 @@ const Editor: React.FC<{
               <div className="flex justify-around w-full mt-4">
                 <button
                   id="apply-crop"
-                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+                  className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-700"
                   onClick={handleCropSave}
                 >
                   Apply Crop
                 </button>
                 <button
                   id="Close"
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
+                  className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700"
                   onClick={() => setIsCropping(false)}
                 >
                   Close

@@ -32,7 +32,7 @@ const Page = () => {
     async function GetData() {
       try {
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/?category=basic`
+          `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=basic`
         );
         setLoading(true);
         const res = response.data.data.basic;
@@ -63,7 +63,7 @@ const Page = () => {
         surname,
         lastname,
         career,
-        email,
+        email: user?.email,
         phonenumber: phone,
         dob: date, // Date of birth from state
         address, // Address from state
@@ -182,7 +182,7 @@ const Page = () => {
         <Sheet
           isOpen={isOpen}
           onClose={() => setOpen(false)}
-          snapPoints={[400, 200, 100, 0]}
+          snapPoints={[500, 400, 100, 0]}
         >
           <Sheet.Container>
             <Sheet.Header />

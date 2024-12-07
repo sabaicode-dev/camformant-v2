@@ -19,8 +19,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { UserProfile } from "./UserProfile";
 import CollapsibleContentMenu from "./CollapsibleContentMenu";
 import { itemsMenu } from "@/utils/navigationItems";
+import { useAuth } from "@/context/AuthContext";
 
 export function AppSidebar() {
+  const {user } = useAuth()
   return (
     <Sidebar className="font-roboto z-0 pt-10">
       <ScrollArea className="h-full pr-2">
@@ -46,7 +48,7 @@ export function AppSidebar() {
                     avatarImage="https://github.com/shadcn.png"
                     fallback="yo"
                   />
-                  Username
+                  <span className="text-sm"> {user?.name}</span>
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
