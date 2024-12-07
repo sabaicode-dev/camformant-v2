@@ -25,6 +25,7 @@ import {
   UserUpdateRequestParams,
   IUser,
   AuthenticationError,
+  FileSizeError,
 } from "@sabaicode-dev/camformant-libs";
 import { UserGetAllControllerParams } from "@/src/controllers/types/user-controller.type";
 import { Request as ExpressRequest } from "express";
@@ -402,7 +403,7 @@ export class UsersController extends Controller {
       return response;
     } catch (error) {
       if ((error as { message: string }).message === "Reach Limit File") {
-        throw new Error((error as { message: string }).message);
+        throw new FileSizeError();
       }
       throw error;
     }

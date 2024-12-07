@@ -948,6 +948,7 @@ export const useEditor = ({
       });
     }
     return undefined;
+    // eslint-disable-next-line
   }, [
     defaultState.style,
     moveLeft,

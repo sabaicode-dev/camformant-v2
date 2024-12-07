@@ -10,7 +10,6 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
 import { CvData } from "@/utils/types/user-profile";
 
-
 const CardResume: React.FC = () => {
   const [show, setShow] = useState<boolean>(false);
   const [cvs, setCvs] = useState<CvData | null>(null);
@@ -42,9 +41,9 @@ const CardResume: React.FC = () => {
 
   return (
     <div className="h-[400px] ">
-      <AttachedCvs next={next} setNext={setNext}  setLoading={setLoading}/>
+      <AttachedCvs setNext={setNext} setLoading={setLoading} />
 
-      {!show&&(
+      {!show && (
         <div className="flex flex-col items-center justify-center pt-5">
           <h1 className="w-full pb-5 text-xl font-semibold">My Resume</h1>
           <Image
@@ -61,9 +60,7 @@ const CardResume: React.FC = () => {
         </div>
       )}
 
-      {loading && (
-        <SkeletonLoader text="Loading..."/>
-      )}
+      {loading && <SkeletonLoader text="Loading..." />}
 
       {show && (
         <div className="flex flex-col items-center justify-center pt-5 pb-20">
@@ -75,7 +72,6 @@ const CardResume: React.FC = () => {
                   <MiniCardResume
                     item={item}
                     index={index}
-                    next={next}
                     setNext={setNext}
                     style="translate-x-[-70px]"
                   />
@@ -90,23 +86,3 @@ const CardResume: React.FC = () => {
 };
 
 export default CardResume;
-
-//incase we need this(skeletal of cv)
-// <div className="flex flex-col items-center justify-center pt-5 pb-20">
-// <h1 className="w-full pb-5 text-xl font-semibold">My Resume</h1>
-// <div className="flex flex-col w-full gap-3">
-//   {Array(5)
-//     .fill(0)
-//     .map((_, index) => (
-//       <div key={index} className="mb-5 rounded-xl drop-shadow-md">
-//         <MiniCardResume
-//           isLoading={true}
-//           name={""}
-//           index={index}
-//           next={next}
-//           setNext={setNext}
-//         />
-//       </div>
-//     ))}
-// </div>
-// </div>

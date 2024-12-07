@@ -17,23 +17,22 @@
     "db:dump": "ts-node src/database/scripts/dump-data"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.663.0",
+    "@sabaicode-dev/camformant-libs": "0.0.2",
     "@sentry/node": "^8.32.0",
     "@sentry/profiling-node": "^8.32.0",
     "agenda": "^5.0.0",
     "axios": "^1.7.7",
-    "cookie-parser": "^1.4.6",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "fs-extra": "^11.2.0",
     "joi": "^17.13.3",
     "jsonapi-serializer": "^3.6.9",
     "mongoose": "^8.4.3",
+    "multer": "^1.4.5-lts.1",
     "swagger-ui-express": "^5.0.1",
-    "tsoa": "^6.5.1",
-    "typescript": "^5.6.3",
-    "@sabaicode-dev/camformant-libs": "^0.0.1",
-    "@aws-sdk/client-s3": "^3.663.0",
-    "multer": "^1.4.5-lts.1"
+    "tsoa": "^6.5.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.25.3",

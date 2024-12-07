@@ -1,6 +1,5 @@
 // MUST ADD THIS SENTRY ABOVE ALL OTHER MODULES
 import "@/src/utils/sentry";
-
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 import { RegisterRoutes } from "@/src/routes/v1/routes";

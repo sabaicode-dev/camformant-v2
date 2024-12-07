@@ -34,8 +34,8 @@ export const CardLocation: React.FC<CardLocationProps> = ({ address }) => {
       <GoogleMap
         mapContainerStyle={{
           width: "100%",
-          height: "200px", // Inline style for the map container
-          borderRadius: "12px", // Optional: Border radius for the map itself
+          height: "200px", 
+          borderRadius: "12px", 
         }}
         center={center!}
         zoom={14}

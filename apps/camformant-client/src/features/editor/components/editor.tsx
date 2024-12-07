@@ -70,7 +70,6 @@ const Editor: React.FC<{
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    console.log("inside useefect 9of editor");
     const canvas = new fabric.Canvas(canvasRef.current, {
       controlsAboveOverlay: true,
       preserveObjectStacking: true,
@@ -169,7 +168,7 @@ const Editor: React.FC<{
     });
     return () => {
       canvas.dispose(); // Dispose canvas when unmounting
-      if (cvContent.style) {
+      if (!cvContent.style) {
         setIsOpenTem(true);
       }
     };

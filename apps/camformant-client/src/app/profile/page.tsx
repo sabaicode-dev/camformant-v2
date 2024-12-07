@@ -17,7 +17,7 @@ import { useAuth } from "@/context/auth";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
-import { uploadToS3 } from "@/utils/functions/upload-to-s3";
+import { S3FileResParams, uploadToS3 } from "@/utils/functions/upload-to-s3";
 
 const SkeletonLoader = ({
   width = "w-32",
@@ -102,9 +102,11 @@ const Page: React.FC = () => {
       const blob = await response.blob();
       const file = new File([blob], "cropped-image.png", { type: "image/png" });
       setIsCropping(false);
-      const image = await uploadToS3(file);
+      const image: S3FileResParams | undefined = await uploadToS3(file);
       if (image) {
-        changeProfile(image);
+        image.statusCode == 200 && image.value
+          ? changeProfile(image.value)
+          : addNotification(image.errorMessage!, "error");
       }
     } catch (error) {
       console.error("Failed to crop image", error);

@@ -278,7 +278,7 @@ class UserService {
     }
   }
   handleFile(request: express.Request): Promise<any> {
-    const MAX_FILE_SIZE = 1024 * 1024; //1mb
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; //5mb
     const multerSingle = multer().single("file");
     const mockResponse = {} as express.Response;
     return new Promise((resolve, reject) => {
@@ -288,11 +288,7 @@ class UserService {
         }
         if (request.file) {
           if (request.file.size > MAX_FILE_SIZE) {
-            return reject(
-              new Error(
-                `Reach Limit File`
-              )
-            );
+            return reject(new Error(`Reach Limit File`));
           }
           resolve(request.file);
         }
