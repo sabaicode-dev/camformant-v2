@@ -3,13 +3,11 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
-  TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Checkbox } from "../ui/checkbox"
 
 export function TableSkeleton() {
+
   return (
     <div className="w-full float-end  border m-2 p-2 rounded-md">
       <div className="flex items-center py-4 justify-between">
@@ -18,18 +16,7 @@ export function TableSkeleton() {
       </div>
       <div className="rounded-md border">
         <Table className="overflow-hidden">
-          <TableHeader>
-            <TableRow>
-              <TableHead><Checkbox className="border-white"/></TableHead>
-              <TableHead>Profile</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Job Title</TableHead>
-              <TableHead>Applied On</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody className="">
+          <TableBody>
             {Array.from({ length: 5 }).map((_, index) => (
               <TableRow key={index} className="w-full">
                 <TableCell>

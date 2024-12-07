@@ -1,17 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye, MoreHorizontal, SquarePen, Trash } from "lucide-react";
-import { ArrowUpDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Eye, SquarePen, Trash } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import axiosInstance from "@/utils/axios";
 import { useState } from "react";
@@ -44,45 +34,22 @@ export const columns: ColumnDef<Jobs>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "title", // Maps to the 'title' field in the MongoDB document
-    header: () => {
-      return <div>Job</div>;
-    },
-    cell: ({ getValue }) => {
-      const title = getValue<string>();
-      return <div>{title || "No Title Available"}</div>;
+    accessorKey: "title",
+    header: "Job Title",
+    cell: ({ row }) => {
+      return <div>{row.original.title || "No Title Available"}</div>;
     },
   },
-  // {
-  //   accessorKey: "Position",
-  //   cell: ({ row }) => {
-  //     const positions = row.original.position;
-  //     console.log("Row data:", positions);
-  //     return (
-  //       <>
-  //         <div>
-  //           {positions && positions.length > 0
-  //             ? positions.join(", ") // Join array elements with a comma
-  //             : "No positions available"}{" "}
-  //           {/* Fallback text if the array is empty */}
-  //         </div>
-  //       </>
-  //     );
-  //   },
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
   {
     accessorKey: "type",
+    header: "Type",
     cell: ({ row }) => {
       const types = row.original.type;
-      console.log("type", types);
       return (
         <>
           {types && types.length > 0
-            ? types.join(", ") // Join array elements with a comma
+            ? types.join(", ") 
             : "No types available"}{" "}
-          {/* Fallback text if the array is empty */}
         </>
       );
     },
@@ -91,16 +58,9 @@ export const columns: ColumnDef<Jobs>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: ({ column }) => {
-      return <div>Posted Date</div>;
-    },
-    cell: ({ getValue }) => {
-      const createAt = getValue<string>();
-      const formatDate = (isoDataString: string) => {
-        const date = new Date(isoDataString);
-        return date.toISOString().slice(0, 10);
-      };
-      return <div>{formatDate(createAt)}</div>;
+    header: "Posted Date",
+    cell: ({ row }) => {
+      return <div>{row.original.createdAt ? new Date(row.original.createdAt).toLocaleDateString() : "N/A"}</div>;
     },
   },
   {
@@ -120,9 +80,7 @@ export const columns: ColumnDef<Jobs>[] = [
 
   {
     accessorKey: "deadline",
-    header: ({ column }) => {
-      return <div>Close Date</div>;
-    },
+    header:"dfghj",
     cell: ({ getValue }) => {
       const deadlineAt = getValue<string>();
       const formatDate = (isoDataString: string) => {
