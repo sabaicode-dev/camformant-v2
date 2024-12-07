@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../globals.css";
 import { NavigationBar } from "@/components/navigation-bar/navigation-bar";
-// import { SocketContextProvider } from "@/context/SocketContext";
+import { SocketContextProvider } from "@/context/SocketContext";
 // import { AuthProvider } from "@/context/auth";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -38,9 +38,7 @@ export default function RootLayout({
     <div>
       {/* <AuthProvider> */}
       <NavigationBar />
-      {/* <SocketContextProvider> */}
-      {children}
-      {/* </SocketContextProvider> */}
+      <SocketContextProvider>{children}</SocketContextProvider>
       {/* </AuthProvider> */}
     </div>
   );

@@ -23,7 +23,6 @@ const setupSocketIO = (io: Server) => {
   io.on("connection", (socket: Socket) => {
     console.log("user socket id:::", socket.id);
 
-    //todo: forward current user role from request to here
     // Check if the cookies exist in the socket handshake headers
     const cookies = socket.handshake.headers["cookie"];
     // console.log("cookies:::", cookies);
@@ -51,19 +50,16 @@ const setupSocketIO = (io: Server) => {
       const online = Object.keys(userSocketMap);
       //todo: when done remove online.push this is for test only
       //test if this company online
-      online.push("674d6ea12c4d2fa1b92db9e0");
+      online.push("674535e502cd5277dce74f5b");
       //io.emit() use to send any event to connected users
       io.emit("getOnlineUsers", online);
       console.log("user is online:::", online);
     }
 
-    //todo: send message
     // Handle incoming messages
     socket.on("sendMessage", async (data: Message) => {
       const cookies = socket.handshake.headers["cookie"];
       try {
-        console.log("data:::", data);
-        //bug::
         if (cookies) {
           const response = await axios.post(
             `${configs.MessageUrl}/send/${data.receiverId}`,
@@ -100,9 +96,8 @@ const setupSocketIO = (io: Server) => {
 
     socket.on("disconnect", () => {
       if (userId) {
-        // delete userSocketMap[userId];
+        delete userSocketMap[userId];
         const online = Object.keys(userSocketMap);
-        online.push("674d6ea12c4d2fa1b92db9e0"); //
         console.log("after dis::", online);
 
         io.emit("getOnlineUsers", online);
