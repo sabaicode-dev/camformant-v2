@@ -1,9 +1,6 @@
 import { Server, Socket } from "socket.io";
-// import { MessageService } from "../services/message.service";
 import axios from "axios";
 import configs from "../config";
-// import axios from "axios";
-// const onlineUsers = new Map<string, Set<string>>(); //type of string or set string
 interface Message {
   _id?: string;
   senderId: string;
@@ -17,15 +14,12 @@ interface Message {
 const userSocketMap: { [key: string]: string } = {}; //{userId:value}
 
 const setupSocketIO = (io: Server) => {
-  // const messageService = new MessageService();
   const online = Object.keys(userSocketMap);
   io.emit("getOnlineUsers", online);
   io.on("connection", (socket: Socket) => {
-    console.log("user socket id:::", socket.id);
+    // console.log("user socket id:::", socket.id);
 
-    // Check if the cookies exist in the socket handshake headers
     const cookies = socket.handshake.headers["cookie"];
-    // console.log("cookies:::", cookies);
 
     if (cookies) {
       const userIdCookie = cookies
@@ -48,15 +42,10 @@ const setupSocketIO = (io: Server) => {
     const userId = socket.data.userId;
     if (userId) {
       const online = Object.keys(userSocketMap);
-      //todo: when done remove online.push this is for test only
-      //test if this company online
-      online.push("674535e502cd5277dce74f5b");
-      //io.emit() use to send any event to connected users
       io.emit("getOnlineUsers", online);
       console.log("user is online:::", online);
     }
 
-    // Handle incoming messages
     socket.on("sendMessage", async (data: Message) => {
       const cookies = socket.handshake.headers["cookie"];
       try {
@@ -76,17 +65,12 @@ const setupSocketIO = (io: Server) => {
           );
 
           const savedMessage = response.data.data;
-          console.log("new message:::", savedMessage);
-          //todo: realtime message (wait for dashboard chat to test)
           const receiverSocketId = userSocketMap[data.receiverId];
 
-          //send notify to this user
           if (savedMessage && receiverSocketId) {
             console.log("Message delivered to:", receiverSocketId);
             io.to(receiverSocketId).emit("receiveMessage", savedMessage);
           }
-          //test received done
-          // socket.broadcast.emit("receiveMessage", savedMessage);
         }
       } catch (error) {
         console.error("Error handling message:", error);

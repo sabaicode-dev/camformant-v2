@@ -10,6 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/Spinner";
 import { useSocketContext } from "@/context/SocketContext";
+import socket from "@/utils/socketClient";
 
 interface Conversation {
   _id: string;
@@ -126,7 +127,6 @@ const ChatDashboard: React.FC = () => {
 
   const handleSendMessage = async () => {
     if (!selectedConversation || messageInput.trim() === "") return;
-
     if (
       messages.length > 0 &&
       messages[messages.length - 1].message === messageInput
@@ -134,7 +134,7 @@ const ChatDashboard: React.FC = () => {
       console.log("Duplicate message detected. Not sending.");
       return;
     }
-
+    
     const optimisticMessage: Message = {
       _id: Date.now().toString(),
       senderId: user?._id || "",
@@ -151,13 +151,13 @@ const ChatDashboard: React.FC = () => {
       );
       setMessageInput("");
       setTimeout(() => scrollToBottom("smooth"), 100);
-
-      await axiosInstance.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/messages/send/${selectedConversation.receiver}`,
-        {
-          message: messageInput,
-        }
-      );
+      socket.emit("sendMessage",optimisticMessage);
+      // await axiosInstance.post(
+      //   `${process.env.NEXT_PUBLIC_API_URL}/v1/messages/send/${selectedConversation.receiver}`,
+      //   {
+      //     message: messageInput,
+      //   }
+      // );
     } catch (error) {
       console.error("Failed to send message:", error);
       setMessages((prevMessages) =>
@@ -166,7 +166,18 @@ const ChatDashboard: React.FC = () => {
       setMessageInput(optimisticMessage.message);
     }
   };
+  useEffect(() => {
+    // Listen for real-time messages
+    socket.on("receiveMessage", (newMessage: Message) => {
+      setMessages([...messages!, newMessage]);
+      // playNotificationSound();
+      scrollToBottom();
+    });
 
+    return () => {
+      socket.off("receiveMessage");
+    };
+  }, [messages, setMessages,scrollToBottom]);
   useEffect(() => {
     const messageContainer = messageRef.current;
 
