@@ -9,6 +9,7 @@ import { ChatMessage } from '@/components/chat/ChatMessage';
 import { useAuth } from '@/context/AuthContext';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/Spinner';
+import { useSocketContext } from '@/context/SocketContext';
 
 interface Conversation {
   _id: string;
@@ -32,6 +33,8 @@ interface Message {
 
 const ChatDashboard: React.FC = () => {
   const { user } = useAuth();
+  const socketContext = useSocketContext();
+  const onlineUsers = socketContext?.onlineUsers || [];
   const messageRef = useRef<HTMLDivElement>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
@@ -173,6 +176,7 @@ const ChatDashboard: React.FC = () => {
         messageContainer.removeEventListener('scroll', handleScroll);
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedConversation, page, loading, hasMore]);
 
   useEffect(() => {
@@ -181,12 +185,14 @@ const ChatDashboard: React.FC = () => {
         scrollToBottom('smooth');
       }, 100); 
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedConversation, messages]);
   
   useEffect(() => {
     fetchConversations();
   }, [fetchConversations]);
-  
+
+  console.log(":::::::::::::",onlineUsers)
   return (
     <div className="flex max-w-screen h-full bg-gray-200 border-1 rounded-sm">
       {/* Conversations Sidebar */}
@@ -216,23 +222,21 @@ const ChatDashboard: React.FC = () => {
               name={conversation.name}
               profile={conversation.profile}
               isSelected={selectedConversation?._id === conversation._id}
+              isOnline={onlineUsers.includes(conversation.receiver)}
               onClick={() => handleSelectConversation(conversation)}
             />
           ))}
         </div>
       </div>
-
       {/* Chat Window */}
       <div className=" h-full flex-grow flex flex-col ">
         {selectedConversation ? (
           <>
-            <ChatHeader name={selectedConversation.name} profile={selectedConversation.profile} onBack={() => setSelectedConversation(null)} />
-
+            <ChatHeader name={selectedConversation.name} profile={selectedConversation.profile} onBack={() => setSelectedConversation(null)} isOnline={onlineUsers.includes(selectedConversation.receiver)} />
             <div className="h-full flex-1 overflow-y-auto p-4 space-y-4 chat-container" ref={messageRef} >
               {loading 
               && page > 1 
               && <Spinner className='text-orange-500'><span className='text-orange-500 text-sm'>loading message....</span></Spinner>}
-                   
               {!hasMore && (
                 <div className="text-center text-gray-500 py-4">
                   No more messages

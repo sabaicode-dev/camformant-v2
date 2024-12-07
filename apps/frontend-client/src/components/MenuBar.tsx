@@ -11,9 +11,17 @@ import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "./ui/button";
 import { useSidebarContext } from "@/context/SidebarContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export const MenuBar = () => {
-  const {user }=useAuth()
+  const {user ,signOut }=useAuth()
   const { isOpen, toggleSidebar } = useSidebarContext();
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -58,8 +66,23 @@ export const MenuBar = () => {
             <ToolTip icon={<Mail />} text="Inbox" />
           </div>
           <span className="text-sm"> {user?.name}</span>
-          <Image src={user?.profile || ""} className={"w-11 h-11 rounded-full object-cover"}  alt={user?.name || ""}width={40} height={40}
-          />
+          <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Image
+              src={user?.profile || ""}
+              className={"w-11 h-11 rounded-full object-cover"}
+              alt={user?.name || ""}
+              width={40}
+              height={40}
+            />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Profile</DropdownMenuItem>
+            <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         </div>
       </div>
     </Menubar>
