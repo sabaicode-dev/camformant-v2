@@ -5,7 +5,7 @@ import { Loader } from "@googlemaps/js-api-loader";
 import React, { SetStateAction, useEffect, useRef, useState } from "react";
 
 const Map: React.FC<{
-  setFormData: React.Dispatch<React.SetStateAction<Job>>; // Ensure this expects `Jobs`
+  setFormData: React.Dispatch<React.SetStateAction<Jobs>>; // Ensure this expects `Jobs`
   existingMap?: string;
 }> = ({ setFormData, existingMap }) => {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -27,7 +27,7 @@ const Map: React.FC<{
           console.log("hello user", location); //current address user
           const locArr = formattedAddress.split(",").slice(-2);
           const locationString = `${locArr[0].trim()}, ${locArr[1].trim()}`;
-          setFormData((prev: Job) => {
+          setFormData((prev: Jobs) => {
             return {
               ...prev,
               location: locationString,

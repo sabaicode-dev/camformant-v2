@@ -12,11 +12,13 @@ const page = ({ params }: { params: { jobId: string } }) => {
   const [jobData, setJobData] = useState<Jobs>();
   const [isLoading, setLoading] = useState<boolean>(false);
   useEffect(() => {
+    
+    console.log("Fetching job data for Job ID:", params.jobId); // Log the jobId
     async function fetchData() {
       try {
         setLoading(true);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.JOBS}/${params.jobId}`
+          `http://localhost:4000/v1/jobs/${params.jobId}`
         );
         console.log("response:", response);
         setJobData(response.data.data);

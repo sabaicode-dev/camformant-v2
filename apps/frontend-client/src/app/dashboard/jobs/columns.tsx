@@ -139,7 +139,7 @@ export const columns: ColumnDef<Jobs>[] = [
         }
         try {
           const response = await axiosInstance.delete(
-            `/v1/jobs/${jobFromCol._id}`
+            `http://localhost:4000/v1/jobs/${jobFromCol._id}`
           );
           console.log("Delete Response:", response.data);
           // Assuming setJobs is a state updater for the list of jobs

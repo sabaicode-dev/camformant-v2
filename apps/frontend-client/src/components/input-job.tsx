@@ -10,7 +10,10 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { jobFormSchema } from "@/schema/auth/formSchema";
 import { z } from "zod";
 
-type FormInputValue = z.infer<typeof jobFormSchema>;
+const validateForm = (formData: Jobs) => {
+  const result = jobFormSchema.safeParse(formData);
+  return result.success ? null : result.error.errors;
+};
 
 const InputForm: React.FC<{
   formTitle: string;
@@ -40,47 +43,6 @@ const InputForm: React.FC<{
       : "",
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    setErrorWithZod()
-    const { name, value } = e.target;
-    if (Array.isArray(formData[name as keyof Jobs])) {
-      console.log("value split", value.split(","));
-      setFormData({
-        ...formData,
-        [name]: value.split(","),
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
-  };
-
-  const handleArrayChange = (name: keyof Jobs, value: string[]) => {
-    console.log("name:::", name, "values:::", value);
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value, // Directly assign the array of strings
-    }));
-  };
-
-  const handleChangeNum = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value === "" ? null : Number(value),
-    });
-  };
-
   const workTypeOptions = [
     { name: "Remote" },
     { name: "On-Site" },
@@ -99,7 +61,90 @@ const InputForm: React.FC<{
   ];
   const [scheduleSelected, setscheduleSelected] = useState<string[]>([]);
 
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleArrayChange = (name: keyof Jobs, value: string[]) => {
+    console.log("Array Field - Name:", name, "Values:", value);
+    setFormData((prevState) => {
+        const updated = { ...prevState, [name]: value };
+
+        validateAndSetErrors(name,updated); // Validate the updated form data
+        return updated;
+
+    });
+  };
+
+  const handleChangeNum = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => {
+      const updatedFormData = {
+        ...prevState,
+        [name]: value === "" ? null : Number(value), // Handle numeric conversion
+      };
+      validateAndSetErrors(name, updatedFormData); // Validate the updated form data
+      return updatedFormData;
+    });
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+
+    // Update form data dynamically based on field type
+    setFormData((prevFormData) => {
+      const updatedFormData = {
+        ...prevFormData,
+        [name]: Array.isArray(prevFormData[name as keyof typeof prevFormData])
+          ? value.split(",") // If the field is an array, split the value
+          : value, // Otherwise, assign the value directly
+      };
+
+      // Validate the updated form data
+      const validationErrors = validateForm(updatedFormData);
+
+      if (validationErrors) {
+        const newErrors: { [key: string]: string } = {};
+        validationErrors.forEach((error) => {
+          const fieldPath = Array.isArray(error.path)
+            ? error.path.join(".") // Join array into a string (e.g., "field.subfield")
+            : error.path;
+          newErrors[fieldPath] = error.message;
+        });
+        setErrors(newErrors);
+      } else {
+        setErrors((prevErrors) => {
+          const { [name]: _, ...rest } = prevErrors; // Remove the error for the current field
+          return rest;
+        });
+      }
+
+      return updatedFormData; // Update the form data
+    });
+  };
+  // Utility for validation and updating errors
+   const validateAndSetErrors = (name: string, data: typeof formData) => {
+    const result = jobFormSchema.safeParse(data);
+    if (!result.success) {
+      const validationErrors = result.error.errors.reduce((acc, err) => {
+        const path = err.path.join(".");
+        acc[path] = err.message;
+        return acc;
+      }, {} as Record<string, string>);
+      setErrors(validationErrors);
+      return validationErrors;
+    }
+    setErrors({});
+    return {};
+  };
+
   const setErrorWithZod = (event?: React.FormEvent<HTMLFormElement>) => {
     const result = jobFormSchema.safeParse({
       ...formData,
@@ -123,9 +168,11 @@ const InputForm: React.FC<{
       console.log("Form data is valid:", formData);
     }
   };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     // Validate the form data using zod
 
+    console.log("result::::post",formData)
     setErrorWithZod(event);
     try {
       let response: any;
@@ -137,8 +184,9 @@ const InputForm: React.FC<{
         );
         console.log("post job", formData);
       } else {
+        console.log("result::::put",formData)
         response = await axiosInstance.put(
-          `${API_ENDPOINTS.JOBS}/${existingData!._id}`,
+          `http://localhost:4000/v1/jobs/${existingData!._id}`,
           { ...formData, companyId: existingData?.company?._id || "" }
         );
       }
@@ -357,25 +405,7 @@ const InputForm: React.FC<{
             </div>
           </div>
 
-          {/* Update Date */}
-          {/* <div className="mb-6">
-            <Label
-              htmlFor="updatedAt"
-              className="block text-black text-[16px] mb-1"
-            >
-              Update Date
-            </Label>
-            <DateInput
-              name="updatedAt"
-              type="date"
-              value={formData.updatedAt} 
-              onChange={handleChange}
-              placeholder="YYYY-MM-DD"
-            />
-            {errors.updatedAt && (
-              <p className="text-red-500 text-sm">{errors.updatedAt}</p>
-            )}
-          </div> */}
+         
 
           {/* required_experience */}
           <div className="mb-2">

@@ -12,7 +12,7 @@ const PostPage = () => {
       <DynamicBreadcrumb />
       {pathname}
       {/* <InputForm formTitle="Post Job"/> */}
-      <InputForms/>
+      <InputForm formTitle="post"/>
     </>
   );
 };

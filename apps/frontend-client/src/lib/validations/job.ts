@@ -7,6 +7,7 @@ export const jobFormSchema = z.object({
     _id: z.string(),
     name: z.string().min(1, 'Company name is required'),
   }),
+  position: z.array(z.string()).min(1, "job category is required"),
   type: z.array(z.enum(JOB_TYPES)).min(1, 'Select at least one job type'),
   workMode: z.array(z.enum(WORK_MODES)).min(1, 'Select at least one work mode'),
   schedule: z.array(z.enum(SCHEDULES)).min(1, 'Select at least one schedule'),
