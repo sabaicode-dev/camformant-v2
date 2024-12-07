@@ -82,7 +82,7 @@ const ChatDashboard: React.FC = () => {
     try {
       setLoading(true);
       const response = await axiosInstance.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/messages/${conversationId}?page=${pageNum}&limit=24`
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/messages/${conversationId}?page=${pageNum}&limit=14`
       );
       const newMessages = response.data.conversation.messages;
 
@@ -127,13 +127,13 @@ const ChatDashboard: React.FC = () => {
 
   const handleSendMessage = async () => {
     if (!selectedConversation || messageInput.trim() === "") return;
-    if (
-      messages.length > 0 &&
-      messages[messages.length - 1].message === messageInput
-    ) {
-      console.log("Duplicate message detected. Not sending.");
-      return;
-    }
+    // if (
+    //   messages.length > 0 &&
+    //   messages[messages.length - 1].message === messageInput
+    // ) {
+    //   console.log("Duplicate message detected. Not sending.");
+    //   return;
+    // }
     
     const optimisticMessage: Message = {
       _id: Date.now().toString(),
