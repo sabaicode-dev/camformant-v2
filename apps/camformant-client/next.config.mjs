@@ -77,7 +77,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "https://teytey.s3.us-east-1.amazonaws.com",
+        hostname: "teytey.s3.us-east-1.amazonaws.com",
         pathname: "/**",
       },
     ],
