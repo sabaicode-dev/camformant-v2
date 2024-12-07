@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 // Define TypeScript interface for User
 export interface IUser {
-  _id?: string;
+  _id?: mongoose.Types.ObjectId;
   sub: string;
   googleSub: string;
   facebookSub: string;
