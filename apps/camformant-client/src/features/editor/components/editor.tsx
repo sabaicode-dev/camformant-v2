@@ -171,7 +171,7 @@ const Editor: React.FC<{
     return () => {
       canvas.dispose(); // Dispose canvas when unmounting
     };
-  }, [init, cvContent.style]);
+  }, [init]);
   //for cropper
   const handleCropComplete = (_croppedArea: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);

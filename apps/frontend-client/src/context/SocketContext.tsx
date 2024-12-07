@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-"use client"
+"use client";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import socket from "@/utils/socketClient";
@@ -45,12 +45,9 @@ export const SocketContextProvider = ({
     }
   }, [userId]);
 
-  console.log("online:::", onlineUsers);
-
   return (
     <SocketContext.Provider value={{ socket: sockets!, onlineUsers }}>
       {children}
     </SocketContext.Provider>
   );
 };
-
