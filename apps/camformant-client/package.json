@@ -57,7 +57,7 @@
     "react-swipeable": "^7.0.1",
     "react-use": "^17.5.1",
     "sharp": "^0.33.5",
-    "socket.io-client": "^4.8.0",
+    "socket.io-client": "^4.8.1",
     "sst": "^2.43.1",
     "style-loader": "^4.0.0",
     "swiper": "11.1.4",

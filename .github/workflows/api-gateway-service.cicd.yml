@@ -140,6 +140,11 @@ jobs:
             cd /home/ubuntu/apps/api-gateway/build
             yarn install --production
 
+            if ! command -v pm2 &> /dev/null
+                  then
+                      echo "PM2 not found, installing..."
+                      yarn global add pm2
+                  fi
             # Check if the PM2 process is running
             if pm2 show api-gateway-service > /dev/null; then
               echo "Application is running. Restarting..."

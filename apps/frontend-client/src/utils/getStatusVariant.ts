@@ -8,8 +8,6 @@ export function getStatusVariant(status: StatusDate["status"]): "default" | "sec
             return "secondary";
         case "Interview":
             return "warning";
-        case "Reject":
-            return "destructive";
         case "Accept":
             return "success";
         default:

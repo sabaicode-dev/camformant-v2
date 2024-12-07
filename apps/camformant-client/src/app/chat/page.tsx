@@ -132,6 +132,8 @@ const Chat = () => {
   const handleConversationClick = (conId: string) => {
     router.push(`/chat/${conId}`);
   };
+  console.log("onlineUsers:::", onlineUsers);
+
   return (
     <div className="relative h-screen">
       <Background>
