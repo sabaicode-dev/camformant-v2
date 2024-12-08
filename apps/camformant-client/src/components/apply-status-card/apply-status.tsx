@@ -84,14 +84,7 @@ const ApplyStatus: React.FC = () => {
   if (!isAuthenticated) {
     return (
       <div className="flex flex-col items-center justify-center px-8 gap-y-10">
-        <div className="flex items-center justify-start w-full mt-20 text-xl">
-          <span
-            className="p-2 text-3xl text-white rounded-lg hover:cursor-pointer bg-primaryCam"
-            onClick={() => router.back()}
-          >
-            <IoArrowBack />
-          </span>
-        </div>
+        <div className="flex items-center justify-start w-full mt-20 text-xl"></div>
         <CallToAction
           text="Please Login to your Account"
           buttonLink="/login"

@@ -1,22 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { Job } from "@/lib/types/job";
 import { Jobs } from "@/utils/types/form-type";
 import { Loader } from "@googlemaps/js-api-loader";
-import React, { SetStateAction, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const Map: React.FC<{
-  setFormData: React.Dispatch<React.SetStateAction<Jobs>>; // Ensure this expects `Jobs`
+  setFormData: React.Dispatch<React.SetStateAction<Jobs>>;
   existingMap?: string;
 }> = ({ setFormData, existingMap }) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const markerRef = useRef<google.maps.Marker | null>(null); // Store the marker reference
-  const [initialLocation, setInitialLocation] =
-    useState<google.maps.LatLngLiteral | null>(null); // To store the initial location
-  const [location, setLocation] = useState<string>(""); // State to store the current address
-  const [errorMessage, setErrorMessage] = useState<string | null>(null); // State to handle error messages
+  const markerRef = useRef<google.maps.Marker | null>(null);
+  const [initialLocation, setInitialLocation] = useState<google.maps.LatLngLiteral | null>(null);
+  const [location, setLocation] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
 
-  // Reverse geocoding function to convert lat/lng to an address
   const reverseGeocode = (location: google.maps.LatLngLiteral) => {
     const geocoder = new google.maps.Geocoder();
     geocoder
@@ -24,19 +22,16 @@ const Map: React.FC<{
       .then((response) => {
         if (response.results && response.results.length > 0) {
           const formattedAddress = response.results[0].formatted_address;
-
-          console.log("hello user", location); //current address user
           const locArr = formattedAddress.split(",").slice(-2);
           const locationString = `${locArr[0].trim()}, ${locArr[1].trim()}`;
-          setFormData((prev: Jobs) => {
-            return {
-              ...prev,
-              location: locationString,
-              address: `${location.lat},${location.lng}`,
-            };
-          });
-          console.log("adree", locArr);
-          setLocation(formattedAddress); // Set the current address state
+          
+          setFormData((prev: Jobs) => ({
+            ...prev,
+            location: locationString,
+            address: `${location.lat},${location.lng}`,
+          }));
+          
+          setLocation(formattedAddress);
         } else {
           console.error("No address found for this location.");
         }
@@ -46,7 +41,6 @@ const Map: React.FC<{
       });
   };
 
-  // Function to check geolocation permissions
   const checkGeolocationPermission = async () => {
     try {
       const result = await navigator.permissions.query({ name: "geolocation" });
@@ -65,31 +59,38 @@ const Map: React.FC<{
 
   useEffect(() => {
     const initializeMap = async () => {
+      // Ensure mapRef is available and API key is set
+      if (!mapRef.current) {
+        console.error("Map container is not available");
+        return;
+      }
+
+      if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
+        setErrorMessage("Google Maps API key is missing");
+        return;
+      }
+
       try {
         const loader = new Loader({
-          apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string, // Replace with your actual API key
+          apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
           version: "quarterly",
+          libraries: ["places"]  // Add places library
         });
 
-        // Load Google Maps libraries
-        const { Map } = (await loader.importLibrary(
-          "maps"
-        )) as typeof google.maps;
-        const { Marker } = (await loader.importLibrary(
-          "marker"
-        )) as google.maps.MarkerLibrary;
+        // Ensure Google Maps libraries are loaded
+        await loader.load();
 
-        // Check if the browser supports Geolocation
+        const { Map } = await loader.importLibrary("maps");
+        const { Marker } = await loader.importLibrary("marker");
+
         if (!navigator.geolocation) {
           setErrorMessage("Geolocation is not supported by this browser.");
           return;
         }
 
-        // Check if geolocation permissions are granted
         const hasPermission = await checkGeolocationPermission();
         if (!hasPermission) return;
 
-        // Get user's current location with higher accuracy
         navigator.geolocation.getCurrentPosition(
           async (position) => {
             let userLocation: { lat: number; lng: number };
@@ -106,49 +107,37 @@ const Map: React.FC<{
               };
             }
 
-            console.log("User Location:", userLocation); // Log the location to verify it's correct
-            setInitialLocation(userLocation); // Store the initial location
+            setInitialLocation(userLocation);
 
-            // Map options
             const mapOptions: google.maps.MapOptions = {
               center: userLocation,
-              zoom: 15, // Closer zoom to focus on the user's location
+              zoom: 15,
             };
 
-            // Initialize the map
-            const map = new Map(mapRef.current as HTMLDivElement, mapOptions);
+            // Add null check before initializing map
+            if (mapRef.current) {
+              const map = new Map(mapRef.current, mapOptions);
 
-            // Initialize marker at user's location
-            const userMarker = new Marker({
-              position: userLocation,
-              map: map,
-              title: "You are here", // Tooltip text
-              draggable: true, // Enable marker dragging
-            });
+              const userMarker = new Marker({
+                position: userLocation,
+                map: map,
+                title: "You are here",
+                draggable: true,
+              });
 
-            // Store the marker reference in useRef
-            markerRef.current = userMarker;
+              markerRef.current = userMarker;
 
-            // Add dragend event listener to update position when the marker is moved
-            userMarker.addListener("dragend", () => {
-              const newPosition = userMarker.getPosition();
-              if (newPosition) {
-                const newLocation = newPosition.toJSON();
-                console.log(
-                  "New Marker Position:",
-                  newLocation,
-                  initialLocation
-                );
-                // You could update the address when the marker is dragged as well
-                reverseGeocode(newLocation);
-                console.log("adressafter drag", location);
-              }
-            });
+              userMarker.addListener("dragend", () => {
+                const newPosition = userMarker.getPosition();
+                if (newPosition) {
+                  const newLocation = newPosition.toJSON();
+                  reverseGeocode(newLocation);
+                }
+              });
 
-            // Reverse geocode to get the address from coordinates
-            await reverseGeocode(userLocation);
-
-            console.log("Map and Marker initialized successfully.");
+              await reverseGeocode(userLocation);
+              setIsMapLoaded(true);
+            }
           },
           (error) => {
             console.error("Error getting current position:", error);
@@ -157,9 +146,9 @@ const Map: React.FC<{
             );
           },
           {
-            enableHighAccuracy: true, // Request higher accuracy
-            timeout: 10000, // Wait for 10 seconds before timeout
-            maximumAge: 0, // Ensure the location is fresh
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0,
           }
         );
       } catch (error) {
@@ -174,8 +163,7 @@ const Map: React.FC<{
   const resetToCurrentLocation = (e: React.MouseEvent) => {
     e.preventDefault();
     if (markerRef.current && initialLocation) {
-      markerRef.current.setPosition(initialLocation); // Reset marker position to initial location
-      // Optionally, update address when resetting location
+      markerRef.current.setPosition(initialLocation);
       reverseGeocode(initialLocation);
     }
   };
@@ -183,14 +171,26 @@ const Map: React.FC<{
   return (
     <div>
       {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
-      <div style={{ height: "400px", width: "100%" }} ref={mapRef}></div>
-      <div style={{ marginTop: "10px" }}>
-        <strong>Current Address:</strong>
-        <p>{location || "Fetching address..."}</p>
-      </div>
-      <button onClick={resetToCurrentLocation} style={{ marginTop: "10px" }}>
-        Reset to Current Location
-      </button>
+      {!isMapLoaded && <div>Loading map...</div>}
+      <div 
+        style={{ 
+          height: "400px", 
+          width: "100%", 
+          display: isMapLoaded ? 'block' : 'none' 
+        }} 
+        ref={mapRef}
+      />
+      {isMapLoaded && (
+        <>
+          <div style={{ marginTop: "10px" }}>
+            <strong>Current Address:</strong>
+            <p>{location || "Fetching address..."}</p>
+          </div>
+          <button onClick={resetToCurrentLocation} style={{ marginTop: "10px" }}>
+            Reset to Current Location
+          </button>
+        </>
+      )}
     </div>
   );
 };

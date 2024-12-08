@@ -445,34 +445,6 @@ class UserRepository {
         return result;
       }
     } catch (err) {
-      // if (err instanceof mongoose.Error.ValidationError) {
-      //   const validationErrors: { [key: string]: string } = {};
-
-      //   // Collect the error messages
-      //   for (const key in err.errors) {
-      //     validationErrors[key] = err.errors[key].message;
-      //   }
-
-      //   // Check for the first required error and throw it
-      //   const firstRequiredError = Object.entries(validationErrors).find(
-      //     ([_key, message]) => message.includes("required")
-      //   );
-
-      //   if (firstRequiredError) {
-      //     const [_key, _message] = firstRequiredError;
-      //     console.log("First required error message: ", validationErrors);
-
-      //     // Throw with only the first required error or all errors
-      //     throw new InvalidInputError({
-      //       errors: validationErrors, // You can also pass the full validationErrors here
-      //     });
-      //   }
-
-      //   // If no "required" error found, throw all validation errors
-      //   throw new InvalidInputError({
-      //     errors: validationErrors,
-      //   });
-      // }
       console.log(err)
       throw err;
     }

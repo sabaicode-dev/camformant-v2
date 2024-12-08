@@ -12,7 +12,6 @@ import {
   Query,
   Middlewares,
   Request,
-  UploadedFile,
 } from "tsoa";
 import UserService from "@/src/services/user.service";
 import sendResponse from "@/src/utils/send-response";
@@ -21,6 +20,7 @@ import userJoiSchema from "@/src/schemas/user.schema";
 import {
   prettyObject,
   AuthenticationError,
+  FileSizeError,
 } from "@sabaicode-dev/camformant-libs";
 import { Request as ExpressRequest } from "express";
 import agenda from "@/src/utils/agenda";
@@ -143,7 +143,7 @@ export class UsersController extends Controller {
 
   @Get("/profile-detail/:userId")
   public async getProfileByID(
-    @Path() userId:string,
+    @Path() userId: string,
     @Query() category?: string
   ): Promise<IUserProfileResposne> {
     try {
@@ -348,6 +348,7 @@ export class UsersController extends Controller {
       throw error;
     }
   }
+
   @Get("/getMulti/Profile")
   public async getMultiProfileUser(@Queries() query: { usersId?: string }) {
     try {
@@ -360,17 +361,17 @@ export class UsersController extends Controller {
   //
   @Post("/uploadFile")
   public async uploadFile(
-    @UploadedFile() file: Express.Multer.File,
+    // @UploadedFile() file: Express.Multer.File,
     @Request() request: ExpressRequest
   ): Promise<string | undefined> {
     try {
       const userId = request.cookies["user_id"];
+      const file = await UserService.handleFile(request);
       const response: string = await uploadToS3(file, `user-service/${userId}`);
       return response;
     } catch (error) {
-      if ((error as { code: string }).code == "LIMIT_FILE_SIZE") {
-        console.log("multer error");
-        throw new Error((error as { message: string }).message);
+      if ((error as { message: string }).message === "Reach Limit File") {
+        throw new FileSizeError();
       }
       throw error;
     }

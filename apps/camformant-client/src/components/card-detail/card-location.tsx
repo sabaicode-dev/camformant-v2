@@ -34,8 +34,8 @@ export const CardLocation: React.FC<CardLocationProps> = ({ address }) => {
       <GoogleMap
         mapContainerStyle={{
           width: "100%",
-          height: "200px", // Inline style for the map container
-          borderRadius: "12px", // Optional: Border radius for the map itself
+          height: "200px", 
+          borderRadius: "12px", 
         }}
         center={center!}
         zoom={14}
@@ -45,14 +45,16 @@ export const CardLocation: React.FC<CardLocationProps> = ({ address }) => {
       >
         <Marker position={center!} />
       </GoogleMap>
-      <a
-        href={googleMapsUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="oran hover:underline mt-4 inline-block"
-      >
-        Open in Google Maps
-      </a>
+      <div className="flex justify-center font-semibold">
+        <a
+          href={googleMapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primaryCam hover:underline mt-4 inline-block text-center"
+        >
+          Open in Google Maps
+        </a>
+      </div>
     </div>
   );
 };

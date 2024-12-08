@@ -50,6 +50,7 @@ const TemplateModal: React.FC<{
     isOpen && fetchData();
   }, [isOpen]);
   const resetCvContent = (index: number) => {
+
     editor?.loadJson(cvData[index].json, cvData[index].style, userData);
     setCvContent((previous: CvContentParams) => {
       return {

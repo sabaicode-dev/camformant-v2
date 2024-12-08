@@ -3,18 +3,12 @@ import { Input } from "@/components/ui/input";
 import Map from "@/components/map";
 import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
-
 import axiosInstance from "@/utils/axios";
 import { Jobs } from "@/utils/types/form-type";
-import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { jobFormSchema } from "@/schema/auth/formSchema";
-import { z } from "zod";
 import SeleteCheckBox from "./selectBox";
 
-const validateForm = (formData: Jobs) => {
-  const result = jobFormSchema.safeParse(formData);
-  return result.success ? null : result.error.errors;
-};
+
 const InputForm: React.FC<{
   formTitle: string;
   existingData?: Jobs;
@@ -48,10 +42,8 @@ const InputForm: React.FC<{
     { name: "On-Site" },
     { name: "Hybrid" },
   ];
-  const [workTypeSelected, setWorkTypeSelected] = useState<string[]>([]);
 
   const typeJobOptions = [{ name: "Contract" }, { name: "Internship" }];
-  const [typeJobSelected, setTypeJobSelected] = useState<string[]>([]);
 
   const scheduleOption = [
     { name: "Full-Time" },
@@ -59,7 +51,6 @@ const InputForm: React.FC<{
     { name: "Flexible-Hours" },
     { name: "Project-Based" },
   ];
-  const [scheduleSelected, setscheduleSelected] = useState<string[]>([]);
 
   const [errors, setErrors] = useState<Record<string, string | null>>({});
 
@@ -250,7 +241,7 @@ const InputForm: React.FC<{
                 htmlFor="title"
                 className="block text-black text-[16px] mb-1"
               >
-                Company Name
+                Title Job
               </Label>
               <Input
                 placeholder="name"
@@ -268,7 +259,7 @@ const InputForm: React.FC<{
                 htmlFor="jobCategory"
                 className="block text-black text-[16px] mb-1"
               >
-                Job Category
+                Job Position
               </Label>
               <Input
                 placeholder="job"

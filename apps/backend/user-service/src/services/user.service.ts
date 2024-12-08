@@ -2,6 +2,7 @@ import {
   UserCreationRepoParams,
   UserUpdateRepoParams,
 } from "@/src/database/repositories/types/user-repository.type";
+import express from "express";
 import UserRepository from "@/src/database/repositories/user.repository";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
 import {
@@ -14,6 +15,7 @@ import {
   IUserProfile,
   UnionProfileType,
 } from "@/src/controllers/types/userprofile.type";
+import multer from "multer";
 import { IUser, UserGetAllControllerParams } from "../controllers/types/user.controller.type";
 
 class UserService {
@@ -123,7 +125,6 @@ class UserService {
       name?: string;
     }[];
   }> {
-
     const arrUsersId = usersId?.split(",") || [];
 
     try {
@@ -219,7 +220,8 @@ class UserService {
   async getCvFiles(userId: string) {
     try {
       console.log("inside get cv services");
-      const response:CvFileParams|null = await UserRepository.getCvFile(userId);
+      const response: CvFileParams | null =
+        await UserRepository.getCvFile(userId);
       return response;
     } catch (err) {
       throw err;
@@ -273,6 +275,24 @@ class UserService {
     } catch (err) {
       throw err;
     }
+  }
+  handleFile(request: express.Request): Promise<any> {
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; //5mb
+    const multerSingle = multer().single("file");
+    const mockResponse = {} as express.Response;
+    return new Promise((resolve, reject) => {
+      multerSingle(request, mockResponse, async (error) => {
+        if (error) {
+          reject(error);
+        }
+        if (request.file) {
+          if (request.file.size > MAX_FILE_SIZE) {
+            return reject(new Error(`Reach Limit File`));
+          }
+          resolve(request.file);
+        }
+      });
+    });
   }
 }
 

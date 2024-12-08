@@ -2,10 +2,10 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
-import { IJob, JobApplication } from "@/utils/types/job";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { TableSkeleton } from "@/components/applicant/table-skeleton";
+import { IJob, JobApplication } from "@/utils/types/job";
 
 const ApplicantPage = () => {
   const [jobApplications, setJobApplications] = useState<JobApplication[]>([]);
@@ -19,7 +19,7 @@ const ApplicantPage = () => {
       const fetchedJobs = jobsResponse.data.data;
 
       const applicationsPromises = fetchedJobs.map(job => 
-      axiosInstance.get<{ data: JobApplication[] }>(`${API_ENDPOINTS.JOB_APPLY}?jobId=${job._id}`)
+      axiosInstance.get<{ data: JobApplication[] }>(`${API_ENDPOINTS.JOB_APPLY}?jobId=${job._id}?limit=5`)
       .then(response => response.data.data.map(application => ({ ...application }))));
 
       const applicationsResponses = await Promise.all(applicationsPromises);

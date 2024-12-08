@@ -85,12 +85,12 @@ class JobRepository {
     // Adding search functionality
     const searchFilter = search
       ? {
-          $or: [
-            { title: { $regex: search, $options: "i" } },
-            { position: { $regex: search, $options: "i" } },
-            { "companyId.name": { $regex: search, $options: "i" } },
-          ],
-        }
+        $or: [
+          { title: { $regex: search, $options: "i" } },
+          { position: { $regex: search, $options: "i" } },
+          { "companyId.name": { $regex: search, $options: "i" } },
+        ],
+      }
       : {};
     type UserFavFilter = {
       _id?: {
@@ -295,14 +295,14 @@ class JobRepository {
         jobId?: mongoose.Types.ObjectId;
         [key: string]: string | null | mongoose.Types.ObjectId | undefined;
       } = queries.userId
-        ? { userId: new mongoose.Types.ObjectId(queries.userId) }
-        : { jobId: new mongoose.Types.ObjectId(queries.jobId) };
+          ? { userId: new mongoose.Types.ObjectId(queries.userId) }
+          : { jobId: new mongoose.Types.ObjectId(queries.jobId) };
       if (filter !== undefined) {
         //cause this can be undefined
         query["userInfo.status"] = filter;
       }
       const buildSort = buildSortFields(sort!);
-      console.log("query", query);
+      console.log("query :::", query);
       if (limit) {
         const skip = (page - 1) * limit;
         const totalItems = await ApplyModel.countDocuments(query);
@@ -431,7 +431,7 @@ class JobRepository {
   public async deleteManyJobApply(jobId: string) {
     try {
       console.log("inside delete many", jobId);
-      const response = ApplyModel.deleteMany({jobId: new mongoose.Types.ObjectId(jobId)});
+      const response = ApplyModel.deleteMany({ jobId: new mongoose.Types.ObjectId(jobId) });
       console.log("response ", response);
       return response;
     } catch (err) {

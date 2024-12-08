@@ -10,19 +10,19 @@ import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
 import axios from "axios";
 import { FaFilePdf } from "react-icons/fa";
 import axiosInstance from "@/utils/axios";
-import { uploadToS3 } from "@/utils/functions/upload-to-s3";
+import { S3FileResParams, uploadToS3 } from "@/utils/functions/upload-to-s3";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { useNotification } from "@/hooks/user-notification";
 
 interface typeUploads {
-  next: boolean;
-  setNext: (next: boolean) => void;
+  setNext: React.Dispatch<SetStateAction<boolean>>;
   setLoading: React.Dispatch<SetStateAction<boolean>>;
 }
 
-const AttachedCvs: React.FC<typeUploads> = ({ next, setNext, setLoading }) => {
+const AttachedCvs: React.FC<typeUploads> = ({ setNext, setLoading }) => {
   const [file, setFile] = useState<string | null>(null);
   const UploadsRef = useRef<HTMLInputElement | null>(null);
-
+  const { addNotification, NotificationDisplay } = useNotification();
   function handleUploads() {
     console.log("clicked");
     UploadsRef.current?.click();
@@ -31,17 +31,18 @@ const AttachedCvs: React.FC<typeUploads> = ({ next, setNext, setLoading }) => {
   async function handleSelectFile(event: React.ChangeEvent<HTMLInputElement>) {
     const cv = event.target.files?.[0];
     setLoading(true);
-    const file = await uploadToS3(cv!);
+    const file: S3FileResParams | undefined = await uploadToS3(cv!);
     setLoading(false);
     if (file) {
-      setFile(file);
+      file.statusCode == 200 && file.value
+        ? setFile(file.value)
+        : addNotification(file.errorMessage!, "error");
     }
   }
   useEffect(() => {
     async function PostCV() {
       if (!file) return;
       try {
-        setNext(true);
         const res = await axiosInstance.post(
           API_ENDPOINTS.USER_SERVICE_CV_FILE, // Update this to your endpoint for conversion
           { url: file }
@@ -54,7 +55,7 @@ const AttachedCvs: React.FC<typeUploads> = ({ next, setNext, setLoading }) => {
       } catch (error) {
         console.error("Error during upload and conversion:", error);
       } finally {
-        setNext(false);
+        setNext((prev: boolean) => !prev);
       }
     }
 
@@ -63,11 +64,8 @@ const AttachedCvs: React.FC<typeUploads> = ({ next, setNext, setLoading }) => {
 
   return (
     <div>
-      {next && (
-        <div className="absolute">
-          <SkeletonLoader text="Loading ..." />
-        </div>
-      )}
+      <NotificationDisplay />
+
       <button
         onClick={handleUploads}
         className="flex items-center justify-start w-full p-10 bg-white shadow-xl rounded-3xl"

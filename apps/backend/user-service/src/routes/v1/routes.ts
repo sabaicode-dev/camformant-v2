@@ -10,8 +10,6 @@ import { HealthController } from './../../controllers/health.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { CorporateController } from './../../controllers/corporate.controller';
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
-const multer = require('multer');
-
 
 
 
@@ -397,14 +395,13 @@ const templateService = new ExpressTemplateService(models, {"noImplicitAdditiona
 
 
 
-export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof multer>}) {
+export function RegisterRoutes(app: Router) {
 
     // ###########################################################################################################
     //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
 
-    const upload = opts?.multer ||  multer({"limits":{"fileSize":8388608}});
 
     
         app.get('/v1/users',
@@ -925,18 +922,11 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/v1/users/uploadFile',
-            upload.fields([
-                {
-                    name: "file",
-                    maxCount: 1
-                }
-            ]),
             ...(fetchMiddlewares<RequestHandler>(UsersController)),
             ...(fetchMiddlewares<RequestHandler>(UsersController.prototype.uploadFile)),
 
             async function UsersController_uploadFile(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    file: {"in":"formData","name":"file","required":true,"dataType":"file"},
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
 
