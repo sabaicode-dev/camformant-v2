@@ -11,6 +11,8 @@ const page = ({ params }: { params: { jobId: string } }) => {
   const [jobData, setJobData] = useState<Jobs>();
   const [isLoading, setLoading] = useState<boolean>(false);
   useEffect(() => {
+    
+    console.log("Fetching job data for Job ID:", params.jobId); // Log the jobId
     async function fetchData() {
       try {
         setLoading(true);

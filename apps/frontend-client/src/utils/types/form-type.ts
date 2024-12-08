@@ -1,8 +1,6 @@
 export type Jobs = {
   _id?: string;
-  company?: {
-    _id: string;
-  };
+  company?: { _id: string };
   title?: string;
   position?: string[];
   workMode?: string[];

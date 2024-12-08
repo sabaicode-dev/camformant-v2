@@ -74,55 +74,63 @@ const InputForm: React.FC<{
         ...prevFormData,
         [fieldName]: selected, // Dynamically assign the array to the given field
       };
-  
+
       // Validate the array and set errors if needed
       setErrors((prevErrors) => ({
         ...prevErrors,
         [fieldName]: selected.length === 0 ? "This field is required" : null, // Show error if array is empty
       }));
-  
+
       return updatedFormData;
     });
   };
-  
-  
+
   const handleChangeNum = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
     const { name, value } = e.target;
-
-    // Update the form data and validate
+  
     setFormData((prevFormData) => {
+      const numericValue = value === "" || isNaN(Number(value)) ? value : Number(value);
+  
       const updatedFormData = {
         ...prevFormData,
-        [name]: value === "" ? null : Number(value), // Handle numeric conversion
+        [name]: numericValue,
       };
-
-      // Validate the field and set errors if needed
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]:
-          value === "" || isNaN(Number(value))
-            ? "This field is required and must be a number"
-            : null, // Show error if empty or not a number
-      }));
-
+  
+      setErrors((prevErrors) => {
+        let error = null;
+  
+        if (value === "") {
+          error = "This field is required";
+        } else if (isNaN(Number(value))) {
+          error = "This field must be a number";
+        } else if (name === "max_salary" && Number(value) <= Number(prevFormData.min_salary)) {
+          error = "Max salary must be larger than Min salary";
+        }
+        return {
+          ...prevErrors,
+          [name]: error,
+        };
+      });
+  
       return updatedFormData;
     });
   };
-
- 
-
+  
+  
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
-  
+
     // Check if the field should be treated as an array or string
     const isArrayField = Array.isArray(formData[name as keyof Jobs]);
-  
+
     setFormData((prevFormData) => {
       const updatedFormData = {
         ...prevFormData,
@@ -130,25 +138,25 @@ const InputForm: React.FC<{
           ? value.split(",").map((item) => item.trim()) // Split string into an array if it's an array field
           : value, // Else treat as a normal string
       };
-  
+
       // Real-time validation for array fields
       setErrors((prevErrors) => ({
         ...prevErrors,
         [name]: isArrayField
-          ? (updatedFormData[name as keyof Jobs] as string[]).length === 0 || 
-            (updatedFormData[name as keyof Jobs] as string[]).some((item) => item === "")
+          ? (updatedFormData[name as keyof Jobs] as string[]).length === 0 ||
+            (updatedFormData[name as keyof Jobs] as string[]).some(
+              (item) => item === ""
+            )
             ? "This field is required and cannot be empty"
             : null
           : value.trim() === ""
-          ? "This field is required"
-          : null,
+            ? "This field is required"
+            : null,
       }));
-  
+
       return updatedFormData;
     });
   };
-  
-  
 
   const setErrorWithZod = (event?: React.FormEvent<HTMLFormElement>) => {
     const result = jobFormSchema.safeParse({
@@ -187,7 +195,7 @@ const InputForm: React.FC<{
         );
         console.log("post job", formData);
       } else {
-        event.preventDefault()
+        event.preventDefault();
         response = await axiosInstance.put(
           `http://localhost:4000/v1/jobs/${existingData!._id}`,
           { ...formData, companyId: existingData?.company?._id || "" }
@@ -200,10 +208,10 @@ const InputForm: React.FC<{
   };
 
   return (
-    <div className=" flex bg-no-repeat w-full font-roboto  bg-cover justify-center items-center bg-[url('https://images.unsplash.com/photo-1427694012323-fb5e8b0c165b?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGNpdHl8ZW58MHx8MHx8fDA%3D')]">
+    <div className=" flex bg-no-repeat w-full font-roboto  bg-cover justify-center items-center">
       {/* Form container */}
-      <form onSubmit={handleSubmit} className="p-[20px] w-5/6 ">
-        <div className="w-full h-auto bg-white p-8 rounded-lg shadow-xl border ">
+      <form onSubmit={handleSubmit} className="p-[20px] w-full ">
+        <div className="w-full h-auto bg-white p-8 rounded-lg  ">
           <h2 className="text-center text-2xl font-bold font-roboto text-gray-800 mb-4">
             {formTitle}
           </h2>
