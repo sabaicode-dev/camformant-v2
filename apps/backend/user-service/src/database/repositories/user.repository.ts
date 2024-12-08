@@ -58,13 +58,16 @@ class UserRepository {
     } = queries;
 
     // Convert sort from {'field': 'desc'} to {'field': -1}
-    const sortFields = Object.keys(sort).reduce((acc, key) => {
-      const direction = sort[key as keyof UserSortParams];
-      if (direction === "asc" || direction === "desc") {
-        acc[key as keyof UserSortParams] = direction === "asc" ? 1 : -1;
-      }
-      return acc;
-    }, {} as Record<keyof UserSortParams, SortOrder>);
+    const sortFields = Object.keys(sort).reduce(
+      (acc, key) => {
+        const direction = sort[key as keyof UserSortParams];
+        if (direction === "asc" || direction === "desc") {
+          acc[key as keyof UserSortParams] = direction === "asc" ? 1 : -1;
+        }
+        return acc;
+      },
+      {} as Record<keyof UserSortParams, SortOrder>
+    );
 
     // Build MongoDB filter object
     const buildFilter = (filter: Record<string, any>) => {
@@ -559,9 +562,8 @@ class UserRepository {
     userId: string
   ): Promise<CustomCvResponse | null | undefined> {
     try {
-      const response: CustomCvResponse | null = await UserCustomCv.findById(
-        userId
-      );
+      const response: CustomCvResponse | null =
+        await UserCustomCv.findById(userId);
       if (!response) throw new NotFoundError("custom cv not found");
 
       return response;
