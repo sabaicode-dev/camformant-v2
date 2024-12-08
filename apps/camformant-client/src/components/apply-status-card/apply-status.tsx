@@ -29,7 +29,6 @@ const ApplyStatus: React.FC = () => {
   const [allStatusData, setAllStatusData] = useState<ApplyParams[]>([]);
   const { isAuthenticated, user } = useAuth();
   const uniqueIds = useRef<string[]>([]); //for unnqiue id when count the length
-  const router = useRouter();
 
   const setLength = (status: string, id: string) => {
     if (!uniqueIds.current.includes(id)) {

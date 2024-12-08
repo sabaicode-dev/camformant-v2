@@ -16,7 +16,7 @@ const cvFileSchema = new mongoose.Schema(
 
 const cvFileCollectionSchema = new mongoose.Schema(
   {
-    userId:{type:mongoose.Schema.Types.ObjectId ,required:true},
+    userId: { type: mongoose.Schema.Types.ObjectId, required: true },
     cv: { type: [cvFileSchema] },
   },
   {
@@ -41,8 +41,8 @@ const designSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    thumbnail:{
-      type:String
+    thumbnail: {
+      type: String,
     },
     json: {
       type: mongoose.Schema.Types.Mixed,
@@ -60,10 +60,9 @@ const designSchema = new mongoose.Schema(
 );
 export const CvStyleModel = mongoose.model("CvStyle", designSchema, "CvStyle");
 
-const userCustomCvSchema=new mongoose.Schema(
+const userCustomCvSchema = new mongoose.Schema(
   {
-    _id:{type:mongoose.Types.ObjectId},
-    style:{type:String},
+    style: { type: String },
     json: {
       type: mongoose.Schema.Types.Mixed,
       required: true,
@@ -77,6 +76,9 @@ const userCustomCvSchema=new mongoose.Schema(
       },
     },
   }
-
-)
-export const UserCustomCv=mongoose.model('UserCustomCv',userCustomCvSchema,'UserCustomCv')
+);
+export const UserCustomCv = mongoose.model(
+  "UserCustomCv",
+  userCustomCvSchema,
+  "UserCustomCv"
+);

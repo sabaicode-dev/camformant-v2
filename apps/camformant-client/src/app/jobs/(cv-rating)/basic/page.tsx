@@ -55,7 +55,7 @@ const Page = () => {
       }
     }
     GetData();
-  }, []);
+  }, [user?._id]);
 
   const PostData = async () => {
     try {
@@ -63,7 +63,7 @@ const Page = () => {
         surname,
         lastname,
         career,
-        email: user?.email,
+        email: email ? email : user?.email,
         phonenumber: phone,
         dob: date, // Date of birth from state
         address, // Address from state

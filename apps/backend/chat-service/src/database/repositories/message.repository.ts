@@ -86,6 +86,8 @@ export class MessageRepository {
           sort: { createdAt: -1 },
         },
       });
+      console.log("1::::");
+
       if (!conversation) {
         const endpoint =
           senderRole === "User"
@@ -94,6 +96,7 @@ export class MessageRepository {
         const data = (await axios.get(`${endpoint}${userToChatId}`)).data;
 
         const receiverData = data.companiesProfile || data.usersProfile;
+        console.log("2::::");
 
         if (!receiverData) {
           return {
@@ -105,6 +108,7 @@ export class MessageRepository {
             skip: skip,
           };
         }
+        console.log("3::::");
         const roomId = [senderId, userToChatId].sort().join("_");
         const participants = [
           {
@@ -123,6 +127,7 @@ export class MessageRepository {
           { new: true, upsert: true }
         );
 
+        console.log("4::::");
         await Promise.all([conversation.save()]); //save new conversation to DB
         return {
           conversation: conversation as unknown as conversation,
@@ -133,6 +138,7 @@ export class MessageRepository {
           skip: skip,
         };
       }
+      console.log("5::::");
 
       conversation.messages = (
         conversation.messages as unknown as messType[]
@@ -141,11 +147,13 @@ export class MessageRepository {
           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       ) as unknown as typeof conversation.messages;
 
+      console.log("6::::");
       // Step 2: Count total messages for the conversation separately
       const totalMessages = await MessageModel.countDocuments({
         conversationId: conversation._id,
       });
 
+      console.log("7::::");
       const totalPage = Math.ceil(totalMessages / limit);
 
       return {
@@ -179,6 +187,7 @@ export class MessageRepository {
   ): Promise<RespondGetConversationsPagination> {
     try {
       //find conversation
+      console.log("0/////////", senderId);
       const conversation = await ConversationModel.find({
         participants: {
           $all: [
@@ -195,6 +204,8 @@ export class MessageRepository {
         .limit(limit)
         .skip(skip);
       //count conversation
+      console.log("1/////////");
+
       const totalConversations = await ConversationModel.countDocuments({
         participants: {
           $all: [
@@ -207,6 +218,7 @@ export class MessageRepository {
           ],
         },
       });
+      console.log("2/////////");
       //filter conversations
       const returnConversations = (
         conversation as unknown as GetConversation[]
@@ -246,23 +258,26 @@ export class MessageRepository {
         api_endpoint = `${configs.userUrl}/getMulti/Profile`;
       }
 
+      console.log("3/////////");
       const res = await fetch(`${api_endpoint}${fetchQuery}`);
+      console.log("4/////////");
 
       const data = await res.json();
 
       //declare
       let participantsProfile:
         | {
-          _id: string;
-          profile: string;
-          name: string;
-        }[]
+            _id: string;
+            profile: string;
+            name: string;
+          }[]
         | [];
       if (data.companiesProfile) {
         participantsProfile = data.companiesProfile;
       } else if (data.usersProfile) {
         participantsProfile = data.usersProfile;
       }
+      console.log("5/////////");
 
       //check compare the participant from db and fetching must be match to ensure correctly
       if (participantsProfile! && participantsProfile.length !== 0) {
@@ -283,6 +298,7 @@ export class MessageRepository {
         }
       }
       //
+      console.log("6/////////");
       const totalPage = Math.ceil(totalConversations / limit);
       const paginationConversations: RespondGetConversationsPagination = {
         conversations:
@@ -294,6 +310,7 @@ export class MessageRepository {
         totalPage: totalPage,
       };
       //
+      console.log("7/////////");
       return paginationConversations as unknown as RespondGetConversationsPagination;
     } catch (error) {
       throw error;

@@ -55,6 +55,7 @@ export class AuthController extends Controller {
     try {
       const response = (request as any).res as Response;
       const result = await AuthService.login(body);
+      console.log("result:::", result);
 
       setCookie(response, "id_token", result.idToken);
       setCookie(response, "access_token", result.accessToken);
@@ -124,6 +125,7 @@ export class AuthController extends Controller {
     try {
       const response = (request as any).res as Response;
       const tokens = await AuthService.getOAuthToken(query);
+      console.log("tokens:::", tokens);
 
       setCookie(response, "id_token", tokens.idToken);
       setCookie(response, "access_token", tokens.accessToken);

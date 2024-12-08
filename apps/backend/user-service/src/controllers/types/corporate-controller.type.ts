@@ -1,6 +1,7 @@
+import mongoose from "mongoose";
 
 export interface ICorporatorProfile {
-  _id?: string;
+  _id?: string | mongoose.Types.ObjectId;
   sub?: string;
   name?: string;
   email?: string;

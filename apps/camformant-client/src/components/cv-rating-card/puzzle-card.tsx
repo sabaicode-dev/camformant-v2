@@ -53,13 +53,12 @@ const PuzzleCard: React.FC<typePropsTotal> = ({ propTotal }) => {
           2
         );
         setAbility(Math.round((skillProgress + expertise + language) / 3));
-
       } catch (error) {
         console.error(error);
       }
     }
     GetCard();
-  }, [edu, info]);
+  }, [user]);
   useEffect(() => {
     const totalRating = info + edu + exp + self + cert + port + ref + ability;
     const totalRatingNew = Math.round((totalRating * 100) / 800);

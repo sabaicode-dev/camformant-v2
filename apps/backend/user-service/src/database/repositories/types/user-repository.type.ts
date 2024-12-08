@@ -1,3 +1,4 @@
+import { IUser } from "@/src/controllers/types/user.controller.type";
 import { Types } from "mongoose";
 
 export interface UserFilterParams {
@@ -15,12 +16,38 @@ export interface UserGetAllRepoParams {
   filter?: UserFilterParams;
   sort?: UserSortParams;
 }
-
+export interface UserGetAllRepoResponse {
+  users: IUser[];
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+}
 export interface UserCreationRepoParams {
   sub?: string;
+  googleSub?: string;
+  facebookSub?: string;
+  username?: string;
   email?: string;
   phone_number?: string;
-  username: string;
+  profile?: string;
+  gender?: string;
+  age?: number;
+  birthdate?: Date;
+  role?: string;
+  favorites?: Types.ObjectId[];
+  createdAt?: Date;
+  updatedAt?: Date;
+  lastActive?: Date;
+  lastSeen?: Date;
+  sessions?: {
+    deviceId?: string;
+    ipAddress?: string;
+    lastLogin?: Date;
+  }[];
+  privacySettings?: {
+    lastSeenVisibleTo: "everyone" | "contacts" | "nobody";
+    profilePhotoVisibleTo: "everyone" | "contacts" | "nobody";
+  };
 }
 
 export interface UserUpdateRepoParamsOld {
@@ -80,8 +107,8 @@ export interface companiesForJobs {
   job_openings_count?: number;
   job_closings_count?: number;
 }
-export interface getMultiProfileCompanyResponse{
-    _id?: string;
-    profile: string;
-    name: string;
-  }
+export interface getMultiProfileCompanyResponse {
+  _id?: string;
+  profile: string;
+  name: string;
+}

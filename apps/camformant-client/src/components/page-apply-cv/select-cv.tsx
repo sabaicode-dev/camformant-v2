@@ -73,7 +73,6 @@ const SelectCV = () => {
               handlePush={() => handleSelectCV(item)}
               ReactNode_Child={<ImCheckmark className="text-green-600" />}
               index={index}
-              next={next}
               setNext={setNext}
             />
           </div>

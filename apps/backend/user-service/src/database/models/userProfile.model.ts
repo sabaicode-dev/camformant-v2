@@ -1,6 +1,8 @@
+// import mongoose from "mongoose";
+
 import mongoose from "mongoose";
 
-//Basic schema
+// //Basic schema
 const BasicSchema = new mongoose.Schema(
   {
     surname: { type: String },
@@ -17,7 +19,7 @@ const BasicSchema = new mongoose.Schema(
   }
 );
 
-//Skill schema
+// //Skill schema
 const SkillSchema = new mongoose.Schema(
   {
     name: { type: String },
@@ -28,7 +30,7 @@ const SkillSchema = new mongoose.Schema(
   }
 );
 
-//Expertise schema
+// //Expertise schema
 const ExpertiseSchema = new mongoose.Schema(
   {
     name: { type: String },
@@ -39,7 +41,7 @@ const ExpertiseSchema = new mongoose.Schema(
   }
 );
 
-//Education schema
+// //Education schema
 const EducationSchema = new mongoose.Schema(
   {
     academic: { type: String },
@@ -52,7 +54,7 @@ const EducationSchema = new mongoose.Schema(
   }
 );
 
-//Experience schema
+// //Experience schema
 const ExperienceSchema = new mongoose.Schema(
   {
     position: { type: String },
@@ -65,7 +67,7 @@ const ExperienceSchema = new mongoose.Schema(
   }
 );
 
-//Language schema
+// //Language schema
 const LanguageSchema = new mongoose.Schema(
   {
     name: { type: String },
@@ -76,7 +78,7 @@ const LanguageSchema = new mongoose.Schema(
   }
 );
 
-//Reference schema
+// //Reference schema
 const ReferenceSchema = new mongoose.Schema(
   {
     name: { type: String },
@@ -90,7 +92,7 @@ const ReferenceSchema = new mongoose.Schema(
   }
 );
 
-//Description schema (currently empty, customize as needed)
+// //Description schema (currently empty, customize as needed)
 const DescriptionSchema = new mongoose.Schema(
   {
     description: { type: String },
@@ -118,7 +120,7 @@ const CertificateSchema = new mongoose.Schema(
   }
 );
 
-//IUserProfile schema
+// //IUserProfile schema
 const UserProfileSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
@@ -143,7 +145,7 @@ const UserProfileSchema = new mongoose.Schema(
   }
 );
 
-//model
+// //model
 const UserProfileDetailModel = mongoose.model(
   "UserProfileDetail",
   UserProfileSchema,

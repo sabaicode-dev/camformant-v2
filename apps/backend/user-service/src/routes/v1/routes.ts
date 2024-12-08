@@ -24,21 +24,21 @@ const models: TsoaRoute.Models = {
     "IUser": {
         "dataType": "refObject",
         "properties": {
-            "_id": {"ref":"mongoose.Types.ObjectId"},
-            "sub": {"dataType":"string","required":true},
-            "googleSub": {"dataType":"string","required":true},
-            "facebookSub": {"dataType":"string","required":true},
-            "username": {"dataType":"string","required":true},
-            "email": {"dataType":"string","required":true},
-            "phone_number": {"dataType":"string","required":true},
-            "profile": {"dataType":"string","required":true},
-            "gender": {"dataType":"string","required":true},
-            "age": {"dataType":"double","required":true},
+            "_id": {"dataType":"string"},
+            "sub": {"dataType":"string"},
+            "googleSub": {"dataType":"string"},
+            "facebookSub": {"dataType":"string"},
+            "username": {"dataType":"string"},
+            "email": {"dataType":"string"},
+            "phone_number": {"dataType":"string"},
+            "profile": {"dataType":"string"},
+            "gender": {"dataType":"string"},
+            "age": {"dataType":"double"},
             "birthdate": {"dataType":"datetime"},
-            "role": {"dataType":"string","required":true},
-            "favorites": {"dataType":"array","array":{"dataType":"refAlias","ref":"mongoose.Types.ObjectId"},"required":true},
-            "createdAt": {"dataType":"datetime","required":true},
-            "updatedAt": {"dataType":"datetime","required":true},
+            "role": {"dataType":"string"},
+            "favorites": {"dataType":"array","array":{"dataType":"refAlias","ref":"mongoose.Types.ObjectId"}},
+            "createdAt": {"dataType":"datetime"},
+            "updatedAt": {"dataType":"datetime"},
             "lastActive": {"dataType":"datetime"},
             "lastSeen": {"dataType":"datetime"},
             "sessions": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"lastLogin":{"dataType":"datetime","required":true},"ipAddress":{"dataType":"string","required":true},"deviceId":{"dataType":"string","required":true}}}},
@@ -47,21 +47,22 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "PaginationResponse_IUser_": {
+    "UserGetAllRepoResponse": {
         "dataType": "refObject",
         "properties": {
+            "users": {"dataType":"array","array":{"dataType":"refObject","ref":"IUser"},"required":true},
             "totalItems": {"dataType":"double","required":true},
             "totalPages": {"dataType":"double","required":true},
             "currentPage": {"dataType":"double","required":true},
         },
-        "additionalProperties": {"dataType":"union","subSchemas":[{"dataType":"array","array":{"dataType":"refObject","ref":"IUser"}},{"dataType":"double"}]},
+        "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UsersPaginatedResponse": {
+    "UserGetAllServiceResponse": {
         "dataType": "refObject",
         "properties": {
             "message": {"dataType":"string","required":true},
-            "data": {"ref":"PaginationResponse_IUser_","required":true},
+            "data": {"ref":"UserGetAllRepoResponse","required":true},
         },
         "additionalProperties": false,
     },
@@ -77,7 +78,7 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UserProfileResponse": {
+    "CreateNewUserServiceResponse": {
         "dataType": "refObject",
         "properties": {
             "message": {"dataType":"string","required":true},
@@ -92,13 +93,14 @@ const models: TsoaRoute.Models = {
             "sub": {"dataType":"string"},
             "googleSub": {"dataType":"string"},
             "facebookSub": {"dataType":"string"},
-            "username": {"dataType":"string","required":true},
+            "username": {"dataType":"string"},
             "email": {"dataType":"string"},
             "phone_number": {"dataType":"string"},
             "profile": {"dataType":"string"},
-            "role": {"dataType":"string"},
             "gender": {"dataType":"string"},
             "age": {"dataType":"double"},
+            "birthdate": {"dataType":"datetime"},
+            "role": {"dataType":"string"},
             "favorites": {"dataType":"array","array":{"dataType":"refAlias","ref":"mongoose.Types.ObjectId"}},
             "createdAt": {"dataType":"datetime"},
             "updatedAt": {"dataType":"datetime"},
@@ -106,7 +108,6 @@ const models: TsoaRoute.Models = {
             "lastSeen": {"dataType":"datetime"},
             "sessions": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"lastLogin":{"dataType":"datetime","required":true},"ipAddress":{"dataType":"string","required":true},"deviceId":{"dataType":"string","required":true}}}},
             "privacySettings": {"dataType":"nestedObjectLiteral","nestedProperties":{"profilePhotoVisibleTo":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["everyone"]},{"dataType":"enum","enums":["contacts"]},{"dataType":"enum","enums":["nobody"]}],"required":true},"lastSeenVisibleTo":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["everyone"]},{"dataType":"enum","enums":["contacts"]},{"dataType":"enum","enums":["nobody"]}],"required":true}}},
-            "contacts": {"dataType":"array","array":{"dataType":"refAlias","ref":"mongoose.Types.ObjectId"}},
         },
         "additionalProperties": false,
     },
@@ -260,7 +261,7 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "IUserProfileResposne": {
+    "IUserProfileRespone": {
         "dataType": "refObject",
         "properties": {
             "message": {"dataType":"string","required":true},
@@ -306,6 +307,15 @@ const models: TsoaRoute.Models = {
         "type": {"dataType":"union","subSchemas":[{"ref":"CustomCvResponse"},{"dataType":"undefined"},{"dataType":"enum","enums":[null]},{"dataType":"nestedObjectLiteral","nestedProperties":{}}],"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UserProfileResponse": {
+        "dataType": "refObject",
+        "properties": {
+            "message": {"dataType":"string","required":true},
+            "data": {"ref":"IUser","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "UserUpdateRequestParams": {
         "dataType": "refObject",
         "properties": {
@@ -340,7 +350,7 @@ const models: TsoaRoute.Models = {
     "ICorporatorProfile": {
         "dataType": "refObject",
         "properties": {
-            "_id": {"dataType":"string"},
+            "_id": {"dataType":"union","subSchemas":[{"dataType":"string"},{"ref":"mongoose.Types.ObjectId"}]},
             "sub": {"dataType":"string"},
             "name": {"dataType":"string"},
             "email": {"dataType":"string"},

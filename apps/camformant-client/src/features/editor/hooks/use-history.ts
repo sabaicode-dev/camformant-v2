@@ -1,4 +1,4 @@
-import { use, useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { fabric } from "fabric";
 import { JSON_KEYS } from "@/features/editor/types";
 interface UseHistoryProps {

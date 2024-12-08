@@ -14,6 +14,7 @@ export const ColorPicker = ({
     <div>
       <div className="flex items-center justify-center h-full overflow-auto">
         <div className="p-2  w-full" style={{ scrollBehavior: "smooth" }}>
+          {/* @ts-ignore */}
           <CirclePicker
             circleSize={25}
             className="circle-picker "

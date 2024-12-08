@@ -35,7 +35,7 @@ const Page = () => {
     }
 
     getData();
-  }, []);
+  }, [user?._id]);
   const PostData = async () => {
     try {
       const dataValue = {

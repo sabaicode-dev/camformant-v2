@@ -3,11 +3,12 @@ import {
   MongoError,
   UserCreationRepoParams,
   UserGetAllRepoParams,
+  UserGetAllRepoResponse,
   UserSortParams,
   UserUpdateRepoParams,
 } from "@/src/database/repositories/types/user-repository.type";
 import mongoose, { SortOrder } from "mongoose";
-import UserProfileDetailModel from "@/src/database/models/userProfile.model";
+// import UserProfileDetailModel from "@/src/database/models/userProfile.model";
 import {
   AUTH_MESSAGES,
   InvalidInputError,
@@ -15,11 +16,22 @@ import {
   prettyObject,
   ResourceConflictError,
 } from "@sabaicode-dev/camformant-libs";
-import {
-  CvFileModel,
-  CvStyleModel,
-  UserCustomCv,
-} from "@/src/database/models/userCv.model";
+// import {
+//   CvFileModel,
+//   CvStyleModel,
+//   UserCustomCv,
+// } from "@/src/database/models/userCv.model";
+// import {
+//   CustomCvResponse,
+//   CvFileParams,
+//   CvStyleParams,
+//   UnionCustomCvResponse,
+// } from "@/src/controllers/types/user-cv-controller.type";
+// import {
+//   IUserProfile,
+//   UnionProfileType,
+// } from "@/src/controllers/types/userprofile.type";
+import { IUser } from "@/src/controllers/types/user.controller.type";
 import {
   CustomCvResponse,
   CvFileParams,
@@ -27,12 +39,17 @@ import {
   UnionCustomCvResponse,
 } from "@/src/controllers/types/user-cv-controller.type";
 import {
+  CvFileModel,
+  CvStyleModel,
+  UserCustomCv,
+} from "../models/userCv.model";
+import {
   IUserProfile,
   UnionProfileType,
 } from "@/src/controllers/types/userprofile.type";
-import { IUser } from "@/src/controllers/types/user.controller.type";
+import UserProfileDetailModel from "../models/userProfile.model";
 class UserRepository {
-  async getAll(queries: UserGetAllRepoParams) {
+  async getAll(queries: UserGetAllRepoParams): Promise<UserGetAllRepoResponse> {
     const {
       page = 1,
       limit = 10,
@@ -80,20 +97,19 @@ class UserRepository {
 
     try {
       const mongoFilter = buildFilter(filter);
-      console.log(mongoFilter);
-      const operation = UserModel.find({
-        age: { $gte: 18, $lte: 28 },
-        gender: "Male",
-      })
+      const result = await UserModel.find()
         .sort(sortFields)
         .skip((page - 1) * limit)
         .limit(limit);
+      //   {
+      //   age: { $gte: 18, $lte: 28 },
+      //   gender: "Male",
+      // }
 
-      const result = await operation;
       const totalItems = await UserModel.countDocuments(mongoFilter);
 
       return {
-        [UserModel.collection.collectionName]: result as unknown as IUser[],
+        users: result as unknown as IUser[],
         totalItems,
         totalPages: Math.ceil(totalItems / limit),
         currentPage: page,
@@ -125,17 +141,16 @@ class UserRepository {
     }
   }
 
-  async findBySub(sub: string) {
+  async findBySub(sub: string): Promise<IUser> {
     try {
       const result = await UserModel.findOne({
         $or: [{ sub: sub }, { googleSub: sub }, { facebookSub: sub }],
       });
-
       if (!result) {
-        throw new NotFoundError();
+        throw new NotFoundError("User is not found");
       }
 
-      return result;
+      return result as IUser;
     } catch (error) {
       console.error(
         `UserRepository - findById() method error: `,
@@ -162,11 +177,11 @@ class UserRepository {
     }
   }
 
-  async create(newInfo: UserCreationRepoParams) {
+  async create(newInfo: UserCreationRepoParams): Promise<IUser> {
     try {
       const result = await UserModel.create(newInfo);
 
-      return result;
+      return result as IUser;
     } catch (error) {
       console.error(
         `UserRepository - create() method error: `,
@@ -253,17 +268,25 @@ class UserRepository {
     try {
       type Filter = {
         _id?: {
-          $in: mongoose.Types.ObjectId[];
+          $in: string[];
         };
       };
+      // type Filter = {
+      //   _id?: {
+      //     $in: mongoose.Types.ObjectId[];
+      //   };
+      // };
       const filter: Filter = {};
 
       if (arrUsersId?.length === 0) {
         return [];
       } else if (arrUsersId?.length !== 0) {
         filter._id = {
-          $in: arrUsersId.map((id) => new mongoose.Types.ObjectId(id)),
+          $in: arrUsersId,
         };
+        // filter._id = {
+        //   $in: arrUsersId.map((id) => new mongoose.Types.ObjectId(id)),
+        // };
       }
 
       const result = await UserModel.find(filter);
@@ -347,7 +370,7 @@ class UserRepository {
         throw new NotFoundError("User not found");
       }
 
-      return user.favorites.map((favorite) => favorite.toString());
+      return user.favorites!.map((favorite) => favorite.toString());
     } catch (error) {
       console.error(
         `UserRepository - getUserFavorites() method error: `,
@@ -385,12 +408,13 @@ class UserRepository {
     query?: string
   ): Promise<UnionProfileType> {
     try {
+      console.log("userid:::", userId);
       //this for update on each user profile
       if (!query) {
         const updatedUser = await UserProfileDetailModel.findOneAndUpdate(
           { userId },
           { $set: { ...updateBody } },
-          { new: true, useFindAndModify: false }
+          { new: true}
         );
         console.log("response:::", updatedUser);
         if (!updatedUser) {
@@ -445,7 +469,7 @@ class UserRepository {
         return result;
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
       throw err;
     }
   }

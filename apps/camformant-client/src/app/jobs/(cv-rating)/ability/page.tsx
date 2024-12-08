@@ -69,7 +69,7 @@ const Page: React.FC = () => {
       }
     }
     GetData();
-  }, []);
+  }, [user?._id]);
 
   async function PostData() {
     try {

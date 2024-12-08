@@ -6,20 +6,29 @@ import express from "express";
 import UserRepository from "@/src/database/repositories/user.repository";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
 import {
+  IUser,
+  UserGetAllControllerParams,
+} from "../controllers/types/user.controller.type";
+import {
+  CreateNewUserServiceResponse,
+  UserGetAllServiceResponse,
+} from "./types/user.service.types";
+import {
   CustomCvResponse,
   CvFileParams,
   CvStyleParams,
   UnionCustomCvResponse,
-} from "@/src/controllers/types/user-cv-controller.type";
+} from "../controllers/types/user-cv-controller.type";
 import {
   IUserProfile,
   UnionProfileType,
 } from "@/src/controllers/types/userprofile.type";
 import multer from "multer";
-import { IUser, UserGetAllControllerParams } from "../controllers/types/user.controller.type";
 
 class UserService {
-  async getAllUsers(queries: UserGetAllControllerParams) {
+  async getAllUsers(
+    queries: UserGetAllControllerParams
+  ): Promise<UserGetAllServiceResponse> {
     try {
       const { page, limit, filter, sort } = queries;
 
@@ -31,7 +40,7 @@ class UserService {
       };
       const result = await UserRepository.getAll(newQueries);
 
-      return result;
+      return { message: "success", data: result };
     } catch (error) {
       console.error(
         `UserService - getAllUsers() method error: `,
@@ -55,7 +64,7 @@ class UserService {
     }
   }
 
-  async getUserBySub(sub: string) {
+  async getUserBySub(sub: string): Promise<IUser> {
     try {
       const user = await UserRepository.findBySub(sub);
 
@@ -76,12 +85,13 @@ class UserService {
       throw err;
     }
   }
-  async createNewUser(userInfo: UserCreationRepoParams) {
+  async createNewUser(
+    userInfo: UserCreationRepoParams
+  ): Promise<CreateNewUserServiceResponse> {
     try {
-      console.log("userInfo", userInfo);
       const newUser = await UserRepository.create(userInfo);
 
-      return newUser;
+      return { message: "success", data: newUser as unknown as IUser };
     } catch (error) {
       console.error(
         `UserService - createNewUser() method error: `,
@@ -94,7 +104,6 @@ class UserService {
   async updateUserBySub(userInfo: UserUpdateRepoParams) {
     try {
       const updatedUser = await UserRepository.updateBySub(userInfo);
-
       return updatedUser;
     } catch (error) {
       console.error(
@@ -134,7 +143,6 @@ class UserService {
         // throw new NotFoundError();
         throw new Error("No user Found!");
       }
-      console.log("3::");
       return { usersProfile: result };
     } catch (error) {
       console.error(

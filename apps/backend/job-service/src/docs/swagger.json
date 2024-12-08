@@ -7,9 +7,6 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"mongoose.Types.ObjectId": {
-				"type": "string"
-			},
 			"WorkMode": {
 				"enum": [
 					"Remote",
@@ -40,7 +37,7 @@
 						"type": "string"
 					},
 					"companyId": {
-						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+						"type": "string"
 					},
 					"profile": {
 						"type": "string"
@@ -138,6 +135,9 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"mongoose.Types.ObjectId": {
+				"type": "string"
 			},
 			"StatusMode": {
 				"enum": [
@@ -449,7 +449,7 @@
 						"type": "string"
 					},
 					"companyId": {
-						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+						"type": "string"
 					},
 					"title": {
 						"type": "string"
