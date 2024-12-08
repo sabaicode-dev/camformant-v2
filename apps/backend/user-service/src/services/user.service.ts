@@ -1,24 +1,34 @@
-import { UserGetAllControllerParams } from "@/src/controllers/types/user-controller.type";
-import { IUser } from "@/src/database/models/user.model";
 import {
   UserCreationRepoParams,
   UserUpdateRepoParams,
 } from "@/src/database/repositories/types/user-repository.type";
+import express from "express";
 import UserRepository from "@/src/database/repositories/user.repository";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
+import {
+  IUser,
+  UserGetAllControllerParams,
+} from "../controllers/types/user.controller.type";
+import {
+  CreateNewUserServiceResponse,
+  UserGetAllServiceResponse,
+} from "./types/user.service.types";
 import {
   CustomCvResponse,
   CvFileParams,
   CvStyleParams,
   UnionCustomCvResponse,
-} from "@/src/controllers/types/user-cv-controller.type";
+} from "../controllers/types/user-cv-controller.type";
 import {
   IUserProfile,
   UnionProfileType,
 } from "@/src/controllers/types/userprofile.type";
+import multer from "multer";
 
 class UserService {
-  async getAllUsers(queries: UserGetAllControllerParams) {
+  async getAllUsers(
+    queries: UserGetAllControllerParams
+  ): Promise<UserGetAllServiceResponse> {
     try {
       const { page, limit, filter, sort } = queries;
 
@@ -30,7 +40,7 @@ class UserService {
       };
       const result = await UserRepository.getAll(newQueries);
 
-      return result;
+      return { message: "success", data: result };
     } catch (error) {
       console.error(
         `UserService - getAllUsers() method error: `,
@@ -54,7 +64,7 @@ class UserService {
     }
   }
 
-  async getUserBySub(sub: string) {
+  async getUserBySub(sub: string): Promise<IUser> {
     try {
       const user = await UserRepository.findBySub(sub);
 
@@ -75,12 +85,13 @@ class UserService {
       throw err;
     }
   }
-  async createNewUser(userInfo: UserCreationRepoParams) {
+  async createNewUser(
+    userInfo: UserCreationRepoParams
+  ): Promise<CreateNewUserServiceResponse> {
     try {
-      console.log("userInfo", userInfo);
       const newUser = await UserRepository.create(userInfo);
 
-      return newUser;
+      return { message: "success", data: newUser as unknown as IUser };
     } catch (error) {
       console.error(
         `UserService - createNewUser() method error: `,
@@ -93,7 +104,6 @@ class UserService {
   async updateUserBySub(userInfo: UserUpdateRepoParams) {
     try {
       const updatedUser = await UserRepository.updateBySub(userInfo);
-
       return updatedUser;
     } catch (error) {
       console.error(
@@ -124,7 +134,6 @@ class UserService {
       name?: string;
     }[];
   }> {
-
     const arrUsersId = usersId?.split(",") || [];
 
     try {
@@ -134,7 +143,6 @@ class UserService {
         // throw new NotFoundError();
         throw new Error("No user Found!");
       }
-      console.log("3::");
       return { usersProfile: result };
     } catch (error) {
       console.error(
@@ -220,7 +228,8 @@ class UserService {
   async getCvFiles(userId: string) {
     try {
       console.log("inside get cv services");
-      const response:CvFileParams|null = await UserRepository.getCvFile(userId);
+      const response: CvFileParams | null =
+        await UserRepository.getCvFile(userId);
       return response;
     } catch (err) {
       throw err;
@@ -274,6 +283,24 @@ class UserService {
     } catch (err) {
       throw err;
     }
+  }
+  handleFile(request: express.Request): Promise<any> {
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; //5mb
+    const multerSingle = multer().single("file");
+    const mockResponse = {} as express.Response;
+    return new Promise((resolve, reject) => {
+      multerSingle(request, mockResponse, async (error) => {
+        if (error) {
+          reject(error);
+        }
+        if (request.file) {
+          if (request.file.size > MAX_FILE_SIZE) {
+            return reject(new Error(`Reach Limit File`));
+          }
+          resolve(request.file);
+        }
+      });
+    });
   }
 }
 

@@ -166,11 +166,13 @@ const Editor: React.FC<{
       isPinching = false; // Reset panning and zooming state
       canvas.selection = true; // Re-enable selection after the gesture ends
     });
-
-    !cvContent.style && setIsOpenTem(true);
     return () => {
       canvas.dispose(); // Dispose canvas when unmounting
+      if (!cvContent.style) {
+        setIsOpenTem(true);
+      }
     };
+    // eslint-disable-next-line
   }, [init]);
   //for cropper
   const handleCropComplete = (_croppedArea: Area, croppedAreaPixels: Area) => {

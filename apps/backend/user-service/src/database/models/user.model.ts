@@ -2,21 +2,21 @@ import mongoose from "mongoose";
 
 // Define TypeScript interface for User
 export interface IUser {
-  _id?: mongoose.Types.ObjectId;
-  sub: string;
-  googleSub: string;
-  facebookSub: string;
-  username: string;
-  email: string;
-  phone_number: string;
-  profile: string;
-  gender: string;
-  age: number;
+  _id?: string;
+  sub?: string;
+  googleSub?: string;
+  facebookSub?: string;
+  username?: string;
+  email?: string;
+  phone_number?: string;
+  profile?: string;
+  gender?: string;
+  age?: number;
   birthdate?: Date;
-  role: string;
-  favorites: mongoose.Types.ObjectId[];
-  createdAt: Date;
-  updatedAt: Date;
+  role?: string;
+  favorites?: mongoose.Types.ObjectId[];
+  createdAt?: Date;
+  updatedAt?: Date;
   lastActive?: Date;
   lastSeen?: Date;
   sessions?: {
@@ -31,7 +31,7 @@ export interface IUser {
 }
 
 // Define the User schema
-const userSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema<IUser>(
   {
     sub: { type: String, unique: true },
     googleSub: { type: String },
@@ -66,7 +66,6 @@ const userSchema = new mongoose.Schema(
         enum: ["everyone", "contacts", "nobody"],
       },
     },
-
   },
   {
     timestamps: true,

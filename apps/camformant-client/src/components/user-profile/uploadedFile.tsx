@@ -12,7 +12,7 @@ const UploadedFile: React.FC<UploadedFile> = ({ files, removeFile }) => {
     <div className="container grid w-full grid-cols-2 gap-5 pt-10">
       {files!.map((file, index) => (
         <div
-          key={""}
+          key={index}
           className="flex items-center justify-center px-5 text-center shadow-md outline-none  rounded-2xl shadow-black-300"
         >
           <Link

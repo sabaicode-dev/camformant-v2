@@ -85,12 +85,12 @@ class JobRepository {
     // Adding search functionality
     const searchFilter = search
       ? {
-          $or: [
-            { title: { $regex: search, $options: "i" } },
-            { position: { $regex: search, $options: "i" } },
-            { "companyId.name": { $regex: search, $options: "i" } },
-          ],
-        }
+        $or: [
+          { title: { $regex: search, $options: "i" } },
+          { position: { $regex: search, $options: "i" } },
+          { "companyId.name": { $regex: search, $options: "i" } },
+        ],
+      }
       : {};
     type UserFavFilter = {
       _id?: {
@@ -130,9 +130,7 @@ class JobRepository {
       }
       const companiesId = result.map((jobs: IJob) => jobs.companyId);
 
-      const validCompaniesId = companiesId.filter(
-        (id): id is mongoose.Types.ObjectId => id !== undefined
-      );
+      const validCompaniesId = companiesId.filter((id) => id !== undefined);
       const data = await fetchCompaniesProfile(validCompaniesId);
       //remove companyId property and merge jobs with companies
       const newJobReturn = combinedJobsWithCompanies(result, data) || [];
@@ -244,10 +242,16 @@ class JobRepository {
 
   public async updateJobById(updateJob: IJob): Promise<IJob> {
     try {
+      console.log("inside repo:::");
       const { _id, ...updateNewJob } = updateJob;
-      const result = await JobModel.findByIdAndUpdate(_id, updateNewJob, {
-        new: true,
-      });
+      console.log("job id in repo::::", _id);
+      const result = await JobModel.findByIdAndUpdate(
+        _id,
+        { ...updateNewJob, updatedAt: new Date() },
+        {
+          new: true,
+        }
+      );
       if (!result) {
         throw new NotFoundError("The requested job was not found.");
       }
@@ -289,14 +293,14 @@ class JobRepository {
         jobId?: mongoose.Types.ObjectId;
         [key: string]: string | null | mongoose.Types.ObjectId | undefined;
       } = queries.userId
-        ? { userId: new mongoose.Types.ObjectId(queries.userId) }
-        : { jobId: new mongoose.Types.ObjectId(queries.jobId) };
+          ? { userId: new mongoose.Types.ObjectId(queries.userId) }
+          : { jobId: new mongoose.Types.ObjectId(queries.jobId) };
       if (filter !== undefined) {
         //cause this can be undefined
         query["userInfo.status"] = filter;
       }
       const buildSort = buildSortFields(sort!);
-      console.log("query", query);
+      console.log("query :::", query);
       if (limit) {
         const skip = (page - 1) * limit;
         const totalItems = await ApplyModel.countDocuments(query);
@@ -347,7 +351,7 @@ class JobRepository {
               location,
               deadline,
             },
-          } as GetJobApplyResponse;
+          } as unknown as GetJobApplyResponse;
         })
       );
 
@@ -425,7 +429,9 @@ class JobRepository {
   public async deleteManyJobApply(jobId: string) {
     try {
       console.log("inside delete many", jobId);
-      const response = ApplyModel.deleteMany({jobId: new mongoose.Types.ObjectId(jobId)});
+      const response = ApplyModel.deleteMany({
+        jobId: new mongoose.Types.ObjectId(jobId),
+      });
       console.log("response ", response);
       return response;
     } catch (err) {
@@ -434,10 +440,14 @@ class JobRepository {
   }
 }
 
-
 //===function===
 async function fetchCompaniesProfile(
-  companiesId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[] | undefined
+  companiesId:
+    | string
+    | string[]
+    | mongoose.Types.ObjectId
+    | mongoose.Types.ObjectId[]
+    | undefined
 ) {
   console.log("reach fetchCompaniesProfile");
 

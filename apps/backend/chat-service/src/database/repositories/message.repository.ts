@@ -86,6 +86,8 @@ export class MessageRepository {
           sort: { createdAt: -1 },
         },
       });
+      console.log("1::::");
+
       if (!conversation) {
         const endpoint =
           senderRole === "User"
@@ -94,6 +96,7 @@ export class MessageRepository {
         const data = (await axios.get(`${endpoint}${userToChatId}`)).data;
 
         const receiverData = data.companiesProfile || data.usersProfile;
+        console.log("2::::");
 
         if (!receiverData) {
           return {
@@ -105,6 +108,7 @@ export class MessageRepository {
             skip: skip,
           };
         }
+        console.log("3::::");
         const roomId = [senderId, userToChatId].sort().join("_");
         const participants = [
           {
@@ -123,6 +127,7 @@ export class MessageRepository {
           { new: true, upsert: true }
         );
 
+        console.log("4::::");
         await Promise.all([conversation.save()]); //save new conversation to DB
         return {
           conversation: conversation as unknown as conversation,
@@ -133,6 +138,7 @@ export class MessageRepository {
           skip: skip,
         };
       }
+      console.log("5::::");
 
       conversation.messages = (
         conversation.messages as unknown as messType[]
@@ -141,11 +147,13 @@ export class MessageRepository {
           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       ) as unknown as typeof conversation.messages;
 
+      console.log("6::::");
       // Step 2: Count total messages for the conversation separately
       const totalMessages = await MessageModel.countDocuments({
         conversationId: conversation._id,
       });
 
+      console.log("7::::");
       const totalPage = Math.ceil(totalMessages / limit);
 
       return {
@@ -195,6 +203,7 @@ export class MessageRepository {
         .limit(limit)
         .skip(skip);
       //count conversation
+
       const totalConversations = await ConversationModel.countDocuments({
         participants: {
           $all: [
@@ -253,10 +262,10 @@ export class MessageRepository {
       //declare
       let participantsProfile:
         | {
-          _id: string;
-          profile: string;
-          name: string;
-        }[]
+            _id: string;
+            profile: string;
+            name: string;
+          }[]
         | [];
       if (data.companiesProfile) {
         participantsProfile = data.companiesProfile;

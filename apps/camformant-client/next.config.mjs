@@ -74,7 +74,12 @@ const nextConfig = {
         protocol: "https",
         hostname: "sophornbucket.s3.us-west-2.amazonaws.com",
         pathname: "/**",
-      }
+      },
+      {
+        protocol: "https",
+        hostname: "teytey.s3.us-east-1.amazonaws.com",
+        pathname: "/**",
+      },
     ],
   },
   async headers() {

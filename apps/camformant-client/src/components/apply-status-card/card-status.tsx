@@ -167,7 +167,7 @@ const CardStatus: React.FC<ApplyTotal> = ({
               <div
                 ref={(el: any) => (refToStart.current[index] = el)}
                 className="container w-full p-1"
-                key={item.jobId}
+                key={item._id}
               >
                 <Card
                   _id={item.jobId}

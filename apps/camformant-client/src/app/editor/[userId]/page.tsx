@@ -50,7 +50,7 @@ const Page = ({ params }: { params: { userId: string } }) => {
       }
     }
     fetchData();
-  }, []);
+  }, [user?._id]);
   if (!userId || userId == "undefined") {
     console.log("userid", userId);
     return (

@@ -2,20 +2,21 @@
 import React, { useEffect, useState } from "react";
 import InputForm from "@/components/input-job";
 import axiosInstance from "@/utils/axios";
-import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { Jobs } from "@/utils/types/form-type";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 
 const UpdateJobPage = ({ params }: { params: { jobId: string } }) => {
   const [jobData, setJobData] = useState<Jobs>();
   const [isLoading, setLoading] = useState<boolean>(false);
   useEffect(() => {
+    
+    console.log("Fetching job data for Job ID:", params.jobId); // Log the jobId
     async function fetchData() {
       try {
         setLoading(true);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.JOBS}/${params.jobId}`
+          `${API_ENDPOINTS.JOB_ENDPOINT}/${params.jobId}`
         );
-        console.log("response:", response);
         setJobData(response.data.data);
       } catch (err) {
         console.log(err);

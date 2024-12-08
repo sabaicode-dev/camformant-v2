@@ -10,14 +10,17 @@ import { HealthController } from './../../controllers/health.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { CorporateController } from './../../controllers/corporate.controller';
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
-const multer = require('multer');
-
 
 
 
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+    "mongoose.Types.ObjectId": {
+        "dataType": "refAlias",
+        "type": {"dataType":"string","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "IUser": {
         "dataType": "refObject",
         "properties": {
@@ -31,28 +34,35 @@ const models: TsoaRoute.Models = {
             "profile": {"dataType":"string"},
             "gender": {"dataType":"string"},
             "age": {"dataType":"double"},
+            "birthdate": {"dataType":"datetime"},
             "role": {"dataType":"string"},
+            "favorites": {"dataType":"array","array":{"dataType":"refAlias","ref":"mongoose.Types.ObjectId"}},
             "createdAt": {"dataType":"datetime"},
             "updatedAt": {"dataType":"datetime"},
+            "lastActive": {"dataType":"datetime"},
+            "lastSeen": {"dataType":"datetime"},
+            "sessions": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"lastLogin":{"dataType":"datetime","required":true},"ipAddress":{"dataType":"string","required":true},"deviceId":{"dataType":"string","required":true}}}},
+            "privacySettings": {"dataType":"nestedObjectLiteral","nestedProperties":{"profilePhotoVisibleTo":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["everyone"]},{"dataType":"enum","enums":["contacts"]},{"dataType":"enum","enums":["nobody"]}],"required":true},"lastSeenVisibleTo":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["everyone"]},{"dataType":"enum","enums":["contacts"]},{"dataType":"enum","enums":["nobody"]}],"required":true}}},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "PaginationResponse_IUser_": {
+    "UserGetAllRepoResponse": {
         "dataType": "refObject",
         "properties": {
+            "users": {"dataType":"array","array":{"dataType":"refObject","ref":"IUser"},"required":true},
             "totalItems": {"dataType":"double","required":true},
             "totalPages": {"dataType":"double","required":true},
             "currentPage": {"dataType":"double","required":true},
         },
-        "additionalProperties": {"dataType":"union","subSchemas":[{"dataType":"array","array":{"dataType":"refObject","ref":"IUser"}},{"dataType":"double"}]},
+        "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UsersPaginatedResponse": {
+    "UserGetAllServiceResponse": {
         "dataType": "refObject",
         "properties": {
             "message": {"dataType":"string","required":true},
-            "data": {"ref":"PaginationResponse_IUser_","required":true},
+            "data": {"ref":"UserGetAllRepoResponse","required":true},
         },
         "additionalProperties": false,
     },
@@ -68,7 +78,7 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UserProfileResponse": {
+    "CreateNewUserServiceResponse": {
         "dataType": "refObject",
         "properties": {
             "message": {"dataType":"string","required":true},
@@ -77,24 +87,20 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "mongoose.Types.ObjectId": {
-        "dataType": "refAlias",
-        "type": {"dataType":"string","validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UserCreationRequestParams2": {
+    "UserCreationRequestParams": {
         "dataType": "refObject",
         "properties": {
             "sub": {"dataType":"string"},
             "googleSub": {"dataType":"string"},
             "facebookSub": {"dataType":"string"},
-            "username": {"dataType":"string","required":true},
+            "username": {"dataType":"string"},
             "email": {"dataType":"string"},
             "phone_number": {"dataType":"string"},
             "profile": {"dataType":"string"},
-            "role": {"dataType":"string"},
             "gender": {"dataType":"string"},
             "age": {"dataType":"double"},
+            "birthdate": {"dataType":"datetime"},
+            "role": {"dataType":"string"},
             "favorites": {"dataType":"array","array":{"dataType":"refAlias","ref":"mongoose.Types.ObjectId"}},
             "createdAt": {"dataType":"datetime"},
             "updatedAt": {"dataType":"datetime"},
@@ -102,7 +108,6 @@ const models: TsoaRoute.Models = {
             "lastSeen": {"dataType":"datetime"},
             "sessions": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"lastLogin":{"dataType":"datetime","required":true},"ipAddress":{"dataType":"string","required":true},"deviceId":{"dataType":"string","required":true}}}},
             "privacySettings": {"dataType":"nestedObjectLiteral","nestedProperties":{"profilePhotoVisibleTo":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["everyone"]},{"dataType":"enum","enums":["contacts"]},{"dataType":"enum","enums":["nobody"]}],"required":true},"lastSeenVisibleTo":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["everyone"]},{"dataType":"enum","enums":["contacts"]},{"dataType":"enum","enums":["nobody"]}],"required":true}}},
-            "contacts": {"dataType":"array","array":{"dataType":"refAlias","ref":"mongoose.Types.ObjectId"}},
         },
         "additionalProperties": false,
     },
@@ -256,7 +261,7 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "IUserProfileResposne": {
+    "IUserProfileRespone": {
         "dataType": "refObject",
         "properties": {
             "message": {"dataType":"string","required":true},
@@ -302,6 +307,15 @@ const models: TsoaRoute.Models = {
         "type": {"dataType":"union","subSchemas":[{"ref":"CustomCvResponse"},{"dataType":"undefined"},{"dataType":"enum","enums":[null]},{"dataType":"nestedObjectLiteral","nestedProperties":{}}],"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UserProfileResponse": {
+        "dataType": "refObject",
+        "properties": {
+            "message": {"dataType":"string","required":true},
+            "data": {"ref":"IUser","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "UserUpdateRequestParams": {
         "dataType": "refObject",
         "properties": {
@@ -336,7 +350,7 @@ const models: TsoaRoute.Models = {
     "ICorporatorProfile": {
         "dataType": "refObject",
         "properties": {
-            "_id": {"dataType":"string"},
+            "_id": {"dataType":"union","subSchemas":[{"dataType":"string"},{"ref":"mongoose.Types.ObjectId"}]},
             "sub": {"dataType":"string"},
             "name": {"dataType":"string"},
             "email": {"dataType":"string"},
@@ -352,6 +366,24 @@ const models: TsoaRoute.Models = {
             "completed": {"dataType":"double"},
             "createdAt": {"dataType":"datetime"},
             "updatedAt": {"dataType":"datetime"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CompaniesProfile": {
+        "dataType": "refObject",
+        "properties": {
+            "_id": {"dataType":"string"},
+            "profile": {"dataType":"string"},
+            "name": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "getMultiProfileCompanyResponse": {
+        "dataType": "refObject",
+        "properties": {
+            "companiesProfile": {"dataType":"array","array":{"dataType":"refObject","ref":"CompaniesProfile"},"required":true},
         },
         "additionalProperties": false,
     },
@@ -373,14 +405,13 @@ const templateService = new ExpressTemplateService(models, {"noImplicitAdditiona
 
 
 
-export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof multer>}) {
+export function RegisterRoutes(app: Router) {
 
     // ###########################################################################################################
     //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
 
-    const upload = opts?.multer ||  multer({"limits":{"fileSize":8388608}});
 
     
         app.get('/v1/users',
@@ -419,7 +450,7 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
 
             async function UsersController_createUser(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"UserCreationRequestParams2"},
+                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"UserCreationRequestParams"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -901,18 +932,11 @@ export function RegisterRoutes(app: Router,opts?:{multer?:ReturnType<typeof mult
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/v1/users/uploadFile',
-            upload.fields([
-                {
-                    name: "file",
-                    maxCount: 1
-                }
-            ]),
             ...(fetchMiddlewares<RequestHandler>(UsersController)),
             ...(fetchMiddlewares<RequestHandler>(UsersController.prototype.uploadFile)),
 
             async function UsersController_uploadFile(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    file: {"in":"formData","name":"file","required":true,"dataType":"file"},
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
 

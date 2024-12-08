@@ -3,16 +3,21 @@ import { Input } from "@/components/ui/input";
 import Map from "@/components/map";
 import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
-import SeleteCheckBox from "@/components/seleteCheckBox";
 import axiosInstance from "@/utils/axios";
 import { Jobs } from "@/utils/types/form-type";
+import { jobFormSchema } from "@/schema/auth/formSchema";
+import SeleteCheckBox from "./selectBox";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { useRouter } from "next/navigation";
+import { useJob } from "@/context/JobContext";
+
 
 const InputForm: React.FC<{
   formTitle: string;
   existingData?: Jobs;
   typeOfForm?: string;
 }> = ({ formTitle, existingData, typeOfForm = "POST" }) => {
+  const {fetchJobs} = useJob()
   const [formData, setFormData] = useState<Jobs>({
     title: existingData?.title || "",
     position: existingData?.position || [],
@@ -33,19 +38,46 @@ const InputForm: React.FC<{
       : "",
     createdAt: existingData?.createdAt
       ? new Date(existingData.createdAt).toISOString().split("T")[0]
-      : "", // Default to an empty string if no value
-    updatedAt: existingData?.updatedAt
-      ? new Date(existingData.updatedAt).toISOString().split("T")[0]
       : "",
   });
+  const router = useRouter();
+  const workTypeOptions = [
+    { name: "Remote" },
+    { name: "On-Site" },
+    { name: "Hybrid" },
+  ];
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+  const typeJobOptions = [{ name: "Contract" }, { name: "Internship" }];
+
+  const scheduleOption = [
+    { name: "Full-Time" },
+    { name: "Part-Time" },
+    { name: "Flexible-Hours" },
+    { name: "Project-Based" },
+  ];
+
+  const [errors, setErrors] = useState<Record<string, string | null>>({});
+
+  // Handle changes for array-type fields
+  const handleArrayChange = (
+    selected: string[],
+    fieldName: string // Added fieldName parameter for flexibility
   ) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    // Update the form data and validate
+    setFormData((prevFormData) => {
+      const updatedFormData = {
+        ...prevFormData,
+        [fieldName]: selected, // Dynamically assign the array to the given field
+      };
+
+      // Validate the array and set errors if needed
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [fieldName]: selected.length === 0 ? "This field is required" : null, // Show error if array is empty
+      }));
+
+      return updatedFormData;
+    });
   };
 
   const handleChangeNum = (
@@ -54,66 +86,157 @@ const InputForm: React.FC<{
     >
   ) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value === "" ? null : Number(value),
+
+    setFormData((prevFormData) => {
+      const numericValue =
+        value === "" || isNaN(Number(value)) ? value : Number(value);
+
+      const updatedFormData = {
+        ...prevFormData,
+        [name]: numericValue,
+      };
+
+      setErrors((prevErrors) => {
+        let error = null;
+
+        if (value === "") {
+          error = "This field is required";
+        } else if (isNaN(Number(value))) {
+          error = "This field must be a number";
+        } else if (Number(value) < 0) {
+          error = "This field cannot be a negative number";
+        } else if (
+          name === "max_salary" &&
+          Number(value) <= Number(prevFormData.min_salary)
+        ) {
+          error = "Max salary must be larger than Min salary";
+        }
+        return {
+          ...prevErrors,
+          [name]: error,
+        };
+      });
+
+      return updatedFormData;
     });
   };
 
-  const workTypeOptions = [
-    { name: "Remote" },
-    { name: "On-Site" },
-    { name: "Hybrid" },
-  ];
-  const [workTypeSelected, setWorkTypeSelected] = useState<string[]>([]);
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+  
+    // Check if the field should be treated as an array or string
+    const isArrayField = Array.isArray(formData[name as keyof Jobs]);
+  
+    setFormData((prevFormData) => {
+      const updatedFormData = {
+        ...prevFormData,
+        [name]: isArrayField
+          ? value.split(",").map((item) => item.trim()) // Split string into an array if it's an array field
+          : value, // Else treat as a normal string
+      };
+  
+      // Real-time validation for deadline date field
+      setErrors((prevErrors) => {
+        let error: string | null = null;
+  
+        if (name === "deadline") {
+          const currentDate = new Date();
+          const inputDate = new Date(value);
+  
+          if (!value.trim()) {
+            error = "Deadline is required";
+          } else if (isNaN(inputDate.getTime())) {
+            error = "Invalid date format";
+          } else if (inputDate < currentDate) {
+            error = "Deadline cannot be in the past";
+          }
+        } else if (isArrayField) {
+          // Real-time validation for array fields
+          error =
+            (updatedFormData[name as keyof Jobs] as string[]).length === 0 ||
+            (updatedFormData[name as keyof Jobs] as string[]).some(
+              (item) => item === ""
+            )
+              ? "This field is required and cannot be empty"
+              : null;
+        } else {
+          // Real-time validation for other fields
+          error = value.trim() === "" ? "This field is required" : null;
+        }
+  
+        return {
+          ...prevErrors,
+          [name]: error,
+        };
+      });
+  
+      return updatedFormData;
+    });
+  };
+  
 
-  const typeJobOptions = [{ name: "Contract" }, { name: "Internship" }];
-  const [typeJobSelected, setTypeJobSelected] = useState<string[]>([]);
+  const setErrorWithZod = (event?: React.FormEvent<HTMLFormElement>) => {
+    const result = jobFormSchema.safeParse({
+      ...formData,
+      min_salary: Number(formData.min_salary), // Ensure numeric input
+      max_salary: Number(formData.max_salary),
+    });
 
-  const scheduleOption = [
-    { name: "Full-Time" },
-    { name: "Part-Time" },
-    { name: "Flexible-Hours" },
-    { name: "Project-Based" },
-  ];
-  const [scheduleSelected, setscheduleSelected] = useState<string[]>([]);
-
-  const handleArrayChange = (name: keyof Jobs, value: string[]) => {
-    console.log("name:::", name, "values:::", value);
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value, // Directly assign the array of strings
-    }));
+    if (!result.success) {
+      event && event.preventDefault();
+      const newErrors: { [key: string]: string } = {};
+      result.error.errors.forEach((error) => {
+        if (error.path && error.path[0]) {
+          newErrors[error.path[0]] = error.message;
+        }
+      });
+      setErrors(newErrors); // Update the errors state
+      console.log("Parsed errors:", newErrors); // Debugging output
+      return;
+    } else {
+      setErrors({});
+      console.log("Form data is valid:", formData);
+    }
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("Form submitted:", formData);
-    event.preventDefault();
+    // Validate the form data using zod
+    setErrorWithZod(event);
     try {
       let response: any;
-      if (typeOfForm == "POST") {
+      if (typeOfForm === "POST") {
+        event.preventDefault();
         response = await axiosInstance.post(
-          "http://localhost:4000/v1/jobs/job",
+          `${API_ENDPOINTS.JOB}`,
           formData
         );
+        await fetchJobs()
+      router.push("/dashboard/jobs");
+        console.log("post job", formData);
       } else {
+        event.preventDefault();
         response = await axiosInstance.put(
-          `${API_ENDPOINTS.JOBS}/${existingData!._id}`,
-          formData
+          `${API_ENDPOINTS.JOB_ENDPOINT}/${existingData!._id}`,
+          { ...formData, companyId: existingData?.company?._id || "" }
         );
+        await fetchJobs()
+      router.push("/dashboard/jobs");
       }
-      // console.log(response.data);
-      console.log(formData);
+      console.log("Response:", response?.data);
     } catch (error) {
-      console.log("errror connect to server", error);
+      console.error("Error connecting to server:", error);
     }
   };
 
   return (
-    <div className=" flex bg-no-repeat w-full font-roboto  bg-cover justify-center items-center bg-[url('https://images.unsplash.com/photo-1427694012323-fb5e8b0c165b?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGNpdHl8ZW58MHx8MHx8fDA%3D')]">
+    <div className=" flex bg-no-repeat w-full font-roboto  bg-cover justify-center items-center">
       {/* Form container */}
-      <form onSubmit={handleSubmit} className="p-[20px] w-5/6 ">
-        <div className="w-full h-auto bg-white p-8 rounded-lg shadow-xl border ">
+      <form onSubmit={handleSubmit} className="p-[20px] w-full ">
+        <div className="w-full h-auto bg-white p-8 rounded-lg  ">
           <h2 className="text-center text-2xl font-bold font-roboto text-gray-800 mb-4">
             {formTitle}
           </h2>
@@ -126,7 +249,7 @@ const InputForm: React.FC<{
                 htmlFor="title"
                 className="block text-black text-[16px] mb-1"
               >
-                Company Name
+                Title Job
               </Label>
               <Input
                 placeholder="name"
@@ -135,13 +258,16 @@ const InputForm: React.FC<{
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
               />
+              {errors.title && (
+                <p className="text-red-500 text-sm">{errors.title}</p>
+              )}
             </div>
             <div className="w-2/4">
               <Label
                 htmlFor="jobCategory"
                 className="block text-black text-[16px] mb-1"
               >
-                Job Category
+                Job Position
               </Label>
               <Input
                 placeholder="job"
@@ -150,6 +276,9 @@ const InputForm: React.FC<{
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
               />
+              {errors.position && (
+                <p className="text-red-500 text-sm">{errors.position}</p>
+              )}
             </div>
           </div>
 
@@ -165,9 +294,12 @@ const InputForm: React.FC<{
               <SeleteCheckBox
                 options={typeJobOptions}
                 selectedValue={formData.type ? formData.type : []}
-                onSelect={(selected) => handleArrayChange("type", selected)}
-                onRemove={setTypeJobSelected}
+                onSelect={(selected) => handleArrayChange(selected, "type")}
+                onRemove={(selected) => handleArrayChange(selected, "type")}
               />
+              {errors.type && (
+                <p className="text-red-500 text-sm">{errors.type}</p>
+              )}
             </div>
             <div className="w-2/4">
               <Label
@@ -179,12 +311,16 @@ const InputForm: React.FC<{
               <SeleteCheckBox
                 options={scheduleOption}
                 selectedValue={formData.schedule ? formData.schedule : []}
-                onSelect={(selected) => handleArrayChange("schedule", selected)}
-                onRemove={setscheduleSelected}
+                onSelect={(selected) => handleArrayChange(selected, "schedule")}
+                onRemove={(selected) => handleArrayChange(selected, "schedule")}
               />
+              {errors.schedule && (
+                <p className="text-red-500 text-sm">{errors.schedule}</p>
+              )}
             </div>
           </div>
-          {/* location workmode */}
+
+          {/* job_opening and workmode */}
           <div className="flex gap-4 mb-5">
             <div className="w-2/4">
               <Label
@@ -196,9 +332,12 @@ const InputForm: React.FC<{
               <SeleteCheckBox
                 options={workTypeOptions}
                 selectedValue={formData.workMode ? formData.workMode : []}
-                onSelect={(selected) => handleArrayChange("workMode", selected)}
-                onRemove={setWorkTypeSelected}
+                onSelect={(selected) => handleArrayChange(selected, "workMode")}
+                onRemove={(selected) => handleArrayChange(selected, "workMode")}
               />
+              {errors.workMode && (
+                <p className="text-red-500 text-sm">{errors.workMode}</p>
+              )}
             </div>
             <div className="w-2/4">
               <Label
@@ -215,16 +354,19 @@ const InputForm: React.FC<{
                 placeholder="Number"
                 className="h-[38px]"
               />
+              {errors.job_opening && (
+                <p className="text-red-500 text-sm">{errors.job_opening}</p>
+              )}
             </div>
           </div>
-          {/* Dates */}
+          {/*  Post Date and Last Date */}
           <div className="flex gap-4 mb-5">
             <div className="w-2/4">
               <Label
-                htmlFor="createDate"
+                htmlFor="createdAt"
                 className="block text-black text-[16px] mb-1"
               >
-                Posted Date
+                Post Date
               </Label>
               <DateInput
                 name="createdAt"
@@ -233,13 +375,16 @@ const InputForm: React.FC<{
                 onChange={handleChange}
                 placeholder="YYYY-MM-DD"
               />
+              {errors.createdAt && (
+                <p className="text-red-500 text-sm">{errors.createdAt}</p>
+              )}
             </div>
             <div className="w-2/4">
               <Label
                 htmlFor="deadline"
                 className="block text-black text-[16px] mb-1"
               >
-                Last Date To Apply
+                Last Date
               </Label>
               <DateInput
                 name="deadline"
@@ -248,6 +393,9 @@ const InputForm: React.FC<{
                 onChange={handleChange}
                 placeholder="YYYY-MM-DD"
               />
+              {errors.deadline && (
+                <p className="text-red-500 text-sm">{errors.deadline}</p>
+              )}
             </div>
           </div>
 
@@ -263,11 +411,14 @@ const InputForm: React.FC<{
               <Input
                 name="min_salary"
                 type="number"
-                value={formData.min_salary}
+                value={formData.min_salary || ""}
                 onChange={handleChangeNum}
                 placeholder="$"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />
+              {errors.min_salary && (
+                <p className="text-red-500 text-sm">{errors.min_salary}</p>
+              )}
             </div>
             <div className="w-2/4">
               <Label
@@ -279,29 +430,18 @@ const InputForm: React.FC<{
               <Input
                 name="max_salary"
                 type="number"
-                value={formData.max_salary}
+                value={formData.max_salary || ""}
                 onChange={handleChangeNum}
                 placeholder="$"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />
+              {errors.max_salary && (
+                <p className="text-red-500 text-sm">{errors.max_salary}</p>
+              )}
             </div>
           </div>
 
-          <div className="mb-6">
-            <Label
-              htmlFor="deadline"
-              className="block text-black text-[16px] mb-1"
-            >
-              Update Date To Apply
-            </Label>
-            <DateInput
-              name="updatedAt"
-              type="date"
-              value={formData.updatedAt}
-              onChange={handleChange}
-              placeholder="YYYY-MM-DD"
-            />
-          </div>
+          {/* required_experience */}
           <div className="mb-2">
             <Label
               htmlFor="required_experience"
@@ -312,12 +452,23 @@ const InputForm: React.FC<{
             <textarea
               name="required_experience"
               onChange={handleChange}
-              value={formData.required_experience}
+              value={
+                Array.isArray(formData.required_experience)
+                  ? (formData.required_experience as string[]).join(",") // If it's an array, join the values with commas
+                  : formData.required_experience || "" // Otherwise, return the string value or an empty string
+              }
               placeholder="Type your Description"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
               rows={4}
             ></textarea>
+            {errors.required_experience && (
+              <p className="text-red-500 text-sm">
+                {errors.required_experience}
+              </p>
+            )}
           </div>
+
+          {/* requirement */}
           <div className="mb-2">
             <Label
               htmlFor="SalaryFrom"
@@ -333,8 +484,12 @@ const InputForm: React.FC<{
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
               rows={4}
             ></textarea>
+            {errors.requirement && (
+              <p className="text-red-500 text-sm">{errors.requirement}</p>
+            )}
           </div>
 
+          {/* benefit */}
           <div className="mb-2">
             <Label
               htmlFor="benefit"
@@ -344,12 +499,19 @@ const InputForm: React.FC<{
             </Label>
             <textarea
               name="benefit"
-              value={formData.benefit}
+              value={
+                Array.isArray(formData.benefit)
+                  ? (formData.benefit as string[]).join(",") // If it's an array, join the values with commas
+                  : formData.benefit || "" // Otherwise, return the string value or an empty string
+              }
               onChange={handleChange}
               placeholder="Type your Description"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
               rows={4}
             ></textarea>
+            {errors.benefit && (
+              <p className="text-red-500 text-sm">{errors.benefit}</p>
+            )}
           </div>
 
           {/* Description */}
@@ -368,8 +530,12 @@ const InputForm: React.FC<{
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
               rows={4}
             ></textarea>
+            {errors.description && (
+              <p className="text-red-500 text-sm">{errors.description}</p>
+            )}
           </div>
 
+          {/* map */}
           <Map setFormData={setFormData} existingMap={formData.address} />
           {/* Submit Button */}
           <button
@@ -384,4 +550,4 @@ const InputForm: React.FC<{
   );
 };
 
-export default InputForm
+export default InputForm;

@@ -1,5 +1,6 @@
 "use client";
-import { uploadToS3 } from "@/utils/functions/upload-to-s3";
+import { useNotification } from "@/hooks/user-notification";
+import { S3FileResParams, uploadToS3 } from "@/utils/functions/upload-to-s3";
 import { CertificateParams } from "@/utils/types/user-profile";
 import { useState } from "react";
 export interface InputFileParams {
@@ -13,24 +14,34 @@ const InputFile: React.FC<InputFileParams> = ({
   setLoading,
 }) => {
   const [fileName, setFileName] = useState("No file chosen");
+  const { addNotification, NotificationDisplay } = useNotification();
   const handleFileChange = async (event: any) => {
     const file = event.target.files[0];
     if (file) {
-      setLoading(true);
-      const image: string | undefined = await uploadToS3(file);
-      setLoading(false);
-      setFileName(file.name);
-      image &&
-        setFiles((previous: CertificateParams[]) => {
-          return [...previous, { url: image }];
-        });
-      setIsPost(true);
+      try {
+        setLoading(true);
+        const image: S3FileResParams | undefined = await uploadToS3(file);
+        setFileName(file.name);
+        if (image) {
+          image.statusCode == 200 && image.value
+            ? setFiles((previous: CertificateParams[]) => {
+                return [...previous, { url: image.value! }];
+              })
+            : addNotification(image.errorMessage!, "error");
+        }
+
+        setIsPost(true);
+      } catch (err) {
+      } finally {
+        setLoading(false);
+      }
     } else {
       setFileName("No file chosen");
     }
   };
   return (
     <div className="w-full container relative pt-10 `w-full outline-none rounded-2xl p-5 shadow-md shadow-black-300 pl-7">
+      <NotificationDisplay />
       <input
         type="file"
         id="file-upload"

@@ -7,6 +7,9 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"mongoose.Types.ObjectId": {
+				"type": "string"
+			},
 			"IUser": {
 				"properties": {
 					"_id": {
@@ -40,144 +43,12 @@
 						"type": "number",
 						"format": "double"
 					},
-					"role": {
-						"type": "string"
-					},
-					"createdAt": {
+					"birthdate": {
 						"type": "string",
 						"format": "date-time"
 					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					}
-				},
-				"type": "object",
-				"additionalProperties": false
-			},
-			"PaginationResponse_IUser_": {
-				"properties": {
-					"totalItems": {
-						"type": "number",
-						"format": "double"
-					},
-					"totalPages": {
-						"type": "number",
-						"format": "double"
-					},
-					"currentPage": {
-						"type": "number",
-						"format": "double"
-					}
-				},
-				"required": [
-					"totalItems",
-					"totalPages",
-					"currentPage"
-				],
-				"type": "object",
-				"additionalProperties": {
-					"anyOf": [
-						{
-							"items": {
-								"$ref": "#/components/schemas/IUser"
-							},
-							"type": "array"
-						},
-						{
-							"type": "number",
-							"format": "double"
-						}
-					]
-				}
-			},
-			"UsersPaginatedResponse": {
-				"properties": {
-					"message": {
-						"type": "string"
-					},
-					"data": {
-						"$ref": "#/components/schemas/PaginationResponse_IUser_"
-					}
-				},
-				"required": [
-					"message",
-					"data"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"UserGetAllControllerParams": {
-				"properties": {
-					"page": {
-						"type": "number",
-						"format": "double"
-					},
-					"limit": {
-						"type": "number",
-						"format": "double"
-					},
-					"filter": {
-						"type": "string"
-					},
-					"sort": {
-						"type": "string"
-					}
-				},
-				"type": "object",
-				"additionalProperties": false
-			},
-			"UserProfileResponse": {
-				"properties": {
-					"message": {
-						"type": "string"
-					},
-					"data": {
-						"$ref": "#/components/schemas/IUser"
-					}
-				},
-				"required": [
-					"message",
-					"data"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"mongoose.Types.ObjectId": {
-				"type": "string"
-			},
-			"UserCreationRequestParams2": {
-				"properties": {
-					"sub": {
-						"type": "string"
-					},
-					"googleSub": {
-						"type": "string"
-					},
-					"facebookSub": {
-						"type": "string"
-					},
-					"username": {
-						"type": "string"
-					},
-					"email": {
-						"type": "string"
-					},
-					"phone_number": {
-						"type": "string"
-					},
-					"profile": {
-						"type": "string"
-					},
 					"role": {
 						"type": "string"
-					},
-					"gender": {
-						"type": "string"
-					},
-					"age": {
-						"type": "number",
-						"format": "double"
 					},
 					"favorites": {
 						"items": {
@@ -248,17 +119,201 @@
 							"lastSeenVisibleTo"
 						],
 						"type": "object"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UserGetAllRepoResponse": {
+				"properties": {
+					"users": {
+						"items": {
+							"$ref": "#/components/schemas/IUser"
+						},
+						"type": "array"
 					},
-					"contacts": {
+					"totalItems": {
+						"type": "number",
+						"format": "double"
+					},
+					"totalPages": {
+						"type": "number",
+						"format": "double"
+					},
+					"currentPage": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"users",
+					"totalItems",
+					"totalPages",
+					"currentPage"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UserGetAllServiceResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/UserGetAllRepoResponse"
+					}
+				},
+				"required": [
+					"message",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UserGetAllControllerParams": {
+				"properties": {
+					"page": {
+						"type": "number",
+						"format": "double"
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					},
+					"filter": {
+						"type": "string"
+					},
+					"sort": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateNewUserServiceResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/IUser"
+					}
+				},
+				"required": [
+					"message",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UserCreationRequestParams": {
+				"properties": {
+					"sub": {
+						"type": "string"
+					},
+					"googleSub": {
+						"type": "string"
+					},
+					"facebookSub": {
+						"type": "string"
+					},
+					"username": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"phone_number": {
+						"type": "string"
+					},
+					"profile": {
+						"type": "string"
+					},
+					"gender": {
+						"type": "string"
+					},
+					"age": {
+						"type": "number",
+						"format": "double"
+					},
+					"birthdate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"role": {
+						"type": "string"
+					},
+					"favorites": {
 						"items": {
 							"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 						},
 						"type": "array"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"lastActive": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"lastSeen": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"sessions": {
+						"items": {
+							"properties": {
+								"lastLogin": {
+									"type": "string",
+									"format": "date-time"
+								},
+								"ipAddress": {
+									"type": "string"
+								},
+								"deviceId": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"lastLogin",
+								"ipAddress",
+								"deviceId"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					},
+					"privacySettings": {
+						"properties": {
+							"profilePhotoVisibleTo": {
+								"type": "string",
+								"enum": [
+									"everyone",
+									"contacts",
+									"nobody"
+								]
+							},
+							"lastSeenVisibleTo": {
+								"type": "string",
+								"enum": [
+									"everyone",
+									"contacts",
+									"nobody"
+								]
+							}
+						},
+						"required": [
+							"profilePhotoVisibleTo",
+							"lastSeenVisibleTo"
+						],
+						"type": "object"
 					}
 				},
-				"required": [
-					"username"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -651,7 +706,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"IUserProfileResposne": {
+			"IUserProfileRespone": {
 				"properties": {
 					"message": {
 						"type": "string"
@@ -807,6 +862,22 @@
 				],
 				"nullable": true
 			},
+			"UserProfileResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/IUser"
+					}
+				},
+				"required": [
+					"message",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"UserUpdateRequestParams": {
 				"properties": {
 					"sub": {
@@ -895,7 +966,14 @@
 			"ICorporatorProfile": {
 				"properties": {
 					"_id": {
-						"type": "string"
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+							}
+						]
 					},
 					"sub": {
 						"type": "string"
@@ -986,6 +1064,36 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"CompaniesProfile": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"profile": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"getMultiProfileCompanyResponse": {
+				"properties": {
+					"companiesProfile": {
+						"items": {
+							"$ref": "#/components/schemas/CompaniesProfile"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"companiesProfile"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"APIResponse_ICorporatorProfile_": {
 				"properties": {
 					"message": {
@@ -1022,7 +1130,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UsersPaginatedResponse"
+									"$ref": "#/components/schemas/UserGetAllServiceResponse"
 								}
 							}
 						}
@@ -1074,7 +1182,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UserProfileResponse"
+									"$ref": "#/components/schemas/CreateNewUserServiceResponse"
 								}
 							}
 						}
@@ -1087,7 +1195,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/UserCreationRequestParams2"
+								"$ref": "#/components/schemas/UserCreationRequestParams"
 							}
 						}
 					}
@@ -1103,7 +1211,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UserProfileResponse"
+									"$ref": "#/components/schemas/IUser"
 								}
 							}
 						}
@@ -1220,7 +1328,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IUserProfileResposne"
+									"$ref": "#/components/schemas/IUserProfileRespone"
 								}
 							}
 						}
@@ -1660,26 +1768,7 @@
 					}
 				},
 				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"multipart/form-data": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"file": {
-										"type": "string",
-										"format": "binary"
-									}
-								},
-								"required": [
-									"file"
-								]
-							}
-						}
-					}
-				}
+				"parameters": []
 			}
 		},
 		"/v1/users/cv/{cvId}": {
@@ -1843,34 +1932,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"properties": {
-										"companiesProfile": {
-											"items": {
-												"properties": {
-													"name": {
-														"type": "string"
-													},
-													"profile": {
-														"type": "string"
-													},
-													"_id": {
-														"type": "string"
-													}
-												},
-												"required": [
-													"name",
-													"profile",
-													"_id"
-												],
-												"type": "object"
-											},
-											"type": "array"
-										}
-									},
-									"required": [
-										"companiesProfile"
-									],
-									"type": "object"
+									"$ref": "#/components/schemas/getMultiProfileCompanyResponse"
 								}
 							}
 						}

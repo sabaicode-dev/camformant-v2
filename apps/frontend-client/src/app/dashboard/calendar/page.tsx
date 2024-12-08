@@ -20,7 +20,10 @@ const CalendarPage = () => {
   return (
     <div>
       <h1>My Calendar</h1>
+      {
+        //ts-ignore
       <MyCalendar events={events} />
+      }
     </div>
   );
 };

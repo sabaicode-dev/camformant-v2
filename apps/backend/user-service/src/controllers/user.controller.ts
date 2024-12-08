@@ -1,89 +1,58 @@
 import {
   Controller,
   Get,
-  Post,
-  Path,
   Route,
+  Queries,
   SuccessResponse,
+  Post,
+  Middlewares,
   Body,
+  Request,
+  Path,
+  Query,
   Put,
   Delete,
-  Queries,
-  Query,
-  Middlewares,
-  Request,
-  UploadedFile,
 } from "tsoa";
 import UserService from "@/src/services/user.service";
-import sendResponse from "@/src/utils/send-response";
-import validateRequest from "@/src/middewares/validate-input";
-import userJoiSchema from "@/src/schemas/user.schema";
 import {
-  UsersPaginatedResponse,
+  AuthenticationError,
   prettyObject,
-  // UserCreationRequestParams,
+  FileSizeError,
+} from "@sabaicode-dev/camformant-libs";
+import { Request as ExpressRequest } from "express";
+
+import {
+  IUser,
+  UserCreationRequestParams,
+  UserGetAllControllerParams,
   UserProfileResponse,
   UserUpdateRequestParams,
-  IUser,
-  AuthenticationError,
-} from "@sabaicode-dev/camformant-libs";
-import { UserGetAllControllerParams } from "@/src/controllers/types/user-controller.type";
-import { Request as ExpressRequest } from "express";
-import agenda from "@/src/utils/agenda";
-import { SCHEDULE_JOBS } from "@/src/jobs";
-import { uploadToS3 } from "@/src/utils/s3";
-import {
-  IUserProfile,
-  IUserProfileResposne,
-  UnionProfileType,
-} from "@/src/controllers/types/userprofile.type";
+} from "./types/user.controller.type";
+import validateRequest from "../middewares/validate-input";
+import userJoiSchema from "../schemas/user.schema";
 import {
   CustomCvResponse,
   CvFileParams,
   CvFilePResponse,
   CvStyleParams,
   UnionCustomCvResponse,
-} from "@/src/controllers/types/user-cv-controller.type";
-import { error } from "console";
-import { Types } from "mongoose";
-export interface UserCreationRequestParams2 {
-  sub?: string;
-  googleSub?: string;
-  facebookSub?: string;
-  username: string;
-  email?: string;
-  phone_number?: string;
-  profile?: string;
-  role?: string;
-  gender?: string;
-  age?: number;
-  favorites?: Types.ObjectId[];
-  createdAt?: Date;
-  updatedAt?: Date;
-  lastActive?: Date;
-  lastSeen?: Date;
-  sessions?: {
-    deviceId: string;
-    ipAddress: string;
-    lastLogin: Date;
-  }[];
-  privacySettings?: {
-    lastSeenVisibleTo: "everyone" | "contacts" | "nobody";
-    profilePhotoVisibleTo: "everyone" | "contacts" | "nobody";
-  };
-  contacts?: Types.ObjectId[];
-}
+} from "./types/user-cv-controller.type";
+import sendResponse from "../utils/send-response";
+import {
+  IUserProfile,
+  IUserProfileRespone,
+  UnionProfileType,
+} from "./types/userprofile.type";
+import { uploadToS3 } from "../utils/s3";
 
 @Route("v1/users")
 export class UsersController extends Controller {
   @Get()
-  public async getAllUsers(
-    @Queries() queries: UserGetAllControllerParams
-  ): Promise<UsersPaginatedResponse> {
+  public async getAllUsers(@Queries() queries: UserGetAllControllerParams) {
     try {
       const response = await UserService.getAllUsers(queries);
 
-      return sendResponse({ message: "success", data: response });
+      return response;
     } catch (error) {
       console.error(
         `UsersController - createUser() method error: `,
@@ -96,22 +65,20 @@ export class UsersController extends Controller {
   @SuccessResponse("201", "Created")
   @Post()
   @Middlewares(validateRequest(userJoiSchema))
-  public async createUser(
-    @Body() requestBody: UserCreationRequestParams2
-  ): Promise<UserProfileResponse> {
+  public async createUser(@Body() requestBody: UserCreationRequestParams) {
     try {
       // Create New User
       const response = await UserService.createNewUser(requestBody);
 
       // Schedule Notification Job 1 Minute Later
-      await agenda.schedule(
-        "in 1 minutes",
-        SCHEDULE_JOBS.NOTIFICATION_NEW_REGISTRATION,
-        { userId: response._id }
-      );
+      // await agenda.schedule(
+      //   "in 1 minutes",
+      //   SCHEDULE_JOBS.NOTIFICATION_NEW_REGISTRATION,
+      //   { userId: response._id }
+      // );
 
-      this.setStatus(201); // set return status 201
-      return sendResponse<IUser>({ message: "success", data: response });
+      this.setStatus(201);
+      return response;
     } catch (error) {
       console.error(
         `UsersController - createUser() method error: `,
@@ -122,16 +89,13 @@ export class UsersController extends Controller {
   }
 
   @Get("/me")
-  public async getMe(
-    @Request() request: ExpressRequest
-  ): Promise<UserProfileResponse> {
+  public async getMe(@Request() request: ExpressRequest) {
     try {
       const sub = request.cookies["username"];
-      // console.log("hi======", sub);
 
       const response = await UserService.getUserBySub(sub);
 
-      return sendResponse<IUser>({ message: "success", data: response });
+      return response;
     } catch (error) {
       console.error(
         `UsersController - getUserProfile() method error: `,
@@ -156,7 +120,7 @@ export class UsersController extends Controller {
       throw err;
     }
   }
-  //for cv generate
+  // //for cv generate
   @Get("/cvstyle")
   public async getCVStyle(): Promise<{
     message: string;
@@ -175,9 +139,9 @@ export class UsersController extends Controller {
 
   @Get("/profile-detail/:userId")
   public async getProfileByID(
-    @Path() userId:string,
+    @Path() userId: string,
     @Query() category?: string
-  ): Promise<IUserProfileResposne> {
+  ): Promise<IUserProfileRespone> {
     try {
       const userProfile = await UserService.getUserProfileById(
         userId,
@@ -209,7 +173,7 @@ export class UsersController extends Controller {
         message: "Data is updated successfully",
         data: userData,
       });
-    } catch (err) {
+    } catch (error) {
       throw error;
     }
   }
@@ -279,7 +243,7 @@ export class UsersController extends Controller {
 
       return sendResponse<IUser>({
         message: "Favorite added successfully",
-        data: response,
+        data: response as unknown as IUser,
       });
     } catch (error) {
       console.error(
@@ -320,7 +284,7 @@ export class UsersController extends Controller {
 
       return sendResponse<IUser>({
         message: "Favorite removed successfully",
-        data: response,
+        data: response as unknown as IUser,
       });
     } catch (error) {
       console.error(
@@ -338,7 +302,10 @@ export class UsersController extends Controller {
     try {
       const response = await UserService.getUserBySub(userId);
 
-      return sendResponse<IUser>({ message: "success", data: response });
+      return sendResponse<IUser>({
+        message: "success",
+        data: response,
+      });
     } catch (error) {
       console.error(
         `UsersController - getUserProfile() method error: `,
@@ -357,7 +324,10 @@ export class UsersController extends Controller {
       const newUpdateUserInfo = { _id: userId, ...updateUserInfo };
       const response = await UserService.updateUserBySub(newUpdateUserInfo);
 
-      return sendResponse<IUser>({ message: "success", data: response });
+      return sendResponse<IUser>({
+        message: "success",
+        data: response as unknown as IUser,
+      });
     } catch (error) {
       console.error(
         `UsersController - createUser() method error: `,
@@ -380,6 +350,7 @@ export class UsersController extends Controller {
       throw error;
     }
   }
+
   @Get("/getMulti/Profile")
   public async getMultiProfileUser(@Queries() query: { usersId?: string }) {
     try {
@@ -392,23 +363,22 @@ export class UsersController extends Controller {
   //
   @Post("/uploadFile")
   public async uploadFile(
-    @UploadedFile() file: Express.Multer.File,
     @Request() request: ExpressRequest
   ): Promise<string | undefined> {
     try {
       const userId = request.cookies["user_id"];
+      const file = await UserService.handleFile(request);
       const response: string = await uploadToS3(file, `user-service/${userId}`);
       return response;
     } catch (error) {
-      if ((error as { code: string }).code == "LIMIT_FILE_SIZE") {
-        console.log("multer error");
-        throw new Error((error as { message: string }).message);
+      if ((error as { message: string }).message === "Reach Limit File") {
+        throw new FileSizeError();
       }
       throw error;
     }
   }
 
-  //cv endpoint
+  // //cv endpoint
 
   @Post("/cv")
   public async updateCvFiles(
