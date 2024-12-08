@@ -302,10 +302,7 @@ export class UsersController extends Controller {
     try {
       const response = await UserService.getUserBySub(userId);
 
-      return sendResponse<IUser>({
-        message: "success",
-        data: response as unknown as IUser,
-      });
+      return response;
     } catch (error) {
       console.error(
         `UsersController - getUserProfile() method error: `,
