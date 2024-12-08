@@ -19,15 +19,9 @@ import sendResponse from "@/src/utils/send-response";
 import validateRequest from "@/src/middewares/validate-input";
 import userJoiSchema from "@/src/schemas/user.schema";
 import {
-  UsersPaginatedResponse,
   prettyObject,
-  // UserCreationRequestParams,
-  UserProfileResponse,
-  UserUpdateRequestParams,
-  IUser,
   AuthenticationError,
 } from "@sabaicode-dev/camformant-libs";
-import { UserGetAllControllerParams } from "@/src/controllers/types/user-controller.type";
 import { Request as ExpressRequest } from "express";
 import agenda from "@/src/utils/agenda";
 import { SCHEDULE_JOBS } from "@/src/jobs";
@@ -45,34 +39,8 @@ import {
   UnionCustomCvResponse,
 } from "@/src/controllers/types/user-cv-controller.type";
 import { error } from "console";
-import { Types } from "mongoose";
-export interface UserCreationRequestParams2 {
-  sub?: string;
-  googleSub?: string;
-  facebookSub?: string;
-  username: string;
-  email?: string;
-  phone_number?: string;
-  profile?: string;
-  role?: string;
-  gender?: string;
-  age?: number;
-  favorites?: Types.ObjectId[];
-  createdAt?: Date;
-  updatedAt?: Date;
-  lastActive?: Date;
-  lastSeen?: Date;
-  sessions?: {
-    deviceId: string;
-    ipAddress: string;
-    lastLogin: Date;
-  }[];
-  privacySettings?: {
-    lastSeenVisibleTo: "everyone" | "contacts" | "nobody";
-    profilePhotoVisibleTo: "everyone" | "contacts" | "nobody";
-  };
-  contacts?: Types.ObjectId[];
-}
+import { IUser, UserCreationRequestParams, UserGetAllControllerParams, UserProfileResponse, UsersPaginatedResponse, UserUpdateRequestParams } from "./types/user.controller.type";
+
 
 @Route("v1/users")
 export class UsersController extends Controller {
@@ -83,7 +51,7 @@ export class UsersController extends Controller {
     try {
       const response = await UserService.getAllUsers(queries);
 
-      return sendResponse({ message: "success", data: response });
+      return { message: "success", data: response };
     } catch (error) {
       console.error(
         `UsersController - createUser() method error: `,
@@ -97,7 +65,7 @@ export class UsersController extends Controller {
   @Post()
   @Middlewares(validateRequest(userJoiSchema))
   public async createUser(
-    @Body() requestBody: UserCreationRequestParams2
+    @Body() requestBody: UserCreationRequestParams
   ): Promise<UserProfileResponse> {
     try {
       // Create New User
@@ -111,7 +79,7 @@ export class UsersController extends Controller {
       );
 
       this.setStatus(201); // set return status 201
-      return sendResponse<IUser>({ message: "success", data: response });
+      return sendResponse<IUser>({ message: "success", data: response as unknown as IUser });
     } catch (error) {
       console.error(
         `UsersController - createUser() method error: `,
@@ -131,7 +99,7 @@ export class UsersController extends Controller {
 
       const response = await UserService.getUserBySub(sub);
 
-      return sendResponse<IUser>({ message: "success", data: response });
+      return sendResponse<IUser>({ message: "success", data: response as unknown as IUser });
     } catch (error) {
       console.error(
         `UsersController - getUserProfile() method error: `,
@@ -259,7 +227,7 @@ export class UsersController extends Controller {
       const response = await UserService.changeProfilePic(photo, userId);
       return sendResponse<IUser>({
         message: "Image is updated successfully",
-        data: response,
+        data: response as unknown as IUser,
       });
     } catch (err) {
       throw err;
@@ -279,7 +247,7 @@ export class UsersController extends Controller {
 
       return sendResponse<IUser>({
         message: "Favorite added successfully",
-        data: response,
+        data: response as unknown as IUser,
       });
     } catch (error) {
       console.error(
@@ -320,7 +288,7 @@ export class UsersController extends Controller {
 
       return sendResponse<IUser>({
         message: "Favorite removed successfully",
-        data: response,
+        data: response as unknown as IUser,
       });
     } catch (error) {
       console.error(
@@ -338,7 +306,7 @@ export class UsersController extends Controller {
     try {
       const response = await UserService.getUserBySub(userId);
 
-      return sendResponse<IUser>({ message: "success", data: response });
+      return sendResponse<IUser>({ message: "success", data: response as unknown as IUser});
     } catch (error) {
       console.error(
         `UsersController - getUserProfile() method error: `,
@@ -357,7 +325,7 @@ export class UsersController extends Controller {
       const newUpdateUserInfo = { _id: userId, ...updateUserInfo };
       const response = await UserService.updateUserBySub(newUpdateUserInfo);
 
-      return sendResponse<IUser>({ message: "success", data: response });
+      return sendResponse<IUser>({ message: "success", data: response as unknown as IUser});
     } catch (error) {
       console.error(
         `UsersController - createUser() method error: `,

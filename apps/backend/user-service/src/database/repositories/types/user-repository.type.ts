@@ -80,3 +80,8 @@ export interface companiesForJobs {
   job_openings_count?: number;
   job_closings_count?: number;
 }
+export interface getMultiProfileCompanyResponse{
+    _id?: string;
+    profile: string;
+    name: string;
+  }

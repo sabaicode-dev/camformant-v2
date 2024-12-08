@@ -1,5 +1,3 @@
-import { UserGetAllControllerParams } from "@/src/controllers/types/user-controller.type";
-import { IUser } from "@/src/database/models/user.model";
 import {
   UserCreationRepoParams,
   UserUpdateRepoParams,
@@ -16,6 +14,7 @@ import {
   IUserProfile,
   UnionProfileType,
 } from "@/src/controllers/types/userprofile.type";
+import { IUser, UserGetAllControllerParams } from "../controllers/types/user.controller.type";
 
 class UserService {
   async getAllUsers(queries: UserGetAllControllerParams) {

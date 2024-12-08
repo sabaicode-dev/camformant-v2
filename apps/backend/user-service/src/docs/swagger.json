@@ -7,10 +7,13 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"mongoose.Types.ObjectId": {
+				"type": "string"
+			},
 			"IUser": {
 				"properties": {
 					"_id": {
-						"type": "string"
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 					},
 					"sub": {
 						"type": "string"
@@ -40,8 +43,18 @@
 						"type": "number",
 						"format": "double"
 					},
+					"birthdate": {
+						"type": "string",
+						"format": "date-time"
+					},
 					"role": {
 						"type": "string"
+					},
+					"favorites": {
+						"items": {
+							"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+						},
+						"type": "array"
 					},
 					"createdAt": {
 						"type": "string",
@@ -50,8 +63,79 @@
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time"
+					},
+					"lastActive": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"lastSeen": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"sessions": {
+						"items": {
+							"properties": {
+								"lastLogin": {
+									"type": "string",
+									"format": "date-time"
+								},
+								"ipAddress": {
+									"type": "string"
+								},
+								"deviceId": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"lastLogin",
+								"ipAddress",
+								"deviceId"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					},
+					"privacySettings": {
+						"properties": {
+							"profilePhotoVisibleTo": {
+								"type": "string",
+								"enum": [
+									"everyone",
+									"contacts",
+									"nobody"
+								]
+							},
+							"lastSeenVisibleTo": {
+								"type": "string",
+								"enum": [
+									"everyone",
+									"contacts",
+									"nobody"
+								]
+							}
+						},
+						"required": [
+							"profilePhotoVisibleTo",
+							"lastSeenVisibleTo"
+						],
+						"type": "object"
 					}
 				},
+				"required": [
+					"sub",
+					"googleSub",
+					"facebookSub",
+					"username",
+					"email",
+					"phone_number",
+					"profile",
+					"gender",
+					"age",
+					"role",
+					"favorites",
+					"createdAt",
+					"updatedAt"
+				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -143,10 +227,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"mongoose.Types.ObjectId": {
-				"type": "string"
-			},
-			"UserCreationRequestParams2": {
+			"UserCreationRequestParams": {
 				"properties": {
 					"sub": {
 						"type": "string"
@@ -986,6 +1067,36 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"CompaniesProfile": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"profile": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"getMultiProfileCompanyResponse": {
+				"properties": {
+					"companiesProfile": {
+						"items": {
+							"$ref": "#/components/schemas/CompaniesProfile"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"companiesProfile"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"APIResponse_ICorporatorProfile_": {
 				"properties": {
 					"message": {
@@ -1087,7 +1198,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/UserCreationRequestParams2"
+								"$ref": "#/components/schemas/UserCreationRequestParams"
 							}
 						}
 					}
@@ -1843,34 +1954,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"properties": {
-										"companiesProfile": {
-											"items": {
-												"properties": {
-													"name": {
-														"type": "string"
-													},
-													"profile": {
-														"type": "string"
-													},
-													"_id": {
-														"type": "string"
-													}
-												},
-												"required": [
-													"name",
-													"profile",
-													"_id"
-												],
-												"type": "object"
-											},
-											"type": "array"
-										}
-									},
-									"required": [
-										"companiesProfile"
-									],
-									"type": "object"
+									"$ref": "#/components/schemas/getMultiProfileCompanyResponse"
 								}
 							}
 						}

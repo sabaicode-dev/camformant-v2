@@ -15,12 +15,6 @@ import {
   QueryGetUserConversations,
 } from "./types/message.controller.types";
 
-// declare namespace Express {
-//   export interface Request {
-//     currentUser?: { role: string[]; username: string };
-//   }
-// }
-
 @Route("v1/messages")
 export class MessageController extends Controller {
   MessageService = new MessageService();
