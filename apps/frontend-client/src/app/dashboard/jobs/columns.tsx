@@ -7,6 +7,8 @@ import axiosInstance from "@/utils/axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Jobs } from "@/utils/types/form-type";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { useJob } from "@/context/JobContext";
 
 export const columns: ColumnDef<Jobs>[] = [
   {
@@ -98,24 +100,18 @@ export const columns: ColumnDef<Jobs>[] = [
       return <div>{formatDate(deadlineAt)}</div>;
     },
   },
-  {
-    accessorKey: "status",
-    header: ({ column }) => {
-      return <div>status</div>;
-    },
-  },
+  // {
+  //   accessorKey: "status",
+  //   header: ({ column }) => {
+  //     return <div>status</div>;
+  //   },
+  // },
   {
     id: "actions",
     cell: ({ row }) => {
       const jobFromCol = row.original;
 
-      interface Job {
-        _id: string;
-        title: string;
-      }
-
-      const [jobs, setJobs] = useState<Job[]>([]); // Define state for jobs
-
+      const {fetchJobs} = useJob()
       const handleDelete = async () => {
         if (!jobFromCol._id) {
           alert("Invalid job ID.");
@@ -127,14 +123,12 @@ export const columns: ColumnDef<Jobs>[] = [
         if (!isConfirmed) return;
         try {
           const response = await axiosInstance.delete(
-            `http://localhost:4000/v1/jobs/${jobFromCol._id}`
+            `${API_ENDPOINTS.JOB_ENDPOINT}/${jobFromCol._id}`
           );
+          await fetchJobs()
           console.log("Delete Response:", response.data);
-          // Assuming setJobs is a state updater for the list of jobs
-          setJobs((prevJobs) =>
-            prevJobs.filter((job) => job._id !== jobFromCol._id)
-          );
           alert("Job deleted successfully!");
+          router.push("dashboard/jobs")
         } catch (error) {
           console.error("Error deleting job:", error);
           alert("Failed to delete the job. Please try again.");

@@ -130,9 +130,7 @@ class JobRepository {
       }
       const companiesId = result.map((jobs: IJob) => jobs.companyId);
 
-      const validCompaniesId = companiesId.filter(
-        (id): id is mongoose.Types.ObjectId => id !== undefined
-      );
+      const validCompaniesId = companiesId.filter((id) => id !== undefined);
       const data = await fetchCompaniesProfile(validCompaniesId);
       //remove companyId property and merge jobs with companies
       const newJobReturn = combinedJobsWithCompanies(result, data) || [];
@@ -353,7 +351,7 @@ class JobRepository {
               location,
               deadline,
             },
-          } as GetJobApplyResponse;
+          } as unknown as GetJobApplyResponse;
         })
       );
 
@@ -431,7 +429,9 @@ class JobRepository {
   public async deleteManyJobApply(jobId: string) {
     try {
       console.log("inside delete many", jobId);
-      const response = ApplyModel.deleteMany({ jobId: new mongoose.Types.ObjectId(jobId) });
+      const response = ApplyModel.deleteMany({
+        jobId: new mongoose.Types.ObjectId(jobId),
+      });
       console.log("response ", response);
       return response;
     } catch (err) {
@@ -440,10 +440,14 @@ class JobRepository {
   }
 }
 
-
 //===function===
 async function fetchCompaniesProfile(
-  companiesId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[] | undefined
+  companiesId:
+    | string
+    | string[]
+    | mongoose.Types.ObjectId
+    | mongoose.Types.ObjectId[]
+    | undefined
 ) {
   console.log("reach fetchCompaniesProfile");
 

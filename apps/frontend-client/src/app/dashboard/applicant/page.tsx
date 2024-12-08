@@ -19,7 +19,7 @@ const ApplicantPage = () => {
       const fetchedJobs = jobsResponse.data.data;
 
       const applicationsPromises = fetchedJobs.map(job => 
-      axiosInstance.get<{ data: JobApplication[] }>(`${API_ENDPOINTS.JOB_APPLY}?jobId=${job._id}?limit=5`)
+      axiosInstance.get<{ data: JobApplication[] }>(`${API_ENDPOINTS.JOB_APPLY}?jobId=${job._id}`)
       .then(response => response.data.data.map(application => ({ ...application }))));
 
       const applicationsResponses = await Promise.all(applicationsPromises);

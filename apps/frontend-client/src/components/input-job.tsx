@@ -7,6 +7,9 @@ import axiosInstance from "@/utils/axios";
 import { Jobs } from "@/utils/types/form-type";
 import { jobFormSchema } from "@/schema/auth/formSchema";
 import SeleteCheckBox from "./selectBox";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { useRouter } from "next/navigation";
+import { useJob } from "@/context/JobContext";
 
 
 const InputForm: React.FC<{
@@ -14,6 +17,7 @@ const InputForm: React.FC<{
   existingData?: Jobs;
   typeOfForm?: string;
 }> = ({ formTitle, existingData, typeOfForm = "POST" }) => {
+  const {fetchJobs} = useJob()
   const [formData, setFormData] = useState<Jobs>({
     title: existingData?.title || "",
     position: existingData?.position || [],
@@ -36,7 +40,7 @@ const InputForm: React.FC<{
       ? new Date(existingData.createdAt).toISOString().split("T")[0]
       : "",
   });
-
+  const router = useRouter();
   const workTypeOptions = [
     { name: "Remote" },
     { name: "On-Site" },
@@ -204,19 +208,23 @@ const InputForm: React.FC<{
     setErrorWithZod(event);
     try {
       let response: any;
-
       if (typeOfForm === "POST") {
+        event.preventDefault();
         response = await axiosInstance.post(
-          "http://localhost:4000/v1/jobs/job",
+          `${API_ENDPOINTS.JOB}`,
           formData
         );
+        await fetchJobs()
+      router.push("/dashboard/jobs");
         console.log("post job", formData);
       } else {
         event.preventDefault();
         response = await axiosInstance.put(
-          `http://localhost:4000/v1/jobs/${existingData!._id}`,
+          `${API_ENDPOINTS.JOB_ENDPOINT}/${existingData!._id}`,
           { ...formData, companyId: existingData?.company?._id || "" }
         );
+        await fetchJobs()
+      router.push("/dashboard/jobs");
       }
       console.log("Response:", response?.data);
     } catch (error) {

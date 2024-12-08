@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-export interface IUserProfileResposne{
-  message:string;
-  data:IUserProfile
+export interface IUserProfileRespone {
+  message: string;
+  data: IUserProfile;
 }
 export interface IUserProfile {
   basic?: BasicParams;

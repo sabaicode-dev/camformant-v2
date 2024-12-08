@@ -1,57 +1,58 @@
 import {
   Controller,
   Get,
-  Post,
-  Path,
   Route,
+  Queries,
   SuccessResponse,
+  Post,
+  Middlewares,
   Body,
+  Request,
+  Path,
+  Query,
   Put,
   Delete,
-  Queries,
-  Query,
-  Middlewares,
-  Request,
 } from "tsoa";
 import UserService from "@/src/services/user.service";
-import sendResponse from "@/src/utils/send-response";
-import validateRequest from "@/src/middewares/validate-input";
-import userJoiSchema from "@/src/schemas/user.schema";
 import {
-  prettyObject,
   AuthenticationError,
   FileSizeError,
+  prettyObject,
 } from "@sabaicode-dev/camformant-libs";
 import { Request as ExpressRequest } from "express";
-import agenda from "@/src/utils/agenda";
-import { SCHEDULE_JOBS } from "@/src/jobs";
-import { uploadToS3 } from "@/src/utils/s3";
+
 import {
-  IUserProfile,
-  IUserProfileResposne,
-  UnionProfileType,
-} from "@/src/controllers/types/userprofile.type";
+  IUser,
+  UserCreationRequestParams,
+  UserGetAllControllerParams,
+  UserProfileResponse,
+  UserUpdateRequestParams,
+} from "./types/user.controller.type";
+import validateRequest from "../middewares/validate-input";
+import userJoiSchema from "../schemas/user.schema";
 import {
   CustomCvResponse,
   CvFileParams,
   CvFilePResponse,
   CvStyleParams,
   UnionCustomCvResponse,
-} from "@/src/controllers/types/user-cv-controller.type";
-import { error } from "console";
-import { IUser, UserCreationRequestParams, UserGetAllControllerParams, UserProfileResponse, UsersPaginatedResponse, UserUpdateRequestParams } from "./types/user.controller.type";
-
+} from "./types/user-cv-controller.type";
+import sendResponse from "../utils/send-response";
+import {
+  IUserProfile,
+  IUserProfileRespone,
+  UnionProfileType,
+} from "./types/userprofile.type";
+import { uploadToS3 } from "../utils/s3";
 
 @Route("v1/users")
 export class UsersController extends Controller {
   @Get()
-  public async getAllUsers(
-    @Queries() queries: UserGetAllControllerParams
-  ): Promise<UsersPaginatedResponse> {
+  public async getAllUsers(@Queries() queries: UserGetAllControllerParams) {
     try {
       const response = await UserService.getAllUsers(queries);
 
-      return { message: "success", data: response };
+      return response;
     } catch (error) {
       console.error(
         `UsersController - createUser() method error: `,
@@ -64,22 +65,20 @@ export class UsersController extends Controller {
   @SuccessResponse("201", "Created")
   @Post()
   @Middlewares(validateRequest(userJoiSchema))
-  public async createUser(
-    @Body() requestBody: UserCreationRequestParams
-  ): Promise<UserProfileResponse> {
+  public async createUser(@Body() requestBody: UserCreationRequestParams) {
     try {
       // Create New User
       const response = await UserService.createNewUser(requestBody);
 
       // Schedule Notification Job 1 Minute Later
-      await agenda.schedule(
-        "in 1 minutes",
-        SCHEDULE_JOBS.NOTIFICATION_NEW_REGISTRATION,
-        { userId: response._id }
-      );
+      // await agenda.schedule(
+      //   "in 1 minutes",
+      //   SCHEDULE_JOBS.NOTIFICATION_NEW_REGISTRATION,
+      //   { userId: response._id }
+      // );
 
-      this.setStatus(201); // set return status 201
-      return sendResponse<IUser>({ message: "success", data: response as unknown as IUser });
+      this.setStatus(201);
+      return response;
     } catch (error) {
       console.error(
         `UsersController - createUser() method error: `,
@@ -90,16 +89,13 @@ export class UsersController extends Controller {
   }
 
   @Get("/me")
-  public async getMe(
-    @Request() request: ExpressRequest
-  ): Promise<UserProfileResponse> {
+  public async getMe(@Request() request: ExpressRequest) {
     try {
       const sub = request.cookies["username"];
-      // console.log("hi======", sub);
 
       const response = await UserService.getUserBySub(sub);
 
-      return sendResponse<IUser>({ message: "success", data: response as unknown as IUser });
+      return response;
     } catch (error) {
       console.error(
         `UsersController - getUserProfile() method error: `,
@@ -124,7 +120,7 @@ export class UsersController extends Controller {
       throw err;
     }
   }
-  //for cv generate
+  // //for cv generate
   @Get("/cvstyle")
   public async getCVStyle(): Promise<{
     message: string;
@@ -145,7 +141,7 @@ export class UsersController extends Controller {
   public async getProfileByID(
     @Path() userId: string,
     @Query() category?: string
-  ): Promise<IUserProfileResposne> {
+  ): Promise<IUserProfileRespone> {
     try {
       const userProfile = await UserService.getUserProfileById(
         userId,
@@ -177,7 +173,7 @@ export class UsersController extends Controller {
         message: "Data is updated successfully",
         data: userData,
       });
-    } catch (err) {
+    } catch (error) {
       throw error;
     }
   }
@@ -227,7 +223,7 @@ export class UsersController extends Controller {
       const response = await UserService.changeProfilePic(photo, userId);
       return sendResponse<IUser>({
         message: "Image is updated successfully",
-        data: response as unknown as IUser,
+        data: response,
       });
     } catch (err) {
       throw err;
@@ -306,7 +302,10 @@ export class UsersController extends Controller {
     try {
       const response = await UserService.getUserBySub(userId);
 
-      return sendResponse<IUser>({ message: "success", data: response as unknown as IUser});
+      return sendResponse<IUser>({
+        message: "success",
+        data: response as unknown as IUser,
+      });
     } catch (error) {
       console.error(
         `UsersController - getUserProfile() method error: `,
@@ -325,7 +324,10 @@ export class UsersController extends Controller {
       const newUpdateUserInfo = { _id: userId, ...updateUserInfo };
       const response = await UserService.updateUserBySub(newUpdateUserInfo);
 
-      return sendResponse<IUser>({ message: "success", data: response as unknown as IUser});
+      return sendResponse<IUser>({
+        message: "success",
+        data: response as unknown as IUser,
+      });
     } catch (error) {
       console.error(
         `UsersController - createUser() method error: `,
@@ -361,7 +363,6 @@ export class UsersController extends Controller {
   //
   @Post("/uploadFile")
   public async uploadFile(
-    // @UploadedFile() file: Express.Multer.File,
     @Request() request: ExpressRequest
   ): Promise<string | undefined> {
     try {
@@ -377,7 +378,7 @@ export class UsersController extends Controller {
     }
   }
 
-  //cv endpoint
+  // //cv endpoint
 
   @Post("/cv")
   public async updateCvFiles(

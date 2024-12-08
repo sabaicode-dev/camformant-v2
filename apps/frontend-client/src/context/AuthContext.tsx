@@ -26,7 +26,7 @@ export function AuthProvider({ children , isLogin }: { children: React.ReactNode
   const fetchUser = async () => {
     try {
       setIsLoading(false); 
-      const res = await axiosInstance.get(`${process.env.NEXT_PUBLIC_API_URL}/v1/corporator/profile/me`);
+      const res = await axiosInstance.get(`${API_ENDPOINTS.CORPARATE_PROFILE_ME}`);
       setUser(res.data.data);
       setIsAuthenticated(true);
     } catch (error) {

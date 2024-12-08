@@ -13,7 +13,7 @@
 			"IUser": {
 				"properties": {
 					"_id": {
-						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+						"type": "string"
 					},
 					"sub": {
 						"type": "string"
@@ -121,26 +121,17 @@
 						"type": "object"
 					}
 				},
-				"required": [
-					"sub",
-					"googleSub",
-					"facebookSub",
-					"username",
-					"email",
-					"phone_number",
-					"profile",
-					"gender",
-					"age",
-					"role",
-					"favorites",
-					"createdAt",
-					"updatedAt"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
-			"PaginationResponse_IUser_": {
+			"UserGetAllRepoResponse": {
 				"properties": {
+					"users": {
+						"items": {
+							"$ref": "#/components/schemas/IUser"
+						},
+						"type": "array"
+					},
 					"totalItems": {
 						"type": "number",
 						"format": "double"
@@ -155,33 +146,21 @@
 					}
 				},
 				"required": [
+					"users",
 					"totalItems",
 					"totalPages",
 					"currentPage"
 				],
 				"type": "object",
-				"additionalProperties": {
-					"anyOf": [
-						{
-							"items": {
-								"$ref": "#/components/schemas/IUser"
-							},
-							"type": "array"
-						},
-						{
-							"type": "number",
-							"format": "double"
-						}
-					]
-				}
+				"additionalProperties": false
 			},
-			"UsersPaginatedResponse": {
+			"UserGetAllServiceResponse": {
 				"properties": {
 					"message": {
 						"type": "string"
 					},
 					"data": {
-						"$ref": "#/components/schemas/PaginationResponse_IUser_"
+						"$ref": "#/components/schemas/UserGetAllRepoResponse"
 					}
 				},
 				"required": [
@@ -211,7 +190,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"UserProfileResponse": {
+			"CreateNewUserServiceResponse": {
 				"properties": {
 					"message": {
 						"type": "string"
@@ -250,15 +229,19 @@
 					"profile": {
 						"type": "string"
 					},
-					"role": {
-						"type": "string"
-					},
 					"gender": {
 						"type": "string"
 					},
 					"age": {
 						"type": "number",
 						"format": "double"
+					},
+					"birthdate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"role": {
+						"type": "string"
 					},
 					"favorites": {
 						"items": {
@@ -329,16 +312,23 @@
 							"lastSeenVisibleTo"
 						],
 						"type": "object"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"getMeRespond": {
+				"properties": {
+					"message": {
+						"type": "string"
 					},
-					"contacts": {
-						"items": {
-							"$ref": "#/components/schemas/mongoose.Types.ObjectId"
-						},
-						"type": "array"
+					"data": {
+						"$ref": "#/components/schemas/IUser"
 					}
 				},
 				"required": [
-					"username"
+					"message",
+					"data"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -732,7 +722,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"IUserProfileResposne": {
+			"IUserProfileRespone": {
 				"properties": {
 					"message": {
 						"type": "string"
@@ -888,6 +878,22 @@
 				],
 				"nullable": true
 			},
+			"UserProfileResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/IUser"
+					}
+				},
+				"required": [
+					"message",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"UserUpdateRequestParams": {
 				"properties": {
 					"sub": {
@@ -976,7 +982,14 @@
 			"ICorporatorProfile": {
 				"properties": {
 					"_id": {
-						"type": "string"
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+							}
+						]
 					},
 					"sub": {
 						"type": "string"
@@ -1133,7 +1146,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UsersPaginatedResponse"
+									"$ref": "#/components/schemas/UserGetAllServiceResponse"
 								}
 							}
 						}
@@ -1185,7 +1198,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UserProfileResponse"
+									"$ref": "#/components/schemas/CreateNewUserServiceResponse"
 								}
 							}
 						}
@@ -1214,7 +1227,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UserProfileResponse"
+									"$ref": "#/components/schemas/getMeRespond"
 								}
 							}
 						}
@@ -1331,7 +1344,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IUserProfileResposne"
+									"$ref": "#/components/schemas/IUserProfileRespone"
 								}
 							}
 						}

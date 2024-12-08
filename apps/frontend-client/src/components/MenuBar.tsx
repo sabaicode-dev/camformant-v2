@@ -19,12 +19,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useRouter } from "next/navigation";
 
 export const MenuBar = () => {
   const {user ,signOut }=useAuth()
   const { isOpen, toggleSidebar } = useSidebarContext();
   const inputRef = useRef<HTMLInputElement | null>(null);
-
+  const router = useRouter();
   const handleSearch = () => {
     if (inputRef.current) {
       inputRef.current?.focus();
@@ -79,7 +80,7 @@ export const MenuBar = () => {
           <DropdownMenuContent>
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("dashboard/profile")}>Profile</DropdownMenuItem>
             <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
