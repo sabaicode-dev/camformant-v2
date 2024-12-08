@@ -1,7 +1,8 @@
 import CorporateRepository from "@/src/database/repositories/coporate.repository";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
-import { ICorporatorProfile } from "../database/models/corporate.model";
 import { companiesForJobs } from "../database/repositories/types/user-repository.type";
+import { ICorporatorProfile } from "../controllers/types/corporate-controller.type";
+import { getMultiProfileCompanyResponse } from "./corporate.service.types";
 
 class CorporateService {
   public async getMultiCompanies(
@@ -118,13 +119,7 @@ class CorporateService {
     }
   }
   //TODO: type
-  public async getMultiProfileCompany(companiesId?: string): Promise<{
-    companiesProfile: {
-      _id: string | undefined;
-      profile: string | undefined;
-      name: string | undefined;
-    }[];
-  }> {
+  public async getMultiProfileCompany(companiesId?: string): Promise<getMultiProfileCompanyResponse> {
     const arrCompaniesId = companiesId ? companiesId?.split(",") : [];
     try {
 
@@ -135,7 +130,7 @@ class CorporateService {
       if (!result) {
         throw new Error("Not found");
       }
-      return { companiesProfile: result };
+      return { companiesProfile: result as unknown as [] };
     } catch (error) {
       console.error(
         `CompanyService getMultiProfileCompany() method error:`,

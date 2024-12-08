@@ -1,20 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye, MoreHorizontal, SquarePen, Trash } from "lucide-react";
-import { ArrowUpDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Eye, SquarePen, Trash } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import axiosInstance from "@/utils/axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Jobs } from "@/utils/types/form-type";
 
@@ -44,26 +34,20 @@ export const columns: ColumnDef<Jobs>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "title", // Maps to the 'title' field in the MongoDB document
-    header: () => {
-      return <div>Job</div>;
-    },
-    cell: ({ getValue }) => {
-      const title = getValue<string>();
-      return <div>{title || "No Title Available"}</div>;
+    accessorKey: "title",
+    header: "Job Title",
+    cell: ({ row }) => {
+      return <div>{row.original.title || "No Title Available"}</div>;
     },
   },
   {
-    accessorKey: "type",
+    accessorKey: "position",
+    header: "position",
     cell: ({ row }) => {
-      const types = row.original.type;
-      console.log("type", types);
+      const positions = row.original.position;
       return (
         <>
-          {types && types.length > 0
-            ? types.join(", ") // Join array elements with a comma
-            : "No types available"}{" "}
-          {/* Fallback text if the array is empty */}
+          {positions && positions.length > 0 ? positions.join(", ") : "No types available"}{" "}
         </>
       );
     },
@@ -72,38 +56,39 @@ export const columns: ColumnDef<Jobs>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: ({ column }) => {
-      return <div>Posted Date</div>;
-    },
-    cell: ({ getValue }) => {
-      const createAt = getValue<string>();
-      const formatDate = (isoDataString: string) => {
-        const date = new Date(isoDataString);
-        return date.toISOString().slice(0, 10);
-      };
-      return <div>{formatDate(createAt)}</div>;
+    header: "Posted Date",
+    cell: ({ row }) => {
+      return (
+        <div>
+          {row.original.createdAt
+            ? new Date(row.original.createdAt).toLocaleDateString()
+            : "N/A"}
+        </div>
+      );
     },
   },
   {
-    accessorKey: "updatedAt",
+    accessorKey: "type",
     header: ({ column }) => {
-      return <div>Update Date</div>;
+      return <div>Job Type</div>;
     },
     cell: ({ getValue }) => {
-      const updateAt = getValue<string>();
-      const formatDate = (isoDataString: string) => {
-        const date = new Date(isoDataString);
-        return date.toISOString().slice(0, 10);
-      };
-      return <div>{formatDate(updateAt)}</div>;
+      const jobTypes = getValue<string[]>();
+  
+      return (
+        <div>
+          {jobTypes?.map((type, index) => (
+            <div key={index}>{type}</div>
+          ))}
+        </div>
+      );
     },
-  },
+  }
+,  
 
   {
     accessorKey: "deadline",
-    header: ({ column }) => {
-      return <div>Close Date</div>;
-    },
+    header: "Deadline",
     cell: ({ getValue }) => {
       const deadlineAt = getValue<string>();
       const formatDate = (isoDataString: string) => {
@@ -124,7 +109,6 @@ export const columns: ColumnDef<Jobs>[] = [
     cell: ({ row }) => {
       const jobFromCol = row.original;
 
-    
       interface Job {
         _id: string;
         title: string;
@@ -137,6 +121,10 @@ export const columns: ColumnDef<Jobs>[] = [
           alert("Invalid job ID.");
           return;
         }
+        const isConfirmed = window.confirm(
+          "Are you sure you want to delete this job?"
+        );
+        if (!isConfirmed) return;
         try {
           const response = await axiosInstance.delete(
             `http://localhost:4000/v1/jobs/${jobFromCol._id}`

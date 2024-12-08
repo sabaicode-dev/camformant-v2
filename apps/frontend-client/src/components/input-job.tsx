@@ -91,25 +91,88 @@ const InputForm: React.FC<{
     >
   ) => {
     const { name, value } = e.target;
-  
+
     setFormData((prevFormData) => {
-      const numericValue = value === "" || isNaN(Number(value)) ? value : Number(value);
-  
+      const numericValue =
+        value === "" || isNaN(Number(value)) ? value : Number(value);
+
       const updatedFormData = {
         ...prevFormData,
         [name]: numericValue,
       };
-  
+
       setErrors((prevErrors) => {
         let error = null;
-  
+
         if (value === "") {
           error = "This field is required";
         } else if (isNaN(Number(value))) {
           error = "This field must be a number";
-        } else if (name === "max_salary" && Number(value) <= Number(prevFormData.min_salary)) {
+        } else if (Number(value) < 0) {
+          error = "This field cannot be a negative number";
+        } else if (
+          name === "max_salary" &&
+          Number(value) <= Number(prevFormData.min_salary)
+        ) {
           error = "Max salary must be larger than Min salary";
         }
+        return {
+          ...prevErrors,
+          [name]: error,
+        };
+      });
+
+      return updatedFormData;
+    });
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+  
+    // Check if the field should be treated as an array or string
+    const isArrayField = Array.isArray(formData[name as keyof Jobs]);
+  
+    setFormData((prevFormData) => {
+      const updatedFormData = {
+        ...prevFormData,
+        [name]: isArrayField
+          ? value.split(",").map((item) => item.trim()) // Split string into an array if it's an array field
+          : value, // Else treat as a normal string
+      };
+  
+      // Real-time validation for deadline date field
+      setErrors((prevErrors) => {
+        let error: string | null = null;
+  
+        if (name === "deadline") {
+          const currentDate = new Date();
+          const inputDate = new Date(value);
+  
+          if (!value.trim()) {
+            error = "Deadline is required";
+          } else if (isNaN(inputDate.getTime())) {
+            error = "Invalid date format";
+          } else if (inputDate < currentDate) {
+            error = "Deadline cannot be in the past";
+          }
+        } else if (isArrayField) {
+          // Real-time validation for array fields
+          error =
+            (updatedFormData[name as keyof Jobs] as string[]).length === 0 ||
+            (updatedFormData[name as keyof Jobs] as string[]).some(
+              (item) => item === ""
+            )
+              ? "This field is required and cannot be empty"
+              : null;
+        } else {
+          // Real-time validation for other fields
+          error = value.trim() === "" ? "This field is required" : null;
+        }
+  
         return {
           ...prevErrors,
           [name]: error,
@@ -120,43 +183,6 @@ const InputForm: React.FC<{
     });
   };
   
-  
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-
-    // Check if the field should be treated as an array or string
-    const isArrayField = Array.isArray(formData[name as keyof Jobs]);
-
-    setFormData((prevFormData) => {
-      const updatedFormData = {
-        ...prevFormData,
-        [name]: isArrayField
-          ? value.split(",").map((item) => item.trim()) // Split string into an array if it's an array field
-          : value, // Else treat as a normal string
-      };
-
-      // Real-time validation for array fields
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: isArrayField
-          ? (updatedFormData[name as keyof Jobs] as string[]).length === 0 ||
-            (updatedFormData[name as keyof Jobs] as string[]).some(
-              (item) => item === ""
-            )
-            ? "This field is required and cannot be empty"
-            : null
-          : value.trim() === ""
-            ? "This field is required"
-            : null,
-      }));
-
-      return updatedFormData;
-    });
-  };
 
   const setErrorWithZod = (event?: React.FormEvent<HTMLFormElement>) => {
     const result = jobFormSchema.safeParse({

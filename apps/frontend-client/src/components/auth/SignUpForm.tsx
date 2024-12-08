@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/card";
 import { signUpSchema } from "@/lib/validations/authValidations";
 import { Icons } from "../ui/icons";
+import Image from "next/image";
 
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 
@@ -70,10 +71,12 @@ export function SignUpForm() {
       <div className="flex w-4/6 h-[590px] items-center border shadow-lg">
         {/* Left side with image */}
         <div className="w-2/4 h-full">
-          <img
+          <Image
             className="w-full h-full object-cover"
             src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTF8fGJvb2slMjB3aXRoJTIwcGxhbnR8ZW58MHx8MHx8fDA%3D"
             alt=""
+            width={800}
+            height={800}
           />
         </div>
 

@@ -10,6 +10,7 @@ interface ConversationListItemProps {
   unreadCount?: number;
   isSelected: boolean;
   onClick: () => void;
+  isOnline: boolean;
 }
 
 export function ConversationListItem({
@@ -17,7 +18,8 @@ export function ConversationListItem({
   profile,
   unreadCount,
   isSelected,
-  onClick
+  onClick,
+  isOnline
 }: ConversationListItemProps) {
   return (
     <div 
@@ -29,7 +31,9 @@ export function ConversationListItem({
     >
       <div className="relative mr-3">
       <Image src={profile} alt={name} className="rounded-full object-cover" width={40} height={40} />
-        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+        { isOnline &&
+            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+        }
       </div>
       <div className="flex-grow">
         <div className="flex justify-between items-center">

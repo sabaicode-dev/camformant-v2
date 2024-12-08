@@ -1,7 +1,5 @@
 "use client";
-
 import Image from "next/image";
-import Google from "@/../public/Google.png";
 interface ChatMessageProps {
   message: string;
   profile: string
@@ -12,11 +10,9 @@ interface ChatMessageProps {
 export function ChatMessage({ message, timestamp, isCurrentUser , profile }: ChatMessageProps) {
   return (
     <div className={`flex ${isCurrentUser ? 'justify-end':  'justify-start'} items-center`}>
-<div className="pr-2">
-{!isCurrentUser && <Image src={profile} alt={profile} className="rounded-full object-cover" width={40} height={40} />}
-
-</div>
-       
+      <div className="pr-2">
+      {!isCurrentUser && <Image src={profile} alt={profile} className="rounded-full object-cover" width={40} height={40} />}
+      </div>
       <div 
         className={`
           max-w-[50%] p-3 rounded-2xl

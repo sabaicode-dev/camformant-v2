@@ -16,7 +16,7 @@ const cvFileSchema = new mongoose.Schema(
 
 const cvFileCollectionSchema = new mongoose.Schema(
   {
-    userId:{type:mongoose.Types.ObjectId ,required:true},
+    userId:{type:mongoose.Schema.Types.ObjectId ,required:true},
     cv: { type: [cvFileSchema] },
   },
   {

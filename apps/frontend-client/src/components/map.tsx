@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { Job } from "@/lib/types/job";
 import { Jobs } from "@/utils/types/form-type";

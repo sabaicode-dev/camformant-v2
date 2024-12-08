@@ -9,6 +9,7 @@ self.addEventListener("install", (event) => {
   // Optionally skip waiting to activate immediately
   self.skipWaiting();
 });
+//related to notificationclick event
 self.addEventListener("activate", (event) => {
   console.log("Service Worker activated");
   event.waitUntil(self.clients.claim()); // Take control of all open clients

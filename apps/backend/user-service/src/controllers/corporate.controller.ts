@@ -15,8 +15,8 @@ import {
 import CorporateService from "@/src/services/corporate.service";
 import sendResponse from "@/src/utils/send-response";
 import { APIResponse, prettyObject } from "@sabaicode-dev/camformant-libs";
-import { ICorporatorProfile } from "../database/models/corporate.model";
 import { Request as ExpressRequest } from "express";
+import { ICorporatorProfile } from "./types/corporate-controller.type";
 
 @Tags("Corporator")
 @Route("v1/corporator")
