@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 // Define TypeScript interface for User
-export interface IUser {
-  _id: string;
+interface IUser {
+  _id?: mongoose.Schema.Types.ObjectId;
   sub: string;
   googleSub: string;
   facebookSub: string;
@@ -28,11 +28,10 @@ export interface IUser {
     lastSeenVisibleTo: "everyone" | "contacts" | "nobody";
     profilePhotoVisibleTo: "everyone" | "contacts" | "nobody";
   };
-  contacts?: mongoose.Types.ObjectId[];
 }
 
 // Define the User schema
-const userSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema<IUser>(
   {
     sub: { type: String, unique: true },
     googleSub: { type: String },
@@ -68,7 +67,6 @@ const userSchema = new mongoose.Schema(
       },
     },
 
-    contacts: [{ type: mongoose.Types.ObjectId, ref: "User" }],
   },
   {
     timestamps: true,

@@ -15,7 +15,6 @@ const UpdateJobPage = ({ params }: { params: { jobId: string } }) => {
         const response = await axiosInstance.get(
           `${API_ENDPOINTS.JOBS}/${params.jobId}`
         );
-        console.log("response:", response);
         setJobData(response.data.data);
       } catch (err) {
         console.log(err);

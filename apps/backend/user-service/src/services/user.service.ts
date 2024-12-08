@@ -1,5 +1,3 @@
-import { UserGetAllControllerParams } from "@/src/controllers/types/user-controller.type";
-import { IUser } from "@/src/database/models/user.model";
 import {
   UserCreationRepoParams,
   UserUpdateRepoParams,
@@ -18,6 +16,7 @@ import {
   UnionProfileType,
 } from "@/src/controllers/types/userprofile.type";
 import multer from "multer";
+import { IUser, UserGetAllControllerParams } from "../controllers/types/user.controller.type";
 
 class UserService {
   async getAllUsers(queries: UserGetAllControllerParams) {

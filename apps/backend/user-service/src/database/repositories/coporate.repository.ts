@@ -1,16 +1,13 @@
 import { NotFoundError, prettyObject } from "@sabaicode-dev/camformant-libs";
-import CorporatorModel, { ICorporatorProfile } from "../models/corporate.model";
+import CorporatorModel from "../models/corporate.model";
 import mongoose from "mongoose";
-import { companiesForJobs } from "./types/user-repository.type";
+import { companiesForJobs, getMultiProfileCompanyResponse } from "./types/user-repository.type";
+import { ICorporatorProfile } from "@/src/controllers/types/corporate-controller.type";
 
 class CorporateRepository {
   //TODO: type
   public async getMultiProfileCompany(arrCompaniesId: string[]): Promise<
-    {
-      _id: string | undefined;
-      profile: string | undefined;
-      name: string | undefined;
-    }[]
+    getMultiProfileCompanyResponse[]
   > {
     try {
       type Filter = {
@@ -37,13 +34,13 @@ class CorporateRepository {
         return [];
       }
 
-      const companiesData = result.map((com: ICorporatorProfile) => {
+      const companiesData = result.map((com) => {
         const companyData = {
           _id: com._id,
           profile: com.profile,
           name: com.name,
         };
-        return companyData;
+        return companyData as unknown as getMultiProfileCompanyResponse;
       });
 
       return companiesData;
@@ -78,7 +75,7 @@ class CorporateRepository {
       if (result.length === 0) {
         return [];
       }
-      const latestResult = result.map((company: ICorporatorProfile) => {
+      const latestResult = result.map((company) => {
         const newCompany = {
           _id: company._id,
           name: company.name,
@@ -118,7 +115,7 @@ class CorporateRepository {
           "corporateRepository - createProfile() method error: Profile not created"
         );
       }
-      return profile.save();
+      return profile.save() as unknown as ICorporatorProfile;
     } catch (error) {
       console.error(
         `corporateRepository - createProfile() method error: `,
@@ -136,7 +133,7 @@ class CorporateRepository {
         );
         return [];
       }
-      return profiles;
+      return profiles as unknown as ICorporatorProfile[];
     } catch (error) {
       console.error(
         `CompanyJobRepository - getAllProfiles() method error: `,
@@ -158,7 +155,7 @@ class CorporateRepository {
         );
         return null;
       }
-      return profile;
+      return profile as unknown as ICorporatorProfile;
     } catch (error) {
       console.error(
         `CompanyJobRepository - findProfileById() method error: `,
@@ -183,7 +180,7 @@ class CorporateRepository {
         );
         return null;
       }
-      return profile;
+      return profile as unknown as ICorporatorProfile;
     } catch (error) {
       console.error(
         `CompanyJobRepository - updateCorporateProfile() method error: `,
@@ -202,7 +199,7 @@ class CorporateRepository {
         throw new NotFoundError("Job was not found!");
       }
 
-      return result;
+      return result as unknown as ICorporatorProfile;
     } catch (error) {
       console.error(
         `CompanyJobRepository - deleteCorporateProfile() method error: `,

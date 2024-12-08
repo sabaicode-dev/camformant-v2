@@ -289,7 +289,6 @@ export const buildObject = (
     objToClone.clone((clonedTextbox: fabric.Textbox) => {
       newObj = clonedTextbox;
       newObj.set("text", String(value));
-      console.log("new obj name:", newObj?.name);
       //if the textBox is percent so we set the left and top diff from other textbox
       if (objToClone?.name?.includes("percent")) {
         newObj.set({
@@ -481,7 +480,6 @@ export const postCv = async (
         `${API_ENDPOINTS.USER_PROFILE_DETAIL}?query=updateData`,
         { ...updateData }
       );
-      console.log("user profile detail response::::", responseUserDetail);
       if (responseUserDetail) {
         setCvContent((prev: CvContentParams) => {
           return {

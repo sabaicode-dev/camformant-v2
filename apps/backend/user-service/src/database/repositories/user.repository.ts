@@ -1,4 +1,4 @@
-import UserModel, { IUser } from "@/src/database/models/user.model";
+import UserModel from "@/src/database/models/user.model";
 import {
   MongoError,
   UserCreationRepoParams,
@@ -30,6 +30,7 @@ import {
   IUserProfile,
   UnionProfileType,
 } from "@/src/controllers/types/userprofile.type";
+import { IUser } from "@/src/controllers/types/user.controller.type";
 class UserRepository {
   async getAll(queries: UserGetAllRepoParams) {
     const {
@@ -92,7 +93,7 @@ class UserRepository {
       const totalItems = await UserModel.countDocuments(mongoFilter);
 
       return {
-        [UserModel.collection.collectionName]: result,
+        [UserModel.collection.collectionName]: result as unknown as IUser[],
         totalItems,
         totalPages: Math.ceil(totalItems / limit),
         currentPage: page,
@@ -155,7 +156,7 @@ class UserRepository {
       if (!user) {
         throw new NotFoundError("User not found");
       }
-      return user;
+      return user as unknown as IUser;
     } catch (err) {
       throw err;
     }
@@ -279,7 +280,11 @@ class UserRepository {
         return userData;
       });
 
-      return usersData;
+      return usersData as unknown as {
+        _id: string | undefined;
+        profile: string | undefined;
+        name: string | undefined;
+      }[];
     } catch (error) {
       console.log(
         `UserRepository - getMultiProfileUser() method error:`,
@@ -301,7 +306,7 @@ class UserRepository {
         throw new NotFoundError("User not found");
       }
 
-      return user;
+      return user as unknown as IUser;
     } catch (error) {
       console.error(
         `UserRepository - addFavorite() method error: `,
@@ -323,7 +328,7 @@ class UserRepository {
         throw new NotFoundError("User not found");
       }
 
-      return user;
+      return user as unknown as IUser;
     } catch (error) {
       console.error(
         `UserRepository - removeFavorite() method error: `,
