@@ -39,7 +39,7 @@ export interface companiesForJobs {
 }
 export interface returnJobs {
   _id?: string;
-  companyId?: mongoose.Types.ObjectId;
+  companyId?: string;
   title?: string; // name of the job that company looking for. Example: Java Developer
   position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
   workMode?: WorkMode[];
@@ -62,7 +62,7 @@ export interface returnJobs {
 
 export interface IJob {
   _id?: string;
-  companyId?: mongoose.Types.ObjectId;
+  companyId?: string;
   profile?: string;
   title?: string; // name of the job that company looking for. Example: Java Developer
   position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
@@ -175,7 +175,7 @@ const StatusDateSchema = new Schema(
 const JobApplySchema = new Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId },
-    jobId: mongoose.Types.ObjectId,
+    jobId: mongoose.Schema.Types.ObjectId,
     companyResponse: ApplyCompanyResSchema,
     userInfo: ApplyUserInfoschema,
     statusDate: StatusDateSchema,

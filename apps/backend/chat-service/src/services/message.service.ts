@@ -102,6 +102,8 @@ export class MessageService {
     try {
       const cookies = deCookies(cookieHeader);
       const senderId = cookies.user_id;
+      console.log("user", senderId);
+
       const senderRole =
         currentUser.role![0] === "company" ? "Company" : "User";
       const result = await this.MessageRepository.getUserConversations(

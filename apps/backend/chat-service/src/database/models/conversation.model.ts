@@ -1,5 +1,5 @@
 import mongoose, { Document } from "mongoose";
-export interface Conversation extends Document {
+interface Conversation extends Document {
   participants: {
     participantId: mongoose.Schema.Types.ObjectId;
     participantType: string;
