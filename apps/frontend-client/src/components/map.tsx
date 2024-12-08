@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { Job } from "@/lib/types/job";
 import { Jobs } from "@/utils/types/form-type";
 import { Loader } from "@googlemaps/js-api-loader";
 import React, { SetStateAction, useEffect, useRef, useState } from "react";
