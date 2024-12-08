@@ -46,7 +46,7 @@ const Page = () => {
       }
     }
     GetData();
-  }, []);
+  }, [user?._id]);
 
   async function PostData() {
     try {

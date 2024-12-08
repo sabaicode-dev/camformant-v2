@@ -146,9 +146,8 @@ class UserRepository {
       const result = await UserModel.findOne({
         $or: [{ sub: sub }, { googleSub: sub }, { facebookSub: sub }],
       });
-
       if (!result) {
-        throw new NotFoundError();
+        throw new NotFoundError("User is not found");
       }
 
       return result as IUser;
@@ -409,12 +408,13 @@ class UserRepository {
     query?: string
   ): Promise<UnionProfileType> {
     try {
+      console.log("userid:::", userId);
       //this for update on each user profile
       if (!query) {
         const updatedUser = await UserProfileDetailModel.findOneAndUpdate(
           { userId },
           { $set: { ...updateBody } },
-          { new: true, useFindAndModify: false }
+          { new: true }
         );
         console.log("response:::", updatedUser);
         if (!updatedUser) {
@@ -469,34 +469,6 @@ class UserRepository {
         return result;
       }
     } catch (err) {
-      // if (err instanceof mongoose.Error.ValidationError) {
-      //   const validationErrors: { [key: string]: string } = {};
-
-      //   // Collect the error messages
-      //   for (const key in err.errors) {
-      //     validationErrors[key] = err.errors[key].message;
-      //   }
-
-      //   // Check for the first required error and throw it
-      //   const firstRequiredError = Object.entries(validationErrors).find(
-      //     ([_key, message]) => message.includes("required")
-      //   );
-
-      //   if (firstRequiredError) {
-      //     const [_key, _message] = firstRequiredError;
-      //     console.log("First required error message: ", validationErrors);
-
-      //     // Throw with only the first required error or all errors
-      //     throw new InvalidInputError({
-      //       errors: validationErrors, // You can also pass the full validationErrors here
-      //     });
-      //   }
-
-      //   // If no "required" error found, throw all validation errors
-      //   throw new InvalidInputError({
-      //     errors: validationErrors,
-      //   });
-      // }
       console.log(err);
       throw err;
     }
@@ -567,7 +539,7 @@ class UserRepository {
       if (!response) throw new NotFoundError("custom cv not found");
 
       return response;
-    } catch (err) { }
+    } catch (err) {}
   }
   async updateCustomCvByUserId(
     userId: string,

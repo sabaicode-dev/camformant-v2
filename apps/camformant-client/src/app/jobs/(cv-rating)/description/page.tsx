@@ -57,7 +57,7 @@ const SelfDescription: React.FC = () => {
       }
     }
     GetData();
-  }, []);
+  }, [user?._id]);
 
   useEffect(() => {
     // Perform grammar check for debounced strength

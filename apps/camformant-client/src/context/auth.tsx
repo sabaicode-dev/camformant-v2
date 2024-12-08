@@ -77,7 +77,7 @@ export const AuthProvider = ({
       setLoading(true);
 
       const res = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
-      setUser(res.data?.data);
+      setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
       setIsAuthenticated(false);

@@ -16,8 +16,8 @@ import {
 import UserService from "@/src/services/user.service";
 import {
   AuthenticationError,
-  FileSizeError,
   prettyObject,
+  FileSizeError,
 } from "@sabaicode-dev/camformant-libs";
 import { Request as ExpressRequest } from "express";
 
@@ -302,7 +302,10 @@ export class UsersController extends Controller {
     try {
       const response = await UserService.getUserBySub(userId);
 
-      return response;
+      return sendResponse<IUser>({
+        message: "success",
+        data: response,
+      });
     } catch (error) {
       console.error(
         `UsersController - getUserProfile() method error: `,
