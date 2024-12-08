@@ -14,29 +14,23 @@ const SeleteCheckBox = ({
   onSelect,
   onRemove,
 }: SeleteCheckBoxProps) => {
-  console.log("selecyed value", selectedValue);
-  // Map selected values (strings) to option objects for display
-  const selectedOptions = options.filter((opt) =>
-    selectedValue.includes(opt.name)
-  );
-
-  // Handle selection changes
   const handleSelect = (selectedList: { name: string }[]) => {
     const updatedSelectedValues = selectedList.map((item) => item.name);
-    console.log(updatedSelectedValues);
-    onSelect(updatedSelectedValues);
+    onSelect(updatedSelectedValues); // Update selected values
   };
 
-  // Handle removal changes
   const handleRemove = (selectedList: { name: string }[]) => {
     const updatedSelectedValues = selectedList.map((item) => item.name);
-    onRemove(updatedSelectedValues);
+    onRemove(updatedSelectedValues); // Update removed values
   };
+
   return (
     <div className="text-[14px]">
       <Multiselect
         options={options} // Options to display
-        selectedValues={selectedOptions} // Preselected values
+        selectedValues={options.filter((opt) =>
+          selectedValue.includes(opt.name)
+        )} // Preselected values
         onSelect={handleSelect} // Triggered on selection
         onRemove={handleRemove} // Triggered on removal
         showCheckbox={true} // Enables checkboxes

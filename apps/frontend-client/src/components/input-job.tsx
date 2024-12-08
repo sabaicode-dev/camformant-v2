@@ -3,15 +3,18 @@ import { Input } from "@/components/ui/input";
 import Map from "@/components/map";
 import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
-import SeleteCheckBox from "@/components/seleteCheckBox";
+
 import axiosInstance from "@/utils/axios";
 import { Jobs } from "@/utils/types/form-type";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { jobFormSchema } from "@/schema/auth/formSchema";
 import { z } from "zod";
+import SeleteCheckBox from "./selectBox";
 
-type FormInputValue = z.infer<typeof jobFormSchema>;
-
+const validateForm = (formData: Jobs) => {
+  const result = jobFormSchema.safeParse(formData);
+  return result.success ? null : result.error.errors;
+};
 const InputForm: React.FC<{
   formTitle: string;
   existingData?: Jobs;
@@ -40,47 +43,6 @@ const InputForm: React.FC<{
       : "",
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    setErrorWithZod()
-    const { name, value } = e.target;
-    if (Array.isArray(formData[name as keyof Jobs])) {
-      console.log("value split", value.split(","));
-      setFormData({
-        ...formData,
-        [name]: value.split(","),
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
-  };
-
-  const handleArrayChange = (name: keyof Jobs, value: string[]) => {
-    console.log("name:::", name, "values:::", value);
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value, // Directly assign the array of strings
-    }));
-  };
-
-  const handleChangeNum = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value === "" ? null : Number(value),
-    });
-  };
-
   const workTypeOptions = [
     { name: "Remote" },
     { name: "On-Site" },
@@ -99,7 +61,95 @@ const InputForm: React.FC<{
   ];
   const [scheduleSelected, setscheduleSelected] = useState<string[]>([]);
 
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<Record<string, string | null>>({});
+
+  // Handle changes for array-type fields
+  const handleArrayChange = (
+    selected: string[],
+    fieldName: string // Added fieldName parameter for flexibility
+  ) => {
+    // Update the form data and validate
+    setFormData((prevFormData) => {
+      const updatedFormData = {
+        ...prevFormData,
+        [fieldName]: selected, // Dynamically assign the array to the given field
+      };
+  
+      // Validate the array and set errors if needed
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [fieldName]: selected.length === 0 ? "This field is required" : null, // Show error if array is empty
+      }));
+  
+      return updatedFormData;
+    });
+  };
+  
+  
+  const handleChangeNum = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+
+    // Update the form data and validate
+    setFormData((prevFormData) => {
+      const updatedFormData = {
+        ...prevFormData,
+        [name]: value === "" ? null : Number(value), // Handle numeric conversion
+      };
+
+      // Validate the field and set errors if needed
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]:
+          value === "" || isNaN(Number(value))
+            ? "This field is required and must be a number"
+            : null, // Show error if empty or not a number
+      }));
+
+      return updatedFormData;
+    });
+  };
+
+ 
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+  
+    // Check if the field should be treated as an array or string
+    const isArrayField = Array.isArray(formData[name as keyof Jobs]);
+  
+    setFormData((prevFormData) => {
+      const updatedFormData = {
+        ...prevFormData,
+        [name]: isArrayField
+          ? value.split(",").map((item) => item.trim()) // Split string into an array if it's an array field
+          : value, // Else treat as a normal string
+      };
+  
+      // Real-time validation for array fields
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: isArrayField
+          ? (updatedFormData[name as keyof Jobs] as string[]).length === 0 || 
+            (updatedFormData[name as keyof Jobs] as string[]).some((item) => item === "")
+            ? "This field is required and cannot be empty"
+            : null
+          : value.trim() === ""
+          ? "This field is required"
+          : null,
+      }));
+  
+      return updatedFormData;
+    });
+  };
+  
+  
+
   const setErrorWithZod = (event?: React.FormEvent<HTMLFormElement>) => {
     const result = jobFormSchema.safeParse({
       ...formData,
@@ -123,9 +173,9 @@ const InputForm: React.FC<{
       console.log("Form data is valid:", formData);
     }
   };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     // Validate the form data using zod
-
     setErrorWithZod(event);
     try {
       let response: any;
@@ -137,8 +187,9 @@ const InputForm: React.FC<{
         );
         console.log("post job", formData);
       } else {
+        event.preventDefault()
         response = await axiosInstance.put(
-          `${API_ENDPOINTS.JOBS}/${existingData!._id}`,
+          `http://localhost:4000/v1/jobs/${existingData!._id}`,
           { ...formData, companyId: existingData?.company?._id || "" }
         );
       }
@@ -210,8 +261,8 @@ const InputForm: React.FC<{
               <SeleteCheckBox
                 options={typeJobOptions}
                 selectedValue={formData.type ? formData.type : []}
-                onSelect={(selected) => handleArrayChange("type", selected)}
-                onRemove={setTypeJobSelected}
+                onSelect={(selected) => handleArrayChange(selected, "type")}
+                onRemove={(selected) => handleArrayChange(selected, "type")}
               />
               {errors.type && (
                 <p className="text-red-500 text-sm">{errors.type}</p>
@@ -227,8 +278,8 @@ const InputForm: React.FC<{
               <SeleteCheckBox
                 options={scheduleOption}
                 selectedValue={formData.schedule ? formData.schedule : []}
-                onSelect={(selected) => handleArrayChange("schedule", selected)}
-                onRemove={setscheduleSelected}
+                onSelect={(selected) => handleArrayChange(selected, "schedule")}
+                onRemove={(selected) => handleArrayChange(selected, "schedule")}
               />
               {errors.schedule && (
                 <p className="text-red-500 text-sm">{errors.schedule}</p>
@@ -248,8 +299,8 @@ const InputForm: React.FC<{
               <SeleteCheckBox
                 options={workTypeOptions}
                 selectedValue={formData.workMode ? formData.workMode : []}
-                onSelect={(selected) => handleArrayChange("workMode", selected)}
-                onRemove={setWorkTypeSelected}
+                onSelect={(selected) => handleArrayChange(selected, "workMode")}
+                onRemove={(selected) => handleArrayChange(selected, "workMode")}
               />
               {errors.workMode && (
                 <p className="text-red-500 text-sm">{errors.workMode}</p>
@@ -357,26 +408,6 @@ const InputForm: React.FC<{
             </div>
           </div>
 
-          {/* Update Date */}
-          {/* <div className="mb-6">
-            <Label
-              htmlFor="updatedAt"
-              className="block text-black text-[16px] mb-1"
-            >
-              Update Date
-            </Label>
-            <DateInput
-              name="updatedAt"
-              type="date"
-              value={formData.updatedAt} 
-              onChange={handleChange}
-              placeholder="YYYY-MM-DD"
-            />
-            {errors.updatedAt && (
-              <p className="text-red-500 text-sm">{errors.updatedAt}</p>
-            )}
-          </div> */}
-
           {/* required_experience */}
           <div className="mb-2">
             <Label
@@ -389,9 +420,9 @@ const InputForm: React.FC<{
               name="required_experience"
               onChange={handleChange}
               value={
-                formData.required_experience
-                  ? (formData.required_experience as string[]).join(",")
-                  : ""
+                Array.isArray(formData.required_experience)
+                  ? (formData.required_experience as string[]).join(",") // If it's an array, join the values with commas
+                  : formData.required_experience || "" // Otherwise, return the string value or an empty string
               }
               placeholder="Type your Description"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
@@ -436,7 +467,9 @@ const InputForm: React.FC<{
             <textarea
               name="benefit"
               value={
-                formData.benefit ? (formData.benefit as string[]).join(",") : ""
+                Array.isArray(formData.benefit)
+                  ? (formData.benefit as string[]).join(",") // If it's an array, join the values with commas
+                  : formData.benefit || "" // Otherwise, return the string value or an empty string
               }
               onChange={handleChange}
               placeholder="Type your Description"

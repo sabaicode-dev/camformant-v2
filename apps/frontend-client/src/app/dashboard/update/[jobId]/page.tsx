@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import DynamicBreadcrumb from "@/components/DynamicBreadcrumb";
 import InputForm from "@/components/input-job";
 import axiosInstance from "@/utils/axios";
-import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { Jobs } from "@/utils/types/form-type";
 
 const page = ({ params }: { params: { jobId: string } }) => {
@@ -16,7 +15,7 @@ const page = ({ params }: { params: { jobId: string } }) => {
       try {
         setLoading(true);
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.JOBS}/${params.jobId}`
+          `http://localhost:4000/v1/jobs/${params.jobId}`
         );
         console.log("response:", response);
         setJobData(response.data.data);

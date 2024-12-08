@@ -14,6 +14,8 @@ export const API_ENDPOINTS = {
   USER_DETAIL: `${process.env.NEXT_PUBLIC_USER_ENDPOINT}/profile-detail`,
   // JOB SERVICE
   JOBS: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/corporator`,
+  JOB: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/job`,
+
   JOB_APPLY: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/jobApply`,
   JOB_STATUS: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/jobApply`,
   SEARCH_HISTORY: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/search-history`,
