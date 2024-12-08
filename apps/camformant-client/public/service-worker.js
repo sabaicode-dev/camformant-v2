@@ -26,7 +26,8 @@ self.addEventListener("push", (event) => {
     const notificationOptions = {
       body: body,
       tag: `notification-${Date.now()}`,
-      icon: "https://english.mathrubhumi.com/image/contentid/policy:1.10120314:1732882988/banana-art-sun.jpg?$p=9e6d4c8&f=1x1&w=1080&q=0.8",
+      icon: "https://sabaicode.com/sabaicode.jpg",
+      // icon: "https://english.mathrubhumi.com/image/contentid/policy:1.10120314:1732882988/banana-art-sun.jpg?$p=9e6d4c8&f=1x1&w=1080&q=0.8",
       vibrate: [100, 50, 100],
       data: {
         url: url, // Replace with the desired URL for redirecting user to the desired page
