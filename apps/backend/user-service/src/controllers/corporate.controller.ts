@@ -17,7 +17,6 @@ import sendResponse from "@/src/utils/send-response";
 import { APIResponse, prettyObject } from "@sabaicode-dev/camformant-libs";
 import { Request as ExpressRequest } from "express";
 import { ICorporatorProfile } from "./types/corporate-controller.type";
-
 @Tags("Corporator")
 @Route("v1/corporator")
 export class CorporateController extends Controller {
@@ -33,9 +32,7 @@ export class CorporateController extends Controller {
   }
   @SuccessResponse("200", "Success")
   @Get("/profile/me")
-  public async getCorporateProfileWithJobs(
-    @Request() request: ExpressRequest,
-  ) {
+  public async getCorporateProfileWithJobs(@Request() request: ExpressRequest) {
     try {
       const corporateSub = request.cookies["username"];
       if (!corporateSub) {
@@ -52,7 +49,8 @@ export class CorporateController extends Controller {
         return null;
       }
 
-      const corporateProfileWithJobs = await CorporateService.getProfileBySub(corporateSub);
+      const corporateProfileWithJobs =
+        await CorporateService.getProfileBySub(corporateSub);
       if (!corporateProfileWithJobs) {
         console.log("No corporate profile found.");
         return [];
@@ -132,7 +130,8 @@ export class CorporateController extends Controller {
   @Get("/profile/{corporateSub}")
   public async getCorporateProfilesBySub(@Path() corporateSub: string) {
     try {
-      const corporateProfile = await CorporateService.getProfileBySub(corporateSub);
+      const corporateProfile =
+        await CorporateService.getProfileBySub(corporateSub);
       if (!corporateProfile) {
         console.log(
           "CorporateController - getCorporateProfilesById() method error : CorporateProfile not found"
@@ -192,6 +191,4 @@ export class CorporateController extends Controller {
       throw error;
     }
   }
-
-
 }

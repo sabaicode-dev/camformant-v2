@@ -85,7 +85,7 @@ export interface IJob {
 
 const JobSchema: Schema = new Schema(
   {
-    companyId: { type: mongoose.Types.ObjectId, required: true },
+    companyId: { type: mongoose.Schema.Types.ObjectId, required: true },
     title: { type: String, required: true },
     position: { type: [String], required: true },
     workMode: { type: [String], required: true, enum: Object.values(WorkMode) },
@@ -174,7 +174,7 @@ const StatusDateSchema = new Schema(
 
 const JobApplySchema = new Schema(
   {
-    userId: { type: mongoose.Types.ObjectId },
+    userId: { type: mongoose.Schema.Types.ObjectId },
     jobId: mongoose.Types.ObjectId,
     companyResponse: ApplyCompanyResSchema,
     userInfo: ApplyUserInfoschema,

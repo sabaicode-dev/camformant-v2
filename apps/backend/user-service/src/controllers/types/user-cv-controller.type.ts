@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 export interface CvFilePResponse {
-  message:string
-  data:CvFileParams
+  message: string;
+  data: CvFileParams;
 }
 export interface CvFileParams {
   userId?: mongoose.Types.ObjectId;
@@ -10,7 +10,6 @@ export interface CvFileParams {
     _id: mongoose.Types.ObjectId | null | undefined;
   }[];
 }
-
 
 export interface CvStyleParams {
   _id: mongoose.Types.ObjectId;
@@ -28,7 +27,7 @@ export interface CustomCvResponse {
   json: {
     version: string;
     objects: any[];
-    clipPath:any
+    clipPath: any;
   };
 }
 export type UnionCustomCvResponse = CustomCvResponse | undefined | null | {};
