@@ -5,7 +5,7 @@ export default {
   config(_input) {
     return {
       name: "camformant-client-app",
-      region: "us-west-2",
+      region: "ap-southeast-2",
     };
   },
   stacks(app) {
