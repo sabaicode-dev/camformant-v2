@@ -118,16 +118,13 @@ class JobService {
     }
   }
 
-  public async updateJobById(
-    jobId: string,
-    updateJob: JobParams
-  ): Promise<IJob> {
+  public async updateJobById(jobId: string, updateJob: IJob): Promise<IJob> {
     try {
       console.log("user data in service:::::", updateJob);
       const newJob = await jobRepository.updateJobById({
         _id: jobId,
         ...updateJob,
-        companyId: new mongoose.Types.ObjectId(updateJob.companyId),
+        companyId: updateJob.companyId,
       });
 
       return newJob;
@@ -171,7 +168,9 @@ class JobService {
       throw error;
     }
   }
-  public async createJobApply(body: PostJobApplyBody):Promise<JobApplyResponse | {}> {
+  public async createJobApply(
+    body: PostJobApplyBody
+  ): Promise<JobApplyResponse | {}> {
     try {
       console.log("inside create apploy");
       const customBody = {
@@ -186,7 +185,10 @@ class JobService {
       throw err;
     }
   }
-  public async updateJobApply(applyId: string, body: BodyUpdateJobApply):Promise<JobApplyResponse | {} | null> {
+  public async updateJobApply(
+    applyId: string,
+    body: BodyUpdateJobApply
+  ): Promise<JobApplyResponse | {} | null> {
     try {
       const response = await jobRepository.updateJobApply(applyId, body);
       return response;

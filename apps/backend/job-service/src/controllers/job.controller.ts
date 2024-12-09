@@ -246,7 +246,7 @@ export class JobController extends Controller {
   @Put("{jobId}")
   public async updateJobById(
     @Path() jobId: string,
-    @Body() updateDatJob: JobParams
+    @Body() updateDatJob: IJob
   ) {
     try {
       const updateJob = await jobService.updateJobById(jobId, updateDatJob);

@@ -14,11 +14,6 @@ import type { Request as ExRequest, Response as ExResponse, RequestHandler, Rout
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
-    "mongoose.Types.ObjectId": {
-        "dataType": "refAlias",
-        "type": {"dataType":"string","validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "WorkMode": {
         "dataType": "refEnum",
         "enums": ["Remote","On-Site","Hybrid"],
@@ -38,7 +33,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "_id": {"dataType":"string"},
-            "companyId": {"ref":"mongoose.Types.ObjectId"},
+            "companyId": {"dataType":"string"},
             "profile": {"dataType":"string"},
             "title": {"dataType":"string"},
             "position": {"dataType":"array","array":{"dataType":"string"}},
@@ -68,6 +63,11 @@ const models: TsoaRoute.Models = {
             "data": {"ref":"IJob"},
         },
         "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "mongoose.Types.ObjectId": {
+        "dataType": "refAlias",
+        "type": {"dataType":"string","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "StatusMode": {
@@ -166,7 +166,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "_id": {"dataType":"string"},
-            "companyId": {"ref":"mongoose.Types.ObjectId"},
+            "companyId": {"dataType":"string"},
             "title": {"dataType":"string"},
             "position": {"dataType":"array","array":{"dataType":"string"}},
             "workMode": {"dataType":"array","array":{"dataType":"refEnum","ref":"WorkMode"}},
@@ -657,7 +657,7 @@ export function RegisterRoutes(app: Router) {
             async function JobController_updateJobById(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
                     jobId: {"in":"path","name":"jobId","required":true,"dataType":"string"},
-                    updateDatJob: {"in":"body","name":"updateDatJob","required":true,"ref":"JobParams"},
+                    updateDatJob: {"in":"body","name":"updateDatJob","required":true,"ref":"IJob"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
