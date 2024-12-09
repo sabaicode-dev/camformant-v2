@@ -5,7 +5,7 @@ export default {
   config(_input) {
     return {
       name: "frontend-client-app",
-      region: "us-east-1",
+      region: "us-west-2",
     };
   },
   stacks(app) {
