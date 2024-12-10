@@ -1,4 +1,5 @@
 import { FieldError, UseFormRegister } from "react-hook-form";
+import { IconType } from "react-icons";
 import { z, ZodType } from "zod";
 
 // Register props now have only one field for contact (can be email or phone)
@@ -41,6 +42,8 @@ export type FieldRegisterProps = {
   register: UseFormRegister<RegisterProps>;
   error: FieldError | undefined;
   valueAsNumber?: boolean;
+  isIcon?: boolean;
+  onChangeVisible?: () => void;
 };
 
 export type ValidFieldNames =

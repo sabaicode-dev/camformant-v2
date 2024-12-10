@@ -175,7 +175,7 @@ const Chat = () => {
               conversations.map((con, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center gap-8 p-4 cursor-pointer hover:bg-gray-200"
+                  className="flex items-center gap-8 p-4 cursor-pointer rounded-2xl hover:bg-orange-200/70"
                   onClick={() => handleConversationClick(con.receiver)}
                 >
                   {/* Container for image and status */}
