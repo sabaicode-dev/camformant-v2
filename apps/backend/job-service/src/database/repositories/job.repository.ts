@@ -85,12 +85,12 @@ class JobRepository {
     // Adding search functionality
     const searchFilter = search
       ? {
-        $or: [
-          { title: { $regex: search, $options: "i" } },
-          { position: { $regex: search, $options: "i" } },
-          { "companyId.name": { $regex: search, $options: "i" } },
-        ],
-      }
+          $or: [
+            { title: { $regex: search, $options: "i" } },
+            { position: { $regex: search, $options: "i" } },
+            // { "companyId.name": { $regex: search, $options: "i" } },
+          ],
+        }
       : {};
     type UserFavFilter = {
       _id?: {
@@ -122,11 +122,11 @@ class JobRepository {
           .skip(skip)
           .limit(limit);
       }
+      console.log("mongoFilter::::::::", JSON.stringify(mongoFilter));
 
       const result = operation;
-      //todo: return empty array
       if (!result) {
-        throw new Error("no jobs found");
+        throw new NotFoundError("no jobs found");
       }
       const companiesId = result.map((jobs: IJob) => jobs.companyId);
 
@@ -293,8 +293,8 @@ class JobRepository {
         jobId?: mongoose.Types.ObjectId;
         [key: string]: string | null | mongoose.Types.ObjectId | undefined;
       } = queries.userId
-          ? { userId: new mongoose.Types.ObjectId(queries.userId) }
-          : { jobId: new mongoose.Types.ObjectId(queries.jobId) };
+        ? { userId: new mongoose.Types.ObjectId(queries.userId) }
+        : { jobId: new mongoose.Types.ObjectId(queries.jobId) };
       if (filter !== undefined) {
         //cause this can be undefined
         query["userInfo.status"] = filter;
@@ -449,8 +449,6 @@ async function fetchCompaniesProfile(
     | mongoose.Types.ObjectId[]
     | undefined
 ) {
-  console.log("reach fetchCompaniesProfile");
-
   const lastId = Array.isArray(companiesId)
     ? companiesId.join(",")
     : companiesId?.toString() || "";
@@ -499,10 +497,10 @@ const buildFilter = (filter: Record<string, any>) => {
   for (const key in filter) {
     // Handle range filtering for salaries
     if (key === "salary" && typeof filter[key] === "object") {
-      console.log("salary::: ", filter[key]);
+      // console.log("salary::: ", filter[key]);
 
       const { min_salary = 0, max_salary = 5000 } = filter[key];
-      mongoFilter.$and = [
+      mongoFilter.$or = [
         { min_salary: { $gte: min_salary, $lte: max_salary } },
         { max_salary: { $gte: min_salary, $lte: max_salary } },
       ];
