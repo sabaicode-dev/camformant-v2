@@ -27,7 +27,10 @@ const Page: React.FC = () => {
 
   const onSubmit = async (data: RegisterProps) => {
     console.log("data: ", data);
-
+    if (data.password !== data.confirmPassword) {
+      addNotification("The Confirm Password not match!", "error");
+      return;
+    }
     let contactMethod = "";
     if (emailRegex.test(data.contact)) {
       contactMethod = "email";
@@ -91,6 +94,14 @@ const Page: React.FC = () => {
             name="password"
             register={register}
             error={errors.password}
+          />
+          {/* todo: */}
+          <FormFieldRegister
+            type="password"
+            placeholder="Confirm Password"
+            name="confirmPassword"
+            register={register}
+            error={errors.confirmPassword}
           />
 
           <div className="flex pl-6 font-semibold gap-x-2">
