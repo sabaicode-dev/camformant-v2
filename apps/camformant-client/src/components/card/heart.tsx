@@ -1,10 +1,9 @@
-'use client'
+"use client";
 import React from "react";
 import { BiHeart, BiSolidHeart } from "react-icons/bi";
-import { IoFastFood } from "react-icons/io5";
 
 interface HeartProps {
-  heart: boolean
+  heart: boolean;
   handleLove: () => void;
 }
 

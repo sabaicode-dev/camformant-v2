@@ -1,5 +1,4 @@
 import React, { ReactNode, SetStateAction, useState } from "react";
-import axios from "axios";
 import { FcFullTrash } from "react-icons/fc";
 import { SwipeableHandlers, useSwipeable } from "react-swipeable";
 import { MdOutlineKeyboardDoubleArrowLeft } from "react-icons/md";

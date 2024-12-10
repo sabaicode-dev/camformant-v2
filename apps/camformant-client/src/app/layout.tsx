@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-// import { NavigationBar } from "@/components/navigation-bar/navigation-bar";
 import { AuthProvider } from "@/context/auth";
 import { cookies } from "next/headers";
 import { SocketContextProvider } from "@/context/SocketContext";
@@ -49,7 +48,6 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <AuthProvider isLogin={!!userCookie}>
-          {/* <NavigationBar /> */}
           <SocketContextProvider>{children}</SocketContextProvider>
         </AuthProvider>
       </body>

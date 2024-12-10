@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@/context/auth";
-import { useNotification } from "@/hooks/user-notification";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { useEffect, useState } from "react";

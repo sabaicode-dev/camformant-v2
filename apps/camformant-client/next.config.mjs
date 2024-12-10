@@ -3,6 +3,7 @@ import { Domain } from "domain";
 import withPWA from "next-pwa";
 
 const nextConfig = {
+  output: "standalone",
   compiler: {
     // Remove console logs only in production
     removeConsole: process.env.NODE_ENV === "production",

@@ -1,7 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import logo1 from "@/../../public/images/logo.png";
-import { profile } from "console";
 
 export interface CardCompanyProps {
   profile?: string;

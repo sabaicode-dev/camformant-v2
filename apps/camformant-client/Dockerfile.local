@@ -1,0 +1,23 @@
+#production (built)
+# Step 1: Use a node image for the production environment
+FROM node:18-slim
+
+# Step 2: Set the working directory
+WORKDIR /app
+
+# Step 3: Copy only the necessary production files
+COPY package*.json ./
+
+# Step 4: Install production dependencies only
+RUN npm install --production
+
+# Step 5: Copy the built files (from local or CI/CD build)
+COPY .next /app/.next
+COPY public /app/public
+COPY package.json /app/package.json
+
+# Step 6: Expose the port
+EXPOSE 3000
+
+# Step 7: Start the application in production mode
+CMD ["npm", "start"]

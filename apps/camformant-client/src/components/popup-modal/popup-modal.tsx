@@ -1,4 +1,4 @@
-import React, { SetStateAction, useState } from "react";
+import React from "react";
 
 const PopUpModal: React.FC<{
   closeModal: () => void;
