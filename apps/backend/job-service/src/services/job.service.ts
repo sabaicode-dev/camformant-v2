@@ -65,7 +65,7 @@ class JobService {
     try {
       const { page, limit, filter, sort, search, userFav } = queries;
       const searchUserFav = userFav?.split(",") || [];
-
+      console.log("filter in service::::", filter);
       const newQueries = {
         page,
         limit,
@@ -74,6 +74,7 @@ class JobService {
         search,
         userFav: searchUserFav,
       };
+      console.log("new query in service::::", newQueries);
 
       const result = await jobRepository.getAllJobs(newQueries);
 

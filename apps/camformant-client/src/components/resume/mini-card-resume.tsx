@@ -6,6 +6,7 @@ import { MdOutlineKeyboardDoubleArrowLeft } from "react-icons/md";
 import { BsPersonVcard } from "react-icons/bs";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import axiosInstance from "@/utils/axios";
+import { useNotification } from "@/hooks/user-notification";
 
 interface typeMiniCard {
   item: { url: string; _id: string };
@@ -25,6 +26,8 @@ const MiniCardResume: React.FC<typeMiniCard> = ({
   style = "translate-x-[-120px]",
 }) => {
   const [isSwiped, setIsSwiped] = useState<boolean>(false);
+  const { addNotification, NotificationDisplay } = useNotification();
+
   const handlers: SwipeableHandlers = useSwipeable({
     onSwipedLeft: () => setIsSwiped(true),
     onSwipedRight: () => setIsSwiped(false),
@@ -40,8 +43,7 @@ const MiniCardResume: React.FC<typeMiniCard> = ({
         console.log("CV deleted successfully");
       }
     } catch (error) {
-      console.error("Error deleting CV:", error);
-      alert("Error deleting CV");
+      addNotification("Error deleting CV", "error");
     } finally {
       setNext((prev: boolean) => !prev);
     }
@@ -49,6 +51,7 @@ const MiniCardResume: React.FC<typeMiniCard> = ({
 
   return (
     <div className="flex items-center justify-center h-full">
+      <NotificationDisplay />
       <div
         {...handlers}
         key={index}

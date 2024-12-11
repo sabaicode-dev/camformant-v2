@@ -140,3 +140,6 @@ export interface BodyUpdateJobApply {
   interviewDate?: Date | string;
   interviewLocation?: string;
 }
+
+
+//==============for job matching===============

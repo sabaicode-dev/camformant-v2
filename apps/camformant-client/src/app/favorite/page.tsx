@@ -8,7 +8,7 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/auth";
-import { IJob } from "@/components/type-data/TypeofData";
+import { IJob, IJobFav } from "@/components/type-data/TypeofData";
 import Image from "next/image";
 
 const Page: React.FC = () => {
@@ -45,7 +45,20 @@ const Page: React.FC = () => {
       } else {
         await axiosInstance.delete(`${API_ENDPOINTS.FAVORITE}/${jobId}`);
         // Remove the job from the list if unfavorited
-        setJobData((prevData) => prevData.filter((job) => job._id !== jobId));
+        let dataForDelete: any;
+        setJobData((prevData) => {
+          dataForDelete = prevData.filter((job: IJobFav) => job._id !== jobId);
+          setUser((prevData) =>
+            prevData
+              ? {
+                  ...prevData,
+                  favorites:
+                    dataForDelete.map(({ _id }: { _id: string }) => _id) ?? [],
+                }
+              : null
+          );
+          return dataForDelete;
+        });
         // const newFav =
         //   user?.favorites.filter((Id) => {
         //     Id !== jobId;
@@ -74,6 +87,7 @@ const Page: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
+        console.log("user:::", user);
 
         // Get the user's favorite job IDs
         const favoriteJobIds = user?.favorites || [];
@@ -89,6 +103,7 @@ const Page: React.FC = () => {
         );
 
         const jobs: IJob[] = response.data.data.jobs;
+        console.log("user fav:::", jobs);
 
         // Set favorite status to true for these jobs
         const jobsWithFavoriteStatus = jobs.map((job) => ({
@@ -105,7 +120,8 @@ const Page: React.FC = () => {
     };
 
     fetchFavoriteJobs();
-  }, [user]);
+     // eslint-disable-next-line
+  }, []);
 
   if (error) {
     return (
@@ -139,7 +155,7 @@ const Page: React.FC = () => {
               _id={job._id}
               title={job.title}
               position={job.position}
-              profile={job.companyId?.profile}
+              profile={job.company?.profile}
               min_salary={job.min_salary}
               max_salary={job.max_salary}
               job_opening={job.job_opening}

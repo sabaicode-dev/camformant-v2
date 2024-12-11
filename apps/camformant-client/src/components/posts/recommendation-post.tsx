@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -14,54 +14,51 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { Card } from "@/components/card/card";
 import { useAuth } from "@/context/auth";
 import SkeletonCard from "@/components/skeleton/skeleton-card";
+import { jobSyncUpdate, toggleFavorite } from "@/utils/functions/job-function";
+import { AddNotificationType } from "@/hooks/user-notification";
+import { buildQuery, Job } from "./position-post";
 
-export const RecommendationPost: React.FC = () => {
-  const { user } = useAuth();
-  const [jobData, setJobData] = useState<any[]>([]);
+export const RecommendationPost: React.FC<{
+  setForSync: React.Dispatch<SetStateAction<boolean>>;
+  addNotifications: AddNotificationType;
+}> = ({ setForSync, addNotifications }) => {
+  const { user, setUser } = useAuth();
+  const [jobData, setJobData] = useState<Job[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  const toggleFavorite = async (jobId: string) => {
-    const jobIndex = jobData.findIndex((job) => job._id === jobId);
-    if (jobIndex === -1) return;
-
-    const currentFavoriteStatus = jobData[jobIndex].favorite;
-    const newFavoriteStatus = !currentFavoriteStatus;
-
-    const updatedJobs = [...jobData];
-    updatedJobs[jobIndex].favorite = newFavoriteStatus;
-    setJobData(updatedJobs);
-
-    try {
-      if (newFavoriteStatus) {
-        await axiosInstance.post(`${API_ENDPOINTS.FAVORITE}`, { jobId });
-      } else {
-        await axiosInstance.delete(`${API_ENDPOINTS.FAVORITE}/${jobId}`);
-      }
-    } catch (error) {
-      console.error("Error updating favorite status:", error);
-      setError("Failed to update favorite status. Please try again later.");
-
-      // Revert the UI change if the API call fails
-      updatedJobs[jobIndex].favorite = currentFavoriteStatus;
-      setJobData(updatedJobs);
-    }
-  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const jobResponse = await axiosInstance.get(`${API_ENDPOINTS.JOBS}`, {
-          params: {
-            limit: 5,
-            sort: JSON.stringify({ createdAt: "desc" }),
-          },
-        });
-        const jobs = jobResponse.data.data.jobs;
-        console.log("jobs: ", jobs);
+        const skillResponse = user
+          ? await axiosInstance.get(
+              `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=skills`
+            )
+          : null;
+        let jobResponse;
+        if ((user && skillResponse) || skillResponse?.data.data.length) {
+          const query = buildQuery(
+            1,
+            skillResponse.data.data.skills.map(
+              (skill: { name: string; percent: number }) => skill.name
+            )
+          );
+          jobResponse = await axiosInstance.get(
+            `${API_ENDPOINTS.JOBS}${query}`
+          );
+        }
+        if (!user || !jobResponse?.data.data.jobs.length) {
+          jobResponse = await axiosInstance.get(`${API_ENDPOINTS.JOBS}`, {
+            params: {
+              limit: 5,
+              sort: JSON.stringify({ createdAt: "desc" }),
+            },
+          });
+        }
 
+        const jobs = jobResponse?.data.data.jobs;
         // Merge favorite status into jobs
-        const jobsWithFavoriteStatus = jobs.map((job: any) => ({
+        const jobsWithFavoriteStatus = jobs.map((job: Job) => ({
           ...job,
           favorite: user?.favorites.includes(job._id) || false,
         }));
@@ -91,7 +88,7 @@ export const RecommendationPost: React.FC = () => {
   return (
     <div className="container mt-2">
       <div className="flex flex-row justify-between my-2">
-        <Heading title="Recommend Company" />
+        <Heading title="Recommend Jobs" />
         <Image
           src={"/images/bloodbros-search.gif"}
           alt={"logo"}
@@ -131,9 +128,23 @@ export const RecommendationPost: React.FC = () => {
                     type={job.type}
                     schedule={job.schedule}
                     location={job.location}
-                    deadline={new Date(job.deadline)}
+                    deadline={new Date(job.deadline!)}
                     heart={job.favorite}
-                    setHeart={() => toggleFavorite(job._id)}
+                    setHeart={() => {
+                      user
+                        ? toggleFavorite(
+                            jobData,
+                            job._id,
+                            setJobData,
+                            setUser,
+                            setError,
+                            setForSync
+                          )
+                        : addNotifications(
+                            "Login for add to favorites",
+                            "error"
+                          );
+                    }}
                   />
                 </div>
               </SwiperSlide>
@@ -143,7 +154,7 @@ export const RecommendationPost: React.FC = () => {
       <div className="mb-10 mt-7">
         <Button
           text="Find Your Matching"
-          link="#"
+          link="/jobMatching"
           icon={<AiOutlineArrowRight />}
         />
       </div>

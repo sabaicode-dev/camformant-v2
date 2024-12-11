@@ -15,7 +15,7 @@ import {
   VerifyUserRequest,
 } from "@/utils/types/auth";
 
-interface User {
+export interface User {
   _id: string;
   email: string;
   profile: string;

@@ -67,11 +67,12 @@ class JobRepository {
   }> {
     const {
       page = 1,
-      filter = { position: "ALL" },
+      filter,
       sort = { createdAt: "desc" },
       search = "",
       userFav,
     } = queries;
+    console.log("filter in repo", filter);
     const skip =
       queries.limit === "*" || !queries.limit
         ? 0
@@ -103,11 +104,11 @@ class JobRepository {
         $in: userFav.map((id) => new mongoose.Types.ObjectId(id)),
       };
     }
-
+    console.log("build fiter:::", buildFilter(filter!));
     try {
       const mongoFilter = {
         ...userFavFilter,
-        ...buildFilter(filter),
+        ...buildFilter(filter!),
         ...searchFilter,
       };
 
@@ -518,7 +519,13 @@ const buildFilter = (filter: Record<string, any>) => {
     } else if (arrayProperties.includes(key)) {
       if (key === "position") {
         const positionValue = filter[key];
-        if (
+        if (Array.isArray(positionValue)) {
+          mongoFilter[key] = {
+            $elemMatch: {
+              $in: positionValue.map((value: string) => new RegExp(value, "i")),
+            },
+          };
+        } else if (
           typeof positionValue === "string" &&
           positionValue.toUpperCase() !== "ALL"
         ) {
