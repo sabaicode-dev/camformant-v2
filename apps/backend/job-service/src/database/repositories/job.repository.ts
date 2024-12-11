@@ -86,12 +86,12 @@ class JobRepository {
     // Adding search functionality
     const searchFilter = search
       ? {
-          $or: [
-            { title: { $regex: search, $options: "i" } },
-            { position: { $regex: search, $options: "i" } },
-            { "companyId.name": { $regex: search, $options: "i" } },
-          ],
-        }
+        $or: [
+          { title: { $regex: search, $options: "i" } },
+          { position: { $regex: search, $options: "i" } },
+          { "companyId.name": { $regex: search, $options: "i" } },
+        ],
+      }
       : {};
     type UserFavFilter = {
       _id?: {
@@ -243,10 +243,16 @@ class JobRepository {
 
   public async updateJobById(updateJob: IJob): Promise<IJob> {
     try {
+      console.log("inside repo:::");
       const { _id, ...updateNewJob } = updateJob;
-      const result = await JobModel.findByIdAndUpdate(_id, updateNewJob, {
-        new: true,
-      });
+      console.log("job id in repo::::", _id);
+      const result = await JobModel.findByIdAndUpdate(
+        _id,
+        { ...updateNewJob, updatedAt: new Date() },
+        {
+          new: true,
+        }
+      );
       if (!result) {
         throw new NotFoundError("The requested job was not found.");
       }
@@ -288,14 +294,14 @@ class JobRepository {
         jobId?: mongoose.Types.ObjectId;
         [key: string]: string | null | mongoose.Types.ObjectId | undefined;
       } = queries.userId
-        ? { userId: new mongoose.Types.ObjectId(queries.userId) }
-        : { jobId: new mongoose.Types.ObjectId(queries.jobId) };
+          ? { userId: new mongoose.Types.ObjectId(queries.userId) }
+          : { jobId: new mongoose.Types.ObjectId(queries.jobId) };
       if (filter !== undefined) {
         //cause this can be undefined
         query["userInfo.status"] = filter;
       }
       const buildSort = buildSortFields(sort!);
-      console.log("query", query);
+      console.log("query :::", query);
       if (limit) {
         const skip = (page - 1) * limit;
         const totalItems = await ApplyModel.countDocuments(query);

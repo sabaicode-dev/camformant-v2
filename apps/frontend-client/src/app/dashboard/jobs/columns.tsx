@@ -4,9 +4,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Eye, SquarePen, Trash } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import axiosInstance from "@/utils/axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Jobs } from "@/utils/types/form-type";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { useJob } from "@/context/JobContext";
 
 export const columns: ColumnDef<Jobs>[] = [
   {
@@ -41,15 +43,13 @@ export const columns: ColumnDef<Jobs>[] = [
     },
   },
   {
-    accessorKey: "type",
-    header: "Type",
+    accessorKey: "position",
+    header: "position",
     cell: ({ row }) => {
-      const types = row.original.type;
+      const positions = row.original.position;
       return (
         <>
-          {types && types.length > 0
-            ? types.join(", ") 
-            : "No types available"}{" "}
+          {positions && positions.length > 0 ? positions.join(", ") : "No types available"}{" "}
         </>
       );
     },
@@ -60,27 +60,37 @@ export const columns: ColumnDef<Jobs>[] = [
     accessorKey: "createdAt",
     header: "Posted Date",
     cell: ({ row }) => {
-      return <div>{row.original.createdAt ? new Date(row.original.createdAt).toLocaleDateString() : "N/A"}</div>;
+      return (
+        <div>
+          {row.original.createdAt
+            ? new Date(row.original.createdAt).toLocaleDateString()
+            : "N/A"}
+        </div>
+      );
     },
   },
   {
-    accessorKey: "updatedAt",
+    accessorKey: "type",
     header: ({ column }) => {
-      return <div>Update Date</div>;
+      return <div>Job Type</div>;
     },
     cell: ({ getValue }) => {
-      const updateAt = getValue<string>();
-      const formatDate = (isoDataString: string) => {
-        const date = new Date(isoDataString);
-        return date.toISOString().slice(0, 10);
-      };
-      return <div>{formatDate(updateAt)}</div>;
+      const jobTypes = getValue<string[]>();
+  
+      return (
+        <div>
+          {jobTypes?.map((type, index) => (
+            <div key={index}>{type}</div>
+          ))}
+        </div>
+      );
     },
-  },
+  }
+,  
 
   {
     accessorKey: "deadline",
-    header:"dfghj",
+    header: "Deadline",
     cell: ({ getValue }) => {
       const deadlineAt = getValue<string>();
       const formatDate = (isoDataString: string) => {
@@ -90,40 +100,35 @@ export const columns: ColumnDef<Jobs>[] = [
       return <div>{formatDate(deadlineAt)}</div>;
     },
   },
-  {
-    accessorKey: "status",
-    header: ({ column }) => {
-      return <div>status</div>;
-    },
-  },
+  // {
+  //   accessorKey: "status",
+  //   header: ({ column }) => {
+  //     return <div>status</div>;
+  //   },
+  // },
   {
     id: "actions",
     cell: ({ row }) => {
       const jobFromCol = row.original;
 
-    
-      interface Job {
-        _id: string;
-        title: string;
-      }
-
-      const [jobs, setJobs] = useState<Job[]>([]); // Define state for jobs
-
+      const {fetchJobs} = useJob()
       const handleDelete = async () => {
         if (!jobFromCol._id) {
           alert("Invalid job ID.");
           return;
         }
+        const isConfirmed = window.confirm(
+          "Are you sure you want to delete this job?"
+        );
+        if (!isConfirmed) return;
         try {
           const response = await axiosInstance.delete(
-            `/v1/jobs/${jobFromCol._id}`
+            `${API_ENDPOINTS.JOB_ENDPOINT}/${jobFromCol._id}`
           );
+          await fetchJobs()
           console.log("Delete Response:", response.data);
-          // Assuming setJobs is a state updater for the list of jobs
-          setJobs((prevJobs) =>
-            prevJobs.filter((job) => job._id !== jobFromCol._id)
-          );
           alert("Job deleted successfully!");
+          router.push("dashboard/jobs")
         } catch (error) {
           console.error("Error deleting job:", error);
           alert("Failed to delete the job. Please try again.");

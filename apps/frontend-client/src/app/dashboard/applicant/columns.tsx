@@ -2,11 +2,11 @@
 import Image from "next/image";
 import { ColumnDef, filterFns } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { JobApplication, StatusDate } from "@/utils/types/job";
 import { Badge } from "@/components/ui/badge";
 import { getStatusVariant } from "@/utils/getStatusVariant";
 import { ViewApplication } from "@/components/applicant/view-application";
 import { UpdateStatus } from "@/components/applicant/update-status";
+import { JobApplication, StatusDate } from "@/utils/types/job";
 
 export const columns:(refetch?: () => Promise<void>) => ColumnDef<JobApplication>[] = (refetch) => [
   {

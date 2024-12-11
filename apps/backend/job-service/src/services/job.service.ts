@@ -121,6 +121,7 @@ class JobService {
 
   public async updateJobById(jobId: string, updateJob: IJob): Promise<IJob> {
     try {
+      console.log("user data in service:::::", updateJob);
       const newJob = await jobRepository.updateJobById({
         _id: jobId,
         ...updateJob,

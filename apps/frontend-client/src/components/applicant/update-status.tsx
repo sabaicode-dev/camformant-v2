@@ -38,7 +38,6 @@ export function UpdateStatus({ applyId, currentStatus ,onStatusUpdate }: UpdateS
   const [interviewLocation, setInterviewLocation] = useState("")
   const [isOpen, setIsOpen] = useState(false)
 
-  console.log("sdalkjkjfhoasudhlif",startDate)
   const handleSubmit = async () => {
     try {
         const response = await axiosInstance.put(`${API_ENDPOINTS.JOB_STATUS}/${applyId}`, {
@@ -152,7 +151,7 @@ export function UpdateStatus({ applyId, currentStatus ,onStatusUpdate }: UpdateS
             </div>
           )}
 
-          <Button className="w-full" onClick={handleSubmit}>
+          <Button className="w-full bg-orange-400 hover:bg-orange-500 text-white" onClick={handleSubmit}>
             Update Status
           </Button>
         </div>

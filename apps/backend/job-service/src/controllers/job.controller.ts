@@ -259,7 +259,22 @@ export class JobController extends Controller {
     }
   }
 
-
+  @Delete("{jobId}")
+  public async deleteJobById(
+    @Path() jobId: string
+  ): Promise<{ message: string }> {
+    try {
+      await jobService.deleteJobById(jobId);
+      return { message: "Job was deleted successfully" };
+    } catch (error) {
+      console.error(
+        `CompanyController deleteJobById() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
 }
+
 
 export default new JobController();

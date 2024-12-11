@@ -73,13 +73,14 @@ jobs:
           echo "NEXT_PUBLIC_PUSH_NOTIFICATION_ENDPOINT=${{ secrets.NEXT_PUBLIC_PUSH_NOTIFICATION_ENDPOINT }}" >> $GITHUB_ENV
           echo "NEXT_PUBLIC_CONVERSATION_ENDPOINT=${{ secrets.NEXT_PUBLIC_CONVERSATION_ENDPOINT }}" >> $GITHUB_ENV
           echo "UPLOADTHING_TOKEN=${{ secrets.UPLOADTHING_TOKEN }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}" >> $GITHUB_ENV
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-southeast-2
+          aws-region: us-west-2
 
       - name: Deploy to AWS with SST
         run: npx sst deploy --stage prod

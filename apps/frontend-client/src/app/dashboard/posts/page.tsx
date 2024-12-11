@@ -1,16 +1,14 @@
 "use client";
 import React from "react";
-import { usePathname } from "next/navigation";
-import DynamicBreadcrumb from "@/components/DynamicBreadcrumb";
-import InputForm from "@/components/input-job";
+// import InputForm from "@/components/input-job";
+import JobForm from "@/components/jobs/job-form";
+
 
 const PostPage = () => {
-  const pathname = usePathname();
   return (
     <>
-      <DynamicBreadcrumb />
-      {pathname}
-      <InputForm formTitle="Post Job"/>
+      {/* <InputForm formTitle="post job"/> */}
+      <JobForm formTitle="Jobs" typeOfForm="POST"/>
     </>
   );
 };

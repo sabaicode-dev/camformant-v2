@@ -414,7 +414,7 @@ class UserRepository {
         const updatedUser = await UserProfileDetailModel.findOneAndUpdate(
           { userId },
           { $set: { ...updateBody } },
-          { new: true}
+          { new: true }
         );
         console.log("response:::", updatedUser);
         if (!updatedUser) {

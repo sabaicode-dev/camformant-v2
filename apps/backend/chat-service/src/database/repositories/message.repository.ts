@@ -187,7 +187,6 @@ export class MessageRepository {
   ): Promise<RespondGetConversationsPagination> {
     try {
       //find conversation
-      console.log("0/////////", senderId);
       const conversation = await ConversationModel.find({
         participants: {
           $all: [
@@ -204,7 +203,6 @@ export class MessageRepository {
         .limit(limit)
         .skip(skip);
       //count conversation
-      console.log("1/////////");
 
       const totalConversations = await ConversationModel.countDocuments({
         participants: {
@@ -218,7 +216,6 @@ export class MessageRepository {
           ],
         },
       });
-      console.log("2/////////");
       //filter conversations
       const returnConversations = (
         conversation as unknown as GetConversation[]
@@ -258,9 +255,7 @@ export class MessageRepository {
         api_endpoint = `${configs.userUrl}/getMulti/Profile`;
       }
 
-      console.log("3/////////");
       const res = await fetch(`${api_endpoint}${fetchQuery}`);
-      console.log("4/////////");
 
       const data = await res.json();
 
@@ -277,7 +272,6 @@ export class MessageRepository {
       } else if (data.usersProfile) {
         participantsProfile = data.usersProfile;
       }
-      console.log("5/////////");
 
       //check compare the participant from db and fetching must be match to ensure correctly
       if (participantsProfile! && participantsProfile.length !== 0) {
@@ -298,7 +292,6 @@ export class MessageRepository {
         }
       }
       //
-      console.log("6/////////");
       const totalPage = Math.ceil(totalConversations / limit);
       const paginationConversations: RespondGetConversationsPagination = {
         conversations:
@@ -310,7 +303,6 @@ export class MessageRepository {
         totalPage: totalPage,
       };
       //
-      console.log("7/////////");
       return paginationConversations as unknown as RespondGetConversationsPagination;
     } catch (error) {
       throw error;

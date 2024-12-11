@@ -177,6 +177,7 @@ const MyCalendar = ({ events }: { events?: Event[] }) => {
 
   return (
     <>
+      
       <div
         className={`calendar-container ${window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : ""}`}
       >
@@ -276,6 +277,7 @@ const MyCalendar = ({ events }: { events?: Event[] }) => {
           </div>
         )}
       </div>
+      
     </>
   );
 };
