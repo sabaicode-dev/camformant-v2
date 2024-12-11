@@ -28,13 +28,7 @@ const Page: React.FC = () => {
   } = useForm<RegisterProps>({
     resolver: zodResolver(UserSchema), // Apply the zodResolver
   });
-
   const onSubmit = async (data: RegisterProps) => {
-    console.log("data: ", data);
-    if (data.password !== data.confirmPassword) {
-      addNotification("The Confirm Password not match!", "error");
-      return;
-    }
     let contactMethod = "";
     if (emailRegex.test(data.contact)) {
       contactMethod = "email";

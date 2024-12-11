@@ -1,5 +1,5 @@
+import { cx } from "class-variance-authority";
 import { FieldError, UseFormRegister } from "react-hook-form";
-import { IconType } from "react-icons";
 import { z, ZodType } from "zod";
 
 // Register props now have only one field for contact (can be email or phone)
@@ -12,27 +12,37 @@ export type RegisterProps = {
 };
 
 // Zod schema with validation that the contact field can be an email or Cambodian phone number
-export const UserSchema: ZodType<RegisterProps> = z.object({
-  sur_name: z.string().nonempty({ message: "Surname is required" }),
-  last_name: z.string().nonempty({ message: "Last name is required" }),
-  contact: z
-    .string()
-    .nonempty({ message: "Contact is required" })
-    .refine(
-      (val) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const phoneRegex = /^\+855\d{8,9}$/;
-        return emailRegex.test(val) || phoneRegex.test(val);
-      },
-      { message: "Must be a valid email or phone number starting with +855" }
-    ), // Updated validation
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters" }),
-  confirmPassword: z
-    .string()
-    .min(8, { message: "Confirm Password must be at least 8 characters" }),
-});
+export const UserSchema: ZodType<RegisterProps> = z
+  .object({
+    sur_name: z.string().nonempty({ message: "Surname is required" }),
+    last_name: z.string().nonempty({ message: "Last name is required" }),
+    contact: z
+      .string()
+      .nonempty({ message: "Contact is required" })
+      .refine(
+        (val) => {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          const phoneRegex = /^\+855\d{8,9}$/;
+          return emailRegex.test(val) || phoneRegex.test(val);
+        },
+        { message: "Must be a valid email or phone number starting with +855" }
+      ), // Updated validation
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+    confirmPassword: z
+      .string()
+      .min(8, { message: "Confirm Password must be at least 8 characters" }),
+  })
+  .superRefine(({ confirmPassword, password }, ctx) => {
+    if (confirmPassword !== password) {
+      ctx.addIssue({
+        code: "custom",
+        message: "The Confirm password did not match",
+        path: ["confirmPassword"],
+      });
+    }
+  });
 
 // Updated FieldRegisterProps to account for the new contact field
 export type FieldRegisterProps = {
