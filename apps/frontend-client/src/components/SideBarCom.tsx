@@ -118,7 +118,7 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
       <div>
         <div
           onClick={handleClick}
-          className={cn("flex p-4  w-full justify-start font-medium text-pretty cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",isRouteActive ? "text-white bg-[#FF7300]" : "text-muted-foreground",!isOpen && "justify-center",level > 0 && "ml-4")}title={!isOpen ? route.label : undefined} >
+          className={cn("flex p-4  w-full justify-start font-medium text-pretty cursor-pointer hover:text-white hover:bg-orange-400 rounded-lg transition",isRouteActive ? "text-white bg-[#FF7300]" : "text-muted-foreground",!isOpen && "justify-center",level > 0 && "ml-4")}title={!isOpen ? route.label : undefined} >
           <div className={cn(
             "flex items-center flex-1",
             !isOpen && "justify-end"
@@ -141,7 +141,7 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
               <Link
                 key={subRoute.href}
                 href={normalizeHref(subRoute.href)}
-                className={cn("flex p-3 pl-12 w-full justify-start items-center text-sm font-medium cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",pathname === normalizeHref(subRoute.href)? "text-[#FF7300]": "text-muted-foreground")}>
+                className={cn("flex p-3 pl-12 w-full justify-start items-center text-sm font-medium cursor-pointer hover:text-white hover:bg-orange-400 rounded-lg transition",pathname === normalizeHref(subRoute.href)? "text-[#FF7300]": "text-muted-foreground")}>
                 <subRoute.icon className="h-6 w-6 mr-3" />
                 {subRoute.label}
               </Link>
@@ -162,7 +162,7 @@ function SidebarItem({ route, isOpen, level = 0 }: { route: Route; isOpen: boole
         setIsExpanded(!isExpanded);
       }
     }}
-    className={cn("flex p-4 w-full justify-start font-medium text-pretty cursor-pointer hover:text-white hover:bg-orange-300 rounded-lg transition",pathname === normalizeHref(route.href) ? "text-white bg-[#FF7300]" : "text-muted-foreground",!isOpen && "justify-center",level > 0 && "ml-0")}>
+    className={cn("flex p-4 w-full justify-start font-medium text-pretty cursor-pointer hover:text-white hover:bg-orange-400 rounded-lg transition",pathname === normalizeHref(route.href) ? "text-white bg-[#FF7300]" : "text-muted-foreground",!isOpen && "justify-center",level > 0 && "ml-0")}>
       <route.icon className={cn( !isOpen ? "h-6 w-6 mr-0" : "h-6 w-6 mr-3",route.color,  isRouteActive && "text-white")} />
       {isOpen && route.label}
     </Link>
