@@ -7,7 +7,7 @@ import Heart from "./heart";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ImCross } from "react-icons/im";
-import React, { SetStateAction } from "react";
+import React from "react";
 
 interface CardProps {
   userId?: string;
@@ -59,7 +59,7 @@ export const Card: React.FC<CardProps> = (props) => {
       >
         <section className="flex items-center gap-x-5">
           <Image
-            src={profile||""}
+            src={profile || ""}
             alt={title! || profile!}
             width={48}
             height={48}

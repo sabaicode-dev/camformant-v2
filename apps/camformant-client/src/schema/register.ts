@@ -1,12 +1,14 @@
 import { FieldError, UseFormRegister } from "react-hook-form";
+import { IconType } from "react-icons";
 import { z, ZodType } from "zod";
 
 // Register props now have only one field for contact (can be email or phone)
 export type RegisterProps = {
   sur_name: string;
   last_name: string;
-  contact: string;   // Single field for email or phone number
+  contact: string; // Single field for email or phone number
   password: string;
+  confirmPassword: string;
 };
 
 // Zod schema with validation that the contact field can be an email or Cambodian phone number
@@ -16,12 +18,20 @@ export const UserSchema: ZodType<RegisterProps> = z.object({
   contact: z
     .string()
     .nonempty({ message: "Contact is required" })
-    .refine((val) => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const phoneRegex = /^\+855\d{8,9}$/;
-      return emailRegex.test(val) || phoneRegex.test(val);
-    }, { message: "Must be a valid email or phone number starting with +855" }), // Updated validation
-  password: z.string().min(8, { message: "Password must be at least 8 characters" }),
+    .refine(
+      (val) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phoneRegex = /^\+855\d{8,9}$/;
+        return emailRegex.test(val) || phoneRegex.test(val);
+      },
+      { message: "Must be a valid email or phone number starting with +855" }
+    ), // Updated validation
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters" }),
+  confirmPassword: z
+    .string()
+    .min(8, { message: "Confirm Password must be at least 8 characters" }),
 });
 
 // Updated FieldRegisterProps to account for the new contact field
@@ -32,10 +42,13 @@ export type FieldRegisterProps = {
   register: UseFormRegister<RegisterProps>;
   error: FieldError | undefined;
   valueAsNumber?: boolean;
+  isIcon?: boolean;
+  onChangeVisible?: () => void;
 };
 
 export type ValidFieldNames =
   | "sur_name"
   | "last_name"
-  | "contact"  // Single field name for contact (email or phone)
-  | "password";
+  | "contact" // Single field name for contact (email or phone)
+  | "password"
+  | "confirmPassword";

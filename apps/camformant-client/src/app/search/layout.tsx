@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../globals.css";
-import { NavigationBar } from "@/components/navigation-bar/navigation-bar";
-// import { AuthProvider } from "@/context/auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,12 +31,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <div>
-      {/* <AuthProvider> */}
-      {/* <NavigationBar /> */}
-      {children}
-      {/* </AuthProvider> */}
-    </div>
-  );
+  return <div>{children}</div>;
 }

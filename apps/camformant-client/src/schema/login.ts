@@ -8,9 +8,7 @@ export type LoginProps = {
 
 export const UserSchemaLogin: ZodType<LoginProps> = z.object({
   email: z.string().email(),
-  password: z
-    .string()
-    .min(8, { message: "Invalid Password" })
+  password: z.string().min(8, { message: "Invalid Password" }),
 });
 
 export type FieldLoginProps = {
@@ -20,6 +18,8 @@ export type FieldLoginProps = {
   register: UseFormRegister<LoginProps>;
   error: FieldError | undefined;
   valueAsNumber?: boolean;
+  isIcon?: boolean;
+  onChangeVisible?: () => void;
 };
 
 export type ValidFieldNames = "email" | "password";

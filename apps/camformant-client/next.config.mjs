@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
-import { Domain } from "domain";
 import withPWA from "next-pwa";
 
 const nextConfig = {
+  output: "standalone",
   compiler: {
     // Remove console logs only in production
     removeConsole: process.env.NODE_ENV === "production",
@@ -15,10 +15,6 @@ const nextConfig = {
     domains: ["sabaicode.com"],
 
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**",
-      },
       {
         protocol: "https",
         hostname: "optimise2.assets-servd.host",
@@ -79,6 +75,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "teytey.s3.us-east-1.amazonaws.com",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**",
       },
     ],
   },

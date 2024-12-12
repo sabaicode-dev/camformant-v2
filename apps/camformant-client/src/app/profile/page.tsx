@@ -182,7 +182,7 @@ const Page: React.FC = () => {
 
             {/* ==================== USERNAME  ================================*/}
             <h1 className={`relative text-xl ${loading ? "hidden" : ""}`}>
-              {user ? user.username : "Please Login to get your name"}
+              {user ? user.username : "Please login to get your detail"}
             </h1>
 
             {/* ==================== PERSONAL INFO  ================================*/}

@@ -19,7 +19,7 @@ export const CardDescription: React.FC<CardApplyProps> = ({
   benefit,
 }) => {
   return (
-    <div className="flex flex-col justify-center w-full p-3 pb-6 bg-white shadow-md rounded-3xl">
+    <div className="flex flex-col justify-center w-full p-3 pb-6 bg-white shadow-md rounded-2xl">
       <div className="flex justify-between w-full ">
         <h2 className="text-sm font-semibold ">{title}</h2>
         {/* <p className="text-sm text-gray-400 ">5 Application</p>s */}
