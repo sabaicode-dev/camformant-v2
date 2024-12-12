@@ -85,7 +85,4 @@ export interface UserGetAllControllerParams {
   filter?: string;
   sort?: string;
 }
-export interface getMeRespond {
-  message: string;
-  data: IUser;
-}
+

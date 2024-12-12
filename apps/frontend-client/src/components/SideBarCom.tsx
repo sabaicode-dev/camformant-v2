@@ -40,7 +40,7 @@ const routes: Route[] = [
     color: "text-pink-500",
     subRoutes: [
       {
-        label: "Lists",
+        label: "Job Lists",
         icon: List,
         href: "dashboard/jobs",
       },

@@ -44,7 +44,7 @@ const Page = () => {
       }
     }
     GetData();
-  }, []);
+  }, [user?._id]);
   async function PostData() {
     try {
       setNext(true); // Trigger loading

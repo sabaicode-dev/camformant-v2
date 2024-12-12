@@ -1,12 +1,12 @@
-'use client';
-import { Stats } from '@/components/Stats';
-import Chart from './chart/chart';
+"use client";
+import { Stats } from "@/components/Stats";
+import Chart from "./chart/chart";
 
 export default function Dashboard() {
-    return (
+  return (
     <>
-        <Stats/>
+      <Stats />
       <Chart />
     </>
-    );
+  );
 }

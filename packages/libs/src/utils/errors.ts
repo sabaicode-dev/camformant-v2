@@ -59,3 +59,11 @@ export class InternalServerError extends ApplicationError {
     super({ message, status: HTTP_STATUS_CODE.SERVER_ERROR, errors });
   }
 }
+
+//for file size error
+
+export class FileSizeError extends ApplicationError {
+  constructor(message = "File is too large") {
+    super({ message, status: HTTP_STATUS_CODE.PAYLOAD_TOO_LARGE});
+  }
+}

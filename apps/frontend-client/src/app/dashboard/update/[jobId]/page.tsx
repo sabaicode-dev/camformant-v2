@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import InputForm from "@/components/input-job";
 import axiosInstance from "@/utils/axios";
 import { Jobs } from "@/utils/types/form-type";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 
 const UpdateJobPage = ({ params }: { params: { jobId: string } }) => {
   const [jobData, setJobData] = useState<Jobs>();
@@ -14,9 +15,8 @@ const UpdateJobPage = ({ params }: { params: { jobId: string } }) => {
       try {
         setLoading(true);
         const response = await axiosInstance.get(
-          `http://localhost:4000/v1/jobs/${params.jobId}`
+          `${API_ENDPOINTS.JOB_ENDPOINT}/${params.jobId}`
         );
-        console.log("response:", response);
         setJobData(response.data.data);
       } catch (err) {
         console.log(err);

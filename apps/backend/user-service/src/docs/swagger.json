@@ -317,22 +317,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"getMeRespond": {
-				"properties": {
-					"message": {
-						"type": "string"
-					},
-					"data": {
-						"$ref": "#/components/schemas/IUser"
-					}
-				},
-				"required": [
-					"message",
-					"data"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
 			"CvFileParams": {
 				"properties": {
 					"userId": {
@@ -1227,7 +1211,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/getMeRespond"
+									"$ref": "#/components/schemas/IUser"
 								}
 							}
 						}
@@ -1784,29 +1768,7 @@
 					}
 				},
 				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"multipart/form-data": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"file": {
-										"items": {
-											"type": "string",
-											"format": "binary"
-										},
-										"type": "array"
-									}
-								},
-								"required": [
-									"file"
-								]
-							}
-						}
-					}
-				}
+				"parameters": []
 			}
 		},
 		"/v1/users/cv/{cvId}": {

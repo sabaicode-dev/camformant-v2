@@ -2,11 +2,11 @@
 import Image from "next/image";
 import { ColumnDef, filterFns } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { JobApplication, StatusDate } from "@/utils/types/job";
 import { Badge } from "@/components/ui/badge";
 import { getStatusVariant } from "@/utils/getStatusVariant";
 import { ViewApplication } from "@/components/applicant/view-application";
 import { UpdateStatus } from "@/components/applicant/update-status";
+import { JobApplication, StatusDate } from "@/utils/types/job";
 
 export const columns:(refetch?: () => Promise<void>) => ColumnDef<JobApplication>[] = (refetch) => [
   {
@@ -41,17 +41,17 @@ export const columns:(refetch?: () => Promise<void>) => ColumnDef<JobApplication
   {
     accessorKey: "userInfo.name",
     header: "Name",
-    cell: ({ row }) => <div className="text-gray-700">{row.original.userInfo?.name}</div>,
+    cell: ({ row }) => <div className="text-gray-700 dark:text-gray-500 font-bold">{row.original.userInfo?.name}</div>,
     filterFn: 'equals',
   },
   {
     header: "Job Title",
-    cell: ({ row }) => <div className="text-gray-700">{row.original.jobInfo?.title}</div>
+    cell: ({ row }) => <div className="text-gray-700 dark:text-gray-500 font-bold">{row.original.jobInfo?.title}</div>
     
   },
   {
     header: "Applied On",
-    cell: ({ row }) => <div className="text-gray-700">{row.original.appliedAt ? new Date(row.original.appliedAt).toLocaleDateString() : "N/A"}</div>
+    cell: ({ row }) => <div className="text-gray-700 dark:text-gray-500 font-bold">{row.original.appliedAt ? new Date(row.original.appliedAt).toLocaleDateString() : "N/A"}</div>
   },
   {
     header: "Status",

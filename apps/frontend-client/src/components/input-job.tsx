@@ -3,23 +3,21 @@ import { Input } from "@/components/ui/input";
 import Map from "@/components/map";
 import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
-
 import axiosInstance from "@/utils/axios";
 import { Jobs } from "@/utils/types/form-type";
-import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { jobFormSchema } from "@/schema/auth/formSchema";
-import { z } from "zod";
 import SeleteCheckBox from "./selectBox";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { useRouter } from "next/navigation";
+import { useJob } from "@/context/JobContext";
 
-const validateForm = (formData: Jobs) => {
-  const result = jobFormSchema.safeParse(formData);
-  return result.success ? null : result.error.errors;
-};
+
 const InputForm: React.FC<{
   formTitle: string;
   existingData?: Jobs;
   typeOfForm?: string;
 }> = ({ formTitle, existingData, typeOfForm = "POST" }) => {
+  const {fetchJobs} = useJob()
   const [formData, setFormData] = useState<Jobs>({
     title: existingData?.title || "",
     position: existingData?.position || [],
@@ -42,16 +40,14 @@ const InputForm: React.FC<{
       ? new Date(existingData.createdAt).toISOString().split("T")[0]
       : "",
   });
-
+  const router = useRouter();
   const workTypeOptions = [
     { name: "Remote" },
     { name: "On-Site" },
     { name: "Hybrid" },
   ];
-  const [workTypeSelected, setWorkTypeSelected] = useState<string[]>([]);
 
   const typeJobOptions = [{ name: "Contract" }, { name: "Internship" }];
-  const [typeJobSelected, setTypeJobSelected] = useState<string[]>([]);
 
   const scheduleOption = [
     { name: "Full-Time" },
@@ -59,7 +55,6 @@ const InputForm: React.FC<{
     { name: "Flexible-Hours" },
     { name: "Project-Based" },
   ];
-  const [scheduleSelected, setscheduleSelected] = useState<string[]>([]);
 
   const [errors, setErrors] = useState<Record<string, string | null>>({});
 
@@ -213,19 +208,23 @@ const InputForm: React.FC<{
     setErrorWithZod(event);
     try {
       let response: any;
-
       if (typeOfForm === "POST") {
+        event.preventDefault();
         response = await axiosInstance.post(
-          "http://localhost:4000/v1/jobs/job",
+          `${API_ENDPOINTS.JOB}`,
           formData
         );
+        await fetchJobs()
+      router.push("/dashboard/jobs");
         console.log("post job", formData);
       } else {
         event.preventDefault();
         response = await axiosInstance.put(
-          `http://localhost:4000/v1/jobs/${existingData!._id}`,
+          `${API_ENDPOINTS.JOB_ENDPOINT}/${existingData!._id}`,
           { ...formData, companyId: existingData?.company?._id || "" }
         );
+        await fetchJobs()
+      router.push("/dashboard/jobs");
       }
       console.log("Response:", response?.data);
     } catch (error) {
@@ -237,8 +236,8 @@ const InputForm: React.FC<{
     <div className=" flex bg-no-repeat w-full font-roboto  bg-cover justify-center items-center">
       {/* Form container */}
       <form onSubmit={handleSubmit} className="p-[20px] w-full ">
-        <div className="w-full h-auto bg-white p-8 rounded-lg  ">
-          <h2 className="text-center text-2xl font-bold font-roboto text-gray-800 mb-4">
+        <div className="w-full h-auto bg-white dark:bg-gray-900 p-8 rounded-lg  ">
+          <h2 className="text-center text-3xl font-bold dark:text-white font-roboto text-gray-800 mb-4">
             {formTitle}
           </h2>
           <hr className="my-4" />
@@ -248,9 +247,9 @@ const InputForm: React.FC<{
             <div className="w-2/4">
               <Label
                 htmlFor="title"
-                className="block text-black text-[16px] mb-1"
+                className="block text-black text-[16px] dark:text-white mb-1"
               >
-                Company Name
+                Title Job
               </Label>
               <Input
                 placeholder="name"
@@ -266,9 +265,9 @@ const InputForm: React.FC<{
             <div className="w-2/4">
               <Label
                 htmlFor="jobCategory"
-                className="block text-black text-[16px] mb-1"
+                className="block text-black text-[16px] dark:text-white mb-1"
               >
-                Job Category
+                Job Position
               </Label>
               <Input
                 placeholder="job"
@@ -288,7 +287,7 @@ const InputForm: React.FC<{
             <div className="w-2/4">
               <Label
                 htmlFor="type"
-                className="block text-black text-[16px] rounded-lg mb-1"
+                className="block text-black text-[16px] dark:text-white rounded-lg mb-1"
               >
                 Job Type
               </Label>
@@ -305,7 +304,7 @@ const InputForm: React.FC<{
             <div className="w-2/4">
               <Label
                 htmlFor="type"
-                className="block text-black text-[16px] mb-1"
+                className="block text-black text-[16px] dark:text-white mb-1"
               >
                 schedule
               </Label>
@@ -326,7 +325,7 @@ const InputForm: React.FC<{
             <div className="w-2/4">
               <Label
                 htmlFor="type"
-                className="block text-black text-[16px] mb-1"
+                className="block text-black text-[16px] dark:text-white mb-1"
               >
                 workMode
               </Label>
@@ -343,7 +342,7 @@ const InputForm: React.FC<{
             <div className="w-2/4">
               <Label
                 htmlFor="job_opening"
-                className="block text-black text-[16px] mb-1"
+                className="block text-black text-[16px] dark:text-white mb-1"
               >
                 job_opening
               </Label>
@@ -365,7 +364,7 @@ const InputForm: React.FC<{
             <div className="w-2/4">
               <Label
                 htmlFor="createdAt"
-                className="block text-black text-[16px] mb-1"
+                className="block text-black text-[16px] dark:text-white mb-1"
               >
                 Post Date
               </Label>
@@ -383,7 +382,7 @@ const InputForm: React.FC<{
             <div className="w-2/4">
               <Label
                 htmlFor="deadline"
-                className="block text-black text-[16px] mb-1"
+                className="block text-black text-[16px] dark:text-white mb-1"
               >
                 Last Date
               </Label>
@@ -405,7 +404,7 @@ const InputForm: React.FC<{
             <div className="w-2/4">
               <Label
                 htmlFor="SalaryFrom"
-                className="block text-black text-[16px] mb-1"
+                className="block text-black text-[16px] dark:text-white mb-1"
               >
                 Salary From
               </Label>
@@ -424,7 +423,7 @@ const InputForm: React.FC<{
             <div className="w-2/4">
               <Label
                 htmlFor="SalaryTo"
-                className="block text-black text-[16px] mb-1"
+                className="block text-black text-[16px] dark:text-white mb-1"
               >
                 Salary To
               </Label>
@@ -446,7 +445,7 @@ const InputForm: React.FC<{
           <div className="mb-2">
             <Label
               htmlFor="required_experience"
-              className="block text-black text-[16px] mb-1"
+              className="block text-black text-[16px] dark:text-white mb-1"
             >
               required_experience
             </Label>
@@ -458,8 +457,8 @@ const InputForm: React.FC<{
                   ? (formData.required_experience as string[]).join(",") // If it's an array, join the values with commas
                   : formData.required_experience || "" // Otherwise, return the string value or an empty string
               }
-              placeholder="Type your Description"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
+              placeholder="ex: descrip1, descrp2"
+              className="w-full px-3 py-2 border dark:border-none border-gray-300 dark:bg-gray-800 rounded-md focus:outline-none focus:border-orange-400"
               rows={4}
             ></textarea>
             {errors.required_experience && (
@@ -473,7 +472,7 @@ const InputForm: React.FC<{
           <div className="mb-2">
             <Label
               htmlFor="SalaryFrom"
-              className="block text-black text-[16px] mb-1"
+              className="block text-black text-[16px] dark:text-white mb-1"
             >
               requirement
             </Label>
@@ -482,7 +481,7 @@ const InputForm: React.FC<{
               onChange={handleChange}
               value={formData.requirement}
               placeholder="Type your Description"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
+              className="w-full px-3 py-2 border dark:border-none border-gray-300 dark:bg-gray-800 rounded-md focus:outline-none focus:border-orange-400"
               rows={4}
             ></textarea>
             {errors.requirement && (
@@ -494,7 +493,7 @@ const InputForm: React.FC<{
           <div className="mb-2">
             <Label
               htmlFor="benefit"
-              className="block text-black text-[16px] mb-1"
+              className="block text-black text-[16px] dark:text-white mb-1"
             >
               benefit
             </Label>
@@ -507,7 +506,7 @@ const InputForm: React.FC<{
               }
               onChange={handleChange}
               placeholder="Type your Description"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
+              className="w-full px-3 py-2 border dark:border-none border-gray-300 dark:bg-gray-800 rounded-md focus:outline-none focus:border-orange-400"
               rows={4}
             ></textarea>
             {errors.benefit && (
@@ -519,7 +518,7 @@ const InputForm: React.FC<{
           <div className="mb-6">
             <Label
               htmlFor="description"
-              className="block text-black text-[16px] mb-1"
+              className="block text-black text-[16px] dark:text-white mb-1"
             >
               Description
             </Label>
@@ -528,7 +527,7 @@ const InputForm: React.FC<{
               onChange={handleChange}
               value={formData.description}
               placeholder="Type your Description"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-400"
+              className="w-full px-3 py-2 border dark:border-none border-gray-300 dark:bg-gray-800 rounded-md focus:outline-none focus:border-orange-400"
               rows={4}
             ></textarea>
             {errors.description && (

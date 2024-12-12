@@ -26,6 +26,8 @@ import {
 import { signUpSchema } from "@/lib/validations/authValidations";
 import { Icons } from "../ui/icons";
 import Image from "next/image";
+import { useState } from "react";
+import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 
@@ -34,6 +36,11 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export function SignUpForm() {
   const { signUp, isLoading } = useAuth();
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
@@ -67,33 +74,35 @@ export function SignUpForm() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="flex w-4/6 h-[590px] items-center border shadow-lg">
-        {/* Left side with image */}
-        <div className="w-2/4 h-full">
+    <div className="flex items-center justify-center min-h-screen dark:bg-black bg-gray-100 p-4">
+    <div className="flex flex-col-reverse md:flex-row w-full md:w-3/4 lg:w-2/3 h-auto dark:bg-gray-700  bg-white rounded-lg shadow-lg overflow-hidden">
+        {/* Left Side - Image */}
+        <div className="md:w-1/2 w-full justify-center flex items-center  md:h-auto">
           <Image
-            className="w-full h-full object-cover"
-            src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTF8fGJvb2slMjB3aXRoJTIwcGxhbnR8ZW58MHx8MHx8fDA%3D"
-            alt=""
+            className="w-full h-auto object-cover"
+            src="/img/Job hunt-amico.png"
+            alt="job image"
             width={800}
             height={800}
           />
         </div>
 
-        {/* Right side with form */}
-        <div className="w-2/4 flex justify-center items-center">
-          <Card className="w-5/6 bg-transparent flex-shrink-0 border-none p-2">
-            <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl">Create an account</CardTitle>
-              <CardDescription>
-                Enter your details below to create your account
+        {/* Right Side - Form */}
+        <div className="md:w-1/2 w-full p-8 ">
+          <Card className="w-full max-w-sm border-none dark:bg-gray-700">
+            <CardHeader>
+              <CardTitle className="text-3xl font-bold  text-gray-800 dark:text-white ">
+                Create an Account
+              </CardTitle>
+              <CardDescription className="text-center">
+                Fill in the details to start your journey.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
+                  className="grid gap-y-4"
                 >
                   <FormField
                     control={form.control}
@@ -103,10 +112,10 @@ export function SignUpForm() {
                         <FormLabel>First Name</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="John"
+                            placeholder="First Name"
                             {...field}
                             disabled={isLoading}
-                            className="h-[45px]"
+                            className="border-gray-300"
                           />
                         </FormControl>
                         <FormMessage />
@@ -121,10 +130,10 @@ export function SignUpForm() {
                         <FormLabel>Last Name</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Doe"
+                            placeholder="Last Name"
                             {...field}
                             disabled={isLoading}
-                            className="h-[45px]"
+                            className="border-gray-300"
                           />
                         </FormControl>
                         <FormMessage />
@@ -143,7 +152,7 @@ export function SignUpForm() {
                             {...field}
                             type="email"
                             disabled={isLoading}
-                            className="h-[45px]"
+                            className="border-gray-300"
                           />
                         </FormControl>
                         <FormMessage />
@@ -157,13 +166,26 @@ export function SignUpForm() {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder="password"
-                            {...field}
-                            type="password"
-                            disabled={isLoading}
-                            className="h-[45px]"
-                          />
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              type={showPassword ? "text" : "password"}
+                              disabled={isLoading}
+                              placeholder="password"
+                            />
+                            <button
+                              type="button"
+                              onClick={togglePasswordVisibility}
+                              disabled={isLoading}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                            >
+                              {showPassword ? (
+                                <EyeOpenIcon />
+                              ) : (
+                                <EyeClosedIcon />
+                              )}
+                            </button>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -174,51 +196,51 @@ export function SignUpForm() {
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder="Confirm your password"
-                            {...field}
-                            type="password"
-                            disabled={isLoading}
-                            className="h-[45px]"
-                          />
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              type={showPassword ? "text" : "password"}
+                              disabled={isLoading}
+                              placeholder="password"
+                            />
+                            <button
+                              type="button"
+                              onClick={togglePasswordVisibility}
+                              disabled={isLoading}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                            >
+                              {showPassword ? (
+                                <EyeOpenIcon />
+                              ) : (
+                                <EyeClosedIcon />
+                              )}
+                            </button>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  {/* Show error message if passwords do not match */}
-                  {form.formState.errors.confirmPassword && (
-                    <div className="text-sm font-medium text-red-600">
-                      {form.formState.errors.confirmPassword.message}
-                    </div>
-                  )}
                   <Button
                     type="submit"
-                    variant={"orange"}
-                    className="w-full"
+                    className="w-full bg-orange-500 text-white hover:bg-orange-600"
                     disabled={isLoading}
                   >
                     {isLoading && (
                       <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                     )}
-                    Create account
+                    Create Account
                   </Button>
                 </form>
               </Form>
             </CardContent>
-            <CardFooter className="flex flex-col space-y-4">
-              <div className="text-sm text-muted-foreground text-center">
-                Already have an account?{" "}
-                <Button
-                  variant="link"
-                  className="p-0"
-                  onClick={() => router.push("/signin")}
-                >
-                  Sign in
-                </Button>
-              </div>
+            <CardFooter>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Already have an account? </p>
+              <Button variant="link" onClick={() => router.push("/signin")}>
+                Sign in
+              </Button>
             </CardFooter>
           </Card>
         </div>

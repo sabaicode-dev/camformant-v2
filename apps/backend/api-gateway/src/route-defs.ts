@@ -341,6 +341,15 @@ const ROUTE_PATHS: RoutesConfig = {
           },
         },
       },
+      {
+        path: "/:userId",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["user", "company"],
+          },
+        },
+      },
     ],
   },
   JOB_SERVICE: {

@@ -13,7 +13,6 @@ export const calculateProgressBar = (data: any, inputLength: number) => {
           ([_, value]) => value!== "" && value!== null && value!== undefined
         )
       );
-console.log("data",data)
     const predictLength: number = Array.isArray(data)
       ? data.length * inputLength
       : inputLength;
@@ -23,8 +22,6 @@ console.log("data",data)
           0
         )
       : Object.keys(data).length;
-      console.log("predict:",predictLength)
-      console.log("real:",realLength)
     return predictLength ? Math.round((realLength / predictLength) * 100) : 0;
   }
   return 0;

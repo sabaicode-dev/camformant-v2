@@ -54,7 +54,7 @@ const JobList = () => {
       {jobItems.map((item) => (
         <div
           key={item.id}
-          className="flex items-center justify-between border-b border-gray-200 last:border-none"
+          className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 last:border-none"
         >
           <div className="flex items-center w-2/3 h-[60px] gap-4">
             <Image

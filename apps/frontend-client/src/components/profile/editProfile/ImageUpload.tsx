@@ -20,17 +20,12 @@ export function ImageUpload({ currentImage, onFileSelect }: ImageUploadProps) {
       return;
     }
     // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('File size should be less than 5MB');
-      return;
-    }
-
     onFileSelect(file);
   }, [onFileSelect]);
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-medium text-gray-700">
+      <label className="block text-sm font-medium text-gray-700 dark:text-gray-400">
         Profile Picture
       </label>
       

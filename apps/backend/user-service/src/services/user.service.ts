@@ -2,20 +2,10 @@ import {
   UserCreationRepoParams,
   UserUpdateRepoParams,
 } from "@/src/database/repositories/types/user-repository.type";
+import express from "express";
 import UserRepository from "@/src/database/repositories/user.repository";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
-// import {
-//   CustomCvResponse,
-//   CvFileParams,
-//   CvStyleParams,
-//   UnionCustomCvResponse,
-// } from "@/src/controllers/types/user-cv-controller.type";
-// import {
-//   IUserProfile,
-//   UnionProfileType,
-// } from "@/src/controllers/types/userprofile.type";
 import {
-  getMeRespond,
   IUser,
   UserGetAllControllerParams,
 } from "../controllers/types/user.controller.type";
@@ -32,7 +22,8 @@ import {
 import {
   IUserProfile,
   UnionProfileType,
-} from "../controllers/types/userprofile.type";
+} from "@/src/controllers/types/userprofile.type";
+import multer from "multer";
 
 class UserService {
   async getAllUsers(
@@ -73,14 +64,11 @@ class UserService {
     }
   }
 
-  async getUserBySub(sub: string): Promise<getMeRespond> {
+  async getUserBySub(sub: string): Promise<IUser> {
     try {
       const user = await UserRepository.findBySub(sub);
 
-      return {
-        message: "success",
-        data: user,
-      };
+      return user;
     } catch (error) {
       console.error(
         `UserService - getUserById() method error: `,
@@ -116,7 +104,6 @@ class UserService {
   async updateUserBySub(userInfo: UserUpdateRepoParams) {
     try {
       const updatedUser = await UserRepository.updateBySub(userInfo);
-
       return updatedUser;
     } catch (error) {
       console.error(
@@ -241,9 +228,8 @@ class UserService {
   async getCvFiles(userId: string) {
     try {
       console.log("inside get cv services");
-      const response: CvFileParams | null = await UserRepository.getCvFile(
-        userId
-      );
+      const response: CvFileParams | null =
+        await UserRepository.getCvFile(userId);
       return response;
     } catch (err) {
       throw err;
@@ -297,6 +283,24 @@ class UserService {
     } catch (err) {
       throw err;
     }
+  }
+  handleFile(request: express.Request): Promise<any> {
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; //5mb
+    const multerSingle = multer().single("file");
+    const mockResponse = {} as express.Response;
+    return new Promise((resolve, reject) => {
+      multerSingle(request, mockResponse, async (error) => {
+        if (error) {
+          reject(error);
+        }
+        if (request.file) {
+          if (request.file.size > MAX_FILE_SIZE) {
+            return reject(new Error(`Reach Limit File`));
+          }
+          resolve(request.file);
+        }
+      });
+    });
   }
 }
 

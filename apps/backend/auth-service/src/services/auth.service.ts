@@ -312,6 +312,7 @@ class AuthService {
 
       // Step 2: Get the user info from token
       const userInfo = this.getUserInfoFromToken(token.idToken);
+      console.log(" user info::::", userInfo);
       // @ts-ignore
       const email = userInfo.email;
       const existingUser = await this.getUserByEmail(email);
@@ -378,7 +379,6 @@ class AuthService {
           await this.updateUserCongitoAttributes(userInfo.sub!, {
             "custom:role": state!,
           });
-
           userId = user.data.data._id;
         } catch (error) {
           if (axios.isAxiosError(error) && error.response?.status === 409) {

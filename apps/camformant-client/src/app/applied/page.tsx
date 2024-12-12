@@ -7,7 +7,6 @@ const Page: React.FC = () => {
       <ApplyStatus />
     </div>
 
-
   );
 };
 

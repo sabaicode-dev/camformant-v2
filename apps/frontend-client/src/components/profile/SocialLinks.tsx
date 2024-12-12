@@ -15,7 +15,7 @@ export function SocialLinks({ socialLinks, contact }: SocialLinksProps) {
           href={contact?.website}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-gray-600 hover:text-blue-600 transition-colors"
+          className="text-gray-600 dark:text-white hover:text-blue-600 transition-colors"
         >
           <Globe className="w-5 h-5" />
         </a>
@@ -25,7 +25,7 @@ export function SocialLinks({ socialLinks, contact }: SocialLinksProps) {
           href={socialLinks?.linkedin}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-gray-600 hover:text-blue-600 transition-colors"
+          className="text-gray-600 dark:text-white hover:text-blue-600 transition-colors"
         >
           <Linkedin className="w-5 h-5" />
         </a>
@@ -35,7 +35,7 @@ export function SocialLinks({ socialLinks, contact }: SocialLinksProps) {
           href={socialLinks?.twitter}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-gray-600 hover:text-blue-500 transition-colors"
+          className="text-gray-600 dark:text-white hover:text-blue-500 transition-colors"
         >
           <Twitter className="w-5 h-5" />
         </a>
@@ -45,7 +45,7 @@ export function SocialLinks({ socialLinks, contact }: SocialLinksProps) {
           href={socialLinks?.facebook}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-gray-600 hover:text-blue-700 transition-colors"
+          className="text-gray-600 dark:text-white hover:text-blue-700 transition-colors"
         >
           <Facebook className="w-5 h-5" />
         </a>

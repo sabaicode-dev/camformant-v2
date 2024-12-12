@@ -65,9 +65,9 @@ export function EditProfileForm({ initialData, onSubmit }: EditProfileFormProps)
 
   return (
     <ScrollArea className='h-screen'>
-    <form onSubmit={handleSubmit} className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Personal Information</h2>
-      <div className="space-y-8">
+    <form onSubmit={handleSubmit} className="max-w-3xl mx-auto p-6 bg-white dark:bg-black rounded-lg shadow-lg">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6 dark:text-white">Personal Information</h2>
+      <div className="space-y-8 ">
         <PersonalInfoSection 
           formData={formData} 
           onChange={handleInputChange}
@@ -79,7 +79,7 @@ export function EditProfileForm({ initialData, onSubmit }: EditProfileFormProps)
         />
 
         <div className="space-y-4">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium dark:text-gray-300 text-gray-700">
             Bio
           </label>
           <Textarea

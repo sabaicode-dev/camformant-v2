@@ -25,7 +25,7 @@ async function run() {
     const io = new Server(httpServer, {
       path: "/socket.io",
       cors: {
-        origin: [configs.clientUrl, "http://localhost:5000"],
+        origin: [configs.clientUrl, configs.corporatorUrl],
         methods: ["GET", "POST"],
         credentials: true,
       },

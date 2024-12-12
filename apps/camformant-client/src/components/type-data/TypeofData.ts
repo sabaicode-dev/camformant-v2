@@ -58,6 +58,9 @@ export interface IJob {
   createdAt?: Date;
   updatedAt?: Date;
 }
+export interface IJobFav extends IJob{
+    favorite:boolean
+}
 
 export interface EmploymentSchedule {
   FULL_TIME: "Full-Time";

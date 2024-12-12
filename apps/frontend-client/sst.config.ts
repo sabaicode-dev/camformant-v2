@@ -4,8 +4,8 @@ import { NextjsSite } from "sst/constructs";
 export default {
   config(_input) {
     return {
-      name: "camformant-client-app",
-      region: "ap-southeast-2",
+      name: "frontend-client-app",
+      region: "us-west-2",
     };
   },
   stacks(app) {
