@@ -181,7 +181,6 @@ const MyCalendar = ({ events }: { events?: Event[] }) => {
       <div
         className={`calendar-container ${window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : ""}`}
       >
-        { /* @ts-ignore */ }
         <Calendar
           localizer={localizer}
           events={eventList}

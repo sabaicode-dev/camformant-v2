@@ -59,7 +59,11 @@ function Calendar({
         day_hidden: "invisible",
         ...classNames,
       }}
-      // Removed IconLeft and IconRight as they are not valid properties
+      components={{
+        // ts-ignore
+        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
+        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
+      }}
       {...props}
     />
   )
