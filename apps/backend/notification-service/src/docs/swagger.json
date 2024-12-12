@@ -108,6 +108,16 @@
 							}
 						},
 						"type": "object"
+					},
+					"tag": {
+						"type": "string"
+					},
+					"timestamp": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"icon": {
+						"type": "string"
 					}
 				},
 				"required": [

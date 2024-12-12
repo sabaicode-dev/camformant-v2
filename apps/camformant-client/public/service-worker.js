@@ -20,14 +20,15 @@ self.addEventListener("push", (event) => {
     const data = event.data.json();
     const title = data.title;
     const body = data.body;
-    const url = "/resume";
+    const url = data.url;
+    const icon = data.icon;
     console.log("url", url);
 
     const notificationOptions = {
       title: title, //
       body: body,
       tag: `notification-${Date.now()}`,
-      icon: "https://sabaicode.com/sabaicode.jpg",
+      icon: icon,
       vibrate: [100, 50, 100],
       data: {
         url: url,

@@ -48,6 +48,9 @@ export class NotificationsController extends Controller {
         title: "Welcome!",
         body: "Thank you for subscribing to our notifications.",
         data: { url: "/home" },
+        tag: `notification-${Date.now()}`,
+        icon: "https://sabaicode.com/sabaicode.jpg",
+        timestamp: new Date(),
       };
       await NotificationService.sendNotification(userId, welcomeMessage);
 
@@ -61,12 +64,12 @@ export class NotificationsController extends Controller {
   }
 
   @Post("/push-notification")
-  public async pushNotification(
+  public async pushOneUserNotification(
     @Request() request: ExpressRequest,
     @Body() body: NotificationPayload
   ): Promise<void> {
     try {
-      const userId = request.cookies["user_id"];
+      const userId = request?.cookies["user_id"] as string;
       // const currentUser = JSON.parse(request.headers.currentuser as string) as {
       //   username?: string;
       //   role?: string[];

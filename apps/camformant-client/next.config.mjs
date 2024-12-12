@@ -13,7 +13,6 @@ const nextConfig = {
   },
   images: {
     domains: ["sabaicode.com"],
-
     remotePatterns: [
       {
         protocol: "https",
