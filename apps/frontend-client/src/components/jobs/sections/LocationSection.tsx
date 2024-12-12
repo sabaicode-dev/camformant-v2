@@ -8,6 +8,7 @@ interface LocationSectionProps {
 }
 
 const LocationSection: React.FC<LocationSectionProps> = ({ formData, setFormData }) => {
+  console.log("LocationSection -> formData");
   return (
     <div className="mb-6">
       <Map setFormData={setFormData} existingMap={formData.address} />

@@ -6,11 +6,36 @@ import { useJob } from '@/context/JobContext';
 import { API_ENDPOINTS } from '@/utils/const/api-endpoints';
 import axiosInstance from '@/utils/axios';
 import { validateField, validateNumericField } from '@/utils/validation/JobForm';
-
+import { format } from 'date-fns';
 interface UseJobFormProps {
     existingData?: Jobs;
     typeOfForm: "POST" | "PUT";
 }
+
+const initializeFormData = (existingData?: Jobs): Jobs => {
+    return {
+        title: existingData?.title || "",
+        position: existingData?.position || [],
+        workMode: existingData?.workMode || [],
+        location: existingData?.location || "",
+        requirement: existingData?.requirement || "",
+        description: existingData?.description || "",
+        address: existingData?.address || "",
+        min_salary: existingData?.min_salary || 0,
+        max_salary: existingData?.max_salary || 0,
+        job_opening: existingData?.job_opening || 0,
+        type: existingData?.type || [],
+        schedule: existingData?.schedule || [],
+        required_experience: existingData?.required_experience || [],
+        benefit: existingData?.benefit || [],
+        deadline: existingData?.deadline
+            ? new Date(existingData.deadline).toISOString().split("T")[0]
+            : "",
+        createdAt: existingData?.createdAt
+            ? new Date(existingData.createdAt).toISOString().split("T")[0]
+            : "", // Set today as default for createdAt
+    };
+};
 
 export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
     const router = useRouter();
@@ -18,24 +43,36 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
     const [errors, setErrors] = useState<Record<string, string | null>>({});
     const [formData, setFormData] = useState<Jobs>(initializeFormData(existingData));
 
+    const [createdAtDate, setCreatedAtDate] = useState<Date | undefined>(
+        formData.createdAt ? new Date(formData.createdAt) : undefined
+    );
+    const [deadlineDate, setDeadlineDate] = useState<Date | undefined>(
+        formData.deadline ? new Date(formData.deadline) : undefined
+    );
+
     const handleDateChange = (field: string, date: Date | undefined) => {
-        setFormData((prev) => {
-            const updatedData = {
+        if (field === 'createdAt') {
+            setCreatedAtDate(date);
+            setFormData((prev) => ({
                 ...prev,
-                [field]: date
-                    ? new Date(date.setHours(0, 0, 0, 0)).toISOString().split('T')[0]
-                    : formData,
-            };
-            console.log(updatedData);
+                createdAt: date ? format(date, 'yyyy-MM-dd') : '',
+            }));
             setErrors((prev) => ({
                 ...prev,
-                [field]: validateField(field, date ? date.toISOString() : ''),
+                createdAt: validateField('createdAt', date?.toISOString() || ''),
             }));
-
-            return updatedData;
-        });
+        } else if (field === 'deadline') {
+            setDeadlineDate(date);
+            setFormData((prev) => ({
+                ...prev,
+                deadline: date ? format(date, 'yyyy-MM-dd') : '',
+            }));
+            setErrors((prev) => ({
+                ...prev,
+                deadline: validateField('deadline', date?.toISOString() || ''),
+            }));
+        }
     };
-
 
     const handleArrayChange = (selected: string[], fieldName: string) => {
         setFormData(prev => ({
@@ -115,6 +152,7 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
         try {
             if (typeOfForm === "POST") {
                 await axiosInstance.post(API_ENDPOINTS.JOB, formData);
+                // console.log("formData", formData);
             } else {
                 await axiosInstance.put(
                     `${API_ENDPOINTS.JOB_ENDPOINT}/${existingData!._id}`,
@@ -133,38 +171,13 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
         formData,
         errors,
         isLoading,
+        createdAtDate,
+        deadlineDate,
         handleSubmit,
         handleChange,
         handleArrayChange,
         handleChangeNum,
         handleDateChange,
         setFormData
-    };
-};
-
-const initializeFormData = (existingData?: Jobs): Jobs => {
-    const today = new Date().toISOString().split("T")[0];
-
-    return {
-        title: existingData?.title || "",
-        position: existingData?.position || [],
-        workMode: existingData?.workMode || [],
-        location: existingData?.location || "",
-        requirement: existingData?.requirement || "",
-        description: existingData?.description || "",
-        address: existingData?.address || "",
-        min_salary: existingData?.min_salary || 0,
-        max_salary: existingData?.max_salary || 0,
-        job_opening: existingData?.job_opening || 0,
-        type: existingData?.type || [],
-        schedule: existingData?.schedule || [],
-        required_experience: existingData?.required_experience || [],
-        benefit: existingData?.benefit || [],
-        deadline: existingData?.deadline
-            ? new Date(existingData.deadline).toISOString().split("T")[0]
-            : "",
-        createdAt: existingData?.createdAt
-            ? new Date(existingData.createdAt).toISOString().split("T")[0]
-            : "", // Set today as default for createdAt
     };
 };

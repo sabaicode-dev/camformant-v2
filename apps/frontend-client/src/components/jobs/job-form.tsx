@@ -20,6 +20,7 @@ const JobForm: React.FC<JobFormProps> = ({ formTitle, existingData, typeOfForm =
   const { 
     formData, 
     errors, isLoading,
+    createdAtDate,deadlineDate,
     handleSubmit, 
     handleChange, 
     handleArrayChange, 
@@ -46,46 +47,19 @@ const JobForm: React.FC<JobFormProps> = ({ formTitle, existingData, typeOfForm =
               </div>
     
               <div className="space-y-8">
-                <BasicInfo 
-                  formData={formData}
-                  errors={errors}
-                  handleChange={handleChange}
-                />
+                <BasicInfo formData={formData} errors={errors} handleChange={handleChange} />
     
-                <JobDetails 
-                  formData={formData}
-                  errors={errors}
-                  handleArrayChange={handleArrayChange}
-                  handleChangeNum={handleChangeNum}
-                />
+                <JobDetails formData={formData} errors={errors} handleArrayChange={handleArrayChange} handleChangeNum={handleChangeNum} />
     
-                <DateSection 
-                  formData={formData}
-                  errors={errors}
-                  handleDateChange={handleDateChange}
-                />
+                <DateSection formData={formData} errors={errors} handleDateChange={handleDateChange} createdAtDate={createdAtDate} deadlineDate={deadlineDate}/>
     
-                <SalarySection 
-                  formData={formData}
-                  errors={errors}
-                  handleChangeNum={handleChangeNum}
-                />
+                <SalarySection formData={formData} errors={errors} handleChangeNum={handleChangeNum} />
     
-                <DescriptionSection 
-                  formData={formData}
-                  errors={errors}
-                  handleChange={handleChange}
-                />
+                <DescriptionSection formData={formData} errors={errors}  handleChange={handleChange} />
     
-                <LocationSection 
-                  formData={formData}
-                  setFormData={setFormData}
-                />
+                <LocationSection formData={formData} setFormData={setFormData} />
     
-                <Button 
-                  type="submit"
-                  className="w-full bg-orange-400 hover:bg-orange-500 text-white"
-                >
+                <Button type="submit" className="w-full bg-orange-400 hover:bg-orange-500 text-white" >
                   {typeOfForm === "POST" ? "Create Job" : "Update Job"}
                 </Button>
               </div>

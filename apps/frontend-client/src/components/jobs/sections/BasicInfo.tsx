@@ -10,6 +10,7 @@ interface BasicInfoProps {
 }
 
 const BasicInfo: React.FC<BasicInfoProps> = ({ formData, errors, handleChange }) => {
+  console.log("BasicInfo -> formData");
   return (
     <div className="grid grid-cols-2 gap-6 mb-6">
       <div className="space-y-2">

@@ -80,7 +80,7 @@ export const MenuBar = () => {
           <DropdownMenuContent>
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => router.push("dashboard/profile")}>Profile</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/profile")}>Profile</DropdownMenuItem>
             <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

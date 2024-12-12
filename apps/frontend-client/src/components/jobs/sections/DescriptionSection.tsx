@@ -14,6 +14,7 @@ const DescriptionSection: React.FC<DescriptionSectionProps> = ({
   errors,
   handleChange,
 }) => {
+  console.log("DescriptionSection -> formData");
   return (
     <div className="space-y-6">
       <div className="space-y-2">
