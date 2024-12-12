@@ -47,6 +47,7 @@ export class NotificationsController extends Controller {
       const welcomeMessage: NotificationPayload = {
         title: "Welcome!",
         body: "Thank you for subscribing to our notifications.",
+        data: { url: "/home" },
       };
       await NotificationService.sendNotification(userId, welcomeMessage);
 

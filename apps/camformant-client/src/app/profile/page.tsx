@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { S3FileResParams, uploadToS3 } from "@/utils/functions/upload-to-s3";
+import AllowNotificationCard from "@/components/notification/allow-notification-card";
 
 const SkeletonLoader = ({
   width = "w-32",
@@ -49,7 +50,10 @@ const SkeletonLoader = ({
 const Page: React.FC = () => {
   const { addNotification, NotificationDisplay } = useNotification();
   const { user, loading, logout, isAuthenticated, setUser } = useAuth();
-
+  const [isPopupNotificatioin, setIsPopupNotificatioin] = useState(true);
+  const handlePopupNotification = () => {
+    setIsPopupNotificatioin(!isPopupNotificatioin);
+  };
   const RefFile = useRef<HTMLInputElement | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });

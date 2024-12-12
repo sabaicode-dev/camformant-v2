@@ -11,6 +11,9 @@ export interface NotificationPayload {
   title: string;
   body: string;
   data?: { url?: string };
+  tag?: string;
+  timestamp?: Date;
+  icon?: string;
 }
 
 export interface NotificationErrorResponse {
