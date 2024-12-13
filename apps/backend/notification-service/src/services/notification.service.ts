@@ -52,7 +52,7 @@ class NotficationService {
     try {
       const notifications =
         await NotificationRepository.getSubscriptionsByUserId(userId);
-      console.log("payload:::", payload);
+      console.log("payload:::", JSON.stringify(payload));
 
       if (!notifications) {
         throw new InvalidInputError({
