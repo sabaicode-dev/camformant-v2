@@ -170,7 +170,7 @@
 		},
 		"/v1/notifications/push-notification": {
 			"post": {
-				"operationId": "PushNotification",
+				"operationId": "PushOneUserNotification",
 				"responses": {
 					"204": {
 						"description": "No content"
@@ -240,6 +240,28 @@
 				},
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/v1/notifications/push-all-notifications": {
+			"post": {
+				"operationId": "PushToSubscribers",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/NotificationPayload"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/v1/notifications/health": {

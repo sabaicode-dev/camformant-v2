@@ -12,8 +12,17 @@ import { IJob, returnJobs } from "@/src/database/models/job.model";
 import jobRepository from "@/src/database/repositories/job.repository";
 import searchService from "@/src/services/search.service";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
+import axios from "axios";
 import mongoose from "mongoose";
 
+interface NotificationPayload {
+  title: string;
+  body: string;
+  data?: { url?: string };
+  tag?: string;
+  timestamp?: Date;
+  icon?: string;
+}
 class JobService {
   //new post
   public async createJob(companyId: string, jobData: any) {
@@ -42,6 +51,16 @@ class JobService {
         companyId: new mongoose.Types.ObjectId(newInfo.companyId),
       };
       const jobs = await jobRepository.createNewJob(newJobInfo);
+      //todo: push notification
+      const payload: NotificationPayload = {
+        title: jobs.title!,
+        body: jobs.description!,
+        data: { url: `/jobs/${jobs._id}` },
+        tag: `notification-${Date.now()}`,
+        icon: "https://sabaicode.com/sabaicode.jpg",
+        timestamp: new Date(),
+      };
+      await axios.post("http://localhost:4004/push-all-notifications", payload);
       return jobs;
     } catch (error) {
       console.error(

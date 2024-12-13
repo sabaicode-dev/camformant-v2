@@ -90,6 +90,49 @@ class NotficationService {
       throw error;
     }
   }
+  async sendNotificationAllSubscriptions(
+    payload: NotificationPayload
+  ): Promise<INotification[] | NotificationErrorResponse[]> {
+    try {
+      const notifications = await NotificationRepository.getAllSubscriptions();
+      console.log("payload:::", payload);
+
+      if (!notifications) {
+        throw new InvalidInputError({
+          message: "Notification subscription not found",
+        });
+      }
+
+      const sendPromises = notifications.map((subscription) => {
+        const pushSubscription = {
+          endpoint: subscription.endpoint,
+          keys: {
+            p256dh: subscription.keys.p256dh,
+            auth: subscription.keys.auth,
+          },
+        };
+
+        return webpush
+          .sendNotification(pushSubscription, JSON.stringify(payload))
+          .catch((error) => {
+            return {
+              success: false,
+              endpoint: subscription.endpoint,
+              error: error.message,
+            };
+          });
+      });
+
+      const results = await Promise.all(sendPromises);
+      return results as INotification[] | NotificationErrorResponse[];
+    } catch (error) {
+      console.error(
+        `NotificationService - sendNotification() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
 
   async unsubscribe(endpoint: string) {
     try {

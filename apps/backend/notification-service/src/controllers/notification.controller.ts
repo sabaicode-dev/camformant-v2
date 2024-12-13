@@ -103,4 +103,13 @@ export class NotificationsController extends Controller {
       throw error;
     }
   }
+  @Post("/push-all-notifications")
+  async pushToSubscribers(@Body() payload: NotificationPayload) {
+    try {
+      console.log("payload:::", payload);
+      await NotificationService.sendNotificationAllSubscriptions(payload);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
