@@ -51,6 +51,7 @@ class JobService {
         companyId: new mongoose.Types.ObjectId(newInfo.companyId),
       };
       const jobs = await jobRepository.createNewJob(newJobInfo);
+      console.log("11111111111");
       //todo: push notification
       const payload: NotificationPayload = {
         title: jobs.title!,
@@ -60,7 +61,7 @@ class JobService {
         icon: "https://sabaicode.com/sabaicode.jpg",
         timestamp: new Date(),
       };
-      console.log("11111111111");
+      console.log("222222");
       await axios.post("http://localhost:4004/push-all-notifications", payload);
       console.log("hiiiiiii");
 
