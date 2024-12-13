@@ -176,6 +176,7 @@ const JobApplySchema = new Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId },
     jobId: mongoose.Schema.Types.ObjectId,
+    companyId: mongoose.Schema.Types.ObjectId,
     companyResponse: ApplyCompanyResSchema,
     userInfo: ApplyUserInfoschema,
     statusDate: StatusDateSchema,

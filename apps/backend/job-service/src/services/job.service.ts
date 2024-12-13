@@ -1,7 +1,6 @@
 import {
   BodyUpdateJobApply,
   GetApplyJobResLimit,
-  GetJobApplyResponse,
   JobApplyQueriesController,
   JobApplyResponse,
   JobGetAllControllerParams,
@@ -27,6 +26,7 @@ class JobService {
   //new post
   public async createJob(companyId: string, jobData: any) {
     try {
+      //todo:
       const newJob = await jobRepository.createJob({
         ...jobData,
         companyId: companyId,
@@ -34,6 +34,22 @@ class JobService {
       if (!newJob) {
         throw new Error("Job creation failed.");
       }
+      console.log("11111111111");
+      //todo: push notification
+      const payload: NotificationPayload = {
+        title: newJob.title!,
+        body: newJob.description!,
+        data: { url: `/jobs/${newJob._id}` },
+        tag: `notification-${Date.now()}`,
+        icon: "https://sabaicode.com/sabaicode.jpg",
+        timestamp: new Date(),
+      };
+      console.log("222222");
+      await axios.post(
+        "http://localhost:4004/v1/notifications/push-all-notifications",
+        payload
+      );
+      console.log("hiiiiiii");
       return newJob;
     } catch (error) {
       console.error(
@@ -51,19 +67,6 @@ class JobService {
         companyId: new mongoose.Types.ObjectId(newInfo.companyId),
       };
       const jobs = await jobRepository.createNewJob(newJobInfo);
-      console.log("11111111111");
-      //todo: push notification
-      const payload: NotificationPayload = {
-        title: jobs.title!,
-        body: jobs.description!,
-        data: { url: `/jobs/${jobs._id}` },
-        tag: `notification-${Date.now()}`,
-        icon: "https://sabaicode.com/sabaicode.jpg",
-        timestamp: new Date(),
-      };
-      console.log("222222");
-      await axios.post("http://localhost:4004/push-all-notifications", payload);
-      console.log("hiiiiiii");
 
       return jobs;
     } catch (error) {
@@ -88,7 +91,7 @@ class JobService {
     try {
       const { page, limit, filter, sort, search, userFav } = queries;
       const searchUserFav = userFav?.split(",") || [];
-
+      console.log("filter in service::::", filter);
       const newQueries = {
         page,
         limit,
@@ -97,6 +100,7 @@ class JobService {
         search,
         userFav: searchUserFav,
       };
+      console.log("new query in service::::", newQueries);
 
       const result = await jobRepository.getAllJobs(newQueries);
 
@@ -173,13 +177,14 @@ class JobService {
   }
   public async getJobApply(
     queries: JobApplyQueriesController
-  ): Promise<GetJobApplyResponse[] | GetApplyJobResLimit> {
+  ): Promise<JobApplyResponse[] | GetApplyJobResLimit> {
     try {
-      const { userId, jobId, page, limit, filter, sort } = queries;
+      const { userId, jobId, companyId, page, limit, filter, sort } = queries;
       console.log("userId", userId);
       const newQueries = {
         userId,
         jobId,
+        companyId,
         page,
         limit,
         filter,
@@ -229,6 +234,24 @@ class JobService {
   public async deleteJobApply(applyId: string) {
     try {
       await jobRepository.deleteJobApply(applyId);
+    } catch (err) {
+      throw err;
+    }
+  }
+  public async getApplyLength(query: {
+    id?: string;
+    filter: string;
+  }): Promise<
+    | { [key: string]: number }
+    | { [key: string]: { [key: string]: number } }
+    | undefined
+  > {
+    try {
+      const response = await jobRepository.getApplyLength({
+        id: query.id ? JSON.parse(query.id) : undefined,
+        filter: JSON.parse(query.filter),
+      });
+      return response;
     } catch (err) {
       throw err;
     }

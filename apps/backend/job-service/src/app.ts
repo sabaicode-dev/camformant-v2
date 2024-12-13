@@ -6,8 +6,8 @@ import express from "express";
 import fs from "fs";
 import path from "path";
 import swaggerUi from "swagger-ui-express";
-import cors from "cors";
-import configs from "./config";
+// import cors from "cors";
+// import configs from "./config";
 
 // Dynamically load swagger.json & Initialize Sentry
 const swaggerDocument = JSON.parse(
@@ -15,12 +15,12 @@ const swaggerDocument = JSON.parse(
 );
 
 const app = express();
-const corsOptions = {
-  origin: configs.clientUrl, // Allow requests from this origin
-  methods: "GET,POST,PUT,DELETE", // Specify allowed HTTP methods
-  allowedHeaders: "Content-Type,Authorization", // Specify allowed headers
-};
-app.use(cors(corsOptions));
+// const corsOptions = {
+//   origin: configs.clientUrl, // Allow requests from this origin
+//   methods: "GET,POST,PUT,DELETE", // Specify allowed HTTP methods
+//   allowedHeaders: "Content-Type,Authorization", // Specify allowed headers
+// };
+// app.use(cors(corsOptions));
 // ================================
 // Security Middleware
 // ================================

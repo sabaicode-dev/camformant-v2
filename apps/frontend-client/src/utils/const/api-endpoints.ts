@@ -18,6 +18,7 @@ export const API_ENDPOINTS = {
   JOB: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/job`,
 
   JOB_APPLY: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/jobApply`,
+  JOB_APPLY_LENGTH: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/jobApply/applyLength`,
   JOB_STATUS: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/jobApply`,
   SEARCH_HISTORY: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/search-history`,
   SEARCH_TRENDING: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/search-trending`,

@@ -15,12 +15,20 @@ const ApplicantPage = () => {
   const fetchJobApplications = async () => {
     try {
       setIsLoading(true);
-      const jobsResponse = await axiosInstance.get<{ data: IJob[] }>(API_ENDPOINTS.JOBS);
+      const jobsResponse = await axiosInstance.get<{ data: IJob[] }>(
+        API_ENDPOINTS.JOBS
+      );
       const fetchedJobs = jobsResponse.data.data;
 
-      const applicationsPromises = fetchedJobs.map(job => 
-      axiosInstance.get<{ data: JobApplication[] }>(`${API_ENDPOINTS.JOB_APPLY}?jobId=${job._id}`)
-      .then(response => response.data.data.map(application => ({ ...application }))));
+      const applicationsPromises = fetchedJobs.map((job) =>
+        axiosInstance
+          .get<{
+            data: JobApplication[];
+          }>(`${API_ENDPOINTS.JOB_APPLY}?jobId=${job._id}`)
+          .then((response) =>
+            response.data.data.map((application) => ({ ...application }))
+          )
+      );
 
       const applicationsResponses = await Promise.all(applicationsPromises);
       const allApplications = applicationsResponses.flat();
@@ -47,7 +55,10 @@ const ApplicantPage = () => {
       {isLoading ? (
         <TableSkeleton />
       ) : (
-        <DataTable data={jobApplications} columns={columns(fetchJobApplications)}/>
+        <DataTable
+          data={jobApplications}
+          columns={columns(fetchJobApplications)}
+        />
       )}
     </>
   );

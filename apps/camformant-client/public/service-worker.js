@@ -53,6 +53,7 @@ self.addEventListener("notificationclick", function (event) {
   const notificationData = event.notification.data;
   const urlToOpen = "/resume"; // Fallback to root if no URL is provided
   console.log("urlToOpen", urlToOpen);
+  console.log("event::", event);
 
   event.waitUntil(
     clients
