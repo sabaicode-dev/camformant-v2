@@ -20,18 +20,20 @@ self.addEventListener("push", (event) => {
     const data = event.data.json();
     const title = data.title;
     const body = data.body;
-    const url = "/resume";
+    const url = data.url;
+    const icon = data.icon;
     console.log("url", url);
 
     const notificationOptions = {
+      title: title, //
       body: body,
       tag: `notification-${Date.now()}`,
-      icon: "https://sabaicode.com/sabaicode.jpg",
-      // icon: "https://english.mathrubhumi.com/image/contentid/policy:1.10120314:1732882988/banana-art-sun.jpg?$p=9e6d4c8&f=1x1&w=1080&q=0.8",
+      icon: icon,
       vibrate: [100, 50, 100],
       data: {
-        url: url, // Replace with the desired URL for redirecting user to the desired page
+        url: url,
       },
+      timestamp: Date.now(),
     };
 
     console.log("Push Notification Trigger", notificationOptions);

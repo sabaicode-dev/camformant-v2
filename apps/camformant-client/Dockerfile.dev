@@ -1,28 +1,37 @@
-# Use the correct Node.js 20 Alpine image tag
-FROM node:20-alpine3.19
+# Step 1: Use an official Node.js image as a base
+FROM node:18 AS builder
 
-# Set the working directory
+# Step 2: Set working directory
 WORKDIR /app
 
-# Copy package.json
+# Step 3: Copy package.json and package-lock.json first (to leverage caching)
 COPY package.json ./
 
-# Install dependencies
+# Step 4: Install dependencies
 RUN npm install
 
-# Copy other files
-COPY tsconfig.json ./
-COPY next.config.mjs ./
-COPY postcss.config.mjs ./
-COPY tailwind.config.ts ./
-COPY src ./src
-COPY public/ ./public
+# Step 5: Copy the rest of the project
+COPY . .
 
-#optional
-COPY service-worker.js ./service-worker.js
+# Step 6: Build the Next.js app
+RUN npm run build
 
-# Expose the application's port
+# Step 7: Use a smaller image for production (to reduce the image size)
+FROM node:18-slim
+
+# Step 8: Set working directory
+WORKDIR /app
+
+# Step 9: Copy only the built files from the builder stage
+COPY --from=builder /app/.next /app/.next
+COPY --from=builder /app/package.json /app/package.json
+COPY --from=builder /app/public /app/public
+
+# Step 10: Install only production dependencies
+RUN npm install --production
+
+# Step 11: Expose the port your app will run on
 EXPOSE 3000
 
-# Command to run the application
-CMD ["npm", "run", "dev"]
+# Step 12: Start the application
+CMD ["npm", "start"]

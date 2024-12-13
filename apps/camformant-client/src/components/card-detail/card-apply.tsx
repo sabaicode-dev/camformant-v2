@@ -26,7 +26,7 @@ export const CardApply: React.FC<CardApplyProps> = ({
     createdAt instanceof Date && !isNaN(createdAt.getTime());
 
   return (
-    <div className="flex flex-col p-5 bg-white shadow-md rounded-3xl">
+    <div className="flex flex-col p-5 bg-white shadow-md rounded-2xl">
       <div className="flex items-start justify-start gap-5 ">
         <Image
           src={profile || ""}
@@ -37,7 +37,7 @@ export const CardApply: React.FC<CardApplyProps> = ({
         />
         <div className="flex flex-col justify-center gap-4">
           <div>
-            <h1 className="text-base font-semibold  text-secondaryCam">
+            <h1 className="text-base font-semibold text-secondaryCam">
               {name}
             </h1>
             <p className="pt-1 text-xs text-gray-400">{location}</p>

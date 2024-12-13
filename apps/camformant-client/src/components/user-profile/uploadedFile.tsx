@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 ("react-icons/io");
-import { IoClose } from "react-icons/io5";
 interface UploadedFile {
   files: { url: string }[] | undefined;
   removeFile: (index: number) => void;

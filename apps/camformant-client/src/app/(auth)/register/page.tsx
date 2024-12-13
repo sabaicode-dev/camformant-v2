@@ -10,13 +10,17 @@ import { isAPIErrorResponse } from "@/utils/types/common";
 import { ContactSocialMedia } from "@/components/auth/contact-social-media/contact-social-media";
 import { FormFieldRegister } from "@/components/auth/form/form-field-register";
 import { RegisterProps, UserSchema } from "@/schema/register";
+import { useState } from "react";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const Page: React.FC = () => {
   const { signup, loading, resStatus } = useAuth();
   const { addNotification, NotificationDisplay } = useNotification();
-
+  const [isVisible, setVisible] = useState(false);
+  const onChangeVisible = () => {
+    setVisible(!isVisible);
+  };
   const {
     register,
     handleSubmit,
@@ -24,10 +28,7 @@ const Page: React.FC = () => {
   } = useForm<RegisterProps>({
     resolver: zodResolver(UserSchema), // Apply the zodResolver
   });
-
   const onSubmit = async (data: RegisterProps) => {
-    console.log("data: ", data);
-
     let contactMethod = "";
     if (emailRegex.test(data.contact)) {
       contactMethod = "email";
@@ -53,17 +54,17 @@ const Page: React.FC = () => {
     <>
       <NotificationDisplay />
       <form className="container" onSubmit={handleSubmit(onSubmit)}>
-        <div className="pt-4">
-          <button onClick={() => history.back()}>
+        <div className="flex pt-4">
+          <a href="/home">
             <span className="text-2xl">
               <IoArrowBack />
             </span>
-          </button>
+          </a>
+          <h1 className="flex items-center justify-center w-full mb-3 text-xl font-bold">
+            Register Account
+          </h1>
         </div>
-        <h1 className="flex items-center justify-center w-full my-5 text-xl font-bold">
-          Register Account
-        </h1>
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-x-5 gap-y-3">
           <FormFieldRegister
             type="text"
             placeholder="Sur Name"
@@ -86,15 +87,26 @@ const Page: React.FC = () => {
             error={errors.contact}
           />
           <FormFieldRegister
-            type="password"
+            type={isVisible ? "text" : "password"}
             placeholder="Password"
             name="password"
             register={register}
+            isIcon={true}
+            onChangeVisible={onChangeVisible}
             error={errors.password}
+          />
+          <FormFieldRegister
+            type={isVisible ? "text" : "password"}
+            placeholder="Confirm Password"
+            name="confirmPassword"
+            register={register}
+            isIcon={true}
+            onChangeVisible={onChangeVisible}
+            error={errors.confirmPassword}
           />
 
           <div className="flex pl-6 font-semibold gap-x-2">
-            <span>have an account already? </span>
+            <span>Have an account already? </span>
             <Link href={"/login"} className="text-orange-500 ">
               Sign in
             </Link>

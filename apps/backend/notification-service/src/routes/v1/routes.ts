@@ -51,6 +51,9 @@ const models: TsoaRoute.Models = {
             "title": {"dataType":"string","required":true},
             "body": {"dataType":"string","required":true},
             "data": {"dataType":"nestedObjectLiteral","nestedProperties":{"url":{"dataType":"string"}}},
+            "tag": {"dataType":"string"},
+            "timestamp": {"dataType":"datetime"},
+            "icon": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -105,9 +108,9 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/v1/notifications/push-notification',
             ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
-            ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.pushNotification)),
+            ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.pushOneUserNotification)),
 
-            async function NotificationsController_pushNotification(request: ExRequest, response: ExResponse, next: any) {
+            async function NotificationsController_pushOneUserNotification(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
                     body: {"in":"body","name":"body","required":true,"ref":"NotificationPayload"},
@@ -122,7 +125,7 @@ export function RegisterRoutes(app: Router) {
                 const controller = new NotificationsController();
 
               await templateService.apiHandler({
-                methodName: 'pushNotification',
+                methodName: 'pushOneUserNotification',
                 controller,
                 response,
                 next,
@@ -183,6 +186,36 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'getNotification',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/v1/notifications/push-all-notifications',
+            ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
+            ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.pushToSubscribers)),
+
+            async function NotificationsController_pushToSubscribers(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    payload: {"in":"body","name":"payload","required":true,"ref":"NotificationPayload"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new NotificationsController();
+
+              await templateService.apiHandler({
+                methodName: 'pushToSubscribers',
                 controller,
                 response,
                 next,

@@ -1,13 +1,5 @@
 "use client";
-import React, {
-  useRef,
-  useState,
-  useEffect,
-  useMemo,
-  SetStateAction,
-} from "react";
-import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
-import axios from "axios";
+import React, { useRef, useState, useEffect, SetStateAction } from "react";
 import { FaFilePdf } from "react-icons/fa";
 import axiosInstance from "@/utils/axios";
 import { S3FileResParams, uploadToS3 } from "@/utils/functions/upload-to-s3";

@@ -39,6 +39,19 @@ class NotificationRepository {
       throw error;
     }
   }
+  async getAllSubscriptions(): Promise<INotification[]> {
+    try {
+      const notification = await NotificationModel.find();
+
+      return notification as unknown as INotification[];
+    } catch (error) {
+      console.error(
+        `NotificationRepository - getAllSubscriptions() method error: `,
+        prettyObject(error as {})
+      );
+      throw error;
+    }
+  }
 
   async getSubscriptionByEndpoint(endpoint: string) {
     try {

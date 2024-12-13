@@ -1,5 +1,4 @@
 import { fabric } from "fabric";
-import { ZoomIn } from "lucide-react";
 import { useEffect } from "react";
 
 interface UseCanvasEventsProps {

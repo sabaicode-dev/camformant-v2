@@ -1,4 +1,4 @@
-import React, { ReactNode, SetStateAction, isValidElement } from "react";
+import React, { ReactNode, isValidElement } from "react";
 import { MdFactCheck } from "react-icons/md";
 
 interface ProcessApply {
