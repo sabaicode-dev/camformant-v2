@@ -1,7 +1,6 @@
 import {
   BodyUpdateJobApply,
   GetApplyJobResLimit,
-  GetJobApplyResponse,
   JobApplyQueriesController,
   JobApplyResponse,
   JobGetAllControllerParams,
@@ -151,13 +150,14 @@ class JobService {
   }
   public async getJobApply(
     queries: JobApplyQueriesController
-  ): Promise<GetJobApplyResponse[] | GetApplyJobResLimit> {
+  ): Promise<JobApplyResponse[] | GetApplyJobResLimit> {
     try {
-      const { userId, jobId, page, limit, filter, sort } = queries;
+      const { userId, jobId, companyId, page, limit, filter, sort } = queries;
       console.log("userId", userId);
       const newQueries = {
         userId,
         jobId,
+        companyId,
         page,
         limit,
         filter,
@@ -207,6 +207,24 @@ class JobService {
   public async deleteJobApply(applyId: string) {
     try {
       await jobRepository.deleteJobApply(applyId);
+    } catch (err) {
+      throw err;
+    }
+  }
+  public async getApplyLength(query: {
+    id?: string;
+    filter: string;
+  }): Promise<
+    | { [key: string]: number }
+    | { [key: string]: { [key: string]: number } }
+    | undefined
+  > {
+    try {
+      const response = await jobRepository.getApplyLength({
+        id: query.id ? JSON.parse(query.id) : undefined,
+        filter: JSON.parse(query.filter),
+      });
+      return response;
     } catch (err) {
       throw err;
     }

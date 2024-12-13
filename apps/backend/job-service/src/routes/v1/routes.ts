@@ -102,10 +102,12 @@ const models: TsoaRoute.Models = {
             "_id": {"ref":"mongoose.Types.ObjectId"},
             "userId": {"dataType":"string","required":true},
             "jobId": {"dataType":"string","required":true},
+            "companyId": {"dataType":"string","required":true},
             "userInfo": {"ref":"ApplyUserInfo","required":true},
             "companyResponse": {"ref":"ApplyCompanyResp"},
             "appliedAt": {"dataType":"datetime"},
             "statusDate": {"dataType":"nestedObjectLiteral","nestedProperties":{"Apply":{"dataType":"datetime"},"Review":{"dataType":"datetime"},"Shortlist":{"dataType":"datetime"},"Interview":{"dataType":"datetime"},"Accept":{"dataType":"datetime"}}},
+            "jobInfo": {"ref":"IJob"},
         },
         "additionalProperties": false,
     },
@@ -115,6 +117,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "userId": {"dataType":"string","required":true},
             "jobId": {"dataType":"string","required":true},
+            "companyId": {"dataType":"string","required":true},
             "userInfo": {"ref":"ApplyUserInfo","required":true},
             "companyResponse": {"ref":"ApplyCompanyResp"},
         },
@@ -232,26 +235,12 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "GetJobApplyResponse": {
-        "dataType": "refObject",
-        "properties": {
-            "_id": {"ref":"mongoose.Types.ObjectId"},
-            "userId": {"dataType":"string","required":true},
-            "jobId": {"dataType":"string","required":true},
-            "userInfo": {"ref":"ApplyUserInfo","required":true},
-            "companyResponse": {"ref":"ApplyCompanyResp"},
-            "appliedAt": {"dataType":"datetime"},
-            "statusDate": {"dataType":"nestedObjectLiteral","nestedProperties":{"Apply":{"dataType":"datetime"},"Review":{"dataType":"datetime"},"Shortlist":{"dataType":"datetime"},"Interview":{"dataType":"datetime"},"Accept":{"dataType":"datetime"}}},
-            "jobInfo": {"ref":"IJob","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "JobApplyQueriesController": {
         "dataType": "refObject",
         "properties": {
             "userId": {"dataType":"string"},
             "jobId": {"dataType":"string"},
+            "companyId": {"dataType":"string"},
             "page": {"dataType":"double"},
             "limit": {"dataType":"double"},
             "filter": {"dataType":"string"},
@@ -488,6 +477,36 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'getSearchTrending',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/v1/jobs/jobApply/applyLength',
+            ...(fetchMiddlewares<RequestHandler>(JobController)),
+            ...(fetchMiddlewares<RequestHandler>(JobController.prototype.getApplyLength)),
+
+            async function JobController_getApplyLength(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    query: {"in":"queries","name":"query","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"filter":{"dataType":"string","required":true},"id":{"dataType":"string"}}},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new JobController();
+
+              await templateService.apiHandler({
+                methodName: 'getApplyLength',
                 controller,
                 response,
                 next,

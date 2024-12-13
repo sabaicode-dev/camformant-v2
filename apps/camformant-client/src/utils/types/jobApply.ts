@@ -22,6 +22,7 @@ export interface ApplyParams {
   _id: string;
   jobId: string;
   userId: string;
+  companyId:string
   userInfo: ApplyUserInfoParams;
   companyResponse: ApplyCompanyResParams;
   appliedDate: Date;

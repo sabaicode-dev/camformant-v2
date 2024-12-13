@@ -41,7 +41,6 @@ const Page: React.FC = () => {
         const response = await axiosInstance.get(`${API_ENDPOINTS.JOBS}/${id}`);
         if (response.status === 200 && response.data.data) {
           const job = response.data.data;
-
           job.createdAt = new Date(job.createdAt);
           setJobData([job]);
           setLoading(false);
@@ -88,6 +87,7 @@ const Page: React.FC = () => {
         const data = {
           userId: user?._id,
           jobId: id,
+          companyId: jobData[0].companyId,
           userInfo: {
             name: user?.username,
             profile: user?.profile,
@@ -104,7 +104,7 @@ const Page: React.FC = () => {
         }
       } catch (error) {
         console.log("error in apply ", error);
-        addNotification("Application error","error");
+        addNotification("Application error", "error");
       } finally {
         setApply(false);
       }

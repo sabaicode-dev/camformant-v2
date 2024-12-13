@@ -1,7 +1,6 @@
 import {
   BodyUpdateJobApply,
   GetApplyJobResLimit,
-  GetJobApplyResponse,
   JobApplyQueriesRepo,
   JobApplyResponse,
   JobGetAllRepoParams,
@@ -86,12 +85,12 @@ class JobRepository {
     // Adding search functionality
     const searchFilter = search
       ? {
-        $or: [
-          { title: { $regex: search, $options: "i" } },
-          { position: { $regex: search, $options: "i" } },
-          { "companyId.name": { $regex: search, $options: "i" } },
-        ],
-      }
+          $or: [
+            { title: { $regex: search, $options: "i" } },
+            { position: { $regex: search, $options: "i" } },
+            { "companyId.name": { $regex: search, $options: "i" } },
+          ],
+        }
       : {};
     type UserFavFilter = {
       _id?: {
@@ -286,22 +285,25 @@ class JobRepository {
   }
   public async getJobApply(
     queries: JobApplyQueriesRepo
-  ): Promise<GetJobApplyResponse[] | GetApplyJobResLimit> {
+  ): Promise<GetApplyJobResLimit | JobApplyResponse[]> {
     try {
       const { limit, page = 1, sort = { appliedAt: "asc" }, filter } = queries;
       let query: {
         userId?: mongoose.Types.ObjectId;
         jobId?: mongoose.Types.ObjectId;
+        companyId?: mongoose.Types.ObjectId;
         [key: string]: string | null | mongoose.Types.ObjectId | undefined;
       } = queries.userId
-          ? { userId: new mongoose.Types.ObjectId(queries.userId) }
-          : { jobId: new mongoose.Types.ObjectId(queries.jobId) };
+        ? { userId: new mongoose.Types.ObjectId(queries.userId) }
+        : queries.jobId
+          ? { jobId: new mongoose.Types.ObjectId(queries.jobId) }
+          : { companyId: new mongoose.Types.ObjectId(queries.companyId) };
+      console.log("query::::", query);
       if (filter !== undefined) {
         //cause this can be undefined
         query["userInfo.status"] = filter;
       }
       const buildSort = buildSortFields(sort!);
-      console.log("query :::", query);
       if (limit) {
         const skip = (page - 1) * limit;
         const totalItems = await ApplyModel.countDocuments(query);
@@ -324,39 +326,41 @@ class JobRepository {
       }
       const response = await ApplyModel.find(query).sort(buildSort);
       //insert some job info response
-      const resWithJobData = await Promise.all(
-        response.map(async (applyJob) => {
-          const {
-            company,
-            title,
-            position,
-            min_salary,
-            max_salary,
-            job_opening,
-            type,
-            schedule,
-            location,
-            deadline,
-          } = await this.findJobById(applyJob.jobId!.toString());
-          return {
-            ...applyJob.toObject(),
-            jobInfo: {
-              profile: company?.profile,
-              title,
-              position,
-              min_salary,
-              max_salary,
-              job_opening,
-              type,
-              schedule,
-              location,
-              deadline,
-            },
-          } as unknown as GetJobApplyResponse;
-        })
-      );
+      const resWithJobData = queries.userId //return with company detail when for user only since it needs in user app
+        ? await Promise.all(
+            response.map(async (applyJob) => {
+              const {
+                company,
+                title,
+                position,
+                min_salary,
+                max_salary,
+                job_opening,
+                type,
+                schedule,
+                location,
+                deadline,
+              } = await this.findJobById(applyJob.jobId!.toString());
+              return {
+                ...applyJob.toObject(),
+                jobInfo: {
+                  profile: company?.profile,
+                  title,
+                  position,
+                  min_salary,
+                  max_salary,
+                  job_opening,
+                  type,
+                  schedule,
+                  location,
+                  deadline,
+                },
+              } as any;
+            })
+          )
+        : null;
 
-      return resWithJobData;
+      return resWithJobData ? resWithJobData : response;
     } catch (err) {
       console.error(
         `JobRepository - applyjob() method error:`,
@@ -370,7 +374,6 @@ class JobRepository {
   ): Promise<JobApplyResponse | {}> {
     try {
       const response: JobApplyResponse | {} = await ApplyModel.create(body);
-      console.log("response", response);
       return response;
     } catch (err) {
       throw err;
@@ -416,12 +419,10 @@ class JobRepository {
   }
   public async deleteJobApply(applyId: string) {
     try {
-      console.log("inside delete", applyId);
       const response = ApplyModel.findByIdAndDelete(applyId);
       if (!response) {
         throw new NotFoundError(`JobApply with id ${applyId} not found`);
       }
-      console.log("response ", response);
       return response;
     } catch (err) {
       throw err;
@@ -429,12 +430,105 @@ class JobRepository {
   }
   public async deleteManyJobApply(jobId: string) {
     try {
-      console.log("inside delete many", jobId);
       const response = ApplyModel.deleteMany({
         jobId: new mongoose.Types.ObjectId(jobId),
       });
-      console.log("response ", response);
       return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+  public async getApplyLength(query: {
+    id?: { [key: string]: string[] | string };
+    filter: { [key: string]: string[] | string };
+  }): Promise<
+    | { [key: string]: number }
+    | { [key: string]: { [key: string]: number } }
+    | undefined
+  > {
+    try {
+      let counts:
+        | { [key: string]: number }
+        | {
+            [key: string]: { [key: string]: number };
+          } = {};
+      const idKey = query.id ? Object.keys(query.id)[0] : undefined; //to have key inside id obj
+      const key = Object.keys(query.filter)[0]; //to have key inside filter obj
+      if (
+        Array.isArray(query.filter[key]) &&
+        query.id &&
+        Array.isArray(query.id[idKey!])
+      ) {
+        const formatValues = idKey!.toLowerCase().includes("id")
+          ? (query.id[idKey!] as string[]).map(
+              (id: string) => new mongoose.Types.ObjectId(id)
+            )
+          : query.id[idKey!];
+        for (let idValue of formatValues) {
+          counts[idValue.toString()] = {};
+          for (let value of query.filter[key]) {
+            console.log("value");
+            const count = await ApplyModel.countDocuments({
+              [idKey as string]: idValue,
+
+              ...createDateQuery(
+                key,
+                Number((value as string).split("-")[0]),
+                Number((value as string).split("-")[1])
+              ),
+            });
+            //@ts-ignore
+            counts[idValue.toString()][value.toString()] = count;
+          }
+        }
+        return counts;
+      } else if (Array.isArray(query.filter[key])) {
+        const formatValues = key.toLowerCase().includes("id") //in case the id is userId so we need to lowercase that
+          ? query.filter[key].map((id) => new mongoose.Types.ObjectId(id))
+          : query.filter[key];
+        for (let value of formatValues) {
+          const count = await ApplyModel.countDocuments({
+            ...(idKey && !Array.isArray(query.id![idKey])
+              ? { [idKey]: new mongoose.Types.ObjectId(query.id![idKey]) }
+              : {}),
+            ...(/^\d{2}-\d{2}$/.test(value as string)
+              ? {
+                  ...createDateQuery(
+                    key,
+                    Number((value as string).split("-")[0]),
+                    Number((value as string).split("-")[1])
+                  ),
+                }
+              : { [key]: value }),
+          });
+          counts[value.toString()] = count;
+        }
+        return counts;
+      } else {
+        console.log("hellow:::", key);
+        const formatValue = key.toLowerCase().includes("id")
+          ? new mongoose.Types.ObjectId(query.filter[key])
+          : key;
+        const value = query.filter[formatValue.toString()];
+        const count = await ApplyModel.countDocuments({
+          ...(idKey && !Array.isArray(query.id![idKey])
+            ? { [idKey]: new mongoose.Types.ObjectId(query.id![idKey]) }
+            : {}),
+
+          ...(/^\d{2}-\d{2}$/.test(
+            query.filter[formatValue.toString()] as string
+          )
+            ? {
+                ...createDateQuery(
+                  key,
+                  Number((value as string).split("-")[0]),
+                  Number((value as string).split("-")[1])
+                ),
+              }
+            : { [formatValue.toString()]: value }),
+        });
+        return { [value as string]: count };
+      }
     } catch (err) {
       throw err;
     }
@@ -442,6 +536,17 @@ class JobRepository {
 }
 
 //===function===
+function createDateQuery(key: string, month: number, day: number) {
+  //format month-day based on db date format
+  return {
+    $expr: {
+      $and: [
+        { $eq: [{ $dayOfMonth: `$${key}` }, day] },
+        { $eq: [{ $month: `$${key}` }, month] },
+      ],
+    },
+  };
+}
 async function fetchCompaniesProfile(
   companiesId:
     | string
@@ -485,6 +590,8 @@ const buildSortFields = (sort: JobSortParams) => {
   );
   return sortFields;
 };
+//ensure date is valid
+
 // Build MongoDB filter object
 const buildFilter = (filter: Record<string, any>) => {
   // Define a list of properties that should always be treated as arrays

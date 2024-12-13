@@ -25,10 +25,10 @@ export interface JobParams {
   type?: EmploymentType[];
   schedule?: EmploymentSchedule[];
   required_experience?: string[];
-  createdAt:Date,
+  createdAt: Date;
   benefit?: string[];
   deadline?: Date;
-  updatedAt?:Date
+  updatedAt?: Date;
 }
 
 export interface JobsFilterParams {
@@ -68,6 +68,7 @@ export interface JobGetAllRepoParams {
 export interface JobApplyQueriesRepo {
   userId?: string;
   jobId?: string;
+  companyId?: string;
   page?: number;
   limit?: number;
   filter?: string;
@@ -76,6 +77,7 @@ export interface JobApplyQueriesRepo {
 export interface JobApplyQueriesController {
   userId?: string;
   jobId?: string;
+  companyId?: string;
   page?: number;
   limit?: number;
   filter?: string;
@@ -93,7 +95,7 @@ export interface ApplyUserInfo {
   name: string;
   profile: string;
   status: StatusMode;
-  cv:string
+  cv: string;
 }
 export interface ApplyCompanyResp {
   startDate?: Date;
@@ -103,8 +105,8 @@ export interface ApplyCompanyResp {
 export interface PostJobApplyBody {
   userId: string;
   jobId: string;
+  companyId: string;
   userInfo: ApplyUserInfo;
-
   companyResponse?: ApplyCompanyResp;
 }
 export interface JobApplyBody {
@@ -112,21 +114,21 @@ export interface JobApplyBody {
   jobId: string;
   userInfo: ApplyUserInfo;
   companyResponse?: ApplyCompanyResp;
-  statusDate?:{ [key in StatusMode]?: Date }
+  statusDate?: { [key in StatusMode]?: Date };
 }
 
 export interface JobApplyResponse {
   _id?: mongoose.Types.ObjectId;
   userId: string;
   jobId: string;
+  companyId: string;
   userInfo: ApplyUserInfo;
   companyResponse?: ApplyCompanyResp;
   appliedAt?: Date;
-  statusDate?:{ [key in StatusMode]?: Date }
+  statusDate?: { [key in StatusMode]?: Date };
+  jobInfo?: IJob;
 }
-export interface GetJobApplyResponse extends JobApplyResponse {
-  jobInfo: IJob;
-}
+
 export interface GetApplyJobResLimit {
   applyData: JobApplyResponse[];
   totalPages: number;
@@ -140,6 +142,5 @@ export interface BodyUpdateJobApply {
   interviewDate?: Date | string;
   interviewLocation?: string;
 }
-
 
 //==============for job matching===============

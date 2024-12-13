@@ -16,7 +16,6 @@ import {
   StatusLengthParams,
   StatusType,
 } from "@/utils/types/jobApply";
-import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
 const ApplyStatus: React.FC = () => {
   const [statusLength, setStatusLength] = useState<StatusLengthParams>({
     Apply: 0,

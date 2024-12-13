@@ -29,14 +29,20 @@ export const RecommendationPost: React.FC<{
 
   useEffect(() => {
     const fetchData = async () => {
+      let skillResponse;
+
+      skillResponse = user
+        ? await axiosInstance.get(
+            `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=skills`
+          )
+        : null;
       try {
-        const skillResponse = user
-          ? await axiosInstance.get(
-              `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=skills`
-            )
-          : null;
         let jobResponse;
-        if ((user && skillResponse) || skillResponse?.data.data.length) {
+        if (
+          user &&
+          skillResponse &&
+          Object.keys(skillResponse.data.data).length > 0
+        ) {
           const query = buildQuery(
             1,
             skillResponse.data.data.skills.map(

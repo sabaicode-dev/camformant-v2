@@ -391,6 +391,15 @@ const ROUTE_PATHS: RoutesConfig = {
         },
         nestedRoutes: [
           {
+            path: "/applyLength",
+            methods: {
+              GET: {
+                authRequired: true,
+                roles: ["company"],
+              },
+            },
+          },
+          {
             path: "/deleteMany/:applyId",
             methods: {
               DELETE: {

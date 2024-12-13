@@ -12,17 +12,19 @@ import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 
 const chartData = [
-  { day: "02", desktop: 1800, mobile: 1200 },
-  { day: "03", desktop: 1900, mobile: 1300 },
-  { day: "04", desktop: 2000, mobile: 1350 },
-  { day: "05", desktop: 2200, mobile: 1500 },
-  { day: "06", desktop: 2500, mobile: 1600 },
-  { day: "07", desktop: 2600, mobile: 1700 },
-  { day: "08", desktop: 2700, mobile: 1800 },
-  { day: "09", desktop: 2800, mobile: 1900 },
-  { day: "10", desktop: 2900, mobile: 1950 },
-  { day: "11", desktop: 3000, mobile: 2000 },
-  { day: "12", desktop: 3200, mobile: 2200 },
+  { month: "01", desktop: 1800, mobile: 1200 },
+  { month: "02", desktop: 1800, mobile: 1200 },
+  { month: "03", desktop: 1900, mobile: 1300 },
+  { month: "05", desktop: 2200, mobile: 1500 },
+  { month: "06", desktop: 2500, mobile: 1600 },
+  { month: "04", desktop: 2000, mobile: 1350 },
+  { month: "08", desktop: 2700, mobile: 1800 },
+  { month: "09", desktop: 2800, mobile: 1900 },
+  { month: "07", desktop: 2600, mobile: 1700 },
+  { month: "10", desktop: 2900, mobile: 1950 },
+  { month: "11", desktop: 3000, mobile: 2000 },
+  { month: "12", desktop: 3200, mobile: 2200 },
+  
 ];
 
 const chartConfig = {
@@ -51,7 +53,7 @@ function ChartComponent() {
             >
               <CartesianGrid strokeDasharray="2 2" vertical={false} />
               <XAxis
-                dataKey="day"
+                dataKey="month"
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
