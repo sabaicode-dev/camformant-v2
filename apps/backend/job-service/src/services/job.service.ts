@@ -60,7 +60,10 @@ class JobService {
         icon: "https://sabaicode.com/sabaicode.jpg",
         timestamp: new Date(),
       };
+      console.log("11111111111");
       await axios.post("http://localhost:4004/push-all-notifications", payload);
+      console.log("hiiiiiii");
+
       return jobs;
     } catch (error) {
       console.error(
