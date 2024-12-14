@@ -71,7 +71,6 @@ class JobRepository {
       search = "",
       userFav,
     } = queries;
-    console.log("filter in repo", filter);
     const skip =
       queries.limit === "*" || !queries.limit
         ? 0
@@ -85,12 +84,12 @@ class JobRepository {
     // Adding search functionality
     const searchFilter = search
       ? {
-        $or: [
-          { title: { $regex: search, $options: "i" } },
-          { position: { $regex: search, $options: "i" } },
-          { "companyId.name": { $regex: search, $options: "i" } },
-        ],
-      }
+          $or: [
+            { title: { $regex: search, $options: "i" } },
+            { position: { $regex: search, $options: "i" } },
+            { "companyId.name": { $regex: search, $options: "i" } },
+          ],
+        }
       : {};
     type UserFavFilter = {
       _id?: {
@@ -103,7 +102,6 @@ class JobRepository {
         $in: userFav.map((id) => new mongoose.Types.ObjectId(id)),
       };
     }
-    console.log("build fiter:::", buildFilter(filter!));
     try {
       const mongoFilter = {
         ...userFavFilter,
@@ -122,7 +120,6 @@ class JobRepository {
           .skip(skip)
           .limit(limit);
       }
-      console.log("mongoFilter::::::::", JSON.stringify(mongoFilter));
 
       const result = operation;
       if (!result) {
@@ -294,8 +291,8 @@ class JobRepository {
         companyId?: mongoose.Types.ObjectId;
         [key: string]: string | null | mongoose.Types.ObjectId | undefined;
       } = queries.userId
-          ? { userId: new mongoose.Types.ObjectId(queries.userId) }
-          : { jobId: new mongoose.Types.ObjectId(queries.jobId) };
+        ? { userId: new mongoose.Types.ObjectId(queries.userId) }
+        : { jobId: new mongoose.Types.ObjectId(queries.jobId) };
       if (filter !== undefined) {
         //cause this can be undefined
         query["userInfo.status"] = filter;

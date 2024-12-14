@@ -6,6 +6,7 @@ type Config = {
   port: number;
   mongodbUrl: string;
   clientUrl: string;
+  notification_api_endpoint: string;
   corporator_api_endpoint: string;
   awsAccessKeyId: string;
   awsSecretAccessKey: string;
@@ -27,6 +28,7 @@ function loadConfig(): Config {
     CORPORATOR_API_ENDPOINT: Joi.string().required(),
     AWS_ACCESS_KEY_ID: Joi.string().required(),
     AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+    NOTIFICATION_SERVICE_URL: Joi.string().required(),
   })
     .unknown()
     .required();
@@ -44,6 +46,7 @@ function loadConfig(): Config {
     corporator_api_endpoint: envVars.CORPORATOR_API_ENDPOINT,
     awsAccessKeyId: envVars.AWS_ACCESS_KEY_ID,
     awsSecretAccessKey: envVars.AWS_SECRET_ACCESS_KEY,
+    notification_api_endpoint: envVars.NOTIFICATION_SERVICE_URL,
   };
 }
 

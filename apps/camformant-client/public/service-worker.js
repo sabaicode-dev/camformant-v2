@@ -50,11 +50,8 @@ self.addEventListener("notificationclick", function (event) {
 
   // Close the notification
   event.notification.close();
-  console.log("data:", event);
 
   const urlToOpen = event.notification.data.url;
-  console.log("urlToOpen", urlToOpen);
-  console.log("event::", event.notification);
   event.waitUntil(
     clients
       .matchAll({ type: "window", includeUncontrolled: true })

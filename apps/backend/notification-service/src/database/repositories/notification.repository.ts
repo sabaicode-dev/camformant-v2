@@ -1,6 +1,9 @@
 import NotificationModel, {
   INotification,
+  INotificationHistory,
+  NotificationHistoryModel,
 } from "@/src/database/models/notification.model";
+import { NotificationPayload } from "@/src/services/notification.service";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
 
 class NotificationRepository {
@@ -74,6 +77,37 @@ class NotificationRepository {
         `NotificationRepository - deleteSubscription() method error: `,
         prettyObject(error as {})
       );
+      throw error;
+    }
+  }
+  async getUserNotificationHistory(
+    userId: string
+  ): Promise<INotificationHistory[]> {
+    try {
+      const NotificationHistories = await NotificationHistoryModel.find({
+        userId: {
+          $in: [userId],
+        },
+      });
+      return NotificationHistories as INotificationHistory[];
+    } catch (error) {
+      throw error;
+    }
+  }
+  async saveUsersNotificationHistory(
+    subscriptionUser: string[],
+    payload: NotificationPayload
+  ) {
+    try {
+      const history: INotificationHistory = {
+        userId: subscriptionUser,
+        title: payload.title,
+        url: payload.data?.url,
+        description: payload.body,
+        icon: payload.icon,
+      };
+      await NotificationHistoryModel.create(history);
+    } catch (error) {
       throw error;
     }
   }

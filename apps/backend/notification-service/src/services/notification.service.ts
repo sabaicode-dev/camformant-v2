@@ -5,7 +5,10 @@ import {
 import webpush from "web-push";
 import configs from "@/src/config";
 import NotificationRepository from "@/src/database/repositories/notification.repository";
-import { INotification } from "@/src/database/models/notification.model";
+import {
+  INotification,
+  INotificationHistory,
+} from "@/src/database/models/notification.model";
 
 export interface NotificationPayload {
   title: string;
@@ -95,13 +98,13 @@ class NotficationService {
   ): Promise<INotification[] | NotificationErrorResponse[]> {
     try {
       const notifications = await NotificationRepository.getAllSubscriptions();
-      console.log("payload:::", payload);
 
       if (!notifications) {
         throw new InvalidInputError({
           message: "Notification subscription not found",
         });
       }
+      let subscriptionUser: string[] = [];
 
       const sendPromises = notifications.map((subscription) => {
         const pushSubscription = {
@@ -111,6 +114,7 @@ class NotficationService {
             auth: subscription.keys.auth,
           },
         };
+        subscriptionUser.push(subscription.userId);
 
         return webpush
           .sendNotification(pushSubscription, JSON.stringify(payload))
@@ -122,7 +126,12 @@ class NotficationService {
             };
           });
       });
-
+      //todo: save notification history with usersId
+      //service
+      await NotificationRepository.saveUsersNotificationHistory(
+        subscriptionUser,
+        payload
+      );
       const results = await Promise.all(sendPromises);
       return results as INotification[] | NotificationErrorResponse[];
     } catch (error) {
@@ -161,6 +170,17 @@ class NotficationService {
       const notification =
         await NotificationRepository.getSubscriptionsByUserId(userId);
       return notification;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getUserNotificationHistory(
+    userId: string
+  ): Promise<{ message: string; data: INotificationHistory[] }> {
+    try {
+      const result =
+        await NotificationRepository.getUserNotificationHistory(userId);
+      return { message: "Success get notification!", data: result };
     } catch (error) {
       throw error;
     }

@@ -70,11 +70,6 @@ export class NotificationsController extends Controller {
   ): Promise<void> {
     try {
       const userId = request?.cookies["user_id"] as string;
-      // const currentUser = JSON.parse(request.headers.currentuser as string) as {
-      //   username?: string;
-      //   role?: string[];
-      // };
-      //todo:
       console.log("Push Notification is trigger", userId);
       await NotificationService.sendNotification(userId, body);
     } catch (error) {
@@ -108,6 +103,17 @@ export class NotificationsController extends Controller {
     try {
       console.log("payload:::", payload);
       await NotificationService.sendNotificationAllSubscriptions(payload);
+    } catch (error) {
+      throw error;
+    }
+  }
+  @Get("/getUserNotification")
+  async getUserNotificationHistory(@Request() request: ExpressRequest) {
+    try {
+      const userId = request.cookies["user_id"];
+
+      const res = await NotificationService.getUserNotificationHistory(userId);
+      return res;
     } catch (error) {
       throw error;
     }

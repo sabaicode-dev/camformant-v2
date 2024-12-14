@@ -2,8 +2,6 @@
 
 import React, { useRef, useState } from "react";
 import Image from "next/image";
-import { FaRegHeart } from "react-icons/fa";
-import { FaCircleUser } from "react-icons/fa6";
 import { IoCameraSharp } from "react-icons/io5";
 import Background from "@/components/background/background";
 import Link from "next/link";
@@ -19,6 +17,7 @@ import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { S3FileResParams, uploadToS3 } from "@/utils/functions/upload-to-s3";
 import AllowNotificationCard from "@/components/notification/allow-notification-card";
+import { Heart, Users } from "lucide-react";
 
 const SkeletonLoader = ({
   width = "w-32",
@@ -196,13 +195,13 @@ const Page: React.FC = () => {
               <div className="p-5 w-full flex flex-col gap-6 justify-center items-center bg-white shadow-[0_35px_224px_15px_rgba(0,0,0,0.2)] rounded-3xl">
                 <Link className={`w-full`} href={"/cv-rating"}>
                   <span className="flex items-center w-full gap-5 text-lg">
-                    <FaCircleUser />
+                    <Users size={22} />
                     <div>Personal Profile</div>
                   </span>
                 </Link>
                 <Link className="w-full" href={"/favorite"}>
                   <span className="flex items-center w-full gap-5 text-lg">
-                    <FaRegHeart size={18} />
+                    <Heart size={22} />
                     <div className="pl-1">favorite</div>
                   </span>
                 </Link>

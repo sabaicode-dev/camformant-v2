@@ -126,6 +126,41 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"INotificationHistory": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"userId": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"url": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"icon": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -262,6 +297,40 @@
 						}
 					}
 				}
+			}
+		},
+		"/v1/notifications/getUserNotification": {
+			"get": {
+				"operationId": "GetUserNotificationHistory",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"items": {
+												"$ref": "#/components/schemas/INotificationHistory"
+											},
+											"type": "array"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
 			}
 		},
 		"/v1/notifications/health": {

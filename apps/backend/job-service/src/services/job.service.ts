@@ -13,6 +13,7 @@ import searchService from "@/src/services/search.service";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
 import axios from "axios";
 import mongoose from "mongoose";
+import configs from "../config";
 
 interface NotificationPayload {
   title: string;
@@ -26,7 +27,6 @@ class JobService {
   //new post
   public async createJob(companyId: string, jobData: any) {
     try {
-      //todo:
       const newJob = await jobRepository.createJob({
         ...jobData,
         companyId: companyId,
@@ -34,22 +34,18 @@ class JobService {
       if (!newJob) {
         throw new Error("Job creation failed.");
       }
-      console.log("11111111111");
-      //todo: push notification
       const payload: NotificationPayload = {
         title: newJob.title!,
         body: newJob.description!,
         data: { url: `/jobs/${newJob._id}` },
         tag: `notification-${Date.now()}`,
-        icon: "https://sabaicode.com/sabaicode.jpg",
+        icon: newJob.profile || "https://sabaicode.com/sabaicode.jpg",
         timestamp: new Date(),
       };
-      console.log("222222");
       await axios.post(
-        "http://localhost:4004/v1/notifications/push-all-notifications",
+        `${configs.notification_api_endpoint}/push-all-notifications`,
         payload
       );
-      console.log("hiiiiiii");
       return newJob;
     } catch (error) {
       console.error(
@@ -91,7 +87,6 @@ class JobService {
     try {
       const { page, limit, filter, sort, search, userFav } = queries;
       const searchUserFav = userFav?.split(",") || [];
-      console.log("filter in service::::", filter);
       const newQueries = {
         page,
         limit,
@@ -100,7 +95,6 @@ class JobService {
         search,
         userFav: searchUserFav,
       };
-      console.log("new query in service::::", newQueries);
 
       const result = await jobRepository.getAllJobs(newQueries);
 
@@ -219,6 +213,29 @@ class JobService {
   ): Promise<JobApplyResponse | {} | null> {
     try {
       const response = await jobRepository.updateJobApply(applyId, body);
+      const userId = (response as JobApplyResponse).userId;
+      const status = (response as JobApplyResponse).statusDate!;
+      console.log("status[status.length - 1]", status);
+
+      const payload: NotificationPayload = {
+        //todo: get status as title catch status last index
+        title: (response as JobApplyResponse).userId || "",
+        body: "Updates for your application...",
+        data: { url: `/applied` },
+        tag: `application-notification-${Date.now()}`,
+        icon: "https://sabaicode.com/sabaicode.jpg",
+        timestamp: new Date(),
+      };
+      await axios.post(
+        `${configs.notification_api_endpoint}/push-notification`,
+        payload,
+        {
+          headers: {
+            Cookie: `user_id=${userId};`,
+          },
+          withCredentials: true,
+        }
+      );
       return response;
     } catch (err) {
       throw err;
