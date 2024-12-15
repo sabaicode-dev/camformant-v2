@@ -67,6 +67,7 @@ const models: TsoaRoute.Models = {
             "title": {"dataType":"string"},
             "description": {"dataType":"string"},
             "icon": {"dataType":"string"},
+            "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Job Listings"]},{"dataType":"enum","enums":["Apply"]},{"dataType":"enum","enums":["new subscribe"]}]},
             "updatedAt": {"dataType":"datetime"},
             "createdAt": {"dataType":"datetime"},
         },
@@ -127,7 +128,7 @@ export function RegisterRoutes(app: Router) {
 
             async function NotificationsController_pushOneUserNotification(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"userId":{"dataType":"string","required":true},"payload":{"ref":"NotificationPayload","required":true}}},
+                    body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"type":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Job Listings"]},{"dataType":"enum","enums":["Apply"]}],"required":true},"userId":{"dataType":"string","required":true},"payload":{"ref":"NotificationPayload","required":true}}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -217,7 +218,7 @@ export function RegisterRoutes(app: Router) {
 
             async function NotificationsController_pushToSubscribers(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    payload: {"in":"body","name":"payload","required":true,"ref":"NotificationPayload"},
+                    body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"type":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Job Listings"]},{"dataType":"enum","enums":["Apply"]}],"required":true},"payload":{"ref":"NotificationPayload","required":true}}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -248,6 +249,7 @@ export function RegisterRoutes(app: Router) {
             async function NotificationsController_getUserNotificationHistory(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    query: {"in":"queries","name":"query","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"search":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Job Listings"]},{"dataType":"enum","enums":["Apply"]}]}}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

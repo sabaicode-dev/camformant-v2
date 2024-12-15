@@ -44,7 +44,7 @@ class JobService {
       };
       await axios.post(
         `${configs.notification_api_endpoint}/push-all-notifications`,
-        payload
+        { payload, type: "Job Listings" }
       );
       return newJob;
     } catch (error) {
@@ -257,11 +257,10 @@ class JobService {
         icon: profile || "https://sabaicode.com/sabaicode.jpg",
         timestamp: statusDate || new Date(),
       };
-      console.log("userId", userId.toString());
 
       await axios.post(
         `${configs.notification_api_endpoint}/push-notification`,
-        { payload, userId: userId.toString() }
+        { payload, userId: userId.toString(), type: "Apply" }
       );
       return response;
     } catch (err) {

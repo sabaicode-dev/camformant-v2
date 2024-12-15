@@ -150,6 +150,14 @@
 					"icon": {
 						"type": "string"
 					},
+					"type": {
+						"type": "string",
+						"enum": [
+							"Job Listings",
+							"Apply",
+							"new subscribe"
+						]
+					},
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time"
@@ -219,6 +227,13 @@
 						"application/json": {
 							"schema": {
 								"properties": {
+									"type": {
+										"type": "string",
+										"enum": [
+											"Job Listings",
+											"Apply"
+										]
+									},
 									"userId": {
 										"type": "string"
 									},
@@ -227,6 +242,7 @@
 									}
 								},
 								"required": [
+									"type",
 									"userId",
 									"payload"
 								],
@@ -304,7 +320,23 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/NotificationPayload"
+								"properties": {
+									"type": {
+										"type": "string",
+										"enum": [
+											"Job Listings",
+											"Apply"
+										]
+									},
+									"payload": {
+										"$ref": "#/components/schemas/NotificationPayload"
+									}
+								},
+								"required": [
+									"type",
+									"payload"
+								],
+								"type": "object"
 							}
 						}
 					}
@@ -342,7 +374,20 @@
 					}
 				},
 				"security": [],
-				"parameters": []
+				"parameters": [
+					{
+						"in": "query",
+						"name": "search",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"Job Listings",
+								"Apply"
+							]
+						}
+					}
+				]
 			}
 		},
 		"/v1/notifications/health": {

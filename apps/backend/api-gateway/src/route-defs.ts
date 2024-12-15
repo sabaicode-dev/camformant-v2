@@ -497,7 +497,7 @@ const ROUTE_PATHS: RoutesConfig = {
     methods: {
       GET: {
         authRequired: true,
-        roles: ["user", "company"],
+        roles: ["user"],
       },
     },
     nestedRoutes: [
@@ -524,6 +524,33 @@ const ROUTE_PATHS: RoutesConfig = {
           DELETE: {
             authRequired: true,
             roles: ["user", "company"],
+          },
+        },
+      },
+      {
+        path: "/push-notification",
+        methods: {
+          POST: {
+            authRequired: true,
+            roles: ["company"],
+          },
+        },
+      },
+      {
+        path: "/push-all-notifications",
+        methods: {
+          POST: {
+            authRequired: true,
+            roles: ["company"],
+          },
+        },
+      },
+      {
+        path: "/getUserNotification",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["user"],
           },
         },
       },

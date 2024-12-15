@@ -81,14 +81,26 @@ class NotificationRepository {
     }
   }
   async getUserNotificationHistory(
-    userId: string
+    userId: string,
+    search?: "Job Listings" | "Apply"
   ): Promise<INotificationHistory[]> {
     try {
-      const NotificationHistories = await NotificationHistoryModel.find({
+      let NotificationHistories: INotificationHistory[];
+      const filter: {
+        userId: { $in: string[] };
+        type?: "Job Listings" | "Apply";
+      } = {
         userId: {
           $in: [userId],
         },
+      };
+      if (search) {
+        filter.type = search;
+      }
+      NotificationHistories = await NotificationHistoryModel.find(filter).sort({
+        updatedAt: -1,
       });
+
       return NotificationHistories as INotificationHistory[];
     } catch (error) {
       throw error;
@@ -96,7 +108,8 @@ class NotificationRepository {
   }
   async saveUsersNotificationHistory(
     subscriptionUser: string[],
-    payload: NotificationPayload
+    payload: NotificationPayload,
+    type: "Job Listings" | "Apply" | "new subscribe"
   ) {
     try {
       const history: INotificationHistory = {
@@ -105,6 +118,7 @@ class NotificationRepository {
         url: payload.data?.url,
         description: payload.body,
         icon: payload.icon,
+        type: type,
       };
       await NotificationHistoryModel.create(history);
     } catch (error) {

@@ -7,6 +7,7 @@ import {
   QueryGetUserConversations,
   RespondGetConversations,
 } from "./types/messages.service.types";
+import { enCodeText } from "../utils/crypto";
 
 // type ParticipantsType = [
 //   { participantType: "User" | "Company"; participantId: string },
@@ -42,7 +43,7 @@ export class MessageService {
       const result = await this.MessageRepository.sendMessage({
         senderId,
         receiverId,
-        message,
+        message: enCodeText(message),
         participants,
         roomId,
       });

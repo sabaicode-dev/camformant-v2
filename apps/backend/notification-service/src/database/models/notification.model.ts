@@ -49,6 +49,7 @@ export interface INotificationHistory {
   title?: string;
   description?: string;
   icon?: string;
+  type?: "Job Listings" | "Apply" | "new subscribe";
   updatedAt?: Date;
   createdAt?: Date;
 }
@@ -56,8 +57,14 @@ const notificationHistorySchema = new mongoose.Schema(
   {
     userId: [{ type: String }],
     url: { type: String },
+    icon: { type: String },
     title: { type: String },
     description: { type: String },
+    type: {
+      type: String,
+      enum: ["Job Listings", "Apply", "new subscribe"],
+      default: "new subscribe",
+    },
   },
   {
     timestamps: true,

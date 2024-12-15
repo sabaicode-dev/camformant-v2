@@ -50,7 +50,8 @@ class NotficationService {
 
   async sendNotification(
     userId: string,
-    payload: NotificationPayload
+    payload: NotificationPayload,
+    type: "Job Listings" | "Apply" | "new subscribe" = "new subscribe"
   ): Promise<INotification[] | NotificationErrorResponse[]> {
     try {
       const notifications =
@@ -84,7 +85,8 @@ class NotficationService {
       });
       await NotificationRepository.saveUsersNotificationHistory(
         [userId],
-        payload
+        payload,
+        type
       );
 
       const results = await Promise.all(sendPromises);
@@ -98,7 +100,8 @@ class NotficationService {
     }
   }
   async sendNotificationAllSubscriptions(
-    payload: NotificationPayload
+    payload: NotificationPayload,
+    type: "Job Listings" | "Apply"
   ): Promise<INotification[] | NotificationErrorResponse[]> {
     try {
       const notifications = await NotificationRepository.getAllSubscriptions();
@@ -132,7 +135,8 @@ class NotficationService {
       });
       await NotificationRepository.saveUsersNotificationHistory(
         subscriptionUser,
-        payload
+        payload,
+        type
       );
       const results = await Promise.all(sendPromises);
       return results as INotification[] | NotificationErrorResponse[];
@@ -177,11 +181,14 @@ class NotficationService {
     }
   }
   async getUserNotificationHistory(
-    userId: string
+    userId: string,
+    search?: "Job Listings" | "Apply"
   ): Promise<{ message: string; data: INotificationHistory[] }> {
     try {
-      const result =
-        await NotificationRepository.getUserNotificationHistory(userId);
+      const result = await NotificationRepository.getUserNotificationHistory(
+        userId,
+        search
+      );
       return { message: "Success get notification!", data: result };
     } catch (error) {
       throw error;
