@@ -7,7 +7,7 @@ const JobContext = createContext<any | undefined>(undefined);
 
 export function JobProvider({ children }: { children: React.ReactNode }) {
     const [jobs, setJobs] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     
     const fetchJobs = async () => {
         try {
