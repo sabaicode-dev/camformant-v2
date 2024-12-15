@@ -214,6 +214,9 @@ class JobService {
     try {
       const response = await jobRepository.updateJobApply(applyId, body);
       const userId = (response as JobApplyResponse).userId;
+      const jobId = (response as JobApplyResponse).jobId;
+      const job = await jobRepository.findJobById(jobId);
+      const profile = job.company?.profile;
       const StatusMode = [
         "Apply",
         "Review",
@@ -232,13 +235,11 @@ class JobService {
         }
       }
 
-      console.log("status:::", newStatus);
       newStatus.sort((a, b) => {
         const dateA = new Date(Object.values(a)[0]!);
         const dateB = new Date(Object.values(b)[0]!);
-        return dateA.getTime() - dateB.getTime(); // Use getTime() for a precise comparison
+        return dateA.getTime() - dateB.getTime();
       });
-      console.log("sorted status:::", newStatus);
       const lastStatus = newStatus[newStatus.length - 1];
       let title = "";
       let statusDate: Date | undefined;
@@ -253,7 +254,7 @@ class JobService {
         body: "Updates for your application...",
         data: { url: `/applied` },
         tag: `application-notification-${statusDate}`,
-        icon: "https://sabaicode.com/sabaicode.jpg",
+        icon: profile || "https://sabaicode.com/sabaicode.jpg",
         timestamp: statusDate || new Date(),
       };
       console.log("userId", userId.toString());
