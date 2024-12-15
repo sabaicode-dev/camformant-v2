@@ -65,13 +65,11 @@ export class NotificationsController extends Controller {
 
   @Post("/push-notification")
   public async pushOneUserNotification(
-    @Request() request: ExpressRequest,
-    @Body() body: NotificationPayload
+    @Body() body: { payload: NotificationPayload; userId: string }
   ): Promise<void> {
     try {
-      const userId = request?.cookies["user_id"] as string;
-      console.log("Push Notification is trigger", userId);
-      await NotificationService.sendNotification(userId, body);
+      console.log("Push Notification is trigger", body.userId);
+      await NotificationService.sendNotification(body.userId, body.payload);
     } catch (error) {
       throw error;
     }

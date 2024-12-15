@@ -82,6 +82,10 @@ class NotficationService {
             };
           });
       });
+      await NotificationRepository.saveUsersNotificationHistory(
+        [userId],
+        payload
+      );
 
       const results = await Promise.all(sendPromises);
       return results as INotification[] | NotificationErrorResponse[];
@@ -126,8 +130,6 @@ class NotficationService {
             };
           });
       });
-      //todo: save notification history with usersId
-      //service
       await NotificationRepository.saveUsersNotificationHistory(
         subscriptionUser,
         payload

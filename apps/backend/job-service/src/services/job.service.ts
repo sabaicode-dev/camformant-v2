@@ -214,27 +214,53 @@ class JobService {
     try {
       const response = await jobRepository.updateJobApply(applyId, body);
       const userId = (response as JobApplyResponse).userId;
+      const StatusMode = [
+        "Apply",
+        "Review",
+        "Interview",
+        "Shortlist",
+        "Accept",
+      ];
       const status = (response as JobApplyResponse).statusDate!;
-      console.log("status[status.length - 1]", status);
+      const newStatus: { [key: string]: Date | undefined }[] = [];
+      for (let i = 0; i < StatusMode.length; i++) {
+        if (StatusMode[i] as keyof typeof status) {
+          newStatus.push({
+            [StatusMode[i] as keyof typeof status]:
+              status[StatusMode[i] as keyof typeof status],
+          });
+        }
+      }
 
+      console.log("status:::", newStatus);
+      newStatus.sort((a, b) => {
+        const dateA = new Date(Object.values(a)[0]!);
+        const dateB = new Date(Object.values(b)[0]!);
+        return dateA.getTime() - dateB.getTime(); // Use getTime() for a precise comparison
+      });
+      console.log("sorted status:::", newStatus);
+      const lastStatus = newStatus[newStatus.length - 1];
+      let title = "";
+      let statusDate: Date | undefined;
+      for (const key in lastStatus) {
+        title = key;
+        if (lastStatus[key]) {
+          statusDate = new Date(lastStatus[key]);
+        }
+      }
       const payload: NotificationPayload = {
-        //todo: get status as title catch status last index
-        title: (response as JobApplyResponse).userId || "",
+        title: `Your application is in ${title}`,
         body: "Updates for your application...",
         data: { url: `/applied` },
-        tag: `application-notification-${Date.now()}`,
+        tag: `application-notification-${statusDate}`,
         icon: "https://sabaicode.com/sabaicode.jpg",
-        timestamp: new Date(),
+        timestamp: statusDate || new Date(),
       };
+      console.log("userId", userId.toString());
+
       await axios.post(
         `${configs.notification_api_endpoint}/push-notification`,
-        payload,
-        {
-          headers: {
-            Cookie: `user_id=${userId};`,
-          },
-          withCredentials: true,
-        }
+        { payload, userId: userId.toString() }
       );
       return response;
     } catch (err) {

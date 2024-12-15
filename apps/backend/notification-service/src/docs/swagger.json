@@ -218,7 +218,19 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/NotificationPayload"
+								"properties": {
+									"userId": {
+										"type": "string"
+									},
+									"payload": {
+										"$ref": "#/components/schemas/NotificationPayload"
+									}
+								},
+								"required": [
+									"userId",
+									"payload"
+								],
+								"type": "object"
 							}
 						}
 					}
