@@ -1,5 +1,5 @@
 import { fabric } from "fabric";
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 interface UseArrowKeyProps {
   canvas: fabric.Canvas | null;
   step?: number;

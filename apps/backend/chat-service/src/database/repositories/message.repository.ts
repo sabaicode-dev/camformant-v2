@@ -13,6 +13,7 @@ import {
 } from "./types/messages.repository.types";
 import configs from "@/src/config";
 import axios from "axios";
+import { deCodeText } from "@/src/utils/crypto";
 
 export class MessageRepository {
   async sendMessage(makeMessage: {
@@ -47,7 +48,6 @@ export class MessageRepository {
           newMessage._id as unknown as mongoose.Schema.Types.ObjectId
         );
       }
-      //todo: socket
 
       //save to DB
       await Promise.all([conversation.save(), newMessage.save()]); //run in same time
@@ -58,7 +58,6 @@ export class MessageRepository {
       throw error;
     }
   }
-  //todo: reduce / structure type
   async getMessage(
     userToChatId: string,
     senderId: string,
@@ -86,7 +85,6 @@ export class MessageRepository {
           sort: { createdAt: -1 },
         },
       });
-      console.log("1::::");
 
       if (!conversation) {
         const endpoint =
@@ -138,22 +136,22 @@ export class MessageRepository {
           skip: skip,
         };
       }
-      console.log("5::::");
 
-      conversation.messages = (
-        conversation.messages as unknown as messType[]
-      ).sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-      ) as unknown as typeof conversation.messages;
+      conversation.messages = (conversation.messages as unknown as messType[])
+        .sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        )
+        .map((message) => {
+          message.message = deCodeText(message.message);
+          return message;
+        }) as unknown as typeof conversation.messages;
 
-      console.log("6::::");
       // Step 2: Count total messages for the conversation separately
       const totalMessages = await MessageModel.countDocuments({
         conversationId: conversation._id,
       });
 
-      console.log("7::::");
       const totalPage = Math.ceil(totalMessages / limit);
 
       return {

@@ -1,11 +1,11 @@
 import { SSTConfig } from "sst";
 import { NextjsSite } from "sst/constructs";
-
+//
 export default {
   config(_input) {
     return {
       name: "camformant-client-app",
-      region: "us-west-2",
+      region: "ap-southeast-2",
     };
   },
   stacks(app) {
@@ -18,13 +18,17 @@ export default {
           NEXT_PUBLIC_USER_ENDPOINT:
             process.env.NEXT_PUBLIC_USER_ENDPOINT || "",
           NEXT_PUBLIC_JOB_ENDPOINT: process.env.NEXT_PUBLIC_JOB_ENDPOINT || "",
-          NEXT_PUBLIC_PUSH_NOTIFICATION_SERVICE_URL:
-            process.env.NEXT_PUBLIC_PUSH_NOTIFICATION_SERVICE_URL || "",
+          NEXT_PUBLIC_COMPANY_ENDPOINT:
+            process.env.NEXT_PUBLIC_COMPANY_ENDPOINT || "",
+          NEXT_PUBLIC_PUSH_NOTIFICATION_ENDPOINT:
+            process.env.NEXT_PUBLIC_PUSH_NOTIFICATION_ENDPOINT || "",
           NEXT_PUBLIC_VAPID_PUBLIC_KEY:
             process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "",
           NEXT_PUBLIC_CONVERSATION_ENDPOINT:
-            process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "",
+            process.env.NEXT_PUBLIC_CONVERSATION_ENDPOINT || "",
           UPLOADTHING_TOKEN: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "",
+          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:
+            process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
         },
       });
 

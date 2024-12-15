@@ -7,9 +7,6 @@ import { ToolSidebarClose } from "@/features/editor/components/tool-sidebar-clos
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-// import { useGetImages } from "@/features/images/api/use-get-images";
-// import { AlertTriangle, Loader } from "lucide-react";
-
 import { UploadButton } from "@/utils/uploadthing";
 
 interface ImagesSidebarProps {

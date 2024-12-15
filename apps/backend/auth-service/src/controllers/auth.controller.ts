@@ -55,7 +55,6 @@ export class AuthController extends Controller {
     try {
       const response = (request as any).res as Response;
       const result = await AuthService.login(body);
-      console.log("result:::", result);
 
       setCookie(response, "id_token", result.idToken);
       setCookie(response, "access_token", result.accessToken);
@@ -82,10 +81,8 @@ export class AuthController extends Controller {
       const response = (request as any).res as Response;
       const clearCookie = (name: string) => {
         response.cookie(name, "", {
-          expires: new Date(0), // Expire immediately
-          httpOnly: true, // Optional: set to true for security
-          // secure: process.env.NODE_ENV === "production", // Secure in production
-          // path: "/", // Apply to all paths
+          expires: new Date(0),
+          httpOnly: true,
         });
       };
       await AuthService.signout(tokens["access_token"]);

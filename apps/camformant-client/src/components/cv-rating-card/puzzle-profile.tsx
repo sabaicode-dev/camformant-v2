@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import ProfileRating from "@/components/cv-rating-card/profile-rating"
+import React from "react";
+import ProfileRating from "@/components/cv-rating-card/profile-rating";
 import { useAuth } from "@/context/auth";
 
 interface ProfileRating {
   totalRating: number;
 }
 const PuzzleProfile: React.FC<ProfileRating> = ({ totalRating }) => {
-  const {user}=useAuth()
+  const { user } = useAuth();
   return (
     <div>
       <ProfileRating

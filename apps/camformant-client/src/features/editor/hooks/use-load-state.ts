@@ -1,10 +1,8 @@
 import { fabric } from "fabric";
 import { useEffect, useRef } from "react";
 
-import { JSON_KEYS } from "@/features/editor/types";
 import { CustomCvDataParams } from "@/utils/types/user-profile";
 import { setFetchData } from "@/features/editor/utils";
-import Editor from "../components/editor";
 
 interface UseLoadStateProps {
   autoZoom: () => void;

@@ -131,11 +131,7 @@ class AuthService {
     try {
       const command = new ConfirmSignUpCommand(params);
       await client.send(command);
-      // console.log(
-      //   "AuthService verifyUser() method: User verified successfully"
-      // );
 
-      // Retrieve the user to get the `role` attribute
       const userInfo = await this.getUserByUsername(username);
       const role =
         userInfo.UserAttributes?.find((attr) => attr.Name === "custom:role")

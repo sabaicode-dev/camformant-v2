@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-import { ActiveTool, Editor, FILL_COLOR } from "@/features/editor/types";
+import { ActiveTool, Editor } from "@/features/editor/types";
 import { ColorPicker } from "@/features/editor/components/color-picker";
 import { useEffect, useMemo, useState } from "react";
 

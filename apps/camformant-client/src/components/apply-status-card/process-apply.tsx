@@ -1,4 +1,4 @@
-import React, { ReactNode, SetStateAction, isValidElement } from "react";
+import React, { ReactNode, isValidElement } from "react";
 import { MdFactCheck } from "react-icons/md";
 
 interface ProcessApply {
@@ -37,9 +37,9 @@ const ProcessApply: React.FC<ProcessApply> = ({
       <div className="container w-full ">
         <div className="flex items-center gap-10">
           <label
-            className={`${status ? "block" : " opacity-0 "} flex flex-col w-[60px]`}
+            className={`${status ? "block" : " opacity-0 "} flex flex-col w-[60px] text-primaryCam`}
           >
-            {dateObject.month} <span>{dateObject.day}</span>
+            {dateObject.month} <span className="font-bold">{dateObject.day}</span>
           </label>
           <span
             className={` ${status ? "text-orange-500" : "text-gray-400"} p-5 flex justify-center rounded-full items-center text-xl bg-white shadow-md `}
