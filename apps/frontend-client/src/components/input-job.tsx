@@ -216,13 +216,13 @@ const InputForm: React.FC<{
         );
         await fetchJobs()
       router.push("/dashboard/jobs");
-        console.log("post job", formData);
       } else {
         event.preventDefault();
-        response = await axiosInstance.put(
-          `${API_ENDPOINTS.JOB_ENDPOINT}/${existingData!._id}`,
-          { ...formData, companyId: existingData?.company?._id || "" }
-        );
+        // response = await axiosInstance.put(
+        //   `${API_ENDPOINTS.JOB_ENDPOINT}/${existingData!._id}`,
+        //   { ...formData, companyId: existingData?.company?._id || "" }
+        // );
+        console.log("PUT::::::::::::::::::::::::::::::::::::;;", formData);
         await fetchJobs()
       router.push("/dashboard/jobs");
       }

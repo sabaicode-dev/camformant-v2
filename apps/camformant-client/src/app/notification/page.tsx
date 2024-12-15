@@ -3,9 +3,19 @@
 import { CardGeneral } from "@/components/card-notification/card-general";
 // import { CardTips } from "@/components/card-notification/card-tips";
 import { CategoryPosition } from "@/components/category-position/category-position";
-import React, { useState } from "react";
+import axiosInstance from "@/utils/axios";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import React, { useEffect, useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
 
+export interface INotificationHistory {
+  _id?: string;
+  title?: string;
+  description?: string;
+  icon?: string;
+  url?: string;
+  updatedAt?: Date;
+}
 // Assuming CategoryPositionData is an array of categories
 interface typeMee {
   id: number;
@@ -19,13 +29,27 @@ const CategoryPositionData: typeMee[] = [
 
 const Page: React.FC = () => {
   const [contentId, setContentId] = useState(1);
-
-  const Content1 = () => <CardGeneral />;
-  // const Content2 = () => (
-  //   <div>
-  //     <CardTips />
-  //   </div>
-  // );
+  const typeQuery =
+    contentId === 1 ? undefined : contentId === 2 ? "Job Listings" : "Apply";
+  const query = typeQuery ? `?search=${typeQuery}` : "";
+  const [data, setData] = useState<INotificationHistory[]>([]);
+  //todo: pagination notification
+  useEffect(() => {
+    const fetchNotification = async () => {
+      try {
+        const res = await axiosInstance.get(
+          `${API_ENDPOINTS.GET_NOTIFICATIONS}${query}`
+        );
+        const data = res.data.data as INotificationHistory[];
+        setData(data);
+        console.log(data);
+      } catch (error) {
+        console.log("error::: fetchNotification()");
+        throw error;
+      }
+    };
+    fetchNotification();
+  }, [query]);
 
   function handleClickId(id: number) {
     setContentId(id);
@@ -58,7 +82,7 @@ const Page: React.FC = () => {
           </div>
         </div>
         <div className="w-full p-4">
-          {contentId === 1 && <Content1 />}
+          {contentId && <CardGeneral data={data} />}
           {/* {contentId === 2 && <Content2 />} */}
         </div>
       </div>

@@ -69,7 +69,7 @@ const setupSocketIO = (io: Server) => {
 
           if (savedMessage && receiverSocketId) {
             console.log("Message delivered to:", receiverSocketId);
-            io.to(receiverSocketId).emit("receiveMessage", savedMessage);
+            io.to(receiverSocketId).emit("receiveMessage", data);
           }
         }
       } catch (error) {

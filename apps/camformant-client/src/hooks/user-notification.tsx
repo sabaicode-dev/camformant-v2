@@ -6,11 +6,12 @@ import {
   FaExclamationCircle,
 } from "react-icons/fa";
 
-interface Notification {
+export interface Notification {
   id: number;
   message: string;
   type: "success" | "info" | "error";
 }
+export type AddNotificationType = (message: string, type: "success" | "info" | "error") => void;
 
 export const useNotification = () => {
   const [notification, setNotification] = useState<Notification | null>(null);

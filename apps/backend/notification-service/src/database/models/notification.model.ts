@@ -41,3 +41,44 @@ const NotificationModel = mongoose.model<INotification>(
 );
 
 export default NotificationModel;
+
+export interface INotificationHistory {
+  _id?: string;
+  userId?: string[];
+  url?: string;
+  title?: string;
+  description?: string;
+  icon?: string;
+  type?: "Job Listings" | "Apply" | "new subscribe";
+  updatedAt?: Date;
+  createdAt?: Date;
+}
+const notificationHistorySchema = new mongoose.Schema(
+  {
+    userId: [{ type: String }],
+    url: { type: String },
+    icon: { type: String },
+    title: { type: String },
+    description: { type: String },
+    type: {
+      type: String,
+      enum: ["Job Listings", "Apply", "new subscribe"],
+      default: "new subscribe",
+    },
+  },
+  {
+    timestamps: true,
+    toObject: {
+      transform: function (_doc, ret) {
+        delete ret.__v;
+        ret._id = ret._id.toString();
+      },
+    },
+  }
+);
+
+const NotificationHistoryModel = mongoose.model<INotificationHistory>(
+  "NotificationHistory",
+  notificationHistorySchema
+);
+export { NotificationHistoryModel };

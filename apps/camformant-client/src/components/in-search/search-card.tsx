@@ -14,6 +14,8 @@ import SkeletonCard from "@/components/skeleton/skeleton-card";
 import { IJob } from "../type-data/TypeofData";
 import { useAuth } from "@/context/auth";
 import Image from "next/image";
+import { jobSyncUpdate } from "@/utils/functions/job-function";
+import { useNotification } from "@/hooks/user-notification";
 
 const SearchCard = ({
   searchValue,
@@ -24,14 +26,13 @@ const SearchCard = ({
   filterValues: FilterValueParams;
   onChangeFilterValues: (value: FilterValueParams) => void;
 }) => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const [jobData, setJobData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [love, setLove] = useState<boolean>(true);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
-
+  const { addNotification, NotificationDisplay } = useNotification();
   const debouncedSearchValue = useDebounce(searchValue, 1200);
   const newValue = debouncedSearchValue;
   // const toggleFavorite = (jobId: string) => {
@@ -48,16 +49,15 @@ const SearchCard = ({
 
     const currentFavoriteStatus = jobData[jobIndex].favorite;
     const newFavoriteStatus = !currentFavoriteStatus;
-
     const updatedJobs = [...jobData];
     updatedJobs[jobIndex].favorite = newFavoriteStatus;
     setJobData(updatedJobs);
 
     try {
       if (newFavoriteStatus) {
-        await axiosInstance.post(API_ENDPOINTS.FAVORITE, { jobId });
+        jobSyncUpdate("post", setUser, jobId);
       } else {
-        await axiosInstance.delete(`${API_ENDPOINTS.FAVORITE}/${jobId}`);
+        jobSyncUpdate("delete", setUser, jobId);
       }
     } catch (error) {
       console.error("Error updating favorite status:", error);
@@ -200,7 +200,8 @@ const SearchCard = ({
     };
 
     fetchJobs();
-  }, [user, filterValues, newValue]);
+    //eslint-disable-next-line
+  }, [filterValues, newValue]);
   // console.log("filter::: inner", filterValues);
   console.log("totalJobs:::", jobData);
   console.log("filterValue kon:::", filterValues);
@@ -226,6 +227,7 @@ const SearchCard = ({
         className="flex flex-col w-full h-full gap-4 pt-6 pb-20"
         // ref={heighRef}
       >
+        <NotificationDisplay />
         {!loading && jobData.length === 0 ? (
           // Display this section when no jobs are found
           <div className="flex flex-col items-center justify-center">
@@ -260,7 +262,11 @@ const SearchCard = ({
                 location={job.location}
                 deadline={new Date(job.deadline)}
                 heart={job.favorite}
-                setHeart={() => toggleFavorite(job._id)}
+                setHeart={() => {
+                  user
+                    ? toggleFavorite(job._id)
+                    : addNotification("Login for add to favorites", "error");
+                }}
               />
             </div>
           ))

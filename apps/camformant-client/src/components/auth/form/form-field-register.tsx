@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { FieldRegisterProps } from "@/schema/register";
 import { FaEye } from "react-icons/fa6";
 import { FaEyeSlash } from "react-icons/fa6";
@@ -15,7 +14,7 @@ export const FormFieldRegister: React.FC<FieldRegisterProps> = ({
 }) => (
   <div className="relative w-full">
     <input
-      className="w-full p-3 pl-6 outline-none drop-shadow-md rounded-3xl"
+      className={`w-full p-3 pl-6 drop-shadow-md rounded-3xl ${error ? "border border-red-500" : "outline-none"}`}
       type={type}
       placeholder={placeholder}
       {...register(name, { valueAsNumber })}

@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useState } from "react";
 import categoryPosition from "@/data/data.json";
 import { Heading } from "@/components/heading/heading";
 import { CategoryPosition } from "@/components/category-position/category-position";
@@ -9,6 +9,8 @@ import { Card } from "@/components/card/card";
 import { useAuth } from "@/context/auth";
 import SkeletonCard from "@/components/skeleton/skeleton-card";
 import Image from "next/image";
+import { jobSyncUpdate, toggleFavorite } from "@/utils/functions/job-function";
+import { AddNotificationType } from "@/hooks/user-notification";
 
 interface Company {
   name: string;
@@ -50,17 +52,21 @@ export interface IJob {
   benefit?: string[];
   createdAt?: Date;
   updatedAt?: Date;
-  deadline?: Date;
+  deadline?: string | number | Date | undefined;
   company?: companiesForJobs;
+  favorite?:boolean
 }
-export interface Job {
+export interface Job extends IJob {
   _id: string;
-  companyId: Company;
+  company: Company;
 }
 
-export const PositionPost: React.FC = () => {
-  const { user } = useAuth();
-  const [jobData, setJobData] = useState<any[]>([]);
+export const PositionPost: React.FC<{
+  forSync: boolean;
+  addNotifications: AddNotificationType;
+}> = ({ forSync, addNotifications }) => {
+  const { user, setUser } = useAuth();
+  const [jobData, setJobData] = useState<Job[]>([]);
   const [selectedPosition, setSelectedPosition] = useState<string>("All");
 
   // FETCHING DATA STATE
@@ -117,33 +123,6 @@ export const PositionPost: React.FC = () => {
     setHasMore(true);
   };
 
-  const toggleFavorite = async (jobId: string) => {
-    const jobIndex = jobData.findIndex((job) => job._id === jobId);
-    if (jobIndex === -1) return;
-
-    const currentFavoriteStatus = jobData[jobIndex].favorite;
-    const newFavoriteStatus = !currentFavoriteStatus;
-
-    const updatedJobs = [...jobData];
-    updatedJobs[jobIndex].favorite = newFavoriteStatus;
-    setJobData(updatedJobs);
-
-    try {
-      if (newFavoriteStatus) {
-        await axiosInstance.post(API_ENDPOINTS.FAVORITE, { jobId });
-      } else {
-        await axiosInstance.delete(`${API_ENDPOINTS.FAVORITE}/${jobId}`);
-      }
-    } catch (error) {
-      console.error("Error updating favorite status:", error);
-      setError("Failed to update favorite status. Please try again later.");
-
-      // Revert the UI change if the API call fails
-      updatedJobs[jobIndex].favorite = currentFavoriteStatus;
-      setJobData(updatedJobs);
-    }
-  };
-
   useEffect(() => {
     const fetchJobs = async () => {
       setIsLoading(true);
@@ -157,7 +136,6 @@ export const PositionPost: React.FC = () => {
         const jobResponse = await axiosInstance.get(
           `${API_ENDPOINTS.JOBS}${query}`
         );
-
         const { jobs, totalPages } = jobResponse.data.data; // Adjust based on your actual response structure
 
         if (jobs.length === 0 || 1 >= totalPages) {
@@ -180,7 +158,8 @@ export const PositionPost: React.FC = () => {
     };
 
     fetchJobs();
-  }, [selectedPosition, user]);
+    // eslint-disable-next-line
+  }, [selectedPosition, forSync]);
 
   useEffect(() => {
     window.addEventListener("scroll", onScroll);
@@ -217,13 +196,23 @@ export const PositionPost: React.FC = () => {
               type={job.type}
               schedule={job.schedule}
               location={job.location}
-              deadline={new Date(job.deadline)}
-              setHeart={() => toggleFavorite(job._id)}
+              deadline={new Date(job.deadline!)}
+              setHeart={() => {
+                user
+                  ? toggleFavorite(
+                      jobData,
+                      job._id,
+                      setJobData,
+                      setUser,
+                      setError
+                    )
+                  : addNotifications("Login for add to favorites", "error");
+              }}
               heart={job.favorite}
             />
           </div>
         ))
-      ) : jobData.length === 0 && !isLoading && !error? (
+      ) : jobData.length === 0 && !isLoading && !error ? (
         <div className="flex flex-col items-center w-full">
           <Image
             src={"/images/unavailable.png"}
@@ -255,7 +244,7 @@ export const PositionPost: React.FC = () => {
   );
 };
 
-function buildQuery(page: number, selectedPosition: string) {
+export function buildQuery(page: number, selectedPosition: string[] | string) {
   const filter = { position: selectedPosition };
   const encodedFilter = encodeURIComponent(JSON.stringify(filter));
   return `?filter=${encodedFilter}&page=${page}&limit=5`;

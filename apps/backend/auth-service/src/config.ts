@@ -10,6 +10,7 @@ type Config = {
   awsCognitoClientSecret: string;
   awsCognitoDomain: string;
   awsRedirectUri: string;
+  corporatorUrl: string;
   clientUrl: string;
   userServiceUrl: string;
   awsAccessKeyId: string;
@@ -54,6 +55,7 @@ function loadConfig(): Config {
     awsCognitoClientSecret: envVars.AWS_COGNITO_CLIENT_SECRET,
     awsCognitoDomain: envVars.AWS_COGNITO_DOMAIN,
     awsRedirectUri: envVars.AWS_REDIRECT_URI,
+    corporatorUrl: envVars.CORPORATOR_URL,
     clientUrl: envVars.CLIENT_URL,
     userServiceUrl: envVars.USER_SERVICE_URL,
     awsAccessKeyId: envVars.AWS_ACCESS_KEY_ID,

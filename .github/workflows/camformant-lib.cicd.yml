@@ -3,12 +3,12 @@ name: CI/CD Pipeline for MS Libs
 on:
   pull_request:
     branches:
-      - main
+      - feature/camformant-libs
     paths:
       - "packages/libs/**"
   push:
     branches:
-      - main
+      - feature/camformant-libs
     paths:
       - "packages/libs/**"
 
@@ -50,7 +50,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feature/camformant-libs'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
