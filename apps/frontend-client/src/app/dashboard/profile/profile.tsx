@@ -10,7 +10,7 @@ const Profile = () => {
   console.log("user::::::", user);
   return (
     <>
-      <div className="bg-white h-full dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+      <div className="bg-white  h-full dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
         {/* Banner Section */}
         <div className="relative h-40 bg-gray-300 dark:bg-gray-700">
           <Image

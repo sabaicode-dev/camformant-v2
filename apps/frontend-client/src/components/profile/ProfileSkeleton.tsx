@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function ProfileSkeleton() {
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="bg-white dark:bg-black rounded-lg shadow-lg overflow-hidden">
       {/* Cover Image Skeleton */}
       <div className="relative">
         <Skeleton className="h-48 w-full" />

@@ -14,7 +14,7 @@
     "start:backend": "concurrently \"yarn workspace user-service dev\" \"yarn workspace job-service dev\" \"yarn workspace chat-service dev\" \"yarn workspace api-gateway-service dev\" \"yarn workspace auth-service dev\"",
     "start:camformant": "yarn workspace camformant-client start",
     "start:camformant-client": "yarn workspace camformant-client dev",
-    "start:dashboard": "concurrently \"yarn workspace ms-ui-components watch\" \"yarn workspace frontend-client dev\"",
+    "start:dashboard": "concurrently \"yarn workspace frontend-client dev\"",
     "start:user-service": "yarn workspace user-service dev",
     "start:product-service": "yarn workspace product-service dev",
     "start:auth-service": "yarn workspace auth-service dev",

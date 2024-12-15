@@ -59,7 +59,7 @@ const ProfilePage = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="lg:sticky lg:top-0 lg:h-[calc(100vh-8rem)]">
+          <div className="lg:sticky lg:top-0 lg:h-[calc(100vh-8rem)] ">
             <ProfileSkeleton/>
           </div>
           <div className="">

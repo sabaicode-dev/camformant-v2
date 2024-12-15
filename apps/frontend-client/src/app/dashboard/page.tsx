@@ -4,3 +4,4 @@ export default function Dashboard() {
   redirect("/dashboard/chart");
   return <></>;
 }
+
