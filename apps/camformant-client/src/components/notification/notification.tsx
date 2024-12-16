@@ -4,8 +4,8 @@ import { useAuth } from "@/context/auth";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { useEffect, useState } from "react";
-import { MdCircleNotifications } from "react-icons/md";
 import AllowNotificationCard from "./allow-notification-card";
+import { Bell } from "lucide-react";
 
 export default function NotificationComponent({
   addNotification,
@@ -183,7 +183,7 @@ export default function NotificationComponent({
         />
       )}
       <div className="flex items-center w-full gap-5 text-lg">
-        <MdCircleNotifications size={22} />
+        <Bell size={22} />
         <span>Notification</span>
       </div>
 

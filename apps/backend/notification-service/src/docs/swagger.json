@@ -126,6 +126,49 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"INotificationHistory": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"userId": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"url": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"icon": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string",
+						"enum": [
+							"Job Listings",
+							"Apply",
+							"new subscribe"
+						]
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -183,7 +226,27 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/NotificationPayload"
+								"properties": {
+									"type": {
+										"type": "string",
+										"enum": [
+											"Job Listings",
+											"Apply"
+										]
+									},
+									"userId": {
+										"type": "string"
+									},
+									"payload": {
+										"$ref": "#/components/schemas/NotificationPayload"
+									}
+								},
+								"required": [
+									"type",
+									"userId",
+									"payload"
+								],
+								"type": "object"
 							}
 						}
 					}
@@ -257,11 +320,74 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/NotificationPayload"
+								"properties": {
+									"type": {
+										"type": "string",
+										"enum": [
+											"Job Listings",
+											"Apply"
+										]
+									},
+									"payload": {
+										"$ref": "#/components/schemas/NotificationPayload"
+									}
+								},
+								"required": [
+									"type",
+									"payload"
+								],
+								"type": "object"
 							}
 						}
 					}
 				}
+			}
+		},
+		"/v1/notifications/getUserNotification": {
+			"get": {
+				"operationId": "GetUserNotificationHistory",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"items": {
+												"$ref": "#/components/schemas/INotificationHistory"
+											},
+											"type": "array"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "search",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"Job Listings",
+								"Apply"
+							]
+						}
+					}
+				]
 			}
 		},
 		"/v1/notifications/health": {

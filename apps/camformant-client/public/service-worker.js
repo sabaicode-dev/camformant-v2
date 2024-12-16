@@ -11,6 +11,7 @@ self.addEventListener("install", (event) => {
 });
 //related to notificationclick event
 self.addEventListener("activate", (event) => {
+  event.preventDefault();
   console.log("Service Worker activated");
   event.waitUntil(self.clients.claim()); // Take control of all open clients
 });
@@ -20,7 +21,7 @@ self.addEventListener("push", (event) => {
     const data = event.data.json();
     const title = data.title;
     const body = data.body;
-    const url = data.url;
+    const url = data.data.url;
     const icon = data.icon;
     console.log("url", url);
 
@@ -50,10 +51,7 @@ self.addEventListener("notificationclick", function (event) {
   // Close the notification
   event.notification.close();
 
-  const notificationData = event.notification.data;
-  const urlToOpen = "/resume"; // Fallback to root if no URL is provided
-  console.log("urlToOpen", urlToOpen);
-
+  const urlToOpen = event.notification.data.url;
   event.waitUntil(
     clients
       .matchAll({ type: "window", includeUncontrolled: true })

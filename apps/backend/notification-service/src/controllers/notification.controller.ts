@@ -7,6 +7,7 @@ import {
   Delete,
   SuccessResponse,
   Get,
+  Queries,
 } from "tsoa";
 import NotificationService, {
   NotificationPayload,
@@ -65,18 +66,20 @@ export class NotificationsController extends Controller {
 
   @Post("/push-notification")
   public async pushOneUserNotification(
-    @Request() request: ExpressRequest,
-    @Body() body: NotificationPayload
+    @Body()
+    body: {
+      payload: NotificationPayload;
+      userId: string;
+      type: "Job Listings" | "Apply";
+    }
   ): Promise<void> {
     try {
-      const userId = request?.cookies["user_id"] as string;
-      // const currentUser = JSON.parse(request.headers.currentuser as string) as {
-      //   username?: string;
-      //   role?: string[];
-      // };
-      //todo:
-      console.log("Push Notification is trigger", userId);
-      await NotificationService.sendNotification(userId, body);
+      console.log("Push Notification is trigger", body.userId);
+      await NotificationService.sendNotification(
+        body.userId,
+        body.payload,
+        body.type
+      );
     } catch (error) {
       throw error;
     }
@@ -104,10 +107,36 @@ export class NotificationsController extends Controller {
     }
   }
   @Post("/push-all-notifications")
-  async pushToSubscribers(@Body() payload: NotificationPayload) {
+  async pushToSubscribers(
+    @Body()
+    body: {
+      payload: NotificationPayload;
+      type: "Job Listings" | "Apply";
+    }
+  ) {
     try {
-      console.log("payload:::", payload);
-      await NotificationService.sendNotificationAllSubscriptions(payload);
+      console.log("payload:::", body.payload);
+      await NotificationService.sendNotificationAllSubscriptions(
+        body.payload,
+        body.type
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+  @Get("/getUserNotification")
+  async getUserNotificationHistory(
+    @Request() request: ExpressRequest,
+    @Queries() query: { search?: "Job Listings" | "Apply" }
+  ) {
+    try {
+      const userId = request.cookies["user_id"];
+
+      const res = await NotificationService.getUserNotificationHistory(
+        userId,
+        query.search
+      );
+      return res;
     } catch (error) {
       throw error;
     }

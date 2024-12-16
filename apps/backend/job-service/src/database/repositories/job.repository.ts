@@ -71,7 +71,6 @@ class JobRepository {
       search = "",
       userFav,
     } = queries;
-    console.log("filter in repo", filter);
     const skip =
       queries.limit === "*" || !queries.limit
         ? 0
@@ -103,7 +102,6 @@ class JobRepository {
         $in: userFav.map((id) => new mongoose.Types.ObjectId(id)),
       };
     }
-    console.log("build fiter:::", buildFilter(filter!));
     try {
       const mongoFilter = {
         ...userFavFilter,
@@ -122,7 +120,6 @@ class JobRepository {
           .skip(skip)
           .limit(limit);
       }
-      console.log("mongoFilter::::::::", JSON.stringify(mongoFilter));
 
       const result = operation;
       if (!result) {

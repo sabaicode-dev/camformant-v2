@@ -13,6 +13,7 @@ import searchService from "@/src/services/search.service";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
 import axios from "axios";
 import mongoose from "mongoose";
+import configs from "../config";
 
 interface NotificationPayload {
   title: string;
@@ -33,6 +34,18 @@ class JobService {
       if (!newJob) {
         throw new Error("Job creation failed.");
       }
+      const payload: NotificationPayload = {
+        title: newJob.title!,
+        body: newJob.description!,
+        data: { url: `/jobs/${newJob._id}` },
+        tag: `notification-${Date.now()}`,
+        icon: newJob.profile || "https://sabaicode.com/sabaicode.jpg",
+        timestamp: new Date(),
+      };
+      await axios.post(
+        `${configs.notification_api_endpoint}/push-all-notifications`,
+        { payload, type: "Job Listings" }
+      );
       return newJob;
     } catch (error) {
       console.error(
@@ -50,18 +63,6 @@ class JobService {
         companyId: new mongoose.Types.ObjectId(newInfo.companyId),
       };
       const jobs = await jobRepository.createNewJob(newJobInfo);
-      //todo: push notification
-      const payload: NotificationPayload = {
-        title: jobs.title!,
-        body: jobs.description!,
-        data: { url: `/jobs/${jobs._id}` },
-        tag: `notification-${Date.now()}`,
-        icon: "https://sabaicode.com/sabaicode.jpg",
-        timestamp: new Date(),
-      };
-      console.log("11111111111");
-      await axios.post("http://localhost:4004/push-all-notifications", payload);
-      console.log("hiiiiiii");
 
       return jobs;
     } catch (error) {
@@ -86,7 +87,6 @@ class JobService {
     try {
       const { page, limit, filter, sort, search, userFav } = queries;
       const searchUserFav = userFav?.split(",") || [];
-      console.log("filter in service::::", filter);
       const newQueries = {
         page,
         limit,
@@ -95,7 +95,6 @@ class JobService {
         search,
         userFav: searchUserFav,
       };
-      console.log("new query in service::::", newQueries);
 
       const result = await jobRepository.getAllJobs(newQueries);
 
@@ -214,6 +213,55 @@ class JobService {
   ): Promise<JobApplyResponse | {} | null> {
     try {
       const response = await jobRepository.updateJobApply(applyId, body);
+      const userId = (response as JobApplyResponse).userId;
+      const jobId = (response as JobApplyResponse).jobId;
+      const job = await jobRepository.findJobById(jobId);
+      const profile = job.company?.profile;
+      const StatusMode = [
+        "Apply",
+        "Review",
+        "Interview",
+        "Shortlist",
+        "Accept",
+      ];
+      const status = (response as JobApplyResponse).statusDate!;
+      const newStatus: { [key: string]: Date | undefined }[] = [];
+      for (let i = 0; i < StatusMode.length; i++) {
+        if (StatusMode[i] as keyof typeof status) {
+          newStatus.push({
+            [StatusMode[i] as keyof typeof status]:
+              status[StatusMode[i] as keyof typeof status],
+          });
+        }
+      }
+
+      newStatus.sort((a, b) => {
+        const dateA = new Date(Object.values(a)[0]!);
+        const dateB = new Date(Object.values(b)[0]!);
+        return dateA.getTime() - dateB.getTime();
+      });
+      const lastStatus = newStatus[newStatus.length - 1];
+      let title = "";
+      let statusDate: Date | undefined;
+      for (const key in lastStatus) {
+        title = key;
+        if (lastStatus[key]) {
+          statusDate = new Date(lastStatus[key]);
+        }
+      }
+      const payload: NotificationPayload = {
+        title: `Your application is in ${title}`,
+        body: "Updates for your application...",
+        data: { url: `/applied` },
+        tag: `application-notification-${statusDate}`,
+        icon: profile || "https://sabaicode.com/sabaicode.jpg",
+        timestamp: statusDate || new Date(),
+      };
+
+      await axios.post(
+        `${configs.notification_api_endpoint}/push-notification`,
+        { payload, userId: userId.toString(), type: "Apply" }
+      );
       return response;
     } catch (err) {
       throw err;
