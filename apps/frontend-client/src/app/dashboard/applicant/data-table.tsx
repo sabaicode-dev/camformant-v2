@@ -45,9 +45,9 @@ export function DataTable<TData, TValue>({
   const pathname = usePathname();
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(() => {
-    const nameParam = searchParams.get("name");
+    const nameParam = searchParams.get("jobInfo.title");
     return nameParam 
-      ? [{ id: "name", value: nameParam }] 
+      ? [{ id: "jobInfo.title", value: nameParam }] 
       : [];
   });
 
@@ -74,13 +74,13 @@ export function DataTable<TData, TValue>({
   // URL Synchronization Effect
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const nameFilter = columnFilters.find(filter => filter.id === "name");
+    const nameFilter = columnFilters.find(filter => filter.id === "jobInfo.title");
     
     if (nameFilter && nameFilter.value) {
-      params.set("name", String(nameFilter.value));
+      params.set("jobInfo.title", String(nameFilter.value));
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     } else {
-      params.delete("name");
+      params.delete("jobInfo.title");
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     }
   }, [columnFilters, pathname, router]);

@@ -45,6 +45,7 @@ export const columns:(refetch?: () => Promise<void>) => ColumnDef<JobApplication
     filterFn: 'equals',
   },
   {
+    accessorKey:"jobInfo?.title",
     header: "Job Title",
     cell: ({ row }) => <div className="text-gray-700 dark:text-gray-500 font-bold">{row.original.jobInfo?.title}</div>
     
