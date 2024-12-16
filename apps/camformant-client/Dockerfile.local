@@ -1,23 +1,25 @@
-#production (built)
-# Step 1: Use a node image for the production environment
-FROM node:18-slim
+FROM node:lts-alpine AS base
 
-# Step 2: Set the working directory
+# Stage 1: Install dependencies
+FROM base AS deps
 WORKDIR /app
+COPY package.json package-lock.json* ./
+COPY sst-env.d.ts* ./
+RUN npm ci
 
-# Step 3: Copy only the necessary production files
-COPY package*.json ./
+# Stage 2: Build the application
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run build
 
-# Step 4: Install production dependencies only
-RUN npm install --production
+# Stage 3: Production server
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
-# Step 5: Copy the built files (from local or CI/CD build)
-COPY .next /app/.next
-COPY public /app/public
-COPY package.json /app/package.json
-
-# Step 6: Expose the port
 EXPOSE 3000
-
-# Step 7: Start the application in production mode
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
