@@ -54,7 +54,6 @@ export function SignInForm() {
         phone_number: contactMethod === "phone_number" ? data.email : "",
         password: data.password,
       });
-      router.push("/dashboard");
     } catch (error: any) {
       form.setError("root", {
         message: error.message || "Invalid credentials",
