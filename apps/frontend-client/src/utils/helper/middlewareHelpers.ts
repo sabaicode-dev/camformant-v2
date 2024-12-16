@@ -2,14 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { API_ENDPOINTS } from "../const/api-endpoints";
 
 export const authHelpers = {
-    refreshAccessToken: async (refresh_token: string) => {
+    refreshAccessToken: async (refresh_token: string, username: string) => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/refresh-token`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${refresh_token}`
-                }
+                },
+                body: JSON.stringify({ "refreshToken": refresh_token, "username": username })
             });
 
             if (!response.ok) {

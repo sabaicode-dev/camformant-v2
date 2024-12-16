@@ -12,9 +12,10 @@ export function ProfileInfo({ data }: ProfileInfoProps) {
   return (
     <div className="mt-5">
       <div className="text-center mb-8">
-        <p className="mt-4 text-gray-600 max-w-2xl mx-auto dark:text-white">
-          {data?.description || 'No description available'}
-        </p>
+      <div 
+          className="mt-4 text-gray-600 max-w-2xl mx-auto prose"
+          dangerouslySetInnerHTML={{ __html: data?.description || 'No description available' }}
+        />
       </div>
 
       <div className="py-7 bg-slate-100 dark:bg-black  w-full px-5">
