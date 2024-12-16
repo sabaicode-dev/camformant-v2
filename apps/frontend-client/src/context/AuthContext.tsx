@@ -23,13 +23,7 @@ interface AuthContextType {
 }
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({
-  children,
-  isLogin,
-}: {
-  children: React.ReactNode;
-  isLogin: boolean;
-}) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -53,12 +47,8 @@ export function AuthProvider({
   };
 
   useEffect(() => {
-    if (isLogin) {
-      fetchUser();
-    } else {
-      setIsLoading(false);
-    }
-  }, [isLogin]);
+    fetchUser();
+  }, []);
 
   const signUp = async (data: SignUpData) => {
     setIsLoading(true);
