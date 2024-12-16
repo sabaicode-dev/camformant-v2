@@ -9,24 +9,38 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   user: User | null;
-  fetchUser : () => void;
-  signUp: ({ sur_name , last_name , email , phone_number , password }: SignUpData) => Promise<void>;
-  verifyCode: ({ email , phone_number , code }: VerifyCodeData) => Promise<void>;
-  signIn: ({ email , phone_number , password }: SignInData) => Promise<void>;
+  fetchUser: () => void;
+  signUp: ({
+    sur_name,
+    last_name,
+    email,
+    phone_number,
+    password,
+  }: SignUpData) => Promise<void>;
+  verifyCode: ({ email, phone_number, code }: VerifyCodeData) => Promise<void>;
+  signIn: ({ email, phone_number, password }: SignInData) => Promise<void>;
   signOut: () => Promise<void>;
 }
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children , isLogin }: { children: React.ReactNode ,isLogin: boolean }) {
+export function AuthProvider({
+  children,
+  isLogin,
+}: {
+  children: React.ReactNode;
+  isLogin: boolean;
+}) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   const fetchUser = async () => {
     try {
-      setIsLoading(true); 
-      const res = await axiosInstance.get(`${API_ENDPOINTS.CORPARATE_PROFILE_ME}`);
+      setIsLoading(false);
+      const res = await axiosInstance.get(
+        `${API_ENDPOINTS.CORPARATE_PROFILE_ME}`
+      );
       setUser(res.data.data);
       setIsAuthenticated(true);
     } catch (error) {
@@ -34,7 +48,7 @@ export function AuthProvider({ children , isLogin }: { children: React.ReactNode
       setIsAuthenticated(false);
       setUser(null);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(true);
     }
   };
 
@@ -56,7 +70,9 @@ export function AuthProvider({ children , isLogin }: { children: React.ReactNode
         phone_number: data.phone_number,
         password: data.password,
       });
-      router.push(`/verify?contact=${data.email || data.phone_number}&method=${data.email ? 'email' : 'phone_number'}`);
+      router.push(
+        `/verify?contact=${data.email || data.phone_number}&method=${data.email ? "email" : "phone_number"}`
+      );
     } catch (error) {
       console.error("Sign up failed:", error);
       setIsAuthenticated(false);
@@ -70,7 +86,8 @@ export function AuthProvider({ children , isLogin }: { children: React.ReactNode
     setIsLoading(true);
     try {
       await axiosInstance.post(API_ENDPOINTS.CORPARATE_VERIFY, {
-        [data.email ? "email" : "phone_number"]: data.email || data.phone_number,
+        [data.email ? "email" : "phone_number"]:
+          data.email || data.phone_number,
         code: data.code,
       });
       router.push("/signin");
@@ -89,23 +106,23 @@ export function AuthProvider({ children , isLogin }: { children: React.ReactNode
       await axiosInstance.post(API_ENDPOINTS.CORPARATE_SIGNIN, data);
       const res = await axiosInstance.get(API_ENDPOINTS.CORPARATE_PROFILE_ME);
       setUser(res.data.data);
-      setIsAuthenticated(true); 
+      setIsAuthenticated(true);
       router.push("/dashboard");
     } catch (error) {
       console.error("Sign in failed:", error);
       setIsAuthenticated(false);
       throw error;
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
   const signOut = async () => {
-    setIsLoading(true); 
+    setIsLoading(true);
     try {
       await axiosInstance.post(API_ENDPOINTS.SIGN_OUT);
-      setIsAuthenticated(false); 
-      setUser(null); 
+      setIsAuthenticated(false);
+      setUser(null);
       router.push("/signin");
     } catch (error) {
       console.error("Logout failed:", error);
