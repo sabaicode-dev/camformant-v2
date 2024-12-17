@@ -9,38 +9,78 @@ import {
   validateField,
   validateNumericField,
 } from "@/utils/validation/JobForm";
+import React from "react";
+import { format } from "date-fns";
 
 interface UseJobFormProps {
   existingData?: Jobs;
   typeOfForm: "POST" | "PUT";
 }
+const initializeFormData = (existingData?: Jobs): Jobs => {
+  const today = new Date().toISOString().split("T")[0];
+
+  return {
+    title: existingData?.title || "",
+    position: existingData?.position || [],
+    workMode: existingData?.workMode || [],
+    location: existingData?.location || "",
+    requirement: existingData?.requirement || "",
+    description: existingData?.description || "",
+    address: existingData?.address || "",
+    min_salary: existingData?.min_salary || 0,
+    max_salary: existingData?.max_salary || 0,
+    job_opening: existingData?.job_opening || 0,
+    type: existingData?.type || [],
+    schedule: existingData?.schedule || [],
+    required_experience: existingData?.required_experience || [],
+    benefit: existingData?.benefit || [],
+    deadline: existingData?.deadline
+      ? new Date(existingData.deadline).toISOString().split("T")[0]
+      : "",
+    createdAt: existingData?.createdAt
+      ? new Date(existingData.createdAt).toISOString().split("T")[0]
+      : "", // Set today as default for createdAt
+  };
+};
 
 export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
   const router = useRouter();
   const { fetchJobs, isLoading } = useJob();
   const [errors, setErrors] = useState<Record<string, string | null>>({});
-  const [formData, setFormData] = useState<any>(
+  const [formData, setFormData] = useState<Jobs>(
     initializeFormData(existingData)
   );
 
+  const [createdAtDate, setCreatedAtDate] = useState<Date | undefined>(
+    formData.createdAt ? new Date(formData.createdAt) : undefined
+  );
+  const [deadlineDate, setDeadlineDate] = useState<Date | undefined>(
+    formData.deadline ? new Date(formData.deadline) : undefined
+  );
+
   const handleDateChange = (field: string, date: Date | undefined) => {
-    setFormData((prev: any) => {
-      const updatedData = {
+    if (field === "createdAt") {
+      setCreatedAtDate(date);
+      setFormData((prev) => ({
         ...prev,
-        [field]: date
-          ? new Date(date.setHours(0, 0, 0, 0)).toISOString().split("T")[0]
-          : formData,
-      };
-      console.log(updatedData);
+        createdAt: date ? format(date, "yyyy-MM-dd") : "",
+      }));
       setErrors((prev) => ({
         ...prev,
-        [field]: validateField(field, date ? date.toISOString() : ""),
+        createdAt: validateField("createdAt", date?.toISOString() || ""),
       }));
-
-      return updatedData;
-    });
+    } else if (field === "deadline") {
+      setDeadlineDate(date);
+      setFormData((prev) => ({
+        ...prev,
+        deadline: date ? format(date, "yyyy-MM-dd") : "",
+      }));
+      setErrors((prev) => ({
+        ...prev,
+        deadline: validateField("deadline", date?.toISOString() || ""),
+      }));
+    }
   };
-
   const handleArrayChange = (selected: string[], fieldName: string) => {
     setFormData((prev: any) => ({
       ...prev,
@@ -117,32 +157,12 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
     if (!validateForm()) return;
 
     try {
-      const updatedFormData = {
-        ...formData,
-        required_experience:
-          typeof formData.required_experience === "string"
-            ? formData.required_experience
-                .split("\n")
-                .map((item: any) => item.trim()) // Join array elements into a string
-            : formData.required_experience,
-
-        benefit:
-          typeof formData.benefit === "string"
-            ? formData.benefit.split("\n").map((item: any) => item.trim()) // Split string into array and trim whitespace
-            : formData.benefit,
-
-        position:
-          typeof formData.position === "string"
-            ? formData.position.split("\n").map((item: any) => item.trim()) // Split string into array and trim whitespace
-            : formData.position,
-      };
-      console.log("fewaf", updatedFormData);
       if (typeOfForm === "POST") {
-        await axiosInstance.post(API_ENDPOINTS.JOB, updatedFormData);
+        await axiosInstance.post(API_ENDPOINTS.JOB, formData);
       } else {
         await axiosInstance.put(
           `${API_ENDPOINTS.JOB_ENDPOINT}/${existingData!._id}`,
-          { ...updatedFormData, companyId: existingData?.company?._id || "" }
+          { ...formData, companyId: existingData?.company?._id || "" }
         );
       }
 
@@ -157,38 +177,13 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
     formData,
     errors,
     isLoading,
+    createdAtDate,
+    deadlineDate,
     handleSubmit,
     handleChange,
     handleArrayChange,
     handleChangeNum,
     handleDateChange,
     setFormData,
-  };
-};
-
-const initializeFormData = (existingData?: Jobs): Jobs => {
-  const today = new Date().toISOString().split("T")[0];
-
-  return {
-    title: existingData?.title || "",
-    position: existingData?.position || [],
-    workMode: existingData?.workMode || [],
-    location: existingData?.location || "",
-    requirement: existingData?.requirement || "",
-    description: existingData?.description || "",
-    address: existingData?.address || "",
-    min_salary: existingData?.min_salary || 0,
-    max_salary: existingData?.max_salary || 0,
-    job_opening: existingData?.job_opening || 0,
-    type: existingData?.type || [],
-    schedule: existingData?.schedule || [],
-    required_experience: existingData?.required_experience || [],
-    benefit: existingData?.benefit || [],
-    deadline: existingData?.deadline
-      ? new Date(existingData.deadline).toISOString().split("T")[0]
-      : "",
-    createdAt: existingData?.createdAt
-      ? new Date(existingData.createdAt).toISOString().split("T")[0]
-      : "", // Set today as default for createdAt
   };
 };

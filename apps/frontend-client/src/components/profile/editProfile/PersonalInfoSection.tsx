@@ -1,13 +1,16 @@
-import React from 'react';
-import type { ProfileData } from '../../../types/profile';
-import { Input } from '@/components/ui/input';
+import React from "react";
+import type { ProfileData } from "../../../utils/types/profile";
+import { Input } from "@/components/ui/input";
 
 interface PersonalInfoSectionProps {
   formData?: ProfileData | null;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export function PersonalInfoSection({ formData, onChange }: PersonalInfoSectionProps) {
+export function PersonalInfoSection({
+  formData,
+  onChange,
+}: PersonalInfoSectionProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
@@ -36,7 +39,7 @@ export function PersonalInfoSection({ formData, onChange }: PersonalInfoSectionP
         />
       </div>
 
-      {formData?.role === 'company' && (
+      {formData?.role === "company" && (
         <div>
           <label className="block text-sm font-medium dark:text-gray-400 text-gray-700">
             Employee Count

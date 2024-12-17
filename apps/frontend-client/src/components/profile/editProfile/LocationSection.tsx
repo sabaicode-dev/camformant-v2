@@ -1,6 +1,6 @@
-import React from 'react';
-import type { Location } from '../../../types/profile';
-import { Input } from '@/components/ui/input';
+import React from "react";
+import type { Location } from "../../../utils/types/profile";
+import { Input } from "@/components/ui/input";
 
 interface LocationSectionProps {
   location?: Location;
@@ -18,7 +18,9 @@ export function LocationSection({ location, onChange }: LocationSectionProps) {
 
   return (
     <div className="space-y-4 ">
-      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-400">Location</h3>
+      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-400">
+        Location
+      </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-gray-70 dark:text-gray-400">
@@ -27,7 +29,7 @@ export function LocationSection({ location, onChange }: LocationSectionProps) {
           <Input
             type="text"
             name="address"
-            placeholder='address'
+            placeholder="address"
             value={location?.address}
             onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
@@ -41,7 +43,7 @@ export function LocationSection({ location, onChange }: LocationSectionProps) {
           <Input
             type="text"
             name="city"
-            placeholder='city'
+            placeholder="city"
             value={location?.city}
             onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
@@ -55,7 +57,7 @@ export function LocationSection({ location, onChange }: LocationSectionProps) {
           <Input
             type="text"
             name="country"
-            placeholder='country'
+            placeholder="country"
             value={location?.country}
             onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"

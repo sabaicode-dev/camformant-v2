@@ -14,29 +14,53 @@ const DescriptionSection: React.FC<DescriptionSectionProps> = ({
   errors,
   handleChange,
 }) => {
-  console.log("hllo", formData.required_experience);
-
+  console.log("DescriptionSection -> formData");
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <Label htmlFor="required_experience">Required Experience</Label>
-        <Textarea
-          id="required_experience"
-          name="required_experience"
-          value={
-            Array.isArray(formData.required_experience)
-              ? formData.required_experience.join("\n") // Join array with newlines for display
-              : typeof formData.required_experience === "string"
-                ? formData.required_experience // If it's already a string, use it directly
-                : "" // Fallback for null, undefined, or unexpected values
-          }
-          onChange={handleChange}
-          placeholder="Enter required experience"
-          className="min-h-[100px] font-medium border focus:border-orange-400 focus:border-none"
-        />
-        {errors.required_experience && (
-          <p className="text-sm text-red-500">{errors.required_experience}</p>
-        )}
+      <div className="flex gap-6">
+        <div className="space-y-2 w-2/4">
+          <Label htmlFor="required_experience">Required Experience</Label>
+          <Textarea
+            id="required_experience"
+            name="required_experience"
+            value={
+              Array.isArray(formData.required_experience)
+                ? formData.required_experience.join("\n") // Join array with newlines for display
+                : typeof formData.required_experience === "string"
+                  ? formData.required_experience // If it's already a string, use it directly
+                  : "" // Fallback for null, undefined, or unexpected values
+            }
+            onChange={handleChange}
+            placeholder="Enter required experience"
+            className="min-h-[100px] font-medium border focus:border-orange-400 focus:border-none"
+          />
+          {errors.required_experience && (
+            <p className="text-sm text-red-500">{errors.required_experience}</p>
+          )}
+        </div>
+        <div className="space-y-2 w-2/4">
+          <Label htmlFor="benefit">Benefits</Label>
+          <Textarea
+            id="benefit"
+            name="benefit"
+            value={
+              Array.isArray(formData.benefit)
+                ? formData.benefit.join("\n") // Join array with newlines for display
+                : typeof formData.benefit === "string"
+                  ? formData.benefit // If it's already a string, use it directly
+                  : "" // Fallback for null, undefined, or unexpected values
+            }
+            onChange={handleChange}
+            placeholder={`Enter each experience on a new line, e.g.:
+            3 years of software development
+            Familiarity with React and TypeScript
+            Experience with REST APIs`}
+            className="min-h-[100px] font-medium border focus:border-orange-400 focus:border-none"
+          />
+          {errors.benefit && (
+            <p className="text-sm text-red-500">{errors.benefit}</p>
+          )}
+        </div>
       </div>
 
       <div className="space-y-2">
@@ -51,30 +75,6 @@ const DescriptionSection: React.FC<DescriptionSectionProps> = ({
         />
         {errors.requirement && (
           <p className="text-sm text-red-500">{errors.requirement}</p>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="benefit">Benefits</Label>
-        <Textarea
-          id="benefit"
-          name="benefit"
-          value={
-            Array.isArray(formData.benefit)
-              ? formData.benefit.join("\n") // Join array with newlines for display
-              : typeof formData.benefit === "string"
-                ? formData.benefit // If it's already a string, use it directly
-                : "" // Fallback for null, undefined, or unexpected values
-          }
-          onChange={handleChange}
-          placeholder={`Enter each experience on a new line, e.g.:
-            3 years of software development
-            Familiarity with React and TypeScript
-            Experience with REST APIs`}
-          className="min-h-[100px] font-medium border focus:border-orange-400 focus:border-none"
-        />
-        {errors.benefit && (
-          <p className="text-sm text-red-500">{errors.benefit}</p>
         )}
       </div>
 

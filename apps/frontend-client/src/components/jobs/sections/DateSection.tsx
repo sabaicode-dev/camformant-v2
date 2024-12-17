@@ -11,6 +11,8 @@ import { Jobs } from '@/utils/types/form-type';
 interface DateSectionProps {
   formData: Jobs;
   errors: Record<string, string | null>;
+  createdAtDate: Date | undefined;
+  deadlineDate: Date | undefined;
   handleDateChange: (field: string, date: Date | undefined) => void;
 }
 
@@ -18,9 +20,9 @@ const DateSection: React.FC<DateSectionProps> = ({
   formData,
   errors,
   handleDateChange,
+  createdAtDate,
+  deadlineDate,
 }) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
   return (
     <div className="grid grid-cols-2 gap-6">
       <div className="space-y-2">
@@ -28,27 +30,26 @@ const DateSection: React.FC<DateSectionProps> = ({
         <Popover>
           <PopoverTrigger asChild>
             <Button
-              variant="outline"
+              variant="none"
               className={cn(
-                "w-full justify-start text-left font-normal",
-                !formData.createdAt && "text-muted-foreground"
+                "w-full justify-start text-left font-normal ",
+                !createdAtDate && "text-muted-foreground"
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {formData.createdAt ? (
-                format(new Date(formData.createdAt), "PPP")
+              {createdAtDate ? (
+                (format(new Date(formData.createdAt || ""), "PPP"))
               ) : (
                 <span>Pick a date</span>
               )}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-        mode="single"
-        selected={today}
-        onSelect={(date) => handleDateChange('createdAt', date)}
-        initialFocus
-    />
+            <Calendar
+              mode="single"
+              selected={createdAtDate}
+              onSelect={(date) => handleDateChange('createdAt', date)}
+            />
           </PopoverContent>
         </Popover>
         {errors.createdAt && (
@@ -61,15 +62,15 @@ const DateSection: React.FC<DateSectionProps> = ({
         <Popover>
           <PopoverTrigger asChild>
             <Button
-              variant="outline"
+              variant="none"
               className={cn(
                 "w-full justify-start text-left font-normal",
-                !formData.deadline && "text-muted-foreground"
+                !deadlineDate && "text-muted-foreground"
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {formData.deadline ? (
-                format(new Date(formData.deadline), "PPP")
+              {deadlineDate ? (
+                format(deadlineDate, "PPP")
               ) : (
                 <span>Pick a date</span>
               )}
@@ -78,10 +79,8 @@ const DateSection: React.FC<DateSectionProps> = ({
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
-              selected={formData.deadline ? new Date(formData.deadline) : undefined}
+              selected={deadlineDate}
               onSelect={(date) => handleDateChange('deadline', date)}
-              // disabled={(date) => date < today}
-              initialFocus
             />
           </PopoverContent>
         </Popover>
