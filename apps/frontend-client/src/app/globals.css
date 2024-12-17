@@ -6,7 +6,6 @@
   width: 8px !important; /* Width of the scrollbar */
   height: 8px !important; /* Height for horizontal scrollbar */
 }
-
 .chat-container::-webkit-scrollbar-thumb {
   background-color: rgba(128, 128, 128, 0.116) !important; /* Orange thumb color */
   border-radius: 10px !important; /* Rounded corners for the thumb */
@@ -185,4 +184,4 @@ body {
   }
 }
 
-
+@import "../components/editor/styles.css";

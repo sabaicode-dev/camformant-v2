@@ -2,7 +2,6 @@ import React from 'react';
 import { Mail, Building2 } from 'lucide-react';
 import { ProfileData } from '@/types/profile';
 import { LocationInfo } from './LocationInfo';
-import { SocialLinks } from './SocialLinks';
 
 interface ProfileInfoProps {
   data?: ProfileData | null;
@@ -12,12 +11,8 @@ export function ProfileInfo({ data }: ProfileInfoProps) {
   return (
     <div className="mt-5">
       <div className="text-center mb-8">
-      <div 
-          className="mt-4 text-gray-600 max-w-2xl mx-auto prose"
-          dangerouslySetInnerHTML={{ __html: data?.description || 'No description available' }}
-        />
+      <div className="mt-4 text-gray-600 max-w-2xl mx-auto prose list-item" dangerouslySetInnerHTML={{ __html: data?.description || 'No description available' }} />
       </div>
-
       <div className="py-7 bg-slate-100 dark:bg-black  w-full px-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-3">
@@ -32,12 +27,6 @@ export function ProfileInfo({ data }: ProfileInfoProps) {
               </div>
             )}
             <LocationInfo location={data?.location} />
-          </div>
-          
-          <div className="flex flex-col space-y-4 py-5">
-            <div className="flex justify-end ">
-              <SocialLinks socialLinks={data?.social_links} contact={data?.contact} />
-            </div>
           </div>
         </div>
       </div>

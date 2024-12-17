@@ -76,20 +76,6 @@ export function EditProfileForm({ initialData, onSubmit }: EditProfileFormProps)
           formData={formData} 
           onChange={handleInputChange}
         />
-{/* 
-        <div className="space-y-4">
-          <label className="block text-sm font-medium dark:text-gray-300 text-gray-700">
-            Bio
-          </label>
-          <Textarea
-            name="description"
-            value={formData?.description}
-            onChange={handleInputChange}
-            rows={4}
-            className={cn("w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500")}
-            placeholder="Write something about yourself..."
-          />
-        </div> */}
 
         <BioSection description={formData?.description} onChange={handleDescriptionChange} />
 
