@@ -12,12 +12,10 @@ export function ProfileInfo({ data }: ProfileInfoProps) {
   return (
     <div className="mt-5">
       <div className="text-center mb-8">
-        <h2 className="text-ellipsis font-bold text-gray-800 dark:text-white">
-          About
-        </h2>
-        <p className="mt-4 text-gray-600 max-w-2xl mx-auto dark:text-white">
-          {data?.description || "No description available"}
-        </p>
+      <div 
+          className="mt-4 text-gray-600 max-w-2xl mx-auto prose"
+          dangerouslySetInnerHTML={{ __html: data?.description || 'No description available' }}
+        />
       </div>
 
       <div className="py-7 bg-slate-100 dark:bg-black  w-full px-5">
@@ -43,11 +41,6 @@ export function ProfileInfo({ data }: ProfileInfoProps) {
                 contact={data?.contact}
               />
             </div>
-            {/* <div className="flex justify-end">
-              <div className="text-sm text-gray-500">Job Openings: {data?.job_openings_count}
-                <br /> Job Closed: {data?.job_closings_count}
-              </div>
-            </div> */}
           </div>
         </div>
       </div>

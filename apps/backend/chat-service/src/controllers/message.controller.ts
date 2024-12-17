@@ -73,7 +73,7 @@ export class MessageController extends Controller {
 
         // Find the most recent message (you can use any condition here)
         const mostRecentIndex = messages.findIndex(
-          msg => msg.message === "Hello ME " // Replace with your condition
+          (msg) => msg.message === "Hello ME " // Replace with your condition
         );
 
         if (mostRecentIndex !== -1) {

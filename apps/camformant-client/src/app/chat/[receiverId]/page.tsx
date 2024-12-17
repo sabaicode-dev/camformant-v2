@@ -43,7 +43,6 @@ const MessagePage = () => {
   const router = useRouter();
   const socketContext = useSocketContext();
   const onlineUsers = socketContext ? socketContext.onlineUsers : [];
-  const socket = socketContext?.socket;
   //participant profile
   const [participantProfile, setParticipantProfile] = useState<{
     _id: string;

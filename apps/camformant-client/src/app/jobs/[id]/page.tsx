@@ -18,6 +18,7 @@ import axiosInstance from "@/utils/axios";
 import { MdMessage } from "react-icons/md";
 import { useAuth } from "@/context/auth";
 import SkeletonLoader from "@/components/cv-rating-card/router-page/basic/skeleton";
+import { useNotification } from "@/hooks/user-notification";
 
 const Page: React.FC = () => {
   const { user } = useAuth();
@@ -31,6 +32,7 @@ const Page: React.FC = () => {
   const [selected, setSelected] = useState<boolean>(false);
   const [cv, setCV] = useState<string>("");
   const [next, setNext] = useState<boolean>(false);
+  const { addNotification, NotificationDisplay } = useNotification();
 
   // Fetch Job Detail
   useEffect(() => {
@@ -39,7 +41,6 @@ const Page: React.FC = () => {
         const response = await axiosInstance.get(`${API_ENDPOINTS.JOBS}/${id}`);
         if (response.status === 200 && response.data.data) {
           const job = response.data.data;
-
           job.createdAt = new Date(job.createdAt);
           setJobData([job]);
           setLoading(false);
@@ -86,6 +87,7 @@ const Page: React.FC = () => {
         const data = {
           userId: user?._id,
           jobId: id,
+          companyId: jobData[0].companyId,
           userInfo: {
             name: user?.username,
             profile: user?.profile,
@@ -99,11 +101,10 @@ const Page: React.FC = () => {
         );
         if (response.status === 200) {
           console.log("Application submitted successfully");
-          console.log("response", response);
         }
       } catch (error) {
         console.log("error in apply ", error);
-        alert("Application Error ");
+        addNotification("Application error", "error");
       } finally {
         setApply(false);
       }
@@ -117,6 +118,7 @@ const Page: React.FC = () => {
 
   return (
     <div className="flex flex-col w-full h-full pb-28 ">
+      <NotificationDisplay />
       <div onClick={() => router.back()}>
         <BackButton_md styles="absolute bg-white p-3 px-4 rounded-xl top-5 left-4 " />
       </div>

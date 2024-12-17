@@ -27,6 +27,8 @@ export default {
           NEXT_PUBLIC_CONVERSATION_ENDPOINT:
             process.env.NEXT_PUBLIC_CONVERSATION_ENDPOINT || "",
           UPLOADTHING_TOKEN: process.env.UPLOADTHING_TOKEN || "",
+          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:
+            process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
         },
       });
 

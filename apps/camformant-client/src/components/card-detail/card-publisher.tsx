@@ -1,7 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import logo1 from "@/../../public/images/logo.png";
-import { profile } from "console";
 
 export interface CardCompanyProps {
   profile?: string;
@@ -19,8 +17,8 @@ export const JobPublisher: React.FC<CardCompanyProps> = ({
   profile,
 }) => {
   return (
-    <div className="container rounded-3xl bg-white drop-shadow-lg">
-      <h1 className="font-semibold text-sm">Job Publisher</h1>
+    <div className="container py-2 bg-white rounded-2xl drop-shadow-lg">
+      <h1 className="text-sm font-semibold">Job Publisher</h1>
       <div className="grid grid-cols-4 gap-2 pt-4">
         <div className="col-span-1">
           <Image
@@ -28,16 +26,16 @@ export const JobPublisher: React.FC<CardCompanyProps> = ({
             width={75}
             height={75}
             alt={name || "logo"}
-            className="object-cover rounded-full drop-shadow-xl h-16 w-16"
+            className="object-cover w-16 h-16 rounded-full drop-shadow-xl"
           />
         </div>
         <div className="col-span-3">
-          <div className="flex text-xs flex-col gap-5">
+          <div className="flex flex-col gap-5 text-xs">
             <div>
               <h1 className="text-sm font-semibold">{name} </h1>
-              <p className="text-gray-400 pt-1">{bio}</p>
+              <p className="pt-1 text-gray-400">{bio}</p>
             </div>
-            <div className="text-xs pb-3">
+            <div className="pb-3 text-xs">
               <h1>{phone_number} </h1>
               <p className="pt-1">{email}</p>
             </div>

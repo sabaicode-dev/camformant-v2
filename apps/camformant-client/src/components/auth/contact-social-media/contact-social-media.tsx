@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { useAuth } from '../../../context/auth';
+import { useAuth } from "@/context/auth";
 
 export const ContactSocialMedia: React.FC = () => {
-  const { siginWithGoogle } = useAuth()
+  const { siginWithGoogle } = useAuth();
 
   return (
     <div className="flex flex-col gap-5">
@@ -18,15 +18,25 @@ export const ContactSocialMedia: React.FC = () => {
           onClick={siginWithGoogle}
           type="button"
         >
-          <Image src="/images/search.png" alt="Facebook" width={20} height={20} /> Sign in
-          with Google
+          <Image
+            src="/images/search.png"
+            alt="Facebook"
+            width={20}
+            height={20}
+          />{" "}
+          Sign in with Google
         </button>
         <button
           className="p-4 flex items-center justify-start gap-x-12 bg-white drop-shadow-md w-full rounded-2xl 
          "
         >
-          <Image src="/images/facebook.png" alt="Facebook" width={20} height={20} /> Sign in
-          with Facebook
+          <Image
+            src="/images/facebook.png"
+            alt="Facebook"
+            width={20}
+            height={20}
+          />{" "}
+          Sign in with Facebook
         </button>
       </div>
     </div>

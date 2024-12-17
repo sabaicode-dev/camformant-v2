@@ -15,7 +15,7 @@ import {
   VerifyUserRequest,
 } from "@/utils/types/auth";
 
-interface User {
+export interface User {
   _id: string;
   email: string;
   profile: string;
@@ -103,7 +103,8 @@ export const AuthProvider = ({
 
       // Fetch the user profile data after login
       const res = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
-      setUser(res.data.data);
+      console.log("res.data:::", res.data);
+      setUser(res.data);
       setResStatus(res.status);
       setIsAuthenticated(true);
       router.push("/");

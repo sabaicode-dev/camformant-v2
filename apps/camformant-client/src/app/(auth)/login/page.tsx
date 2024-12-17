@@ -10,13 +10,17 @@ import { isAPIErrorResponse } from "@/utils/types/common";
 import { LoginProps, UserSchemaLogin } from "@/schema/login";
 import { FormFieldLogin } from "@/components/auth/form/form-field-login";
 import { ContactSocialMedia } from "@/components/auth/contact-social-media/contact-social-media";
+import { useState } from "react";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const Page: React.FC = () => {
   const { login, loading, resStatus } = useAuth();
   const { addNotification, NotificationDisplay } = useNotification();
-
+  const [isVisible, setIsVisible] = useState(false);
+  const onChangeVisible = () => {
+    setIsVisible(!isVisible);
+  };
   const {
     register,
     handleSubmit,
@@ -55,11 +59,11 @@ const Page: React.FC = () => {
       <NotificationDisplay />
       <form className="container" onSubmit={handleSubmit(onSubmit)}>
         <div className="pt-4">
-          <button onClick={() => history.back()}>
+          <a href="/home">
             <span className="text-2xl">
               <IoArrowBack />
             </span>
-          </button>
+          </a>
         </div>
         <h1 className="flex items-center justify-center w-full my-5 text-xl font-bold">
           Sign in Account
@@ -73,11 +77,13 @@ const Page: React.FC = () => {
             error={errors.email}
           />
           <FormFieldLogin
-            type="password"
+            type={isVisible ? "text" : "password"}
             placeholder="Password"
             name="password"
             register={register}
+            isIcon={true}
             error={errors.password}
+            onChangeVisible={onChangeVisible}
           />
 
           <div className="flex pl-6 font-semibold gap-x-2">

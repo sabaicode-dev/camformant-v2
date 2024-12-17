@@ -8,6 +8,7 @@ export const API_ENDPOINTS = {
   CORPARATE_VERIFY: `${process.env.NEXT_PUBLIC_CORPORATE_ENDPOINT}/verify`,
   // CORPORATE SERVICE
   CORPARATE_PROFILE_ME: `${process.env.NEXT_PUBLIC_COMPANY_ENDPOINT}/profile/me`,
+  CORPARATE_PROFILE_UPDATE: `${process.env.NEXT_PUBLIC_COMPANY_ENDPOINT}/profile`,
   // USER SERVICE
   USER_PROFILE: `${process.env.NEXT_PUBLIC_USER_ENDPOINT}/me`,
   USER_PROFILE_UPDATE: `${process.env.NEXT_PUBLIC_USER_ENDPOINT}/photo`,
@@ -18,6 +19,7 @@ export const API_ENDPOINTS = {
   JOB: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/job`,
 
   JOB_APPLY: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/jobApply`,
+  JOB_APPLY_LENGTH: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/jobApply/applyLength`,
   JOB_STATUS: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/jobApply`,
   SEARCH_HISTORY: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/search-history`,
   SEARCH_TRENDING: `${process.env.NEXT_PUBLIC_JOB_ENDPOINT}/search-trending`,

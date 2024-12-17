@@ -26,22 +26,18 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({
   children,
-  isLogin,
 }: {
   children: React.ReactNode;
-  isLogin: boolean;
 }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); 
   const router = useRouter();
 
   const fetchUser = async () => {
     try {
-      setIsLoading(false);
-      const res = await axiosInstance.get(
-        `${API_ENDPOINTS.CORPARATE_PROFILE_ME}`
-      );
+      setIsLoading(true); 
+      const res = await axiosInstance.get(`${API_ENDPOINTS.CORPARATE_PROFILE_ME}`);
       setUser(res.data.data);
       setIsAuthenticated(true);
     } catch (error) {
@@ -49,17 +45,13 @@ export function AuthProvider({
       setIsAuthenticated(false);
       setUser(null);
     } finally {
-      setIsLoading(true);
+      setIsLoading(false); 
     }
   };
 
   useEffect(() => {
-    if (isLogin) {
-      fetchUser();
-    } else {
-      setIsLoading(false);
-    }
-  }, [isLogin]);
+    fetchUser();
+  }, []);
 
   const signUp = async (data: SignUpData) => {
     setIsLoading(true);

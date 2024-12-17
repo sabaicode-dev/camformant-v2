@@ -58,132 +58,134 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
     formData.deadline ? new Date(formData.deadline) : undefined
   );
 
-  const handleDateChange = (field: string, date: Date | undefined) => {
-    if (field === "createdAt") {
-      setCreatedAtDate(date);
-      setFormData((prev) => ({
+  
+    const handleDateChange = (field: string, date: Date | undefined) => {
+      if (field === "createdAt") {
+        setCreatedAtDate(date);
+        setFormData((prev) => ({
+          ...prev,
+          createdAt: date ? format(date, "yyyy-MM-dd") : "",
+        }));
+        setErrors((prev) => ({
+          ...prev,
+          createdAt: validateField("createdAt", date?.toISOString() || ""),
+        }));
+      } else if (field === "deadline") {
+        setDeadlineDate(date);
+        setFormData((prev) => ({
+          ...prev,
+          deadline: date ? format(date, "yyyy-MM-dd") : "",
+        }));
+        setErrors((prev) => ({
+          ...prev,
+          deadline: validateField("deadline", date?.toISOString() || ""),
+        }));
+      }
+    };
+    const handleArrayChange = (selected: string[], fieldName: string) => {
+      setFormData((prev: any) => ({
         ...prev,
-        createdAt: date ? format(date, "yyyy-MM-dd") : "",
+        [fieldName]: selected,
       }));
-      setErrors((prev) => ({
-        ...prev,
-        createdAt: validateField("createdAt", date?.toISOString() || ""),
-      }));
-    } else if (field === "deadline") {
-      setDeadlineDate(date);
-      setFormData((prev) => ({
-        ...prev,
-        deadline: date ? format(date, "yyyy-MM-dd") : "",
-      }));
-      setErrors((prev) => ({
-        ...prev,
-        deadline: validateField("deadline", date?.toISOString() || ""),
-      }));
-    }
-  };
-  const handleArrayChange = (selected: string[], fieldName: string) => {
-    setFormData((prev: any) => ({
-      ...prev,
-      [fieldName]: selected,
-    }));
-
-    setErrors((prev) => ({
-      ...prev,
-      [fieldName]: selected.length === 0 ? "This field is required" : null,
-    }));
-  };
-
-  const handleChangeNum = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    setFormData((prev: any) => {
-      const updatedData = {
-        ...prev,
-        [name]: value === "" || isNaN(Number(value)) ? value : Number(value),
-      };
 
       setErrors((prev) => ({
         ...prev,
-        [name]: validateNumericField(name, value, updatedData),
+        [fieldName]: selected.length === 0 ? "This field is required" : null,
       }));
+    };
 
-      return updatedData;
-    });
-  };
+    const handleChangeNum = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
+      setFormData((prev: any) => {
+        const updatedData = {
+          ...prev,
+          [name]: value === "" || isNaN(Number(value)) ? value : Number(value),
+        };
 
-    setFormData((prev: any) => {
-      const updatedData = {
-        ...prev,
-        [name]: value,
-      };
+        setErrors((prev) => ({
+          ...prev,
+          [name]: validateNumericField(name, value, updatedData),
+        }));
 
-      setErrors((prev) => ({
-        ...prev,
-        [name]: validateField(name, value),
-      }));
-
-      return updatedData;
-    });
-  };
-
-  const validateForm = () => {
-    const result = jobFormSchema.safeParse({
-      ...formData,
-      min_salary: Number(formData.min_salary),
-      max_salary: Number(formData.max_salary),
-    });
-
-    if (!result.success) {
-      const newErrors: Record<string, string> = {};
-      result.error.errors.forEach((error) => {
-        if (error.path[0]) {
-          newErrors[error.path[0].toString()] = error.message;
-        }
+        return updatedData;
       });
-      setErrors(newErrors);
-      return false;
-    }
+    };
 
-    return true;
-  };
+    const handleChange = (
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+      const { name, value } = e.target;
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+      setFormData((prev: any) => {
+        const updatedData = {
+          ...prev,
+          [name]: value,
+        };
 
-    try {
-      if (typeOfForm === "POST") {
-        await axiosInstance.post(API_ENDPOINTS.JOB, formData);
-      } else {
-        await axiosInstance.put(
-          `${API_ENDPOINTS.JOB_ENDPOINT}/${existingData!._id}`,
-          { ...formData, companyId: existingData?.company?._id || "" }
-        );
+        setErrors((prev) => ({
+          ...prev,
+          [name]: validateField(name, value),
+        }));
+
+        return updatedData;
+      });
+    };
+
+    const validateForm = () => {
+      const result = jobFormSchema.safeParse({
+        ...formData,
+        min_salary: Number(formData.min_salary),
+        max_salary: Number(formData.max_salary),
+      });
+
+      if (!result.success) {
+        const newErrors: Record<string, string> = {};
+        result.error.errors.forEach((error) => {
+          if (error.path[0]) {
+            newErrors[error.path[0].toString()] = error.message;
+          }
+        });
+        setErrors(newErrors);
+        return false;
       }
 
-      await fetchJobs();
-      router.push("/dashboard/jobs");
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
+      return true;
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (!validateForm()) return;
+
+      try {
+        if (typeOfForm === "POST") {
+          await axiosInstance.post(API_ENDPOINTS.JOB, formData);
+        } else {
+          await axiosInstance.put(
+            `${API_ENDPOINTS.JOB_ENDPOINT}/${existingData!._id}`,
+            { ...formData, companyId: existingData?.company?._id || "" }
+          );
+        }
+
+        await fetchJobs();
+        router.push("/dashboard/jobs");
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      }
+    };
+
+    return {
+      formData,
+      errors,
+      isLoading,
+      createdAtDate,
+      deadlineDate,
+      handleSubmit,
+      handleChange,
+      handleArrayChange,
+      handleChangeNum,
+      handleDateChange,
+      setFormData,
+    };
   };
 
-  return {
-    formData,
-    errors,
-    isLoading,
-    createdAtDate,
-    deadlineDate,
-    handleSubmit,
-    handleChange,
-    handleArrayChange,
-    handleChangeNum,
-    handleDateChange,
-    setFormData,
-  };
-};

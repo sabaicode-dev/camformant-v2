@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import type { ProfileData } from "../../../utils/types/profile";
-import { PersonalInfoSection } from "./PersonalInfoSection";
-import { LocationSection } from "./LocationSection";
-import { SocialLinksSection } from "./SocialLinksSection";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { ImageUpload } from "./ImageUpload";
-import { uploadToS3 } from "@/services/upload.service";
+import React, { useState } from 'react';
+import type { ProfileData } from '../../../types/profile';
+import { PersonalInfoSection } from './PersonalInfoSection';
+import { LocationSection } from './LocationSection';
+import { SocialLinksSection } from './SocialLinksSection';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Textarea } from "@/components/ui/textarea"
+import { cn } from '@/lib/utils';
+import { ImageUpload } from './ImageUpload';
+import { uploadToS3 } from '@/services/upload.service';
+import { BioSection } from './BioSection';
 interface EditProfileFormProps {
   initialData?: ProfileData;
   onSubmit: (data: ProfileData) => void;
@@ -32,14 +33,20 @@ export function EditProfileForm({
       [name]: value,
     }));
   };
+  
+  const handleDescriptionChange = (content: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      description: content,
+    }));
+  };
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
-    // Create a preview URL for the selected file
     const previewUrl = URL.createObjectURL(file);
     setFormData((prev) => ({
       ...prev,
-      profile: previewUrl, // Temporarily set the preview URL
+      profile: previewUrl
     }));
   };
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,15 +56,12 @@ export function EditProfileForm({
     try {
       if (!formData) return;
       let profileUrl = formData.profile;
-      // Only upload if a new file was selected
       if (selectedFile) {
         const uploadResult = await uploadToS3(selectedFile);
         if (uploadResult) {
           profileUrl = uploadResult;
         }
       }
-
-      // Submit the form with the final data
       await onSubmit({
         ...formData,
         profile: profileUrl,

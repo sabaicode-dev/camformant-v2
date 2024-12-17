@@ -1,12 +1,7 @@
 "use client";
-import { Stats } from "@/components/Stats";
-import Chart from "./chart/chart";
-
+import { redirect } from "next/navigation";
 export default function Dashboard() {
-  return (
-    <>
-      <Stats />
-      <Chart />
-    </>
-  );
+  redirect("/dashboard/chart");
+  return <></>;
 }
+

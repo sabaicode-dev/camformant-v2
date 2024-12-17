@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import CardRating from "./rating-card";
 import Link from "next/link";
-import axios from "axios";
 import { useAuth } from "@/context/auth";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import axiosInstance from "@/utils/axios";

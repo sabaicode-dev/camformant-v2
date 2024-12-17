@@ -7,7 +7,7 @@ import Heart from "./heart";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ImCross } from "react-icons/im";
-import React, { SetStateAction } from "react";
+import React from "react";
 
 interface CardProps {
   userId?: string;
@@ -50,7 +50,7 @@ export const Card: React.FC<CardProps> = (props) => {
   } = props;
   const router = useRouter();
   return (
-    <div className="p-5 bg-white shadow drop-shadow-md rounded-2xl">
+    <div className="p-5 bg-white shadow drop-shadow-md rounded-2xl h-[330px] flex flex-col justify-around">
       <div
         className="flex justify-between"
         onClick={() => {
@@ -59,7 +59,7 @@ export const Card: React.FC<CardProps> = (props) => {
       >
         <section className="flex items-center gap-x-5">
           <Image
-            src={profile||""}
+            src={profile || ""}
             alt={title! || profile!}
             width={48}
             height={48}
@@ -80,7 +80,7 @@ export const Card: React.FC<CardProps> = (props) => {
         )}
         {deleteFunc && (
           <ImCross
-            className="text-red-600 mt-2"
+            className="mt-2 text-red-600"
             onClick={(event: React.MouseEvent) => {
               event.stopPropagation();
               deleteFunc();
@@ -93,56 +93,53 @@ export const Card: React.FC<CardProps> = (props) => {
           if (handleDropDownClick) handleDropDownClick(e);
           else router.push(`/jobs/${_id}`);
         }}
+        className="flex flex-col justify-between"
       >
-        <div>
-          <div className="flex flex-wrap space-x-2 text-xs text-primaryCam ">
-            {type &&
-              type.length > 0 &&
-              type.map((item, index) => (
-                <span
-                  key={index}
-                  className="bg-orange-50 px-3 py-1.5 rounded-full mt-5 "
-                >
-                  {item}
-                </span>
-              ))}
-          </div>
-          <div className="flex flex-wrap mt-3 space-x-2 text-xs text-primaryCam ">
-            {schedule &&
-              schedule.length > 0 &&
-              schedule.map((item, index) => (
-                <span
-                  key={index}
-                  className=" bg-orange-50 px-3 py-1.5 rounded-full"
-                >
-                  {item}
-                </span>
-              ))}
-          </div>
-          <div className="flex items-center justify-between mt-4">
-            <div className="text-sm text-gray-400">
-              {job_opening} Job Opening
-            </div>
-            <div className="text-lg font-semibold text-primaryCam">{`${min_salary}$-${max_salary}$`}</div>
-          </div>
-
-          {deadline && (
-            <div className="flex justify-between mt-3">
-              <div className="flex items-center space-x-2 text-secondaryCam">
-                <label className="text-sm ">
-                  <MdCalendarToday />
-                </label>
-                <span className="text-xs">{dateFormat(deadline, "en-US")}</span>
-              </div>
-              <div className="flex space-x-2 text-secondaryCam">
-                <label className="text-sm">
-                  <FaMapMarkerAlt />
-                </label>
-                <span className="text-xs">{location}</span>
-              </div>
-            </div>
-          )}
+        <div className="flex flex-wrap space-x-2 text-xs text-primaryCam ">
+          {type &&
+            type.length > 0 &&
+            type.map((item, index) => (
+              <span
+                key={index}
+                className="bg-orange-50 px-3 py-1.5 rounded-full mt-5 "
+              >
+                {item}
+              </span>
+            ))}
         </div>
+        <div className="flex flex-wrap gap-2 mt-3 text-xs text-primaryCam ">
+          {schedule &&
+            schedule.length > 0 &&
+            schedule.map((item, index) => (
+              <span
+                key={index}
+                className=" bg-orange-50 px-3 py-1.5 rounded-full"
+              >
+                {item}
+              </span>
+            ))}
+        </div>
+        <div className="flex items-center justify-between mt-4">
+          <div className="text-sm text-gray-400">{job_opening} Job Opening</div>
+          <div className="text-lg font-semibold text-primaryCam">{`${min_salary}$-${max_salary}$`}</div>
+        </div>
+
+        {deadline && (
+          <div className="flex justify-between mt-3">
+            <div className="flex items-center space-x-2 text-secondaryCam">
+              <label className="text-sm ">
+                <MdCalendarToday />
+              </label>
+              <span className="text-xs">{dateFormat(deadline, "en-US")}</span>
+            </div>
+            <div className="flex space-x-2 text-secondaryCam">
+              <label className="text-sm">
+                <FaMapMarkerAlt />
+              </label>
+              <span className="text-xs">{location}</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

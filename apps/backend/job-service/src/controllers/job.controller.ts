@@ -1,7 +1,6 @@
 import {
   BodyUpdateJobApply,
   GetApplyJobResLimit,
-  GetJobApplyResponse,
   JobApplyQueriesController,
   JobApplyResponse,
   JobGetAllControllerParams,
@@ -177,6 +176,21 @@ export class JobController extends Controller {
       throw error;
     }
   }
+  @Get("/jobApply/applyLength")
+  public async getApplyLength(
+    @Queries() query: { id?: string; filter: string }
+  ): Promise<
+    | { [key: string]: number }
+    | { [key: string]: { [key: string]: number } }
+    | undefined
+  > {
+    try {
+      const data = await jobService.getApplyLength(query);
+      return data;
+    } catch (err) {
+      throw err;
+    }
+  }
   @Get("/jobApply")
   public async getJobApply(
     @Queries()
@@ -184,7 +198,7 @@ export class JobController extends Controller {
   ) {
     try {
       const data = await jobService.getJobApply(queries);
-      return sendResponse<GetJobApplyResponse[] | GetApplyJobResLimit>({
+      return sendResponse<JobApplyResponse[] | GetApplyJobResLimit>({
         message: "Fetched is successfully",
         data: data,
       });
@@ -192,6 +206,7 @@ export class JobController extends Controller {
       throw err;
     }
   }
+
   @Put("/jobApply/:applyId")
   public async putJobApply(
     @Path() applyId: string,
@@ -275,6 +290,5 @@ export class JobController extends Controller {
     }
   }
 }
-
 
 export default new JobController();

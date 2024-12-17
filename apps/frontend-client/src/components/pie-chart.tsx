@@ -17,6 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { ApplyDataLengthParams } from "@/utils/types/job";
 const chartData = [
   { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
   { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
@@ -46,7 +47,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-function PieChartComponent() {
+function PieChartComponent({
+  applyData=[],
+}: {
+  applyData: ApplyDataLengthParams[];
+}) {
   const totalVisitors = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
   }, []);
@@ -55,8 +60,8 @@ function PieChartComponent() {
     <div className="h-auto">
       <Card className="flex flex-col justify-center gap-[87px] shadow-md">
         <CardHeader>
-          <CardTitle>Pie Chart - Donut with Text</CardTitle>
-          <CardDescription>January - June 2024</CardDescription>
+          <CardTitle>Pie Chart - Number Of Apply</CardTitle>
+          <CardDescription>For Each Job</CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer

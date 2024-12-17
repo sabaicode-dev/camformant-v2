@@ -1,11 +1,11 @@
 "use client";
 
 import { useAuth } from "@/context/auth";
-import { useNotification } from "@/hooks/user-notification";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { useEffect, useState } from "react";
-import { MdCircleNotifications } from "react-icons/md";
+import AllowNotificationCard from "./allow-notification-card";
+import { Bell } from "lucide-react";
 
 export default function NotificationComponent({
   addNotification,
@@ -20,10 +20,13 @@ export default function NotificationComponent({
   const [subscription, setSubscription] = useState<PushSubscription | null>(
     null
   );
+  const [isPopupNotificatioin, setIsPopupNotificatioin] = useState(false);
+  const handlePopupNotification = () => {
+    setIsPopupNotificatioin(!isPopupNotificatioin);
+  };
+
   const [isVisible, setIsVisible] = useState(false); // For popup visibility
   const [loading, setLoading] = useState(false);
-
-  console.log("isAuthentication", isAuthenticated);
   console.log("sub:::", subscription);
 
   // Register Notification When User Login
@@ -67,10 +70,14 @@ export default function NotificationComponent({
       const res = await axiosInstance.get(API_ENDPOINTS.NOTIFICATION);
       setSubscription(res.data[0]);
     }
-    if (isAuthenticated) getSubscription();
-  }, [isAuthenticated]);
+    if (isAuthenticated && Notification.permission == "default") {
+      return;
+    } else if (isAuthenticated) {
+      getSubscription();
+    }
+  }, [isAuthenticated, isPopupNotificatioin]);
   async function subscribeToPush() {
-    setLoading(true); // Set loading state
+    setLoading(true);
     const registration = await navigator.serviceWorker.ready;
     const sub = await registration.pushManager.subscribe({
       userVisibleOnly: true,
@@ -99,7 +106,7 @@ export default function NotificationComponent({
     } catch (error) {
       console.log("Subscribe Notification Error:::", error);
     } finally {
-      setLoading(false); // Unset loading state
+      setLoading(false);
     }
   }
 
@@ -120,16 +127,21 @@ export default function NotificationComponent({
   }
 
   const handleToggle = async () => {
-    //function checkPermission notification
     async function checkPermission() {
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") {
-        addNotification("Notification Access Dined", "error");
+      if (Notification.permission === "default") {
+        setIsPopupNotificatioin(true);
         return;
-      } else if (permission === "granted") {
-        // showNotification();
-        addNotification("Notification Enabled", "success");
-        return "granted";
+      } else {
+        const permission = await Notification.requestPermission();
+        if (permission !== "granted") {
+          setSubscription(null);
+          addNotification("Notification Access Dined", "error");
+          return;
+        } else if (permission === "granted") {
+          subscribeToPush();
+          addNotification("Notification Enabled", "success");
+          return "granted";
+        }
       }
     }
     if (!isAuthenticated) {
@@ -158,22 +170,20 @@ export default function NotificationComponent({
       </div>
     );
   }
-  console.log("support", isSupported);
 
   const isDisable = loading && !isAuthenticated ? true : false;
-  console.log(
-    "loading,",
-    loading,
-    "isAuth,",
-    isAuthenticated,
-    "disable,",
-    isDisable
-  );
+
   return (
     <div className={` flex items-center justify-between w-full  rounded-lg`}>
       {/* Left Section: Icon and Text */}
+      {isPopupNotificatioin && (
+        <AllowNotificationCard
+          isShowPopup={isPopupNotificatioin}
+          handlePopupNotification={handlePopupNotification}
+        />
+      )}
       <div className="flex items-center w-full gap-5 text-lg">
-        <MdCircleNotifications size={22} />
+        <Bell size={22} />
         <span>Notification</span>
       </div>
 
@@ -182,9 +192,9 @@ export default function NotificationComponent({
         <input
           type="checkbox"
           className="sr-only peer"
-          checked={isDisable ? false : !!subscription} //todo: related
+          checked={isDisable ? false : !!subscription}
           onChange={handleToggle}
-          disabled={isDisable} // Disable during loading state
+          disabled={isDisable}
         />
         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-orange-600"></div>
       </label>

@@ -6,9 +6,8 @@ type Config = {
   port: number;
   mongodbUrl: string;
   clientUrl: string;
+  notification_api_endpoint: string;
   corporator_api_endpoint: string;
-  s3Region: string;
-  s3Bucket: string;
   awsAccessKeyId: string;
   awsSecretAccessKey: string;
 };
@@ -27,10 +26,9 @@ function loadConfig(): Config {
     MONGODB_URL: Joi.string().required(),
     CLIENT_URL: Joi.string().required(),
     CORPORATOR_API_ENDPOINT: Joi.string().required(),
-    S3_REGION: Joi.string().required(),
-    S3_BUCKET: Joi.string().required(),
     AWS_ACCESS_KEY_ID: Joi.string().required(),
     AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+    NOTIFICATION_SERVICE_URL: Joi.string().required(),
   })
     .unknown()
     .required();
@@ -46,10 +44,9 @@ function loadConfig(): Config {
     mongodbUrl: envVars.MONGODB_URL,
     clientUrl: envVars.CLIENT_URL,
     corporator_api_endpoint: envVars.CORPORATOR_API_ENDPOINT,
-    s3Region: envVars.S3_REGION,
-    s3Bucket: envVars.S3_BUCKET,
     awsAccessKeyId: envVars.AWS_ACCESS_KEY_ID,
     awsSecretAccessKey: envVars.AWS_SECRET_ACCESS_KEY,
+    notification_api_endpoint: envVars.NOTIFICATION_SERVICE_URL,
   };
 }
 

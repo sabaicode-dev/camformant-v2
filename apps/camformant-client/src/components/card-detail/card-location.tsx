@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { GoogleMap, Marker } from "@react-google-maps/api";
 import React, { useEffect, useState } from "react";
 
 interface CardLocationProps {
@@ -34,8 +34,8 @@ export const CardLocation: React.FC<CardLocationProps> = ({ address }) => {
       <GoogleMap
         mapContainerStyle={{
           width: "100%",
-          height: "200px", 
-          borderRadius: "12px", 
+          height: "200px",
+          borderRadius: "12px",
         }}
         center={center!}
         zoom={14}

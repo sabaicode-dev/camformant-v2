@@ -1,6 +1,5 @@
 "use client";
-import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
 import Image from "next/image";
 
@@ -20,7 +19,6 @@ const AttachedCvs: React.FC = () => {
     },
     withCredentials: true,
   };
-
 
   function handleSelectFile(event: React.ChangeEvent<HTMLInputElement>) {
     const cv = event.target.files?.[0];
