@@ -768,6 +768,63 @@ class AuthService {
       throw new Error(`Error verifying user: ${error}`);
     }
   }
+  async adminLogin(body: LoginRequest): Promise<CognitoToken> {
+    const username = (body.email || body.phone_number) as string;
+
+    const params: InitiateAuthCommandInput = {
+      AuthFlow: "USER_PASSWORD_AUTH",
+      ClientId: configs.awsCognitoClientId,
+      AuthParameters: {
+        USERNAME: username,
+        PASSWORD: body.password!,
+        SECRET_HASH: this.generateSecretHash(username),
+      },
+    };
+
+    try {
+      const command = new InitiateAuthCommand(params);
+      const result = await client.send(command);
+
+      // Get the user info
+      const congitoUsername = await this.getUserInfoFromToken(
+        result.AuthenticationResult?.IdToken!
+      );
+
+      // Get the user info from the user service
+      const userInfo = await axios.get(
+        `${configs.userServiceUrl}/v1/admin/profile/${congitoUsername.sub}`
+      );
+      console.log("userInfo: ", userInfo.data.data._id);
+      return {
+        accessToken: result.AuthenticationResult?.AccessToken!,
+        idToken: result.AuthenticationResult?.IdToken!,
+        refreshToken: result.AuthenticationResult?.RefreshToken!,
+        sub: congitoUsername.sub,
+        userId: userInfo.data.data._id,
+      };
+    } catch (error) {
+      // Mismatch Password | Email or Phone Number
+      if (typeof error === "object" && error !== null && "name" in error) {
+        if ((error as { name: string }).name === "NotAuthorizedException") {
+          throw new InvalidInputError({
+            message: AUTH_MESSAGES.AUTHENTICATION.ACCOUNT_NOT_FOUND,
+          });
+        }
+      }
+
+      // Cognito Service Error
+      if (typeof error === "object" && error !== null && "name" in error) {
+        if ((error as { name: string }).name === "InternalErrorException") {
+          throw new InternalServerError({
+            message: AUTH_MESSAGES.ERRORS.TECHNICAL_ISSUE,
+          });
+        }
+      }
+
+      console.error("AuthService corporateLogin() method error:", error);
+      throw new Error(`Error verifying user: ${error}`);
+    }
+  }
 }
 
 export default new AuthService();

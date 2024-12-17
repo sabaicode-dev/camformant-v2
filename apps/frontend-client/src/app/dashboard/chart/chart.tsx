@@ -68,7 +68,8 @@ const Chart = () => {
   }>({ applicant: 0, interview: 0, pass: 0 });
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [applyData, setApplyData] = useState<ApplyDataLengthParams[]>([]);
-  const [applyMonthly, setApplyMontly] = useState<ApplyMonthlyParams[]>(defaultMonthly);
+  const [applyMonthly, setApplyMontly] =
+    useState<ApplyMonthlyParams[]>(defaultMonthly);
   const [colors, setColors] = useState<string[]>([]);
   async function fetchLength() {
     try {
@@ -134,7 +135,7 @@ const Chart = () => {
   useEffect(() => {
     jobs.length && user?._id && fetchLength();
     //eslint-disable-next-line
-  }, [jobs, user]);
+  }, [jobs]);
   return (
     <>
       {isLoading ? (

@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
-import PageTitle from './components/PageTitle';
-import SignIn from './page/Authentication/SignIn';
-import SignUp from './page/Authentication/SignUp';
-import Profile from './page/Profile';
-import Tables from './page/ViewApplication';
-import Settings from './page/Settings';
-import './App.css';
-import Chart from './page/Chart';
-import Loader from './common/Loader';
-import Post from "./page/Post"
-import Camformant from './page/Dashboard';
+import React, { useState } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import PageTitle from "./components/PageTitle";
+import SignIn from "./page/Authentication/SignIn";
+import SignUp from "./page/Authentication/SignUp";
+import Profile from "./page/Profile";
+import Tables from "./page/ViewApplication";
+import Settings from "./page/Settings";
+import "./App.css";
+import Chart from "./page/Chart";
+import Loader from "./common/Loader";
+import Post from "./page/Post";
+import Camformant from "./page/Dashboard";
+import { AuthProvider } from "./context/authContext";
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
@@ -24,14 +25,12 @@ function App() {
     setTimeout(() => setLoading(false), 1000);
   }, []);
 
-
   return loading ? (
     <Loader />
   ) : (
-    
-    <>
+    <AuthProvider>
       <Routes>
-      <Route
+        <Route
           index
           element={
             <>
@@ -40,7 +39,7 @@ function App() {
             </>
           }
         />
-      <Route
+        <Route
           path="/profile"
           element={
             <>
@@ -49,7 +48,7 @@ function App() {
             </>
           }
         />
-         <Route
+        <Route
           path="/post"
           element={
             <>
@@ -62,12 +61,12 @@ function App() {
           path="/chart"
           element={
             <>
-               <PageTitle title="Basic Chart | Admin Dashboard Template" />
-              <Chart/>
+              <PageTitle title="Basic Chart | Admin Dashboard Template" />
+              <Chart />
             </>
           }
         />
-         <Route
+        <Route
           path="/tables"
           element={
             <>
@@ -76,7 +75,7 @@ function App() {
             </>
           }
         />
-         <Route
+        <Route
           path="/settings"
           element={
             <>
@@ -85,16 +84,7 @@ function App() {
             </>
           }
         />
-         <Route
-          path="/auth/signin"
-          element={
-            <>
-              <PageTitle title="Signin |  Admin Dashboard Template" />
-              <SignIn />
-            </>
-          }
-        />
-         <Route
+        <Route
           path="/auth/signup"
           element={
             <>
@@ -103,7 +93,17 @@ function App() {
             </>
           }
         />
+        <Route
+          path="/auth/signin"
+          element={
+            <>
+              <PageTitle title="Signin |  Admin Dashboard Template" />
+              <SignIn />
+            </>
+          }
+        />
       </Routes>
-    </>
-)};
+    </AuthProvider>
+  );
+}
 export default App;

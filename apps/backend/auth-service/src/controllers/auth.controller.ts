@@ -226,4 +226,30 @@ export class AuthController extends Controller {
       throw error;
     }
   }
+  @Post("/admin/login")
+  public async adminLogin(
+    @Request() request: Express.Request,
+    @Body() body: LoginRequest
+  ) {
+    try {
+      const response = (request as any).res as Response;
+      const result = await AuthService.adminLogin(body);
+
+      setCookie(response, "id_token", result.idToken);
+      setCookie(response, "access_token", result.accessToken);
+      setCookie(response, "refresh_token", result.refreshToken, {
+        maxAge: 30 * 24 * 3600 * 1000,
+      });
+      setCookie(response, "username", result.sub!, {
+        maxAge: 30 * 24 * 3600 * 1000,
+      });
+      setCookie(response, "user_id", result.userId!, {
+        maxAge: 30 * 24 * 3600 * 1000,
+      });
+
+      return sendResponse({ message: "Login successfully" });
+    } catch (error) {
+      throw error;
+    }
+  }
 }

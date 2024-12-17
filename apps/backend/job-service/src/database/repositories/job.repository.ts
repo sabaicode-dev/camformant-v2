@@ -292,7 +292,9 @@ class JobRepository {
         [key: string]: string | null | mongoose.Types.ObjectId | undefined;
       } = queries.userId
         ? { userId: new mongoose.Types.ObjectId(queries.userId) }
-        : { jobId: new mongoose.Types.ObjectId(queries.jobId) };
+        : queries.companyId
+          ? { companyId: new mongoose.Types.ObjectId(queries.companyId) }
+          : { jobId: new mongoose.Types.ObjectId(queries.jobId) };
       if (filter !== undefined) {
         //cause this can be undefined
         query["userInfo.status"] = filter;

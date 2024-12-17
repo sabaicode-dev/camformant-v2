@@ -74,7 +74,7 @@ const ROUTE_PATHS: RoutesConfig = {
         methods: {
           POST: {
             authRequired: true,
-            roles: ["user", "company"],
+            roles: ["user", "company","admin"],
           },
         },
       },
@@ -128,6 +128,14 @@ const ROUTE_PATHS: RoutesConfig = {
       },
       {
         path: "/corporate/verify",
+        methods: {
+          POST: {
+            authRequired: false,
+          },
+        },
+      },
+      {
+        path: "/admin/login",
         methods: {
           POST: {
             authRequired: false,
@@ -195,6 +203,34 @@ const ROUTE_PATHS: RoutesConfig = {
         methods: {
           GET: {
             authRequired: false,
+          },
+        },
+      },
+    ],
+  },
+  ADMIN_SERVICE: {
+    path: "/v1/admin",
+    target: configs.userServiceUrl,
+    nestedRoutes: [
+      {
+        path: "/profile",
+        nestedRoutes: [
+          {
+            path: "/:adminSub",
+            methods: {
+              GET: {
+                authRequired: false,
+              },
+            },
+          },
+        ],
+      },
+      {
+        path: "/me",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["admin"],
           },
         },
       },
