@@ -41,7 +41,10 @@ export const columns: ColumnDef<Jobs>[] = [
     header: "Company Name",
     cell: ({ row }) => {
       return (
-        <div className="dark:text-gray-500 font-bold">
+        <div
+          className="
+        text-gray-500 font-bold"
+        >
           {row.original.title || "No Title Available"}
         </div>
       );
@@ -54,7 +57,10 @@ export const columns: ColumnDef<Jobs>[] = [
       const positions = row.original.position;
       return (
         <>
-          <div className="dark:text-gray-500 font-bold">
+          <div
+            className="
+          text-gray-500 font-bold"
+          >
             {positions && positions.length > 0
               ? positions.join(", ")
               : "No types available"}{" "}
@@ -70,7 +76,10 @@ export const columns: ColumnDef<Jobs>[] = [
     header: "Posted Date",
     cell: ({ row }) => {
       return (
-        <div className="dark:text-gray-500 font-bold">
+        <div
+          className="
+        text-gray-500 font-bold"
+        >
           {row.original.createdAt
             ? new Date(row.original.createdAt).toLocaleDateString()
             : "N/A"}
@@ -86,7 +95,10 @@ export const columns: ColumnDef<Jobs>[] = [
     cell: ({ getValue }) => {
       const jobTypes = getValue<string[]>();
       return (
-        <div className="dark:text-gray-500 font-bold">
+        <div
+          className="
+        text-gray-500 font-bold"
+        >
           {jobTypes?.map((type, index) => <div key={index}>{type}</div>)}
         </div>
       );
@@ -103,51 +115,27 @@ export const columns: ColumnDef<Jobs>[] = [
         return date.toISOString().slice(0, 10);
       };
       return (
-        <div className="dark:text-gray-500 font-bold">
+        <div
+          className="
+        text-gray-500 font-bold"
+        >
           {formatDate(deadlineAt)}
         </div>
       );
     },
   },
-  // {
-  //   accessorKey: "status",
-  //   header: ({ column }) => {
-  //     return <div>status</div>;
-  //   },
-  // },
   {
     id: "actions",
     cell: ({ row }) => {
       const jobFromCol = row.original;
-
       const { fetchJobs } = useJob();
-      // const handleDelete = async () => {
-      //   if (!jobFromCol._id) {
-      //     alert("Invalid job ID.");
-      //     return;
-      //   }
-      //   const isConfirmed = window.confirm(
-      //     "Are you sure you want to delete this job?"
-      //   );
-      //   if (!isConfirmed) return;
-      //   try {
-      //     const response = await axiosInstance.delete(
-      //       `${API_ENDPOINTS.JOB_ENDPOINT}/${jobFromCol._id}`
-      //     );
-      //     await fetchJobs()
-      //     console.log("Delete Response:", response.data);
-      //     alert("Job deleted successfully!");
-      //     router.push("dashboard/jobs")
-      //   } catch (error) {
-      //     console.error("Error deleting job:", error);
-      //     alert("Failed to delete the job. Please try again.");
-      //   }
-      // };
       const router = useRouter();
       return (
         <>
           <div className="flex gap-2 ">
-            <Eye className=" h-[35px] w-[35px] p-2 bg-green-100 hover:bg-green-200 text-green-500 rounded-full " />
+            <Eye onClick={() => {
+                router.push(`/dashboard/viewJob/${jobFromCol._id}`);
+              }} className=" h-[35px] w-[35px] p-2 bg-green-100 hover:bg-green-200 text-green-500 rounded-full " />
             <SquarePen
               className=" h-[35px] w-[35px] p-2 bg-green-100 hover:bg-green-200 text-green-900 rounded-full"
               onClick={() => {
@@ -158,9 +146,7 @@ export const columns: ColumnDef<Jobs>[] = [
               jobFromCol={jobFromCol}
               fetchJobs={fetchJobs}
               router={router}
-            >
-              {/* <Trash className=" h-[35px] w-[35px] p-2 bg-red-100 hover:bg-green-200 text-red-500 rounded-full " /> */}
-            </JobDelete>
+            ></JobDelete>
           </div>
         </>
       );

@@ -1,6 +1,6 @@
-import React from 'react';
-import type { SocialLinks, Contact } from '../../../types/profile';
-import { Input } from '@/components/ui/input';
+import React from "react";
+import type { SocialLinks, Contact } from "../../../utils/types/profile";
+import { Input } from "@/components/ui/input";
 
 interface SocialLinksSectionProps {
   socialLinks?: SocialLinks;
@@ -8,7 +8,11 @@ interface SocialLinksSectionProps {
   onChange: (data: { social_links: SocialLinks; contact: Contact }) => void;
 }
 
-export function SocialLinksSection({ socialLinks, contact, onChange }: SocialLinksSectionProps) {
+export function SocialLinksSection({
+  socialLinks,
+  contact,
+  onChange,
+}: SocialLinksSectionProps) {
   const handleSocialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     onChange({
@@ -33,7 +37,9 @@ export function SocialLinksSection({ socialLinks, contact, onChange }: SocialLin
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-400">Social Links</h3>
+      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-400">
+        Social Links
+      </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-400">

@@ -17,7 +17,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, CommandSeparator } from "@/components/ui/command";
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandSeparator,
+} from "@/components/ui/command";
 
 /**
  * Variants for the multi-select component to handle different styles.
@@ -274,7 +282,6 @@ export const MultiSelect = React.forwardRef<
           className="w-full p-0"
           align="start"
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
-
         >
           <Command className="">
             {/* <CommandInput

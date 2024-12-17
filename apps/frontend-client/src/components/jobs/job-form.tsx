@@ -40,7 +40,7 @@ const JobForm: React.FC<JobFormProps> = ({ formTitle, existingData, typeOfForm =
         ) : (
           <div className="flex min-h-screen">
           <form onSubmit={handleSubmit} className="w-full">
-            <div className="bg-white shadow-lg rounded-lg p-6 space-y-6">
+            <div className="bg-white dark:bg-black shadow-lg rounded-lg p-6 space-y-6">
               <div className="space-y-2 text-center">
                 <h2 className="text-3xl font-bold tracking-tight">{formTitle}</h2>
                 <p className="text-gray-500">Fill in the details for the job posting</p>

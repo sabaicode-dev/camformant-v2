@@ -44,11 +44,11 @@ const routes: Route[] = [
         icon: List,
         href: "dashboard/jobs",
       },
-      {
-        label: "View Jobs",
-        icon: Sheet,
-        href: "dashboard/viewJobs",
-      },
+      // {
+      //   label: "View Jobs",
+      //   icon: Sheet,
+      //   href: "dashboard/viewJobs",
+      // },
       {
         label: "View Applicant",
         icon: UserCircle,

@@ -1,13 +1,16 @@
-import React from 'react';
-import type { ProfileData } from '../../../types/profile';
-import { Input } from '@/components/ui/input';
+import React from "react";
+import type { ProfileData } from "../../../utils/types/profile";
+import { Input } from "@/components/ui/input";
 
 interface PersonalInfoSectionProps {
   formData?: ProfileData | null;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export function PersonalInfoSection({ formData, onChange }: PersonalInfoSectionProps) {
+export function PersonalInfoSection({
+  formData,
+  onChange,
+}: PersonalInfoSectionProps) {
   return (
     <>
     <div className="grid grid-cols-1">

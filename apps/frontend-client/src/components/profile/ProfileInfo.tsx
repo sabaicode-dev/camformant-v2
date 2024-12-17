@@ -1,7 +1,7 @@
 import React from 'react';
 import { Mail, Building2 } from 'lucide-react';
-import { ProfileData } from '@/types/profile';
 import { LocationInfo } from './LocationInfo';
+import { ProfileData } from '@/utils/types/profile';
 
 interface ProfileInfoProps {
   data?: ProfileData | null;
@@ -20,7 +20,7 @@ export function ProfileInfo({ data }: ProfileInfoProps) {
               <Mail className="w-4 h-4 mr-2" />
               <span>{data?.email}</span>
             </div>
-            {data?.role === 'company' && (
+            {data?.role === "company" && (
               <div className="flex items-center text-gray-600 dark:text-white">
                 <Building2 className="w-4 h-4 mr-2" />
                 <span>{data?.employee_count} Employees</span>
@@ -30,7 +30,6 @@ export function ProfileInfo({ data }: ProfileInfoProps) {
           </div>
         </div>
       </div>
-
     </div>
   );
 }

@@ -4,13 +4,13 @@ import { EditProfileSkeleton } from "@/components/profile/editProfile/EditProfil
 import { Profile } from "@/components/profile/Profile";
 import { ProfileSkeleton } from "@/components/profile/ProfileSkeleton";
 import { useAuth } from "@/context/AuthContext";
-import { ProfileData } from "@/types/profile";
+import { ProfileData } from "@/utils/types/profile";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import React, { useEffect } from "react";
 
 const ProfilePage = () => {
-  const { user, fetchUser ,isLoading } = useAuth();
+  const { user, fetchUser, isLoading } = useAuth();
 
   const handleSubmit = async (data: ProfileData) => {
     try {
@@ -20,14 +20,31 @@ const ProfilePage = () => {
       );
       await fetchUser();
     } catch (error) {
-      console.error('Failed to update profile data:', error);
-    };
+      console.error("Failed to update profile data:", error);
+    }
   };
 
   useEffect(() => {
     fetchUser();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (!user) {
+    return (
+      <div className="min-h-screen">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="lg:sticky lg:top-12 lg:h-[calc(100vh-6rem)]">
+              <ProfileSkeleton />
+            </div>
+            <div className="">
+              <EditProfileSkeleton />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">

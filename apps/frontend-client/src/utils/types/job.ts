@@ -19,6 +19,10 @@ export enum WorkMode {
 export interface StatusDate {
   status: "Apply" | "Review" | "Interview" | "Shortlist" | "Accept";
 }
+export interface JobDetails {
+  label: string;
+  value:string;
+}
 export interface IJob {
   _id?: string;
   companyId?: string;
@@ -41,6 +45,15 @@ export interface IJob {
   updatedAt?: Date;
   deadline?: Date;
 }
+export interface JobTechnicalDetail {
+  jobRole: string;
+  minSalary: string;
+  maxSalary: string;
+  locality: string;
+  company: string;
+  jobId: string;
+  benefit?: string[];
+}
 
 export interface UserInfo {
   profile: string;
@@ -59,6 +72,14 @@ export interface JobApplication {
   statusDate?: StatusDate;
   appliedAt?: string;
   updatedAt?: string;
+}
+export interface Job {
+  title: string;
+  company: string;
+  location: string;
+  details: JobDetails[];
+  requirements: string[];
+  technicalDetails: JobTechnicalDetail;
 }
 
 //=====apply type in chart=========

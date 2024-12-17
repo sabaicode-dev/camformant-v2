@@ -1,6 +1,6 @@
-import React from 'react';
-import { MapPin } from 'lucide-react';
-import { Location } from '@/types/profile';
+import React from "react";
+import { MapPin } from "lucide-react";
+import { Location } from "@/utils/types/profile";
 
 interface LocationInfoProps {
   location?: Location;
@@ -9,7 +9,7 @@ interface LocationInfoProps {
 export function LocationInfo({ location }: LocationInfoProps) {
   const fullAddress = [location?.address, location?.city, location?.country]
     .filter(Boolean)
-    .join(', ');
+    .join(", ");
 
   return (
     <div className="flex items-center text-gray-600">
