@@ -1,8 +1,6 @@
-// Adjust the path as needed
-
+"use client";
+import { useAuth } from "@/context/AuthContext";
 import MyCalendar from "./calendar";
-
-// Example events to pass to MyCalendar
 const events = [
   {
     title: "Team Meeting",
@@ -17,6 +15,10 @@ const events = [
 ];
 
 const CalendarPage = () => {
+  const {isLoading} = useAuth();
+  if (!isLoading) {
+    return <p>Loading...</p>;
+  }
   return (
     <div>
       <h1>My Calendar</h1>

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export const authHelpers = {
-  refreshAccessToken: async (refresh_token: string) => {
+  refreshAccessToken: async (refresh_token: string, username: string) => {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/auth/refresh-token`,
@@ -11,6 +11,10 @@ export const authHelpers = {
             "Content-Type": "application/json",
             Authorization: `Bearer ${refresh_token}`,
           },
+          body: JSON.stringify({
+            refreshToken: refresh_token,
+            username: username,
+          }),
         }
       );
 

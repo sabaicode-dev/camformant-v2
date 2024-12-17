@@ -11,7 +11,7 @@ export function PersonalInfoSection({ formData, onChange }: PersonalInfoSectionP
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium dark:text-gray-400 text-gray-700">
           Company Name
         </label>
         <Input
@@ -24,7 +24,7 @@ export function PersonalInfoSection({ formData, onChange }: PersonalInfoSectionP
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium dark:text-gray-400 text-gray-700">
           Email Address
         </label>
         <Input
@@ -38,7 +38,7 @@ export function PersonalInfoSection({ formData, onChange }: PersonalInfoSectionP
 
       {formData?.role === 'company' && (
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium dark:text-gray-400 text-gray-700">
             Employee Count
           </label>
           <Input

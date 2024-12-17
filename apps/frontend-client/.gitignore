@@ -16,6 +16,12 @@
 # production
 /build
 
+# sst
+.sst
+
+# open-next
+/.open-next/
+
 # misc
 .DS_Store
 *.pem

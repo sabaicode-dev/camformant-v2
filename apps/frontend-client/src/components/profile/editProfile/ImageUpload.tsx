@@ -25,7 +25,7 @@ export function ImageUpload({ currentImage, onFileSelect }: ImageUploadProps) {
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-medium text-gray-700">
+      <label className="block text-sm font-medium text-gray-700 dark:text-gray-400">
         Profile Picture
       </label>
       

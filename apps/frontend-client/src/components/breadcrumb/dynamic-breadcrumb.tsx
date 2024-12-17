@@ -10,7 +10,7 @@ export function DynamicBreadcrumb() {
   const pathname = usePathname();
   const pathSegments = pathname.split("/").filter((segment) => segment);
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-sm my-5">
+    <div className="bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm my-5">
       <Breadcrumb className="px-4 py-3">
         <BreadcrumbList className="flex items-center space-x-1">
           <div className="flex items-center">

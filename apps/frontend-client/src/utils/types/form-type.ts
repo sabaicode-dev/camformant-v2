@@ -18,4 +18,5 @@ export type Jobs = {
   deadline?: string;
   createdAt?: string;
   updatedAt?: string;
+  
 };

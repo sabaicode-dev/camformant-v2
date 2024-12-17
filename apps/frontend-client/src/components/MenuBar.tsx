@@ -33,7 +33,7 @@ export const MenuBar = () => {
   };
 
   return (
-    <Menubar className="w-full py-8 bg-white fixed top-0 z-40">
+    <Menubar className="w-full py-8 bg-white dark:bg-black fixed top-0 z-40">
       <div className="w-1/6 flex items-center">
         <SidebarGroup>
           <SidebarGroupLabel>
@@ -54,7 +54,7 @@ export const MenuBar = () => {
             </Button>
           <SearchCheckIcon onClick={handleSearch} className="cursor-pointer"
           />
-          <div className="h-[40px] border w-[319px] border-gray-300  dark:border dark:border-gray-100 rounded-md">
+          <div className="h-[40px] border w-[319px] dark:border-gray-900 rounded-md">
             <Input ref={inputRef} placeholder="Search..." className="h-full" />
           </div>
         </div>
@@ -80,7 +80,7 @@ export const MenuBar = () => {
           <DropdownMenuContent>
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => router.push("dashboard/profile")}>Profile</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/profile")}>Profile</DropdownMenuItem>
             <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
