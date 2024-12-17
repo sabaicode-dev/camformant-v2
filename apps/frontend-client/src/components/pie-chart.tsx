@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import { Label, Pie, PieChart } from "recharts";
 
@@ -18,16 +17,21 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { ApplyDataLengthParams } from "@/utils/types/job";
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
+import { useEffect, useState } from "react";
+interface ChartDataParams {
+  browser: string;
+  applicants: number;
+  fill: string;
+}
+const arrColor: string[] = [
+  "var(--color-chrome)",
+  "var(--color-safari)",
+  "var(--color-firefox)",
+  "var(--color-edge)",
 ];
-
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  applicants: {
+    label: "Applicants",
   },
   chrome: {
     label: "Chrome",
@@ -48,14 +52,41 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 function PieChartComponent({
-  applyData=[],
+  applyData = [],
 }: {
   applyData: ApplyDataLengthParams[];
 }) {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
-  }, []);
+  const [chartData, setChartData] = useState<ChartDataParams[]>([]);
 
+  useEffect(() => {
+    let applyArr: ChartDataParams[] = [];
+    applyData.forEach((data: ApplyDataLengthParams, index: number) => {
+      if (index <= 2)
+        applyArr.push({
+          browser: data.title,
+          applicants: data.length,
+          fill: arrColor[index],
+        });
+      else if (index == 3)
+        applyArr.push({
+          browser: "other",
+          applicants: data.length,
+          fill: arrColor[index],
+        });
+      else chartData[3].applicants += data.length;
+    });
+    setChartData(
+      applyArr.length > 0
+        ? applyArr
+        : [
+            { browser: "chrome", applicants: 275, fill: arrColor[0] },
+          ]
+    );
+  }, [applyData]);
+  const totalApplicants = React.useMemo(() => {
+    return chartData.reduce((acc, curr) => acc + curr.applicants, 0);
+    //eslint-disable-next-line
+  }, [chartData])
   return (
     <div className="h-auto">
       <Card className="flex flex-col justify-center gap-[87px] shadow-md">
@@ -75,7 +106,7 @@ function PieChartComponent({
               />
               <Pie
                 data={chartData}
-                dataKey="visitors"
+                dataKey="applicants"
                 nameKey="browser"
                 innerRadius={100}
                 outerRadius={120}
@@ -96,14 +127,14 @@ function PieChartComponent({
                             y={viewBox.cy}
                             className="fill-foreground text-3xl font-bold"
                           >
-                            {totalVisitors.toLocaleString()}
+                            {totalApplicants.toLocaleString()}
                           </tspan>
                           <tspan
                             x={viewBox.cx}
                             y={(viewBox.cy || 0) + 24}
                             className="fill-muted-foreground"
                           >
-                            Visitors
+                            Applicants
                           </tspan>
                         </text>
                       );
@@ -115,22 +146,21 @@ function PieChartComponent({
           </ChartContainer>
         </CardContent>
         <CardFooter className="flex-col gap-[15px] text-sm pb-[44px]">
-          <div className="flex  w-full gap-[5px] items-center">
-            <div className="w-[15px] h-[15px] bg-[rgba(251,146,60,1)] rounded-full "></div>
-            <p>Web Development</p>
-          </div>
-          <div className="flex w-full gap-[5px] items-center">
-            <div className="w-[15px] h-[15px] bg-[rgba(4,210,98,1)] rounded-full "></div>
-            <p>UX-UI</p>
-          </div>
-          <div className="flex  w-full gap-[5px] items-center">
-            <div className="w-[15px] h-[15px] bg-[rgba(230,71,70,1)] rounded-full "></div>
-            <p>Web Development</p>
-          </div>
-          <div className="flex  w-full gap-[5px] items-center">
-            <div className="w-[15px] h-[15px] bg-[rgba(37,154,230,1)] rounded-full "></div>
-            <p>Web Development</p>
-          </div>
+          {chartData.map(
+            (data: ChartDataParams, index) =>
+              data.applicants > 0 && (
+                <div
+                  key={index}
+                  className="flex  w-full gap-[5px] items-center"
+                >
+                  <div
+                    className="w-[15px] h-[15px] rounded-full "
+                    style={{ backgroundColor: data.fill }}
+                  ></div>
+                  <p>{data.browser}</p>
+                </div>
+              )
+          )}
         </CardFooter>
       </Card>
     </div>

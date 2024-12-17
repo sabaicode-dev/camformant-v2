@@ -7,7 +7,12 @@
   height: 8px !important; /* Height for horizontal scrollbar */
 }
 .chat-container::-webkit-scrollbar-thumb {
-  background-color: rgba(128, 128, 128, 0.116) !important; /* Orange thumb color */
+  background-color: rgba(
+    128,
+    128,
+    128,
+    0.116
+  ) !important; /* Orange thumb color */
   border-radius: 10px !important; /* Rounded corners for the thumb */
   border: 2px solid #fff !important; /* Border around the thumb */
 }
@@ -19,6 +24,10 @@
 
 @layer base {
   :root {
+    --color-chrome: #fb923c; /* Orange */
+    --color-safari: #04d262; /* Green */
+    --color-firefox: #e64746; /* Red */
+    --color-edge: #259ae6; /* Blue */
     --background: #334155 !important;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -96,7 +105,7 @@
 }
 
 body {
-    font-family: "Host Grotesk", sans-serif;
+  font-family: "Host Grotesk", sans-serif;
 }
 
 .active-class {

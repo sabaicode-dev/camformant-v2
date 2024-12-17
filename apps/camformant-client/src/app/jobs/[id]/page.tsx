@@ -100,7 +100,7 @@ const Page: React.FC = () => {
           data
         );
         if (response.status === 200) {
-          console.log("Application submitted successfully");
+          addNotification("You apply successfully", "success");
         }
       } catch (error) {
         console.log("error in apply ", error);

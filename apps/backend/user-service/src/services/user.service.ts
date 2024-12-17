@@ -8,17 +8,17 @@ import { prettyObject } from "@sabaicode-dev/camformant-libs";
 import {
   IUser,
   UserGetAllControllerParams,
-} from "../controllers/types/user.controller.type";
+} from "@/src/controllers/types/user.controller.type";
 import {
   CreateNewUserServiceResponse,
   UserGetAllServiceResponse,
-} from "./types/user.service.types";
+} from "@/src/services/types/user.service.types";
 import {
   CustomCvResponse,
   CvFileParams,
   CvStyleParams,
   UnionCustomCvResponse,
-} from "../controllers/types/user-cv-controller.type";
+} from "@/src/controllers/types/user-cv-controller.type";
 import {
   IUserProfile,
   UnionProfileType,
