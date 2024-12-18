@@ -2,7 +2,7 @@ export type BRAND = {
   logo: string;
   name: string;
   email: string;
-  type: string;
-  phone: string;
+  createdAt: string;
+  employee:number
   conversion: number;
 };
