@@ -312,8 +312,12 @@ class JobRepository {
         if (!response.length) {
           throw new NotFoundError("Job Apply was not found");
         }
+        const witJobInfo = await enrichJobData(
+          response,
+          this.findJobById.bind(this)
+        );
         return {
-          applyData: response,
+          applyData: witJobInfo,
           totalPages: Math.ceil(totalItems / limit),
           currentPage: page,
           skip: skip,
@@ -322,40 +326,10 @@ class JobRepository {
       }
       const response = await ApplyModel.find(query).sort(buildSort);
       //insert some job info response
-      const resWithJobData = queries.userId //return with company detail when for user only since it needs in user app
-        ? await Promise.all(
-            response.map(async (applyJob) => {
-              const {
-                company,
-                title,
-                position,
-                min_salary,
-                max_salary,
-                job_opening,
-                type,
-                schedule,
-                location,
-                deadline,
-              } = await this.findJobById(applyJob.jobId!.toString());
-              return {
-                ...applyJob.toObject(),
-                jobInfo: {
-                  profile: company?.profile,
-                  title,
-                  position,
-                  min_salary,
-                  max_salary,
-                  job_opening,
-                  type,
-                  schedule,
-                  location,
-                  deadline,
-                },
-              } as any;
-            })
-          )
-        : null;
-
+      const resWithJobData = await enrichJobData(
+        response,
+        this.findJobById.bind(this)
+      );
       return resWithJobData ? resWithJobData : response;
     } catch (err) {
       console.error(
@@ -526,6 +500,44 @@ function createDateQuery(key: string, month: number) {
       $and: [{ $eq: [{ $month: `$${key}` }, month] }],
     },
   };
+}
+async function enrichJobData(
+  response: any[],
+  findJobById: (id: string) => Promise<returnJobs>
+) {
+  return Promise.all(
+    response.map(async (applyJob) => {
+      const jobData = await findJobById(applyJob.jobId!.toString());
+      const {
+        company,
+        title,
+        position,
+        min_salary,
+        max_salary,
+        job_opening,
+        type,
+        schedule,
+        location,
+        deadline,
+      } = jobData;
+
+      return {
+        ...applyJob.toObject(),
+        jobInfo: {
+          profile: company?.profile,
+          title,
+          position,
+          min_salary,
+          max_salary,
+          job_opening,
+          type,
+          schedule,
+          location,
+          deadline,
+        },
+      } as any;
+    })
+  );
 }
 async function fetchCompaniesProfile(
   companiesId:

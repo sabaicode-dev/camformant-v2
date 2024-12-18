@@ -1,12 +1,14 @@
 import Logo from "../../images/logo/cam.png";
 import FormFieldLogin from "../Forms/FormFieldLogin";
 import { useForm } from "react-hook-form";
-import { LoginProps, UserSchemaLogin } from "@/schema/login";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { isAPIErrorResponse } from "@/utils/types/common";
-import { useAuth } from "@/context/authContext";
+
 import { useState } from "react";
 import { useNotification } from "../notification";
+import { LoginProps, UserSchemaLogin } from "../../schema/login";
+import { isAPIErrorResponse } from "../../utils/types/common";
+import { useAuth } from "../../context/authContext";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SignInForm = () => {

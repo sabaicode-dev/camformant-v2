@@ -26,10 +26,7 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "types": ["node", "@testing-library/jest-dom"],
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "types": ["node", "@testing-library/jest-dom"]
   },
-  "include": ["src","craco.config.ts"]
+  "include": ["src"]
 }

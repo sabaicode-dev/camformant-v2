@@ -98,6 +98,10 @@ const Chart = () => {
         ...job,
         length: response.data[job.id],
       }));
+      jobArr.sort(
+        (a: ApplyDataLengthParams, b: ApplyDataLengthParams) =>
+          b.length - a.length
+      );
       setApplyData(jobArr);
       const responseMonthly = await axiosInstance.get(
         `${API_ENDPOINTS.JOB_APPLY_LENGTH}?id=${encodeURIComponent(
