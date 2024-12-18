@@ -1,8 +1,10 @@
 "use client";
 import { useAuth } from "@/context/AuthContext";
-import MyCalendar from "./calendar";
+// import MyCalendar from "./calendar";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { useEffect } from "react";
+import InterviewCalendar from "@/components/calendar/InterviewCalendar";
 
 const events = [
   {
@@ -18,8 +20,8 @@ const events = [
 ];
 
 const CalendarPage = () => {
-  const {isLoading,user} = useAuth();
-  
+  const { isLoading, user } = useAuth();
+
   useEffect(() => {
     console.log("Fetching job data for Job ID:"); // Log the jobId
     async function fetchData() {
@@ -27,18 +29,16 @@ const CalendarPage = () => {
         const response = await axiosInstance.get(
           `${API_ENDPOINTS.JOB_APPLY}?companyId=${user?._id}`
         );
-       console.log(response.data.data);
+        console.log("data apply",response.data.data);
       } catch (err) {
         console.log(err);
       }
     }
-    fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    user?._id && fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
-
-
-  if (isLoading) {
+  if (!isLoading) {
     return <p>Loading...</p>;
   }
   return (
@@ -46,14 +46,11 @@ const CalendarPage = () => {
       <h1>My Calendar</h1>
       {
         //ts-ignore
-      <MyCalendar events={events} />
+        // <MyCalendar events={events} />
+        <InterviewCalendar/>
       }
     </div>
   );
 };
 
 export default CalendarPage;
-function useEffect(arg0: () => void, arg1: never[]) {
-  throw new Error("Function not implemented.");
-}
-

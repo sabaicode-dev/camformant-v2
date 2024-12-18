@@ -62,6 +62,11 @@ export interface UserInfo {
   cv: string;
 }
 
+export interface jobShortList{
+  interviewLocation:string
+  interviewDate:Date
+  startDate:Date
+}
 export interface JobApplication {
   _id?: string;
   userId?: string;
@@ -71,6 +76,7 @@ export interface JobApplication {
   jobInfo?: IJob;
   statusDate?: StatusDate;
   appliedAt?: string;
+  companyResponse?:jobShortList;
   updatedAt?: string;
 }
 export interface Job {

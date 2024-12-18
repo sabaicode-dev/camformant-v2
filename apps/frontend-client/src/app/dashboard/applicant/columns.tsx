@@ -72,7 +72,7 @@ export const columns: (
     cell: ({ row }) => (
       <div className="text-gray-700 dark:text-gray-500 font-bold">
         {row.original.appliedAt
-          ? new Date(row.original.appliedAt).toLocaleDateString()
+          ? new Date(row.original.appliedAt).toLocaleDateString("en-GB")
           : "N/A"}
       </div>
     ),

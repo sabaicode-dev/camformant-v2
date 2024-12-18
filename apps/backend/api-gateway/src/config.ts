@@ -7,6 +7,7 @@ type Config = {
   port: number;
   clientUrl: string;
   corporatorUrl: string;
+  adminUrl:string
   authServiceUrl: string;
   userServiceUrl: string;
   jobServiceUrl: string;
@@ -33,6 +34,7 @@ function loadConfig(): Config {
     PORT: Joi.number().default(3000),
     CLIENT_URL: Joi.string().required(),
     CORPORATOR_URL: Joi.string().required(),
+    ADMIN_URL:Joi.string().required(),
     AUTH_SERVICE_URL: Joi.string().required(),
     USER_SERVICE_URL: Joi.string().required(),
     JOB_SERVICE_URL: Joi.string().required(),
@@ -59,6 +61,7 @@ function loadConfig(): Config {
     port: envVars.PORT,
     clientUrl: envVars.CLIENT_URL,
     corporatorUrl: envVars.CORPORATOR_URL,
+    adminUrl:envVars.ADMIN_URL,
     authServiceUrl: envVars.AUTH_SERVICE_URL,
     userServiceUrl: envVars.USER_SERVICE_URL,
     jobServiceUrl: envVars.JOB_SERVICE_URL,
