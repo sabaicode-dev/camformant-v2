@@ -133,9 +133,12 @@ export const columns: ColumnDef<Jobs>[] = [
       return (
         <>
           <div className="flex gap-2 ">
-            <Eye onClick={() => {
+            <Eye
+              onClick={() => {
                 router.push(`/dashboard/viewJob/${jobFromCol._id}`);
-              }} className=" h-[35px] w-[35px] p-2 bg-green-100 hover:bg-green-200 text-green-500 rounded-full " />
+              }}
+              className=" h-[35px] w-[35px] p-2 bg-green-100 hover:bg-green-200 text-green-500 rounded-full "
+            />
             <SquarePen
               className=" h-[35px] w-[35px] p-2 bg-green-100 hover:bg-green-200 text-green-900 rounded-full"
               onClick={() => {

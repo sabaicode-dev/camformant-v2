@@ -74,7 +74,7 @@ const ROUTE_PATHS: RoutesConfig = {
         methods: {
           POST: {
             authRequired: true,
-            roles: ["user", "company","admin"],
+            roles: ["user", "company", "admin"],
           },
         },
       },
@@ -98,6 +98,14 @@ const ROUTE_PATHS: RoutesConfig = {
         path: "/refresh-token",
         methods: {
           POST: {
+            authRequired: false,
+          },
+        },
+      },
+      {
+        path: "/getToken",
+        methods: {
+          GET: {
             authRequired: false,
           },
         },

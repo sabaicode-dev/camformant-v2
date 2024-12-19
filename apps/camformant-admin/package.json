@@ -13,21 +13,21 @@
     "@types/react-dom": "^18.3.0",
     "apexcharts": "^3.49.1",
     "flatpickr": "^4.6.13",
+    "js-cookie": "^3.0.5",
     "jsvectormap": "^1.5.3",
     "react": "^18.3.1",
     "react-apexcharts": "^1.4.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.52.0",
     "react-icons": "^5.4.0",
     "react-router-dom": "^6.23.1",
     "react-scripts": "5.0.1",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
-    "zod": "^3.23.8",
-    "react-hook-form": "^7.52.0"
-
+    "zod": "^3.23.8"
   },
   "scripts": {
-    "dev": "craco start",
+    "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -55,7 +55,6 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "1.5.0",
-    "@craco/craco": "^7.1.0",
     "@storybook/addon-essentials": "^8.1.5",
     "@storybook/addon-interactions": "^8.1.5",
     "@storybook/addon-links": "^8.1.5",

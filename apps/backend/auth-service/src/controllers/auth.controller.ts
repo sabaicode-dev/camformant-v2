@@ -9,6 +9,7 @@ import {
 import AuthService from "@/src/services/auth.service";
 import setCookie from "@/src/utils/cookie";
 import sendResponse from "@/src/utils/send-response";
+import { NotFoundError } from "@sabaicode-dev/camformant-libs";
 import { Response, Request as ExpressRequest } from "express";
 import {
   Body,
@@ -251,5 +252,11 @@ export class AuthController extends Controller {
     } catch (error) {
       throw error;
     }
+  }
+  @Get("/getToken")
+  public async getToken(@Request() request: ExpressRequest) {
+    const userCookie = request.cookies["user_id"];
+    if (!userCookie) throw new NotFoundError("Cookie is not found");
+    return userCookie
   }
 }

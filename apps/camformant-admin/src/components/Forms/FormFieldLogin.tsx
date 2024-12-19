@@ -1,6 +1,7 @@
 import { FieldError, UseFormRegister } from "react-hook-form";
-import { LoginProps, ValidFieldNames } from "@/schema/login";
+
 import { IoEyeOffOutline, IoEyeOutline, IoMailOutline } from "react-icons/io5";
+import { LoginProps, ValidFieldNames } from "../../schema/login";
 const FormFieldLogin: React.FC<{
   label:string
   type: string;
@@ -48,7 +49,7 @@ const FormFieldLogin: React.FC<{
           </span>
         )}
       </div>
-      {error && <span className="text-red-500">{error.message}</span>}
+      {error && <span className="text-sm font-medium text-red-600">{error.message}</span>}
     </div>
   );
 };
