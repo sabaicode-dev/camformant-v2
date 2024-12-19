@@ -98,17 +98,18 @@ const Chart = () => {
         ...job,
         length: response.data[job.id],
       }));
-      const jobSort = jobArr.arr.sort(
+      jobArr.sort(
         (a: ApplyDataLengthParams, b: ApplyDataLengthParams) =>
-          a.length - b.length
+          b.length - a.length
       );
-      setApplyData(jobSort);
-      `${API_ENDPOINTS.JOB_APPLY_LENGTH}?id=${encodeURIComponent(
-        JSON.stringify({ jobId: jobIdArr })
-      )}&filter=${encodeURIComponent(
-        JSON.stringify({ appliedAt: arrOfMonth })
-      )}`;
-
+      setApplyData(jobArr);
+      const responseMonthly = await axiosInstance.get(
+        `${API_ENDPOINTS.JOB_APPLY_LENGTH}?id=${encodeURIComponent(
+          JSON.stringify({ jobId: jobIdArr })
+        )}&filter=${encodeURIComponent(
+          JSON.stringify({ appliedAt: arrOfMonth })
+        )}`
+      );
       const jobTitleMap: { [key: string]: string } = {};
       jobs.forEach((job: IJob) => {
         jobTitleMap[job._id!] = job.title!;

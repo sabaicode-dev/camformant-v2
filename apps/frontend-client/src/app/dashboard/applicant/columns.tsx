@@ -7,6 +7,7 @@ import { getStatusVariant } from "@/utils/getStatusVariant";
 import { ViewApplication } from "@/components/applicant/view-application";
 import { UpdateStatus } from "@/components/applicant/update-status";
 import { JobApplication, StatusDate } from "@/utils/types/job";
+import { DeleteApplication } from "@/components/applicant/delete-application";
 
 export const columns: (
   refetch?: () => Promise<void>
@@ -94,7 +95,7 @@ export const columns: (
     cell: ({ row }) => {
       const userId = row.original.userId || "";
       return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center gap-2">
           <ViewApplication
             application={row.original}
             status={
@@ -112,6 +113,7 @@ export const columns: (
             }
             onStatusUpdate={refetch}
           />
+          <DeleteApplication applyId={row.original._id || ""} onStatusUpdate={refetch}/>
         </div>
       );
     },

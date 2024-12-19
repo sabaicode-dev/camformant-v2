@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { X,Clock4 } from "lucide-react";
 
 import { formatEventTime } from "@/utils/calendar-helpers";
 import { InterviewEvent } from "@/utils/types/calendar";
@@ -13,7 +13,7 @@ export const EventModal = ({ event, onClose }: EventModalProps) => {
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold dark:text-white">
+          <h3 className="text-lg font-semibold text-white bg-orange-400 px-1 rounded-md dark:text-white">
             Interview Details
           </h3>
           <button
@@ -26,28 +26,41 @@ export const EventModal = ({ event, onClose }: EventModalProps) => {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium dark:text-gray-200">
+            <label className="block text-[16px] font-medium dark:text-gray-200">
               Candidate Name
             </label>
-            <p className="text-gray-900 dark:text-gray-100">
-              {event.candidateName}
+            <p className="text-gray-900 text-[14px] dark:text-gray-100">
+              {event.title}
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium dark:text-gray-200">
+            <label className="block text-[16px] font-medium dark:text-gray-200">
               Position
             </label>
-            <p className="text-gray-900 dark:text-gray-100">{event.candidateName}</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium dark:text-gray-200">
-              Interview Time
-            </label>
-            <p className="text-gray-900 dark:text-gray-100">
-              {formatEventTime(event.start)} - {formatEventTime(event.end)}
+            <p className="text-gray-900 text-[14px] dark:text-gray-100">
+              {event.jobType}
             </p>
+          </div>
+          <div className="flex justify-between">
+            <div>
+              <label className="block text-[16px] font-medium dark:text-gray-200">
+                Location
+              </label>
+              <p className="text-gray-900 text-[14px] dark:text-gray-100">
+                {event.interviewLocation}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-[16px] font-medium dark:text-gray-200">
+                Interview Time
+              </label>
+              <p className="text-gray-900 flex gap-1 items-center text-[14px] dark:text-gray-100">
+                <Clock4 className="h-[16px]" />
+                {formatEventTime(event.start)} - {formatEventTime(event.end)}
+              </p>
+            </div>
           </div>
         </div>
       </div>

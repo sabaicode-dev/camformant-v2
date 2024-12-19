@@ -33,7 +33,7 @@ async function refreshToken(): Promise<{
     const headers = isServer ? { Cookie: await getServerCookies() } : {};
 
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/auth/refresh-token`,
+      `${process.env.REACT_APP_API_URL}/v1/auth/refresh-token`,
       null,
       {
         withCredentials: true,

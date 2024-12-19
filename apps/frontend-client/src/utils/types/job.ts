@@ -21,7 +21,7 @@ export interface StatusDate {
 }
 export interface JobDetails {
   label: string;
-  value:string;
+  value: string;
 }
 export interface IJob {
   _id?: string;
@@ -62,10 +62,10 @@ export interface UserInfo {
   cv: string;
 }
 
-export interface jobShortList{
-  interviewLocation:string
-  interviewDate:Date
-  startDate:Date
+export interface jobShortList {
+  interviewLocation: string
+  interviewDate: string
+  startDate: string
 }
 export interface JobApplication {
   _id?: string;
@@ -76,7 +76,7 @@ export interface JobApplication {
   jobInfo?: IJob;
   statusDate?: StatusDate;
   appliedAt?: string;
-  companyResponse?:jobShortList;
+  companyResponse?: jobShortList;
   updatedAt?: string;
 }
 export interface Job {

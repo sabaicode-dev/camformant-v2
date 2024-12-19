@@ -11,6 +11,7 @@ import { EventModal } from "./EventModal";
 import { InterviewEvent, JobApply } from "@/utils/types/calendar";
 import { eventStyleGetter } from "./CalendarStyle";
 import { JobApplication } from "@/utils/types/job";
+import { title } from "process";
 
 const localizer = momentLocalizer(moment);
 
@@ -28,17 +29,18 @@ const InterviewCalendar = () => {
   useEffect(() => {
     const fetchInterviews = async () => {
       if (!user?._id) return;
+      console.log("user id:", user._id);
       try {
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.JOB_APPLY}?companyId=${user._id}`
+          `${API_ENDPOINTS.JOB_APPLY}?companyId=${user._id}&filter=Interview`
         );
-
         const applications: JobApplication[] = response.data.data.map(
-          (application:JobApplication) => {
+          (application: JobApplication) => {
             return {
               _id: application._id,
               status: application.userInfo?.status,
-              candidateName: application.userInfo?.name,
+              title: application.userInfo?.name,
+              jobType: application.jobInfo?.position,
               interviewLocation: application.companyResponse?.interviewLocation,
               interviewDate: application.companyResponse?.interviewDate
                 ? new Date(
@@ -49,21 +51,50 @@ const InterviewCalendar = () => {
             };
           }
         );
-        console.log("heeee:", applications);
-        const events: InterviewEvent[] = applications.map((application) => ({
-          _id: application._id || "", // Unique identifier for the event
-          title: `${application.userInfo?.name}`, // Event title based on candidate's name
-          start: application.companyResponse?.interviewDate
-            ? new Date(application.companyResponse.interviewDate)
-            : new Date(), // Start time from interviewDate
-          end: application.companyResponse?.interviewDate
-            ? new Date(application.companyResponse.interviewDate)
-            : new Date(), // You can adjust the end date if you have a specific duration
-          candidateName: application.userInfo?.name, // Candidate's name
-          location: application.companyResponse?.interviewLocation, // Interview location
-        }));
+        // Function to generate the label for a given day relative to the current date
+        const getDayLabel = (date: Date): string => {
+          const currentDate = new Date();
+          const diffTime = date.getTime() - currentDate.getTime(); // Time difference in milliseconds
+          const diffDays = Math.floor(diffTime / (1000 * 3600 * 24)); // Convert time difference to days
+
+          if (diffDays === -1) {
+            return "Today";
+          } else if (diffDays === 0) {
+            return "Tomorrow";
+          } else if (diffDays > 1) {
+            return "next tomorrow";
+          } else if (diffDays < -1) {
+            return "yesterday";
+          } else if (diffDays < -1) {
+            return `${Math.abs(diffDays)} days ago`;
+          }
+          return `Day ${date.getDate()}`; // Default format
+        };
+
+        // Example: Creating event objects with dynamic day labels
+        const events: InterviewEvent[] = applications.map((apply: any) => {
+          const interviewDate = apply.interviewDate
+            ? new Date(apply.interviewDate)
+            : new Date();
+
+          // Generate the dynamic label based on the days from the current date
+          const dayLabel = getDayLabel(interviewDate);
+
+          return {
+            _id: apply._id || "", // Unique identifier for the event
+            title: `${apply.title} - ${dayLabel}`, // Combine the title with the dynamic day label
+            start: interviewDate, // Start time from interviewDate
+            end: apply.end ? new Date(apply.end) : new Date(), // Adjust the end date if you have a specific duration
+            candidateName: apply.candidateName, // Candidate's name
+            jobType: apply.jobType,
+            interviewDate: apply.interviewDate,
+            interviewLocation: apply.interviewLocation,
+            status: apply.status,
+            dayLabel, // Include the dynamic label as part of the event object
+          };
+        });
+        console.log("user:", events);
         setEvents(events);
-        
       } catch (error) {
         console.error("Error fetching interviews:", error);
       }
@@ -74,7 +105,6 @@ const InterviewCalendar = () => {
 
   const handleSelectEvent = (event: InterviewEvent) => {
     setSelectedEvent(event);
-    console.log("hello");
     setShowModal(true);
   };
 

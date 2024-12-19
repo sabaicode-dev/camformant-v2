@@ -27,12 +27,12 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   const fetchUser = async () => {
     try {
-      setIsLoading(true);
+      setIsLoading(false);
       const res = await axiosInstance.get(
         `${API_ENDPOINTS.CORPARATE_PROFILE_ME}`
       );

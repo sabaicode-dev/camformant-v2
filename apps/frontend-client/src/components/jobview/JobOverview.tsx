@@ -14,9 +14,6 @@ export const JobOverview: React.FC<JobOverviewProps> = ({ details }) => (
       <JobDetailRow key={index} {...detail} />
     ))}
     <div className="mt-6 space-x-4 flex justify-center ">
-      <Button variant="orange" className="">
-        Apply Now
-      </Button>
       <Button variant="outline">
         Contact Now
       </Button>

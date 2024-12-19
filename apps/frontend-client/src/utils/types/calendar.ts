@@ -3,9 +3,9 @@ export interface InterviewEvent {
   title: string;
   start: Date;
   end: Date;
+  jobType:string;
   interviewDate?: Date;
   interviewLocation?: string;
-  candidateName?: string;
   status?: string;
 }
 

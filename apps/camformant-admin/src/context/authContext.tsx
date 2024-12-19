@@ -1,8 +1,9 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "@/utils/axios";
-import { LoginRequest, User } from "@/utils/types/auth";
-import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { LoginRequest, User } from "../utils/types/auth";
+import axiosInstance from "../utils/axios";
+import { API_ENDPOINTS } from "../utils/const/api-endpoints";
+
 interface AuthContextType {
   login:({email,phone_number,password}:LoginRequest)=>Promise<void>,
   logout: () => Promise<void>;
