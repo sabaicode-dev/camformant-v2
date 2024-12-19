@@ -1,26 +1,19 @@
 import React, { useState } from 'react';
-import type { ProfileData } from '../../../types/profile';
 import { PersonalInfoSection } from './PersonalInfoSection';
 import { LocationSection } from './LocationSection';
 import { SocialLinksSection } from './SocialLinksSection';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Textarea } from "@/components/ui/textarea"
-import { cn } from '@/lib/utils';
 import { ImageUpload } from './ImageUpload';
 import { uploadToS3 } from '@/services/upload.service';
 import { BioSection } from './BioSection';
+import { ProfileData } from '@/utils/types/profile';
 interface EditProfileFormProps {
   initialData?: ProfileData;
   onSubmit: (data: ProfileData) => void;
 }
 
-export function EditProfileForm({
-  initialData,
-  onSubmit,
-}: EditProfileFormProps) {
-  const [formData, setFormData] = useState<ProfileData | null>(
-    initialData || null
-  );
+export function EditProfileForm({ initialData, onSubmit }: EditProfileFormProps) {
+  const [formData, setFormData] = useState<ProfileData | null>(initialData || null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -74,46 +67,20 @@ export function EditProfileForm({
   };
 
   return (
-    <ScrollArea className="h-screen">
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-3xl mx-auto p-6 bg-white dark:bg-black rounded-lg shadow-lg"
-      >
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 dark:text-white">
-          Personal Information
-        </h2>
-        <div className="space-y-8 ">
-          <PersonalInfoSection
-            formData={formData}
-            onChange={handleInputChange}
-          />
+    <ScrollArea className='h-screen'>
+    <form onSubmit={handleSubmit} className="max-w-3xl mx-auto p-6 bg-white dark:bg-black rounded-lg shadow-lg">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6 dark:text-white">Personal Information</h2>
+      <div className="space-y-8 ">
+        <PersonalInfoSection 
+          formData={formData} 
+          onChange={handleInputChange}
+        />
 
-          <ImageUpload
-            currentImage={formData?.profile}
-            onFileSelect={handleFileSelect}
-          />
-
-          <div className="space-y-4">
-            <label className="block text-sm font-medium dark:text-gray-300 text-gray-700">
-              Bio
-            </label>
-            <Textarea
-              name="description"
-              value={formData?.description}
-              onChange={handleInputChange}
-              rows={4}
-              className={cn(
-                "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
-              )}
-              placeholder="Write something about yourself..."
-            />
-          </div>
+        <BioSection description={formData?.description} onChange={handleDescriptionChange} />
 
           <LocationSection
             location={formData?.location}
-            onChange={(location) =>
-              setFormData((prev) => ({ ...prev, location }))
-            }
+            onChange={(location) => setFormData((prev) => ({ ...prev, location })) }
           />
 
           <SocialLinksSection
@@ -121,6 +88,8 @@ export function EditProfileForm({
             contact={formData?.contact}
             onChange={(data) => setFormData((prev) => ({ ...prev, ...data }))}
           />
+
+          <ImageUpload currentImage={formData?.profile} onFileSelect={handleFileSelect} />
 
           <div className="flex justify-end">
             <button

@@ -13,8 +13,8 @@ export function LocationInfo({ location }: LocationInfoProps) {
 
   return (
     <div className="flex items-center text-gray-600">
-      <MapPin className="w-4 h-4 mr-2" />
-      <span>{fullAddress || "Location not specified"}</span>
+      <MapPin className="w-8 h-8 mr-2" />
+      <span>{location?.address || 'Location not specified'}</span>
     </div>
   );
 }

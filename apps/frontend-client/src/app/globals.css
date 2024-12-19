@@ -7,7 +7,6 @@
   width: 8px !important; /* Width of the scrollbar */
   height: 8px !important; /* Height for horizontal scrollbar */
 }
-
 .chat-container::-webkit-scrollbar-thumb {
   background-color: rgba(
     128,
@@ -195,3 +194,5 @@ body {
     border-radius: 10px; /* Rounded track corners */
   }
 }
+
+@import "../components/editor/styles.css";

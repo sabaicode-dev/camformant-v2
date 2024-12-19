@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -28,7 +27,7 @@ import { PortfolioCertificatesSection } from "./portfolio-certificates";
 
 interface ViewApplicationProps {
   application: JobApplication;
-  status?: StatusDate["status"];
+  status: StatusDate["status"];
   userId: string;
 }
 
@@ -53,18 +52,40 @@ export function ViewApplication({
 
   const getMostRecentStatus = () => {
     if (!application.statusDate) return null;
+  
     const statuses = Object.entries(application.statusDate);
     if (statuses.length === 0) return null;
+  
     const sortedStatuses = statuses.sort(
       (a, b) => new Date(b[1]).getTime() - new Date(a[1]).getTime()
     );
+  
     return {
       status: sortedStatuses[0][0],
       timestamp: sortedStatuses[0][1],
     };
   };
+  
   const mostRecentStatus = getMostRecentStatus();
-
+  const getDateForDisplay = () => {
+    if (!mostRecentStatus) return null;
+  
+    const status = mostRecentStatus.status;
+    if (["Apply", "Review", "Shortlist"].includes(status)) {
+      // @ts-ignore
+      return new Date(application.statusDate[status]).toLocaleDateString("en-GB");
+    } else if (["Accept", "Interview"].includes(status)) {
+      const date =
+        status === "Accept"
+          ? application.companyResponse?.startDate
+          : application.companyResponse?.interviewDate;
+  
+      return date ? new Date(date).toLocaleDateString("en-GB") : null;
+    }
+    return null;
+  };
+  
+  const displayDate = getDateForDisplay();
   useEffect(() => {
     fetchUserDetail();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,13 +94,7 @@ export function ViewApplication({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className=" h-[35px] w-[35px] p-2 bg-green-100 hover:bg-green-200 hover:text-white text-green-500 rounded-full "
-        >
-          <Eye />
-        </Button>
+          <Eye className=" h-[35px] w-[35px] p-2 bg-green-100 hover:bg-green-200 text-green-500 rounded-full " />
       </DialogTrigger>
       <DialogContent className="max-w-3xl bg-slate-50 h-full overflow-y-auto ">
         <ScrollArea>
@@ -102,14 +117,26 @@ export function ViewApplication({
                   <CardHeader className="flex gap-4">
                     <div className="flex justify-between">
                       <div className="flex items-center gap-3">
-                        {mostRecentStatus && (
-                          <h4 className="text-sm font-medium mb-1">
-                            {mostRecentStatus.status} at{" "}
+                          {/* {mostRecentStatus?.status === "Interview" || "Accept" ? (
+                              <h4 className="text-sm font-medium mb-1">
+                              {mostRecentStatus?.status} {""}
+                              at {" "}
+                             {new Date(
+                               application.companyResponse?.startDate || ""
+                             ).toLocaleDateString("en-GB")}
+                           </h4>
+                          ) :(
+                            <h4 className="text-sm font-medium mb-1">
+                            {mostRecentStatus?.status} at
                             {new Date(
-                              mostRecentStatus.timestamp
-                            ).toLocaleDateString("en-GB")}
+                               application.companyResponse?.startDate || ""
+                             ).toLocaleDateString("en-GB")}
                           </h4>
-                        )}
+                          )} */}
+                                                     <h4 className="text-sm font-medium mb-1">
+    {mostRecentStatus?.status} at {displayDate || "N/A"}
+  </h4>
+
                       </div>
                       <div className="">
                         <Badge variant={variant}>{status}</Badge>

@@ -7,13 +7,14 @@ import { useAuth } from "@/context/AuthContext";
 import { ProfileData } from "@/utils/types/profile";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const ProfilePage = () => {
-  const { user, fetchUser, isLoading } = useAuth();
-
+  const { user, fetchUser } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
   const handleSubmit = async (data: ProfileData) => {
     try {
+      setIsLoading(false);
       await axiosInstance.put(
         `${API_ENDPOINTS.CORPARATE_PROFILE_UPDATE}/${user?._id}`,
         data
@@ -21,6 +22,9 @@ const ProfilePage = () => {
       await fetchUser();
     } catch (error) {
       console.error("Failed to update profile data:", error);
+    }
+    finally {
+      setIsLoading(true);
     }
   };
 
@@ -49,7 +53,7 @@ const ProfilePage = () => {
   return (
     <div className="min-h-screen">
       <div className="container mx-auto">
-      { !isLoading ? ( 
+      { isLoading ? ( 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="lg:sticky lg:top-0 lg:h-[calc(100vh-8rem)]">
             <Profile user={user} />
