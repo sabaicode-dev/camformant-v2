@@ -3,8 +3,6 @@ import { PersonalInfoSection } from './PersonalInfoSection';
 import { LocationSection } from './LocationSection';
 import { SocialLinksSection } from './SocialLinksSection';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Textarea } from "@/components/ui/textarea"
-import { cn } from '@/lib/utils';
 import { ImageUpload } from './ImageUpload';
 import { uploadToS3 } from '@/services/upload.service';
 import { BioSection } from './BioSection';
@@ -14,13 +12,8 @@ interface EditProfileFormProps {
   onSubmit: (data: ProfileData) => void;
 }
 
-export function EditProfileForm({
-  initialData,
-  onSubmit,
-}: EditProfileFormProps) {
-  const [formData, setFormData] = useState<ProfileData | null>(
-    initialData || null
-  );
+export function EditProfileForm({ initialData, onSubmit }: EditProfileFormProps) {
+  const [formData, setFormData] = useState<ProfileData | null>(initialData || null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -87,9 +80,7 @@ export function EditProfileForm({
 
           <LocationSection
             location={formData?.location}
-            onChange={(location) =>
-              setFormData((prev) => ({ ...prev, location }))
-            }
+            onChange={(location) => setFormData((prev) => ({ ...prev, location })) }
           />
 
           <SocialLinksSection
@@ -97,6 +88,8 @@ export function EditProfileForm({
             contact={formData?.contact}
             onChange={(data) => setFormData((prev) => ({ ...prev, ...data }))}
           />
+
+          <ImageUpload currentImage={formData?.profile} onFileSelect={handleFileSelect} />
 
           <div className="flex justify-end">
             <button

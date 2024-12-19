@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { ColumnDef, filterFns } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { getStatusVariant } from "@/utils/getStatusVariant";
@@ -39,13 +39,15 @@ export const columns: (
   {
     header: "Profile",
     cell: ({ row }) => (
+      <div className="flex items-center gap-2 justify-center">
       <Image
         src={row.original.userInfo?.profile || ""}
         alt="Profile"
         className="w-10 h-10 rounded-full object-cover"
         width={40}
         height={40}
-      />
+        />
+        </div>
     ),
   },
   {
@@ -56,7 +58,6 @@ export const columns: (
         {row.original.userInfo?.name}
       </div>
     ),
-    filterFn: "equals",
   },
   {
     accessorKey:"jobInfo?.title",
@@ -72,7 +73,7 @@ export const columns: (
     cell: ({ row }) => (
       <div className="text-gray-700 dark:text-gray-500 font-bold">
         {row.original.appliedAt
-          ? new Date(row.original.appliedAt).toLocaleDateString()
+          ? new Date(row.original.appliedAt).toLocaleDateString("en-GB")
           : "N/A"}
       </div>
     ),

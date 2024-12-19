@@ -107,7 +107,7 @@ export function ViewApplication({
                             {mostRecentStatus.status} at{" "}
                             {new Date(
                               mostRecentStatus.timestamp
-                            ).toLocaleDateString()}
+                            ).toLocaleDateString("en-GB")}
                           </h4>
                         )}
                       </div>

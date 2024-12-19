@@ -16,11 +16,6 @@ export function Profile({ user }: ProfileProps) {
         </h1>
       </div>
       <ProfileInfo data={user} />
-        <ProfileHeader name={user?.name}profile={user?.profile} data={user?.social_links} />
-          <div className="text-center mt-20">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{user?.name}</h1>
-          </div>
-        <ProfileInfo data={user} />
     </div>
   );
 }

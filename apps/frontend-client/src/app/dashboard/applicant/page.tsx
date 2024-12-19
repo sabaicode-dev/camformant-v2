@@ -6,6 +6,7 @@ import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { TableSkeleton } from "@/components/applicant/table-skeleton";
 import { IJob, JobApplication } from "@/utils/types/job";
+import { useJob } from "@/context/JobContext";
 
 const ApplicantPage = () => {
   const [jobApplications, setJobApplications] = useState<JobApplication[]>([]);
@@ -41,7 +42,6 @@ const ApplicantPage = () => {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     fetchJobApplications();
   }, []);

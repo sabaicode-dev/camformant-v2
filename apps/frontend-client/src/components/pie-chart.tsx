@@ -151,7 +151,7 @@ function PieChartComponent({
               data.applicants > 0 && (
                 <div
                   key={index}
-                  className="flex  w-full gap-[5px] items-center"
+                  className="flex px-6  w-full gap-[5px] items-center"
                 >
                   <div
                     className="w-[15px] h-[15px] rounded-full "
