@@ -978,6 +978,9 @@
 					"sub": {
 						"type": "string"
 					},
+					"status": {
+						"type": "string"
+					},
 					"name": {
 						"type": "string"
 					},
@@ -1106,6 +1109,58 @@
 				"required": [
 					"message"
 				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AllJobRes": {
+				"properties": {
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/ICorporatorProfile"
+						},
+						"type": "array"
+					},
+					"totalPage": {
+						"type": "number",
+						"format": "double"
+					},
+					"currentPage": {
+						"type": "number",
+						"format": "double"
+					},
+					"skip": {
+						"type": "number",
+						"format": "double"
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"data",
+					"totalPage",
+					"currentPage",
+					"skip",
+					"limit"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ProfileQueries": {
+				"properties": {
+					"page": {
+						"type": "number",
+						"format": "double"
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					},
+					"filter": {
+						"type": "string"
+					}
+				},
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -2024,10 +2079,15 @@
 								"schema": {
 									"properties": {
 										"data": {
-											"items": {
-												"$ref": "#/components/schemas/ICorporatorProfile"
-											},
-											"type": "array"
+											"anyOf": [
+												{
+													"$ref": "#/components/schemas/AllJobRes"
+												},
+												{
+													"properties": {},
+													"type": "object"
+												}
+											]
 										},
 										"message": {
 											"type": "string"
@@ -2047,7 +2107,34 @@
 					"Corporator"
 				],
 				"security": [],
-				"parameters": []
+				"parameters": [
+					{
+						"in": "query",
+						"name": "page",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "filter",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/v1/corporator/profile/{corporateSub}": {
@@ -2092,6 +2179,43 @@
 											"type": "object"
 										}
 									]
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Corporator"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "corporateSub",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteCorporateProfile",
+				"responses": {
+					"200": {
+						"description": "Delete Successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
 								}
 							}
 						}
@@ -2164,43 +2288,6 @@
 						}
 					}
 				}
-			},
-			"delete": {
-				"operationId": "DeleteCorporateProfile",
-				"responses": {
-					"200": {
-						"description": "Delete Successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Corporator"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "corporateId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
 			}
 		},
 		"/v1/admin/profile/{adminSub}": {

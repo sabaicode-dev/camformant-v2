@@ -1,7 +1,7 @@
 import CorporateRepository from "@/src/database/repositories/coporate.repository";
 import { prettyObject } from "@sabaicode-dev/camformant-libs";
 import { companiesForJobs } from "../database/repositories/types/user-repository.type";
-import { ICorporatorProfile } from "../controllers/types/corporate-controller.type";
+import { AllJobRes, ICorporatorProfile, ProfileQueries } from "../controllers/types/corporate-controller.type";
 import { getMultiProfileCompanyResponse } from "./corporate.service.types";
 
 class CorporateService {
@@ -35,9 +35,11 @@ class CorporateService {
       throw error;
     }
   }
-  public async getAllProfiles(): Promise<ICorporatorProfile[]> {
+  public async getAllProfiles(queries:ProfileQueries): Promise<AllJobRes|{}> {
     try {
-      const corporateProfile = await CorporateRepository.getAllProfiles();
+      const {page,limit,filter}=queries
+      const newQueries={page,limit:limit,filter: filter && JSON.parse(filter)}
+      const corporateProfile = await CorporateRepository.getAllProfiles(newQueries);
       if (!corporateProfile) {
         console.log(
           "CorporateService - postIJob() method error: No corporate profile found"
@@ -97,10 +99,10 @@ class CorporateService {
       throw error;
     }
   }
-  public async deleteCorporateProfile(corporateId: string) {
+  public async deleteCorporateProfile(corporateSub: string) {
     try {
       const profile =
-        await CorporateRepository.deleteCorporateProfile(corporateId);
+        await CorporateRepository.deleteCorporateProfile(corporateSub);
       if (!profile) {
         console.log(
           "CorporateService - deleteCorporateProfile() method error: Profile not deleted"

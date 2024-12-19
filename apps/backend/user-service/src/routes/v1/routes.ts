@@ -354,6 +354,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "_id": {"dataType":"union","subSchemas":[{"dataType":"string"},{"ref":"mongoose.Types.ObjectId"}]},
             "sub": {"dataType":"string"},
+            "status": {"dataType":"string"},
             "name": {"dataType":"string"},
             "email": {"dataType":"string"},
             "role": {"dataType":"enum","enums":["company"]},
@@ -395,6 +396,28 @@ const models: TsoaRoute.Models = {
         "properties": {
             "message": {"dataType":"string","required":true},
             "data": {"ref":"ICorporatorProfile"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AllJobRes": {
+        "dataType": "refObject",
+        "properties": {
+            "data": {"dataType":"array","array":{"dataType":"refObject","ref":"ICorporatorProfile"},"required":true},
+            "totalPage": {"dataType":"double","required":true},
+            "currentPage": {"dataType":"double","required":true},
+            "skip": {"dataType":"double","required":true},
+            "limit": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ProfileQueries": {
+        "dataType": "refObject",
+        "properties": {
+            "page": {"dataType":"double"},
+            "limit": {"dataType":"double"},
+            "filter": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -1193,6 +1216,7 @@ export function RegisterRoutes(app: Router) {
 
             async function CorporateController_getCorporateProfiles(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    queries: {"in":"queries","name":"queries","required":true,"ref":"ProfileQueries"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -1277,13 +1301,13 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.delete('/v1/corporator/profile/:corporateId',
+        app.delete('/v1/corporator/profile/:corporateSub',
             ...(fetchMiddlewares<RequestHandler>(CorporateController)),
             ...(fetchMiddlewares<RequestHandler>(CorporateController.prototype.deleteCorporateProfile)),
 
             async function CorporateController_deleteCorporateProfile(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    corporateId: {"in":"path","name":"corporateId","required":true,"dataType":"string"},
+                    corporateSub: {"in":"path","name":"corporateSub","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
