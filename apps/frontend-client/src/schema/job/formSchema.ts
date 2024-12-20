@@ -26,8 +26,7 @@ export const jobFormSchema = z
     location: z.string().min(1, "description is required"),
     benefit: z.array(z.string()).min(1, "select at least one benefit"),
     required_experience:
-      z.string()
-        .min(1, "required experience is required"),
+      z.array(z.string()).min(1, "select at least one required experience"),
     requirement: z.string().min(1, "requirement is required"),
     min_salary: z
       .number()

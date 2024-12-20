@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { XCircle, Plus, MoreVertical } from "lucide-react";
-import { MultiSelect } from "./multi-select";
+import { XCircle, Plus, MoreVertical, PlusIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface BenefitsInputProps {
   benefits: string[];
@@ -52,19 +52,19 @@ const BenefitsInput = ({ benefits, handleBenefitsChange }: BenefitsInputProps) =
         ))}
 
         <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-          <PopoverTrigger asChild>
+          <PopoverTrigger asChild >
             <Button variant="outline" size="icon">
-              <MoreVertical className="h-4 w-4" />
+              <PlusIcon className="h-4 w-4" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-full bg-white border shadow-md p-2">
+          <PopoverContent className={cn("w-full bg-white border shadow-md p-2")} align="start" sideOffset={10}>
             <div className="flex gap-2 mt-2">
               <Input
                 placeholder="Add a benefit..."
                 value={newBenefit}
                 onChange={(e) => setNewBenefit(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="flex-1"
+                className="flex-1 w-[25rem]"
               />
               <Button
                 type="button"
