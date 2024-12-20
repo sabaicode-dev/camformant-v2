@@ -14,6 +14,7 @@ const SalarySection: React.FC<SalarySectionProps> = ({
   errors,
   handleChangeNum,
 }) => {
+  console.log("SalarySection -> formData");
   return (
     <div className="grid grid-cols-2 gap-6">
       <div className="space-y-2">

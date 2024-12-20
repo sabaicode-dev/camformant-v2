@@ -11,6 +11,7 @@ export function JobProvider({ children }: { children: React.ReactNode }) {
     
     const fetchJobs = async () => {
         try {
+            console.log("JOB JOB JOB ")
         setIsLoading(true);
         const res = await axiosInstance.get(`${API_ENDPOINTS.JOBS}`);
         setJobs(res.data.data);

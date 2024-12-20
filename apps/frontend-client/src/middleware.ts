@@ -3,22 +3,14 @@ import { NextResponse, NextRequest } from "next/server";
 import { authHelpers } from "./utils/helper/middlewareHelpers";
 
 export async function middleware(request: NextRequest) {
-  console.log("middleware.ts: Request URL", request.url);
+  console.log(" ::::::::::::::::::::::::::middleware.ts: Request URL", request.url);
   const { pathname } = request.nextUrl;
   const { cookies } = await import("next/headers");
   const cookieStore = cookies();
   const allCookies = cookieStore.getAll().map((cookie) => `${cookie.name}=${cookie.value}`).join("; ");
   const access_token = allCookies.split("; ").find((cookie) => cookie.startsWith("access_token="))?.split("=")[1];
   const refresh_token = allCookies.split("; ").find((cookie) => cookie.startsWith("refresh_token="))?.split("=")[1];
-
-  if (!access_token && refresh_token) {
-    const refreshResult = await authHelpers.refreshAccessToken(refresh_token);
-    if (refreshResult) {
-      return refreshResult.response;
-    } else {
-      return authHelpers.clearAuthAndRedirect(request, "/signin");
-    }
-  }
+  const username = allCookies.split("; ").find((cookie) => cookie.startsWith("username="))?.split("=")[1];
 
   let userInfoResponse, userInfo;
   if (access_token) {
@@ -32,6 +24,15 @@ export async function middleware(request: NextRequest) {
       return authHelpers.clearAuthAndRedirect(request, "/signin", access_token);
     }
     userInfo = await userInfoResponse.json();
+  }
+
+  if (!access_token && refresh_token && username) {
+    const refreshResult = await authHelpers.refreshAccessToken(refresh_token, username);
+    if (refreshResult) {
+      return refreshResult.response;
+    } else {
+      return authHelpers.clearAuthAndRedirect(request, "/signin");
+    }
   }
 
   if (pathname === "/") {
@@ -59,5 +60,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/signin", "/"],
+  matcher: ["/signin", "/", "/dashboard/:path*",],
 };

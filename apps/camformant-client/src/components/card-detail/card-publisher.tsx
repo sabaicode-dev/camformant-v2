@@ -33,7 +33,7 @@ export const JobPublisher: React.FC<CardCompanyProps> = ({
           <div className="flex flex-col gap-5 text-xs">
             <div>
               <h1 className="text-sm font-semibold">{name} </h1>
-              <p className="pt-1 text-gray-400">{bio}</p>
+              <div className="prose pt-1 text-gray-400 " dangerouslySetInnerHTML={{__html : bio || ""}}/>
             </div>
             <div className="pb-3 text-xs">
               <h1>{phone_number} </h1>

@@ -2,9 +2,10 @@
 import axiosInstance from "@/utils/axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { SignInData, SignUpData, VerifyCodeData } from "@/types/auth";
+
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
-import { User } from "@/types/user";
+import { User } from "@/utils/types/user";
+import { SignInData, SignUpData, VerifyCodeData } from "@/utils/types/auth";
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -100,6 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       router.push("/dashboard");
     } catch (error) {
       console.error("Sign in failed:", error);
+
       setIsAuthenticated(false);
       throw error;
     } finally {

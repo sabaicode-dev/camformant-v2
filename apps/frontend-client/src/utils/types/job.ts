@@ -19,17 +19,21 @@ export enum WorkMode {
 export interface StatusDate {
   status: "Apply" | "Review" | "Interview" | "Shortlist" | "Accept";
 }
+export interface JobDetails {
+  label: string;
+  value: string;
+}
 export interface IJob {
   _id?: string;
   companyId?: string;
   profile?: string;
-  title?: string; // name of the job that company looking for. Example: Java Developer
-  position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
+  title?: string;
+  position?: string[];
   workMode?: WorkMode[];
-  location?: string; // location could be phnom penh, kompong-cham, etc.
+  location?: string;
   requirement?: string;
   description?: string;
-  address?: string; // address could be the link address of the company (google link)
+  address?: string;
   min_salary?: number;
   max_salary?: number;
   job_opening?: number;
@@ -41,6 +45,15 @@ export interface IJob {
   updatedAt?: Date;
   deadline?: Date;
 }
+export interface JobTechnicalDetail {
+  jobRole: string;
+  minSalary: string;
+  maxSalary: string;
+  locality: string;
+  company: string;
+  jobId: string;
+  benefit?: string[];
+}
 
 export interface UserInfo {
   profile: string;
@@ -49,6 +62,11 @@ export interface UserInfo {
   cv: string;
 }
 
+export interface jobShortList {
+  interviewLocation: string
+  interviewDate: string
+  startDate: string
+}
 export interface JobApplication {
   _id?: string;
   userId?: string;
@@ -58,14 +76,23 @@ export interface JobApplication {
   jobInfo?: IJob;
   statusDate?: StatusDate;
   appliedAt?: string;
+  companyResponse?: jobShortList;
   updatedAt?: string;
+}
+export interface Job {
+  title: string;
+  company: string;
+  location: string;
+  details: JobDetails[];
+  requirements: string[];
+  technicalDetails: JobTechnicalDetail;
 }
 
 //=====apply type in chart=========
 
-export interface ApplyDataLengthParams{
-  title:string,
-  image:string
-  id:string
-  length:0
+export interface ApplyDataLengthParams {
+  title: string,
+  image: string
+  id: string
+  length: 0
 }

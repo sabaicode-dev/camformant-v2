@@ -339,6 +339,7 @@ class JobRepository {
       throw err;
     }
   }
+
   public async createJobApply(
     body: PostJobApplyBody
   ): Promise<JobApplyResponse | {}> {

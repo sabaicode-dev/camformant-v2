@@ -50,7 +50,7 @@ const CollapsibleContentMenu: React.FC<CollapsibleContentMenuProps> = ({
   };
   return (
     <>
-      <div className="font-roboto">
+      <div>
         {isCollapsibleOpen ? (
           <Collapsible defaultOpen className="group/collapsible">
             <SidebarGroup>

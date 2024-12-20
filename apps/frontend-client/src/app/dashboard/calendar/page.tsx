@@ -1,8 +1,11 @@
-// Adjust the path as needed
+"use client";
+import { useAuth } from "@/context/AuthContext";
+// import MyCalendar from "./calendar";
+import axiosInstance from "@/utils/axios";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { useEffect } from "react";
+import InterviewCalendar from "@/components/calendar/InterviewCalendar";
 
-import MyCalendar from "./calendar";
-
-// Example events to pass to MyCalendar
 const events = [
   {
     title: "Team Meeting",
@@ -17,12 +20,34 @@ const events = [
 ];
 
 const CalendarPage = () => {
+  const { isLoading, user } = useAuth();
+
+  useEffect(() => {
+    console.log("Fetching job data for Job ID:"); // Log the jobId
+    async function fetchData() {
+      try {
+        const response = await axiosInstance.get(
+          `${API_ENDPOINTS.JOB_APPLY}?companyId=${user?._id}`
+        );
+        console.log("data apply",response.data.data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    user?._id && fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  if (!isLoading) {
+    return <p>Loading...</p>;
+  }
   return (
     <div>
       <h1>My Calendar</h1>
       {
         //ts-ignore
-      <MyCalendar events={events} />
+        // <MyCalendar events={events} />
+        <InterviewCalendar/>
       }
     </div>
   );
