@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { BsPersonCheckFill } from "react-icons/bs";
 import Logo from "../../images/logo/cam.png";
+import { useAuth } from "../../context/authContext";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -16,10 +17,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const sidebar = useRef<any>(null);
 
   const storedSidebarExpanded = localStorage.getItem("sidebar-expanded");
-  const [sidebarExpanded, setSidebarExpanded] = useState(
+  const [sidebarExpanded] = useState(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === "true"
   );
-
+  const { logout } = useAuth();
   // close on click outside
   useEffect(() => {
     const clickHandler = ({ target }: MouseEvent) => {
@@ -274,9 +275,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               {/* <!-- logout --> */}
               <li>
-                <NavLink
-                  to="/logout"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                <button
+                  onClick={logout}
+                  className={`group relative w-full flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("logout") && "bg-graydark dark:bg-meta-4"
                   }`}
                 >
@@ -310,7 +311,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </defs>
                   </svg>
                   Log out
-                </NavLink>
+                </button>
               </li>
             </ul>
           </div>

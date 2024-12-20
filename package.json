@@ -24,6 +24,7 @@
     "start:api-gateway-service": "yarn workspace api-gateway-service dev",
     "start:notification-service": "yarn workspace notification-service dev",
     "start:dashboard-services": "concurrently \"yarn workspace frontend-client dev\" \"yarn workspace auth-service dev\"  \"yarn workspace api-gateway-service dev\" \"yarn workspace job-service dev\" \"yarn workspace user-service dev\" \"yarn workspace chat-service dev\"",
+    "start:admin-services": "concurrently \"yarn workspace camformant-admin dev\" \"yarn workspace auth-service dev\"  \"yarn workspace api-gateway-service dev\" \"yarn workspace job-service dev\" \"yarn workspace user-service dev\"",
     "docker:dev": "docker-compose -f ./apps/backend/docker-compose.dev.yml up -d",
     "docker:local": "docker-compose -f ./apps/backend/docker-compose.local.yml up -d",
     "start": "concurrently \"yarn workspace ms-ui-components watch\" \"yarn workspace camformant-client dev\" \"yarn workspace frontend-client dev\" \"yarn workspace user-service dev\" \"yarn workspace job-service dev\" \"yarn workspace chat-service dev\" \"yarn workspace api-gateway-service dev\" \"yarn workspace auth-service dev\" \"yarn workspace notification-service dev\" \"yarn workspace camformant-admin dev\"",
