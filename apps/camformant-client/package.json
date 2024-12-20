@@ -5,10 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build-storybook": "storybook build",
     "lint": "next lint",
-    "start": "next start",
-    "storybook": "storybook dev -p 6006"
+    "start": "next start"
   },
   "dependencies": {
     "@capacitor/android": "^6.1.2",
@@ -57,7 +55,7 @@
     "react-use": "^17.5.1",
     "sharp": "^0.33.5",
     "socket.io-client": "^4.8.1",
-    "sst": "3.3.71",
+    "sst": "3.4.24",
     "style-loader": "^4.0.0",
     "swiper": "11.1.4",
     "tailwind-merge": "^2.5.4",
@@ -71,15 +69,6 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^6.1.2",
-    "@chromatic-com/storybook": "1.5.0",
-    "@storybook/addon-essentials": "8.1.5",
-    "@storybook/addon-interactions": "8.1.5",
-    "@storybook/addon-links": "8.1.5",
-    "@storybook/addon-onboarding": "8.1.5",
-    "@storybook/blocks": "8.1.5",
-    "@storybook/nextjs": "8.1.5",
-    "@storybook/react": "8.1.5",
-    "@storybook/test": "8.1.5",
     "@types/fabric": "^5.3.9",
     "@types/material-colors": "^1.2.3",
     "@types/node": "20",
@@ -91,10 +80,8 @@
     "constructs": "10.3.0",
     "eslint": "8",
     "eslint-config-next": "14.2.3",
-    "eslint-plugin-storybook": "0.8.0",
     "postcss": "8",
-    "storybook": "8.1.5",
-    "typescript": "^5.7.2",
-    "sst": "^3.4.5"
+    "sst": "^3.4.5",
+    "typescript": "^5.7.2"
   }
 }
