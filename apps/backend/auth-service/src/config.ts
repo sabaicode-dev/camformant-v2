@@ -15,6 +15,8 @@ type Config = {
   userServiceUrl: string;
   awsAccessKeyId: string;
   awsSecretAccessKey: string;
+  gmailUser: string;
+  gmailAppPassowrd: string;
 };
 
 // Function to load and validate environment variables
@@ -37,6 +39,8 @@ function loadConfig(): Config {
     USER_SERVICE_URL: Joi.string().required(),
     AWS_ACCESS_KEY_ID: Joi.string().required(),
     AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+    GMAIL_USER: Joi.string().required(),
+    GMAIL_APP_PASSWORD: Joi.string().required(),
   })
     .unknown()
     .required();
@@ -60,6 +64,8 @@ function loadConfig(): Config {
     userServiceUrl: envVars.USER_SERVICE_URL,
     awsAccessKeyId: envVars.AWS_ACCESS_KEY_ID,
     awsSecretAccessKey: envVars.AWS_SECRET_ACCESS_KEY,
+    gmailUser: envVars.GMAIL_USER,
+    gmailAppPassowrd: envVars.GMAIL_APP_PASSWORD,
   };
 }
 

@@ -22,7 +22,8 @@ const JobForm: React.FC<JobFormProps> = ({ formTitle, existingData, typeOfForm =
     errors, isLoading,
     createdAtDate,deadlineDate,
     handleSubmit, 
-    handleChange, 
+    handleChange,
+    handleBenefitsChange, 
     handleArrayChange, 
     handleChangeNum,
     handleDateChange,
@@ -55,7 +56,7 @@ const JobForm: React.FC<JobFormProps> = ({ formTitle, existingData, typeOfForm =
     
                 <SalarySection formData={formData} errors={errors} handleChangeNum={handleChangeNum} />
     
-                <DescriptionSection formData={formData} errors={errors}  handleChange={handleChange} />
+                <DescriptionSection formData={formData} errors={errors}  handleChange={handleChange} handleBenefitsChange={handleBenefitsChange}/>
     
                 <LocationSection formData={formData} setFormData={setFormData} />
     

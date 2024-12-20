@@ -4,8 +4,10 @@ export const API_ENDPOINTS = {
   REFRESH: `${process.env.REACT_APP_AUTH_ENDPOINT}/refresh-token`,
   ADMIN_SIGN_IN: `${process.env.REACT_APP_AUTH_ENDPOINT}/admin/login`,
   GET_TOKEN: `${process.env.REACT_APP_AUTH_ENDPOINT}/getToken`,
-  //USER SERVICE
-  USER_PROFILE: `${process.env.REACT_APP_ADMIN_ENDPOINT}/me`
- 
-};
+  ADMIN_VERIFY_USER: `${process.env.REACT_APP_AUTH_ENDPOINT}/admin/verifyAccount`,
+  ADMIN_DELETE_USER: `${process.env.REACT_APP_AUTH_ENDPOINT}/admin/deleteAccount`,
 
+  //USER SERVICE
+  USER_PROFILE: `${process.env.REACT_APP_ADMIN_ENDPOINT}/me`,
+  ALL_CORPORTOR_ACCOUNT: `${process.env.REACT_APP_CORPORATOR_ENDPOINT}/profile`,
+};

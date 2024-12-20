@@ -2,19 +2,21 @@ import React from "react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Jobs } from "@/utils/types/form-type";
+import BenefitsInput from "@/components/BenefitsInput";
 
 interface DescriptionSectionProps {
   formData: Jobs;
   errors: Record<string, string | null>;
   handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handleBenefitsChange: (newBenefits: string[]) => void;
 }
 
 const DescriptionSection: React.FC<DescriptionSectionProps> = ({
   formData,
   errors,
   handleChange,
+  handleBenefitsChange
 }) => {
-  console.log("DescriptionSection -> formData");
   return (
     <div className="space-y-6">
       <div className="flex gap-6">
@@ -25,10 +27,10 @@ const DescriptionSection: React.FC<DescriptionSectionProps> = ({
             name="required_experience"
             value={
               Array.isArray(formData.required_experience)
-                ? formData.required_experience.join("\n") // Join array with newlines for display
+                ? formData.required_experience.join("\n") 
                 : typeof formData.required_experience === "string"
-                  ? formData.required_experience // If it's already a string, use it directly
-                  : "" // Fallback for null, undefined, or unexpected values
+                  ? formData.required_experience 
+                  : "" 
             }
             onChange={handleChange}
             placeholder="Enter required experience"
@@ -39,16 +41,16 @@ const DescriptionSection: React.FC<DescriptionSectionProps> = ({
           )}
         </div>
         <div className="space-y-2 w-2/4">
-          <Label htmlFor="benefit">Benefits</Label>
+          {/* <Label htmlFor="benefit">Benefits</Label>
           <Textarea
             id="benefit"
             name="benefit"
             value={
               Array.isArray(formData.benefit)
-                ? formData.benefit.join("\n") // Join array with newlines for display
+                ? formData.benefit.join("\n") 
                 : typeof formData.benefit === "string"
-                  ? formData.benefit // If it's already a string, use it directly
-                  : "" // Fallback for null, undefined, or unexpected values
+                  ? formData.benefit 
+                  : "" 
             }
             onChange={handleChange}
             placeholder={`Enter each experience on a new line, e.g.:
@@ -56,7 +58,11 @@ const DescriptionSection: React.FC<DescriptionSectionProps> = ({
             Familiarity with React and TypeScript
             Experience with REST APIs`}
             className="min-h-[100px] font-medium border focus:border-orange-400 focus:border-none"
-          />
+          /> */}
+           <BenefitsInput 
+        benefits={formData.benefit || []}
+        handleBenefitsChange={handleBenefitsChange}
+      />
           {errors.benefit && (
             <p className="text-sm text-red-500">{errors.benefit}</p>
           )}

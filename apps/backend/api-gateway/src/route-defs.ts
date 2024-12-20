@@ -143,12 +143,35 @@ const ROUTE_PATHS: RoutesConfig = {
         },
       },
       {
-        path: "/admin/login",
-        methods: {
-          POST: {
-            authRequired: false,
+        path: "/admin",
+        nestedRoutes: [
+          {
+            path: "/login",
+            methods: {
+              POST: {
+                authRequired: false,
+              },
+            },
           },
-        },
+          {
+            path: "/verifyAccount",
+            methods: {
+              POST: {
+                authRequired: true,
+                roles: ["admin"],
+              },
+            },
+          },
+          {
+            path: "/deleteAccount/:userSub",
+            methods: {
+              DELETE: {
+                authRequired: true,
+                roles: ["admin"],
+              },
+            },
+          },
+        ],
       },
     ],
   },

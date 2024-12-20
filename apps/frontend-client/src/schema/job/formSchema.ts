@@ -1,10 +1,8 @@
 import { z } from "zod";
-
-
 export const jobFormSchema = z
   .object({
     title: z.string().min(1, "company name is required"),
-    position:z.string().min(1, "job category is required"),
+    position: z.string().min(1, "job category is required"),
     type: z.array(z.string()).min(1, "select at least one job type"),
     schedule: z.array(z.string()).min(1, "select at least one schedule"),
     workMode: z.array(z.string()).min(1, "select at least one workMode"),
@@ -12,7 +10,7 @@ export const jobFormSchema = z
       .number()
       .min(1, "must be at least 0")
       .nonnegative("job openings are required"),
-    createdAt: z.string().min(1, "post date is required") ,
+    createdAt: z.string().min(1, "post date is required"),
     deadline: z
       .string()
       .min(1, "Deadline is required")
@@ -26,10 +24,10 @@ export const jobFormSchema = z
     description: z.string().min(1, "description is required"),
     address: z.string().min(1, "description is required"),
     location: z.string().min(1, "description is required"),
-    benefit: z.string().min(1, "benefit is required"),
+    benefit: z.array(z.string()).min(1, "select at least one benefit"),
     required_experience:
       z.string()
-      .min(1, "required experience is required"),
+        .min(1, "required experience is required"),
     requirement: z.string().min(1, "requirement is required"),
     min_salary: z
       .number()

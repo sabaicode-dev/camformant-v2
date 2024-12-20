@@ -73,20 +73,19 @@ function PieChartComponent({
           applicants: data.length,
           fill: arrColor[index],
         });
-      else chartData[3].applicants += data.length;
+      else applyArr[3].applicants += data.length;
     });
     setChartData(
       applyArr.length > 0
         ? applyArr
-        : [
-            { browser: "chrome", applicants: 275, fill: arrColor[0] },
-          ]
+        : [{ browser: "chrome", applicants: 275, fill: arrColor[0] }]
     );
+    //eslint-disable-next-line
   }, [applyData]);
   const totalApplicants = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.applicants, 0);
     //eslint-disable-next-line
-  }, [chartData])
+  }, [chartData]);
   return (
     <div className="h-auto">
       <Card className="flex flex-col justify-center gap-[87px] shadow-md">

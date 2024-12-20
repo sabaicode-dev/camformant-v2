@@ -114,29 +114,12 @@ export function ViewApplication({
             <TabsContent value="info" className="h-full overscroll-y-auto">
               <div className="space-y-2">
                 <Card>
-                  <CardHeader className="flex gap-4">
+                  <CardHeader className="flex gap-4 p-5">
                     <div className="flex justify-between">
                       <div className="flex items-center gap-3">
-                          {/* {mostRecentStatus?.status === "Interview" || "Accept" ? (
-                              <h4 className="text-sm font-medium mb-1">
-                              {mostRecentStatus?.status} {""}
-                              at {" "}
-                             {new Date(
-                               application.companyResponse?.startDate || ""
-                             ).toLocaleDateString("en-GB")}
-                           </h4>
-                          ) :(
-                            <h4 className="text-sm font-medium mb-1">
-                            {mostRecentStatus?.status} at
-                            {new Date(
-                               application.companyResponse?.startDate || ""
-                             ).toLocaleDateString("en-GB")}
-                          </h4>
-                          )} */}
-                                                     <h4 className="text-sm font-medium mb-1">
-    {mostRecentStatus?.status} at {displayDate || "N/A"}
-  </h4>
-
+                      <h4 className="text-sm font-medium mb-1">
+                        {mostRecentStatus?.status} at {displayDate || "N/A"}
+                      </h4>
                       </div>
                       <div className="">
                         <Badge variant={variant}>{status}</Badge>
@@ -145,7 +128,7 @@ export function ViewApplication({
                   </CardHeader>
                 </Card>
                 <Card>
-                  <CardHeader className="flex gap-4">
+                  <CardHeader className="flex gap-4 p-5">
                     <div className="flex justify-between">
                       <div className="flex items-center gap-3">
                         <Image
