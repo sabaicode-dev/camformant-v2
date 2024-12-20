@@ -79,7 +79,7 @@ const userSchema = new mongoose.Schema<IUser>(
   }
 );
 
-userSchema.index({ email: 1 }, { unique: true });
+// userSchema.index({ email: 1 }, { unique: true });
 
 // Add custom validation to ensure that either email or phone_number is present
 userSchema.path("email").validate(function (value) {
