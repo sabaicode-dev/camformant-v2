@@ -16,7 +16,6 @@ import { title } from "process";
 const localizer = momentLocalizer(moment);
 
 const InterviewCalendar = () => {
-  // const [events, setEvents] = useState<InterviewEvent[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<InterviewEvent | null>(
     null
@@ -54,23 +53,25 @@ const InterviewCalendar = () => {
         // Function to generate the label for a given day relative to the current date
         const getDayLabel = (date: Date): string => {
           const currentDate = new Date();
+          // Normalize times to ignore time differences and focus on dates
+          currentDate.setHours(0, 0, 0, 0);
+          date.setHours(0, 0, 0, 0);
+
           const diffTime = date.getTime() - currentDate.getTime(); // Time difference in milliseconds
-          const diffDays = Math.floor(diffTime / (1000 * 3600 * 24)); // Convert time difference to days
+          const diffDays = Math.round(diffTime / (1000 * 3600 * 24)); // Convert time difference to days
 
-          if (diffDays === -1) {
+          if (diffDays === 0) {
             return "Today";
-          } else if (diffDays === 0) {
+          } else if (diffDays === 1) {
             return "Tomorrow";
-          } else if (diffDays > 1) {
-            return "next tomorrow";
-          } else if (diffDays < -1) {
-            return "yesterday";
-          } else if (diffDays < -1) {
-            return `${Math.abs(diffDays)} days ago`;
+          } else if (diffDays === -1) {
+            return "Yesterday";
+          } else if (diffDays > 0) {
+            return `${diffDays} days from today`; // Future dates
+          } else {
+            return `${Math.abs(diffDays)} days ago`; // Past dates
           }
-          return `Day ${date.getDate()}`; // Default format
         };
-
         // Example: Creating event objects with dynamic day labels
         const events: InterviewEvent[] = applications.map((apply: any) => {
           const interviewDate = apply.interviewDate
@@ -81,16 +82,18 @@ const InterviewCalendar = () => {
           const dayLabel = getDayLabel(interviewDate);
 
           return {
-            _id: apply._id || "", // Unique identifier for the event
-            title: `${apply.title} - ${dayLabel}`, // Combine the title with the dynamic day label
-            start: interviewDate, // Start time from interviewDate
-            end: apply.end ? new Date(apply.end) : new Date(), // Adjust the end date if you have a specific duration
-            candidateName: apply.candidateName, // Candidate's name
+            _id: apply._id || "",
+            title: `${apply.title} - ${dayLabel}`,
+            start: apply.interviewDate,
+            end: apply.interviewDate
+              ? new Date(apply.interviewDate)
+              : new Date(),
+            candidateName: apply.candidateName,
             jobType: apply.jobType,
             interviewDate: apply.interviewDate,
             interviewLocation: apply.interviewLocation,
             status: apply.status,
-            dayLabel, // Include the dynamic label as part of the event object
+            dayLabel,
           };
         });
         console.log("user:", events);
@@ -126,7 +129,7 @@ const InterviewCalendar = () => {
         onNavigate={(newDate) => setDate(newDate)}
         eventPropGetter={eventStyleGetter}
         onSelectEvent={handleSelectEvent}
-        className="dark:text-white dark:bg-gray-800 rounded-lg shadow-lg"
+        className="dark:text-white  rounded-lg shadow-lg"
       />
 
       {showModal && selectedEvent && (

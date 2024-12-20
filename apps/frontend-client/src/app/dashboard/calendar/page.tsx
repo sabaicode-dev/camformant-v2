@@ -22,22 +22,6 @@ const events = [
 const CalendarPage = () => {
   const { isLoading, user } = useAuth();
 
-  useEffect(() => {
-    console.log("Fetching job data for Job ID:"); // Log the jobId
-    async function fetchData() {
-      try {
-        const response = await axiosInstance.get(
-          `${API_ENDPOINTS.JOB_APPLY}?companyId=${user?._id}`
-        );
-        console.log("data apply",response.data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    user?._id && fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
   if (!isLoading) {
     return <p>Loading...</p>;
   }

@@ -1,4 +1,4 @@
-import { X,Clock4 } from "lucide-react";
+import { X,Clock4,MapPin } from "lucide-react";
 
 import { formatEventTime } from "@/utils/calendar-helpers";
 import { InterviewEvent } from "@/utils/types/calendar";
@@ -47,7 +47,8 @@ export const EventModal = ({ event, onClose }: EventModalProps) => {
               <label className="block text-[16px] font-medium dark:text-gray-200">
                 Location
               </label>
-              <p className="text-gray-900 text-[14px] dark:text-gray-100">
+              <p className="text-gray-900 flex gap-1 items-center text-[14px] dark:text-gray-100">
+                <MapPin className="h-[16px]"/>
                 {event.interviewLocation}
               </p>
             </div>

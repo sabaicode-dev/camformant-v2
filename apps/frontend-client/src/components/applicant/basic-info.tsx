@@ -7,11 +7,11 @@ interface BasicInfoProps {
 
 export function BasicInfoSection({ basic }: BasicInfoProps) {
   return (
-    <Card className="gap-2">
-      <CardHeader>
+    <Card className="gap-2 p-5">
+      <CardHeader className="pb-5">
         <CardTitle>Basic Information</CardTitle>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardContent className="grid gap-4 ">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <h4 className="text-sm font-medium mb-1">Full Name</h4>

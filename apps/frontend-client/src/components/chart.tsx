@@ -15,7 +15,7 @@ import { ApplyMonthlyParams } from "@/app/dashboard/chart/chart";
 const chartConfig = {};
 function ChartComponent({applyMonthly,colors}:{applyMonthly:ApplyMonthlyParams[],colors:string[]}) {
   return (
-    <div className=" h-auto">
+    <div className="font-roboto h-auto">
 
         <Card className="w-full h-full">
           {/* Content with flexible height */}
