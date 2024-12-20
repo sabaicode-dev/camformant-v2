@@ -120,6 +120,13 @@ const Chart = () => {
         monthlyArr.push({
           month: getMonth(stringIndex),
         });
+        jobIdArr.forEach((jobId: string) => {
+          monthlyArr[i - 1][jobTitleMap[jobId]] = responseMonthly.data[jobId][
+            stringIndex
+          ]
+            ? responseMonthly.data[jobId][stringIndex]
+            : 0;
+        });
       }
       setApplyMontly(monthlyArr);
       setColors(generateColors(Object.keys(monthlyArr[0]).length));
@@ -148,7 +155,7 @@ const Chart = () => {
                   <span className="text-[21px] font-bold">
                     {length.applicant}
                   </span>
-                  <div className="text-[13px] text-gray-500">Applicant</div>
+                  <div className="text-[13px] text-gray-500">Apply</div>
                 </Card>
                 <Card className="w-1/3 flex flex-col rounded-[5px] bg-orange-100 justify-center dark:text-black p-[10px]">
                   <RiMailVolumeLine className="w-[23px] h-[23px] text-blue-400" />
