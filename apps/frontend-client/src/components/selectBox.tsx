@@ -35,7 +35,7 @@ const SeleteCheckBox = ({
   };
 
   return (
-    <div className="text-[14px]">
+    <div className="text-[14px] dark:bg-gray-800">
       <Multiselect
         options={options} // Options to display
         selectedValues={selectedOptions} // Preselected values
@@ -43,6 +43,17 @@ const SeleteCheckBox = ({
         onRemove={handleRemove} // Triggered on removal
         showCheckbox={true} // Enables checkboxes
         displayValue="name" // Property to display
+        style={{
+          chips: {
+            background: "var(--chip-bg)", // Dynamic background for chips
+            color: "var(--chip-color)", // Dynamic text color for chips
+          },
+          searchBox: {
+            border: "none", // Remove border
+            background: "var(--search-bg)", // Dynamic background for search box
+            color: "var(--search-color)", // Dynamic text color for search box
+          },
+        }}
       />
     </div>
   );

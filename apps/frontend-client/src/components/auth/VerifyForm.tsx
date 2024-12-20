@@ -1,8 +1,6 @@
-"use client";
-
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -17,7 +15,7 @@ import {
 import { Icons } from "../ui/icons";
 import { OtpSchema } from "@/schema/auth/otpSchema";
 
-export default function VerifyForm() {
+function VerifyFormContent() {
   const { verifyCode, isLoading } = useAuth();
   const searchParams = useSearchParams();
   const contactQuery = searchParams.get("contact");
@@ -119,5 +117,13 @@ export default function VerifyForm() {
           </Form>
         </CardContent>
       </Card>
+  );
+}
+
+export default function VerifyForm() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyFormContent />
+    </Suspense>
   );
 }

@@ -23,13 +23,13 @@ export interface IJob {
   _id?: string;
   companyId?: string;
   profile?: string;
-  title?: string; // name of the job that company looking for. Example: Java Developer
-  position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
+  title?: string;
+  position?: string[];
   workMode?: WorkMode[];
-  location?: string; // location could be phnom penh, kompong-cham, etc.
+  location?: string;
   requirement?: string;
   description?: string;
-  address?: string; // address could be the link address of the company (google link)
+  address?: string;
   min_salary?: number;
   max_salary?: number;
   job_opening?: number;
@@ -63,9 +63,9 @@ export interface JobApplication {
 
 //=====apply type in chart=========
 
-export interface ApplyDataLengthParams{
-  title:string,
-  image:string
-  id:string
-  length:0
+export interface ApplyDataLengthParams {
+  title: string,
+  image: string
+  id: string
+  length: 0
 }

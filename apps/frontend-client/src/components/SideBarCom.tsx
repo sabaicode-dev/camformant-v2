@@ -29,18 +29,12 @@ interface Route {
 
 const routes: Route[] = [
   {
-    label: "Dashboards",
-    icon: LayoutDashboard,
-    color: "text-sky-500",
-    href: "/dashboard",
-  },
-  {
     label: "Jobs",
     icon: BriefcaseBusiness,
     color: "text-pink-500",
     subRoutes: [
       {
-        label: "Lists",
+        label: "Job Lists",
         icon: List,
         href: "dashboard/jobs",
       },
@@ -74,7 +68,7 @@ const routes: Route[] = [
     href: "/dashboard/calendar",
   },
   {
-    label: "Charts",
+    label: "Dashboard",
     icon: LineChart,
     color: "text-indigo-500",
     href: "/dashboard/chart",

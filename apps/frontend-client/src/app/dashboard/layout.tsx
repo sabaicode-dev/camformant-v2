@@ -11,13 +11,13 @@ const layout = ({ children }: { children: ReactNode }) => {
     <SidebarProvider>
       <JobProvider>
       <SocketContextProvider>
-      <div className="h-screen w-full">
-        <div className="w-full dark:bg-black dark:text-white bg-white text-black relative z-10">
+      <div className="w-full h-screen">
+        <div className="relative z-10 w-full text-black bg-white dark:bg-black dark:text-white">
             <MenuBar />
           </div>
         <div className="flex">
           <SideBarCom/>
-          <div className="w-full h-screen overflow-y-auto pt-16 px-5 bg-slate-50">
+          <div className="w-full h-screen px-5 pt-16 overflow-y-auto bg-slate-50">
             <DynamicBreadcrumb />
             {children}
           </div>

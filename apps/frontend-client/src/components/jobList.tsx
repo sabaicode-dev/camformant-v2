@@ -12,13 +12,12 @@ type JobItem = {
 const JobList: React.FC<{
   applyData: ApplyDataLengthParams[];
 }> = ({ applyData }) => {
-  
   return (
     <div className="rounded-lg font-roboto shadow-lg border  p-2">
       {applyData.map((item: ApplyDataLengthParams) => (
         <div
           key={item.id}
-          className="flex items-center justify-between border-b border-gray-200 last:border-none"
+          className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 last:border-none"
         >
           <div className="flex items-center w-2/3 h-[60px] gap-4">
             <Image
