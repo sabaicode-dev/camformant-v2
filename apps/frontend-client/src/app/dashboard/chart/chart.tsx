@@ -138,8 +138,7 @@ const Chart = () => {
   }
   useEffect(() => {
     jobs.length && user?._id && fetchLength();
-    //eslint-disable-next-line
-  }, [jobs]);
+  }, []);
   return (
     <>
       {isLoading ? (

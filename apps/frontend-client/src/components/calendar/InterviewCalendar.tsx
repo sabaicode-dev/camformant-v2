@@ -8,10 +8,9 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { useAuth } from "@/context/AuthContext";
 import axiosInstance from "@/utils/axios";
 import { EventModal } from "./EventModal";
-import { InterviewEvent, JobApply } from "@/utils/types/calendar";
+import { InterviewEvent } from "@/utils/types/calendar";
 import { eventStyleGetter } from "./CalendarStyle";
 import { JobApplication } from "@/utils/types/job";
-import { title } from "process";
 
 const localizer = momentLocalizer(moment);
 
@@ -23,7 +22,7 @@ const InterviewCalendar = () => {
   const [currentView, setCurrentView] = useState<View>("month");
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState<InterviewEvent[]>([]);
-  const { isLoading, user } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchInterviews = async () => {
@@ -110,11 +109,7 @@ const InterviewCalendar = () => {
     setSelectedEvent(event);
     setShowModal(true);
   };
-
-  if (!isLoading) {
-    return <div>Loading...</div>;
-  }
-
+  
   return (
     <div className="calendar-container dark:bg-gray-900 p-4">
       <Calendar
