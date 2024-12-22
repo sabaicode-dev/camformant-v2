@@ -1,12 +1,36 @@
+import React, { useState } from "react";
 import { FaCheck, FaRegEye, FaRegTrashAlt } from "react-icons/fa";
 import { convertDate } from "../../../utils/functions/approval-func";
 import { CorporatorParams } from "../../../utils/types/corporator";
+import PopUpModal from "../../popup-modal";
+
 
 const TableContent: React.FC<{
   data: CorporatorParams[];
   deleteUser: (sub: string) => Promise<void>;
   verifyUser: (email: string, sub: string, id: string) => Promise<void>;
 }> = ({ data, deleteUser, verifyUser }) => {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [modalAction, setModalAction] = useState<() => Promise<void>>(() => Promise.resolve);
+  const [modalBodyText, setModalBodyText] = useState("");
+  const [isWarningModal, setWarningModal] = useState(false);
+
+  const handleDeleteClick = (corData: CorporatorParams) => {
+    setModalAction(() => () => deleteUser(corData.sub!));
+    setModalBodyText(`Are you sure you want to delete ${corData.name}? This action cannot be undone.`);
+    setWarningModal(true); // Set as a warning modal
+    setModalOpen(true);
+  };
+
+  const handleVerifyClick = (corData: CorporatorParams) => {
+    setModalAction(() => () =>
+      verifyUser(corData.email!, corData.sub!, corData._id!)
+    );
+    setModalBodyText(`Are you sure you want to verify ${corData.name}?`);
+    setWarningModal(false); // Informational modal
+    setModalOpen(true);
+  };
+
   const totalRows = 5; // Fixed number of rows to display
   const emptyRows = totalRows - data.length; // Calculate empty rows to pad
 
@@ -59,17 +83,13 @@ const TableContent: React.FC<{
               </button>
               <button
                 className="hover:text-red-700 text-red-500"
-                onClick={() => {
-                  deleteUser(corData.sub!);
-                }}
+                onClick={() => handleDeleteClick(corData)}
               >
                 <FaRegTrashAlt />
               </button>
               <button
                 className="hover:text-green-700 text-green-500"
-                onClick={() => {
-                  verifyUser(corData.email!, corData.sub!, corData._id!);
-                }}
+                onClick={() => handleVerifyClick(corData)}
               >
                 <FaCheck />
               </button>
@@ -85,6 +105,16 @@ const TableContent: React.FC<{
           key={`empty-${index}`}
         ></div>
       ))}
+
+      {/* PopUpModal */}
+      {isModalOpen && (
+        <PopUpModal
+          closeModal={() => setModalOpen(false)}
+          actionFunc={modalAction}
+          bodyText={modalBodyText}
+          isWarningModal={isWarningModal}
+        />
+      )}
     </div>
   );
 };

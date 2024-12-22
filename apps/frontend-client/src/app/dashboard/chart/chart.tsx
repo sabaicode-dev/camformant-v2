@@ -60,7 +60,6 @@ const generateColors = (count: number): string[] => {
 };
 const Chart = () => {
   const { user } = useAuth();
-  const { jobs } = useJob();
   const [length, setLength] = useState<{
     applicant: number;
     interview: number;
@@ -73,6 +72,8 @@ const Chart = () => {
   const [colors, setColors] = useState<string[]>([]);
   async function fetchLength() {
     try {
+      const jobResponse = await axiosInstance.get(`${API_ENDPOINTS.JOBS}`);
+      const jobs = jobResponse.data.data;
       const lengthRes: {
         data: { Apply: number; Interview: number; Accept: number };
       } = await axiosInstance.get(
@@ -139,9 +140,9 @@ const Chart = () => {
     }
   }
   useEffect(() => {
-    jobs.length && user?._id && fetchLength();
+    user?._id && fetchLength();
     //eslint-disable-next-line
-  }, [jobs]);
+  }, [user?._id]);
   return (
     <>
       {isLoading ? (
@@ -190,7 +191,9 @@ const Chart = () => {
                   <h2 className="text-[16px] font-bold">
                     Most <br /> Applied Job
                   </h2>
-                  <p className="mt-2 text-[12px ]">{applyData[0].title}</p>
+                  <p className="mt-2 text-[12px ]">
+                    {applyData[0] ? applyData[0].title : "Default"}
+                  </p>
                 </div>
                 <div
                   className="bg-[rgba(255,174,22,1)] w-[calc(50%-10px)] h-full absolute right-0"

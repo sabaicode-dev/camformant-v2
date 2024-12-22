@@ -1,9 +1,7 @@
 import Logo from "../../images/logo/cam.png";
 import FormFieldLogin from "../Forms/FormFieldLogin";
 import { useForm } from "react-hook-form";
-
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { useState } from "react";
 import { useNotification } from "../notification";
 import { LoginProps, UserSchemaLogin } from "../../schema/login";
@@ -13,6 +11,7 @@ import { useAuth } from "../../context/authContext";
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SignInForm = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { addNotification, DisplayNotification } = useNotification();
   const {
     register,
@@ -21,34 +20,29 @@ const SignInForm = () => {
   } = useForm<LoginProps>({
     resolver: zodResolver(UserSchemaLogin), // Apply the zodResolver
   });
-  const { login, resStatus } = useAuth();
+  const { login } = useAuth();
   const onSubmit = async (data: LoginProps) => {
-    let contactMethod = "";
-    if (emailRegex.test(data.email)) {
-      contactMethod = "email";
-    } else {
-      contactMethod = "phone_number";
-    }
-
+    setIsSubmitting(true);
+    let contactMethod = emailRegex.test(data.email) ? "email" : "phone_number";
     try {
       await login({
         [contactMethod]: data.email,
         password: data.password,
       });
-      if (resStatus === 200) {
-        alert("Login Successful");
-      }
     } catch (error) {
       if (isAPIErrorResponse(error)) {
         addNotification(error.response.data.message);
       } else {
         addNotification(error as string);
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
   const onChangeVisible = () => {
     setIsVisible(!isVisible);
   };
+  const hasErrors = Object.keys(errors).length > 0;
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <DisplayNotification />
@@ -215,7 +209,12 @@ const SignInForm = () => {
                 <input
                   type="submit"
                   value="Sign In"
-                  className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
+                  className={`w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 ${
+                    hasErrors || isSubmitting
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                  disabled={isSubmitting || hasErrors}
                 />
               </div>
             </form>
