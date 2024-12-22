@@ -110,7 +110,7 @@ export function SignInForm() {
                             placeholder="name@example.com"
                             {...field}
                             type="email"
-                            disabled={!isLoading}
+                            disabled={isLoading}
                           />
                         </FormControl>
                         <FormMessage />
@@ -129,13 +129,13 @@ export function SignInForm() {
                             <Input
                               {...field}
                               type={showPassword ? "text" : "password"}
-                              disabled={!isLoading}
+                              disabled={isLoading}
                               placeholder="password"
                             />
                             <button
                               type="button"
                               onClick={togglePasswordVisibility}
-                              disabled={!isLoading}
+                              disabled={isLoading}
                               className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
                             >
                               {showPassword ? (
@@ -160,9 +160,9 @@ export function SignInForm() {
                   <Button
                     type="submit"
                     className="w-full bg-orange-500 text-white hover:bg-orange-600"
-                    disabled={!isLoading}
+                    disabled={isLoading}
                   >
-                    {!isLoading && (
+                    {isLoading && (
                       <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                     )}
                     Sign In

@@ -1,8 +1,8 @@
 import { InterviewEvent } from "@/utils/types/calendar";
 
 export const eventStyleGetter = (event: InterviewEvent) => {
-  const date = new Date(event.start); // Assuming `start` is the event's start date
-  const dayOfWeek = date.getDay(); // Get the day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+  const date = event.start ? new Date(event.start) : new Date(); 
+  const dayOfWeek = date.getDay(); 
 
   // Define a color map for days of the week
   const dayColors = [
