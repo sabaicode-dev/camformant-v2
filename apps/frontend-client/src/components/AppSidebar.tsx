@@ -24,7 +24,7 @@ import { useAuth } from "@/context/AuthContext";
 export function AppSidebar() {
   const {user } = useAuth()
   return (
-    <Sidebar className="font-roboto z-0 pt-10">
+    <Sidebar className=" z-0 pt-10">
       <ScrollArea className="h-full pr-2">
         <SidebarGroup className="mt-[45px]">
           {itemsMenu.map((item, index) => (

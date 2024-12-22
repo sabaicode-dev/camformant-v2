@@ -74,7 +74,7 @@ const ROUTE_PATHS: RoutesConfig = {
         methods: {
           POST: {
             authRequired: true,
-            roles: ["user", "company"],
+            roles: ["user", "company", "admin"],
           },
         },
       },
@@ -98,6 +98,14 @@ const ROUTE_PATHS: RoutesConfig = {
         path: "/refresh-token",
         methods: {
           POST: {
+            authRequired: false,
+          },
+        },
+      },
+      {
+        path: "/getToken",
+        methods: {
+          GET: {
             authRequired: false,
           },
         },
@@ -133,6 +141,37 @@ const ROUTE_PATHS: RoutesConfig = {
             authRequired: false,
           },
         },
+      },
+      {
+        path: "/admin",
+        nestedRoutes: [
+          {
+            path: "/login",
+            methods: {
+              POST: {
+                authRequired: false,
+              },
+            },
+          },
+          {
+            path: "/verifyAccount",
+            methods: {
+              POST: {
+                authRequired: true,
+                roles: ["admin"],
+              },
+            },
+          },
+          {
+            path: "/deleteAccount/:userSub",
+            methods: {
+              DELETE: {
+                authRequired: true,
+                roles: ["admin"],
+              },
+            },
+          },
+        ],
       },
     ],
   },
@@ -195,6 +234,34 @@ const ROUTE_PATHS: RoutesConfig = {
         methods: {
           GET: {
             authRequired: false,
+          },
+        },
+      },
+    ],
+  },
+  ADMIN_SERVICE: {
+    path: "/v1/admin",
+    target: configs.userServiceUrl,
+    nestedRoutes: [
+      {
+        path: "/profile",
+        nestedRoutes: [
+          {
+            path: "/:adminSub",
+            methods: {
+              GET: {
+                authRequired: false,
+              },
+            },
+          },
+        ],
+      },
+      {
+        path: "/me",
+        methods: {
+          GET: {
+            authRequired: true,
+            roles: ["admin"],
           },
         },
       },

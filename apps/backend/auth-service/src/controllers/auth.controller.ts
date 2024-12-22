@@ -4,16 +4,20 @@ import {
   GoogleCallbackRequest,
   LoginRequest,
   SignupRequest,
+  UserBodyParams,
   VerifyUserRequest,
 } from "@/src/controllers/types/auth-request.type";
 import AuthService from "@/src/services/auth.service";
 import setCookie from "@/src/utils/cookie";
 import sendResponse from "@/src/utils/send-response";
+import { NotFoundError } from "@sabaicode-dev/camformant-libs";
 import { Response, Request as ExpressRequest } from "express";
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Path,
   Post,
   Queries,
   Query,
@@ -225,5 +229,48 @@ export class AuthController extends Controller {
     } catch (error) {
       throw error;
     }
+  }
+  @Post("/admin/login")
+  public async adminLogin(
+    @Request() request: Express.Request,
+    @Body() body: LoginRequest
+  ) {
+    try {
+      const response = (request as any).res as Response;
+      const result = await AuthService.adminLogin(body);
+
+      setCookie(response, "id_token", result.idToken);
+      setCookie(response, "access_token", result.accessToken);
+      setCookie(response, "refresh_token", result.refreshToken, {
+        maxAge: 30 * 24 * 3600 * 1000,
+      });
+      setCookie(response, "username", result.sub!, {
+        maxAge: 30 * 24 * 3600 * 1000,
+      });
+      setCookie(response, "user_id", result.userId!, {
+        maxAge: 30 * 24 * 3600 * 1000,
+      });
+
+      return sendResponse({ message: "Login successfully" });
+    } catch (error) {
+      throw error;
+    }
+  }
+  @Get("/getToken")
+  public async getToken(@Request() request: ExpressRequest) {
+    const userCookie = request.cookies["access_token"];
+    if (!userCookie) throw new NotFoundError("Cookie is not found");
+    return userCookie
+  }
+  @SuccessResponse("204", "delete Successfully")
+  @Post("/admin/verifyAccount")
+  public async verifyUserAccount(@Body() body:UserBodyParams){
+    await AuthService.verifyUserAccount(body)
+    return 
+  }
+  @Delete("/admin/deleteAccount/:userSub")
+  public async deleteUserAccount(@Path() userSub:string){
+    await AuthService.deleteUserAccount(userSub)
+    return 
   }
 }

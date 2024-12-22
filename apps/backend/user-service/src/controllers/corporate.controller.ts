@@ -16,7 +16,7 @@ import CorporateService from "@/src/services/corporate.service";
 import sendResponse from "@/src/utils/send-response";
 import { APIResponse, prettyObject } from "@sabaicode-dev/camformant-libs";
 import { Request as ExpressRequest } from "express";
-import { ICorporatorProfile } from "./types/corporate-controller.type";
+import { AllJobRes, ICorporatorProfile, ProfileQueries } from "./types/corporate-controller.type";
 @Tags("Corporator")
 @Route("v1/corporator")
 export class CorporateController extends Controller {
@@ -102,19 +102,21 @@ export class CorporateController extends Controller {
   }
   @SuccessResponse("200", "Success")
   @Get("/profile")
-  public async getCorporateProfiles(): Promise<{
+  public async getCorporateProfiles(
+    @Queries() queries:ProfileQueries
+  ): Promise<{
     message: string;
-    data: ICorporatorProfile[];
+    data: AllJobRes|{};
   }> {
     try {
-      const result = await CorporateService.getAllProfiles();
+      const result = await CorporateService.getAllProfiles(queries);
       if (!result) {
         console.log(
           "CorporateController - getCorporateProfiles() method error : No corporate profiles found."
         );
         return { message: "No corporate profiles found.", data: [] };
       }
-      return sendResponse<ICorporatorProfile[]>({
+      return sendResponse<AllJobRes|{}>({
         message: "success",
         data: result,
       });
@@ -176,12 +178,12 @@ export class CorporateController extends Controller {
   }
 
   @SuccessResponse("200", "Delete Successfully")
-  @Delete("/profile/{corporateId}")
+  @Delete("/profile/{corporateSub}")
   public async deleteCorporateProfile(
-    @Path() corporateId: string
+    @Path() corporateSub: string
   ): Promise<{ message: string }> {
     try {
-      await CorporateService.deleteCorporateProfile(corporateId);
+      await CorporateService.deleteCorporateProfile(corporateSub);
       return { message: "Corporate Profile was deleted successfully" };
     } catch (error) {
       console.error(

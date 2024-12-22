@@ -86,7 +86,9 @@ const Chart = () => {
       const jobIdArr = jobs.map((job: IJob) => job._id);
 
       const response = await axiosInstance.get(
-        `${API_ENDPOINTS.JOB_APPLY_LENGTH}?filter=${encodeURIComponent(JSON.stringify({ jobId: jobIdArr }))}`
+        `${API_ENDPOINTS.JOB_APPLY_LENGTH}?filter=${encodeURIComponent(
+          JSON.stringify({ jobId: jobIdArr })
+        )}`
       );
       let jobArr = jobs.map((job: IJob) => ({
         title: job.title,
@@ -98,6 +100,10 @@ const Chart = () => {
         ...job,
         length: response.data[job.id],
       }));
+      jobArr.sort(
+        (a: ApplyDataLengthParams, b: ApplyDataLengthParams) =>
+          b.length - a.length
+      );
       setApplyData(jobArr);
       const responseMonthly = await axiosInstance.get(
         `${API_ENDPOINTS.JOB_APPLY_LENGTH}?id=${encodeURIComponent(
@@ -134,7 +140,8 @@ const Chart = () => {
   }
   useEffect(() => {
     jobs.length && user?._id && fetchLength();
-  }, []);
+    //eslint-disable-next-line
+  }, [jobs]);
   return (
     <>
       {isLoading ? (
@@ -150,7 +157,7 @@ const Chart = () => {
                   <span className="text-[21px] font-bold">
                     {length.applicant}
                   </span>
-                  <div className="text-[13px] text-gray-500">Applicant</div>
+                  <div className="text-[13px] text-gray-500">Apply</div>
                 </Card>
                 <Card className="w-1/3 flex flex-col rounded-[5px] bg-orange-100 justify-center dark:text-black p-[10px]">
                   <RiMailVolumeLine className="w-[23px] h-[23px] text-blue-400" />

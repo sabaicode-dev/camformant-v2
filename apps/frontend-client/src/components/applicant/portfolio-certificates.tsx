@@ -14,8 +14,8 @@ export function PortfolioCertificatesSection({ portfolio, certificates }: Portfo
   return (
     <div className="grid gap-2 md:grid-cols-2">
 
-      <Card>
-        <CardHeader>
+      <Card className="p-5">
+        <CardHeader className="pb-5">
           <CardTitle>Portfolio</CardTitle>
         </CardHeader>
         <CardContent>
@@ -37,9 +37,9 @@ export function PortfolioCertificatesSection({ portfolio, certificates }: Portfo
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="p-5">
         <ScrollArea className="h-96">
-        <CardHeader>
+        <CardHeader className="pb-5">
           <CardTitle>Certificates</CardTitle>
         </CardHeader>
         <CardContent>

@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import type { ProfileData } from '../../../types/profile';
 import { PersonalInfoSection } from './PersonalInfoSection';
 import { LocationSection } from './LocationSection';
 import { SocialLinksSection } from './SocialLinksSection';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Textarea } from "@/components/ui/textarea"
-import { cn } from '@/lib/utils';
 import { ImageUpload } from './ImageUpload';
 import { uploadToS3 } from '@/services/upload.service';
 import { BioSection } from './BioSection';
+import { ProfileData } from '@/utils/types/profile';
 interface EditProfileFormProps {
   initialData?: ProfileData;
   onSubmit: (data: ProfileData) => void;
@@ -19,7 +17,9 @@ export function EditProfileForm({ initialData, onSubmit }: EditProfileFormProps)
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -37,7 +37,7 @@ export function EditProfileForm({ initialData, onSubmit }: EditProfileFormProps)
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
     const previewUrl = URL.createObjectURL(file);
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       profile: previewUrl
     }));
@@ -57,11 +57,10 @@ export function EditProfileForm({ initialData, onSubmit }: EditProfileFormProps)
       }
       await onSubmit({
         ...formData,
-        profile: profileUrl
+        profile: profileUrl,
       });
-
     } catch (error) {
-      console.error('Error updating profile:', error);
+      console.error("Error updating profile:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -76,47 +75,33 @@ export function EditProfileForm({ initialData, onSubmit }: EditProfileFormProps)
           formData={formData} 
           onChange={handleInputChange}
         />
-{/* 
-        <div className="space-y-4">
-          <label className="block text-sm font-medium dark:text-gray-300 text-gray-700">
-            Bio
-          </label>
-          <Textarea
-            name="description"
-            value={formData?.description}
-            onChange={handleInputChange}
-            rows={4}
-            className={cn("w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500")}
-            placeholder="Write something about yourself..."
-          />
-        </div> */}
 
         <BioSection description={formData?.description} onChange={handleDescriptionChange} />
 
-        <LocationSection 
-          location={formData?.location}
-          onChange={(location) => setFormData((prev) => ({ ...prev, location }))}
-        />
+          <LocationSection
+            location={formData?.location}
+            onChange={(location) => setFormData((prev) => ({ ...prev, location })) }
+          />
 
-        <SocialLinksSection 
-          socialLinks={formData?.social_links}
-          contact={formData?.contact}
-          onChange={(data) => setFormData((prev) => ({ ...prev, ...data }))}
-        />
+          <SocialLinksSection
+            socialLinks={formData?.social_links}
+            contact={formData?.contact}
+            onChange={(data) => setFormData((prev) => ({ ...prev, ...data }))}
+          />
 
-        <ImageUpload currentImage={formData?.profile} onFileSelect={handleFileSelect}
-        />
-        <div className="flex justify-end">
-        <button
-            type="submit"
-            disabled={isSubmitting}
-            className="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isSubmitting ? 'Saving...' : 'Save Changes'}
-          </button>
+          <ImageUpload currentImage={formData?.profile} onFileSelect={handleFileSelect} />
+
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? "Saving..." : "Save Changes"}
+            </button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
     </ScrollArea>
   );
 }

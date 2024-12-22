@@ -10,8 +10,8 @@ interface LanguagesReferencesProps {
 export function LanguagesReferencesSection({ languages, references }: LanguagesReferencesProps) {
   return (
     <div className="grid gap-2 md:grid-cols-2">
-      <Card>
-        <CardHeader>
+      <Card className="p-5">
+        <CardHeader className="pb-5">
           <CardTitle>Languages</CardTitle>
         </CardHeader>
         <CardContent>
@@ -25,8 +25,8 @@ export function LanguagesReferencesSection({ languages, references }: LanguagesR
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
+      <Card className="p-5">
+        <CardHeader className="pb-5">
           <CardTitle>References</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">

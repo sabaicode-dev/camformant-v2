@@ -13,7 +13,7 @@ const JobList: React.FC<{
   applyData: ApplyDataLengthParams[];
 }> = ({ applyData }) => {
   return (
-    <div className="rounded-lg font-roboto shadow-lg border  p-2">
+    <div className="rounded-lg shadow-lg border  p-2">
       {applyData.map((item: ApplyDataLengthParams) => (
         <div
           key={item.id}

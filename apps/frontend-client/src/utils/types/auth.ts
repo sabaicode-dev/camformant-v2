@@ -1,35 +1,38 @@
-import { APIErrorResponse, APIResponse } from "@/utils/types/common";
-
-export interface SignupRequest {
-    sur_name?: string;
-    last_name?: string;
-    email?: string;
-    phone_number?: string;
-    password?: string;
-    role?: "admin" | "user" | "company";
+export interface AuthState {
+    isAuthenticated: boolean;
+    isLoading: boolean;
+    user: UserData | null;
+    error: string | null;
 }
-export interface SignupResponse extends APIResponse, APIErrorResponse { }
 
+export interface UserData {
+    id?: string;
+    sur_name: string;
+    last_name: string;
+    email: string;
+}
 
-export interface VerifyUserRequest {
+export interface SignUpData {
+    sur_name: string;
+    last_name: string;
     email?: string;
     phone_number?: string;
+    password: string;
+}
+
+export interface VerifyCodeData {
+    email: string
+    phone_number: string
     code: string;
 }
-export interface VerifyUserResponse extends APIResponse, APIErrorResponse { }
 
-
-export interface LoginRequest {
-    email?: string;
-    phone_number?: string;
-    password?: string;
+export interface SignInData {
+    email: string;
+    phone_number: string;
+    password: string;
 }
-export interface LoginResponse extends APIResponse, APIErrorResponse { }
 
-
-export interface GoogleCallbackRequest {
-    code?: string;
-    state?: string;
-    error?: string;
+export interface AuthResponse {
+    message: string;
+    success: boolean;
 }
-export interface GoogleCallbackResponse extends APIResponse, APIErrorResponse { }

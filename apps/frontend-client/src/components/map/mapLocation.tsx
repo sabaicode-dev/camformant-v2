@@ -36,7 +36,7 @@ const Map: React.FC<MapProps> = ({ setFormData, existingMap }) => {
           </div>
           <button 
             onClick={resetToCurrentLocation} 
-            className="mt-2 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+            className="mt-2 px-4 py-2 bg-gray-200 rounded dark:bg-gray-800 hover:bg-gray-300"
           >
             Reset to Current Location
           </button>

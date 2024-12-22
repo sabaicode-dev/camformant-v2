@@ -12,8 +12,6 @@ export async function middleware(request: NextRequest) {
   const refresh_token = allCookies.split("; ").find((cookie) => cookie.startsWith("refresh_token="))?.split("=")[1];
   const username = allCookies.split("; ").find((cookie) => cookie.startsWith("username="))?.split("=")[1];
 
-  console.log("middleware.ts: Access token :{:}}:}:}:{{}{{}}:{", access_token);
-
   let userInfoResponse, userInfo;
   if (access_token) {
     userInfoResponse = await fetch(new URL("/api/userInfo", request.url), {
@@ -31,7 +29,6 @@ export async function middleware(request: NextRequest) {
   if (!access_token && refresh_token && username) {
     const refreshResult = await authHelpers.refreshAccessToken(refresh_token, username);
     if (refreshResult) {
-      console.log("middleware.ts: Access token refreshed successfully :::::::::::::::::;;", refreshResult);
       return refreshResult.response;
     } else {
       return authHelpers.clearAuthAndRedirect(request, "/signin");
@@ -63,5 +60,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/signin", "/"],
+  matcher: ["/signin", "/", "/dashboard/:path*",],
 };

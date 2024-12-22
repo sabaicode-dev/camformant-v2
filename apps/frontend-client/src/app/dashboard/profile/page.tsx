@@ -4,16 +4,17 @@ import { EditProfileSkeleton } from "@/components/profile/editProfile/EditProfil
 import { Profile } from "@/components/profile/Profile";
 import { ProfileSkeleton } from "@/components/profile/ProfileSkeleton";
 import { useAuth } from "@/context/AuthContext";
-import { ProfileData } from "@/types/profile";
+import { ProfileData } from "@/utils/types/profile";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const ProfilePage = () => {
-  const { user, fetchUser, isLoading } = useAuth();
-
+  const { user, fetchUser } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
   const handleSubmit = async (data: ProfileData) => {
     try {
+      setIsLoading(false);
       await axiosInstance.put(
         `${API_ENDPOINTS.CORPARATE_PROFILE_UPDATE}/${user?._id}`,
         data
@@ -21,6 +22,8 @@ const ProfilePage = () => {
       await fetchUser();
     } catch (error) {
       console.error("Failed to update profile data:", error);
+    } finally {
+      setIsLoading(true);
     }
   };
 
@@ -29,10 +32,27 @@ const ProfilePage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (!user) {
+    return (
+      <div className="min-h-screen">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <div className="lg:sticky lg:top-12 lg:h-[calc(100vh-6rem)]">
+              <ProfileSkeleton />
+            </div>
+            <div className="">
+              <EditProfileSkeleton />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen">
       <div className="container mx-auto">
-        {!isLoading ? (
+        {isLoading ? (
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <div className="lg:sticky lg:top-0 lg:h-[calc(100vh-8rem)]">
               <Profile user={user} />

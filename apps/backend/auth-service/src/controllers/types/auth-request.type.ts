@@ -32,5 +32,9 @@ export interface CorporateSignupRequest {
   password?: string;
   role?: "company";
 }
-
+export interface UserBodyParams{
+  email:string;
+  sub:string;
+  id:string
+}
 

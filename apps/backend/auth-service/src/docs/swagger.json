@@ -110,6 +110,26 @@
 				},
 				"type": "object",
 				"additionalProperties": false
+			},
+			"UserBodyParams": {
+				"properties": {
+					"email": {
+						"type": "string"
+					},
+					"sub": {
+						"type": "string"
+					},
+					"id": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"email",
+					"sub",
+					"id"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -570,6 +590,105 @@
 						}
 					}
 				}
+			}
+		},
+		"/v1/auth/admin/login": {
+			"post": {
+				"operationId": "AdminLogin",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/LoginRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/auth/getToken": {
+			"get": {
+				"operationId": "GetToken",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/v1/auth/admin/verifyAccount": {
+			"post": {
+				"operationId": "VerifyUserAccount",
+				"responses": {
+					"204": {
+						"description": "delete Successfully"
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserBodyParams"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/auth/admin/deleteAccount/{userSub}": {
+			"delete": {
+				"operationId": "DeleteUserAccount",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userSub",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		}
 	},

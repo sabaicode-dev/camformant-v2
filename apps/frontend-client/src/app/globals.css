@@ -1,12 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
 .chat-container::-webkit-scrollbar {
   width: 8px !important; /* Width of the scrollbar */
   height: 8px !important; /* Height for horizontal scrollbar */
 }
-
 .chat-container::-webkit-scrollbar-thumb {
   background-color: rgba(
     128,
@@ -103,10 +103,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
 }
 
 body {
-  font-family: "Host Grotesk", sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .active-class {
@@ -193,3 +194,5 @@ body {
     border-radius: 10px; /* Rounded track corners */
   }
 }
+
+@import "../components/editor/styles.css";

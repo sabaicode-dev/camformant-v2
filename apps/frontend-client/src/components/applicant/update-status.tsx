@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Calendar } from "@/components/ui/calendar"
-import { CalendarIcon, PencilIcon } from "lucide-react"
+import { CalendarIcon, PencilIcon, SquarePen } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
@@ -60,9 +60,7 @@ export function UpdateStatus({ applyId, currentStatus ,onStatusUpdate }: UpdateS
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <PencilIcon className="h-4 w-4" />
-        </Button>
+          <SquarePen className=" h-[35px] w-[35px] p-2 bg-green-100 hover:bg-green-200 text-green-900 rounded-full"/>
       </DialogTrigger>
       <DialogContent className="bg-slate-50">
         <DialogHeader>
@@ -78,8 +76,8 @@ export function UpdateStatus({ applyId, currentStatus ,onStatusUpdate }: UpdateS
               <SelectContent>
                 <SelectItem value="Apply">Apply</SelectItem>
                 <SelectItem value="Review">Review</SelectItem>
-                <SelectItem value="Interview">Interview</SelectItem>
                 <SelectItem value="Shortlist">Shortlist</SelectItem>
+                <SelectItem value="Interview">Interview</SelectItem>
                 <SelectItem value="Accept">Accept</SelectItem>
               </SelectContent>
             </Select>

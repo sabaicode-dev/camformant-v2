@@ -30,9 +30,9 @@ const DateSection: React.FC<DateSectionProps> = ({
         <Popover>
           <PopoverTrigger asChild>
             <Button
-              variant="outline"
+              variant="none"
               className={cn(
-                "w-full justify-start text-left font-normal",
+                "w-full justify-start text-left font-normal ",
                 !createdAtDate && "text-muted-foreground"
               )}
             >
@@ -62,7 +62,7 @@ const DateSection: React.FC<DateSectionProps> = ({
         <Popover>
           <PopoverTrigger asChild>
             <Button
-              variant="outline"
+              variant="none"
               className={cn(
                 "w-full justify-start text-left font-normal",
                 !deadlineDate && "text-muted-foreground"

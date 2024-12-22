@@ -9,8 +9,8 @@ interface EducationExperienceProps {
 export function EducationExperienceSection({ educations, experiences }: EducationExperienceProps) {
   return (
     <div className="grid gap-2 md:grid-cols-2">
-      <Card>
-        <CardHeader>
+      <Card className="p-5">
+        <CardHeader className="pb-5">
           <CardTitle>Education</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
@@ -27,8 +27,8 @@ export function EducationExperienceSection({ educations, experiences }: Educatio
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
+      <Card className="p-5">
+        <CardHeader className="pb-5">
           <CardTitle>Experience</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">

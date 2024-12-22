@@ -22,11 +22,13 @@ const JobForm: React.FC<JobFormProps> = ({ formTitle, existingData, typeOfForm =
     errors, isLoading,
     createdAtDate,deadlineDate,
     handleSubmit, 
-    handleChange, 
+    handleChange,
+    handleBenefitsChange, 
     handleArrayChange, 
     handleChangeNum,
     handleDateChange,
-    setFormData 
+    setFormData ,
+    handleRequiredExperienceChange
   } = useJobForm({
     existingData,
     typeOfForm
@@ -38,9 +40,9 @@ const JobForm: React.FC<JobFormProps> = ({ formTitle, existingData, typeOfForm =
         isLoading ? (
           <JobFormSkeleton/>
         ) : (
-          <div className="flex min-h-screen">
+          <div className="min-h-screen">
           <form onSubmit={handleSubmit} className="w-full">
-            <div className="bg-white shadow-lg rounded-lg p-6 space-y-6">
+            <div className="bg-white dark:bg-black shadow-lg rounded-lg p-6 space-y-6">
               <div className="space-y-2 text-center">
                 <h2 className="text-3xl font-bold tracking-tight">{formTitle}</h2>
                 <p className="text-gray-500">Fill in the details for the job posting</p>
@@ -55,7 +57,7 @@ const JobForm: React.FC<JobFormProps> = ({ formTitle, existingData, typeOfForm =
     
                 <SalarySection formData={formData} errors={errors} handleChangeNum={handleChangeNum} />
     
-                <DescriptionSection formData={formData} errors={errors}  handleChange={handleChange} />
+                <DescriptionSection formData={formData} errors={errors}  handleChange={handleChange} handleBenefitsChange={handleBenefitsChange} handleRequiredExperienceChange={handleRequiredExperienceChange}/>
     
                 <LocationSection formData={formData} setFormData={setFormData} />
     

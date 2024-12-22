@@ -1,6 +1,11 @@
 "use client";
 import { useAuth } from "@/context/AuthContext";
-import MyCalendar from "./calendar";
+// import MyCalendar from "./calendar";
+import axiosInstance from "@/utils/axios";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import { useEffect } from "react";
+import InterviewCalendar from "@/components/calendar/InterviewCalendar";
+
 const events = [
   {
     title: "Team Meeting",
@@ -15,7 +20,8 @@ const events = [
 ];
 
 const CalendarPage = () => {
-  const {isLoading} = useAuth();
+  const { isLoading, user } = useAuth();
+
   if (!isLoading) {
     return <p>Loading...</p>;
   }
@@ -24,7 +30,8 @@ const CalendarPage = () => {
       <h1>My Calendar</h1>
       {
         //ts-ignore
-      <MyCalendar events={events} />
+        // <MyCalendar events={events} />
+        <InterviewCalendar/>
       }
     </div>
   );

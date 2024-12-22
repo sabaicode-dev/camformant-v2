@@ -2,9 +2,10 @@
 import axiosInstance from "@/utils/axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { SignInData, SignUpData, VerifyCodeData } from "@/types/auth";
+
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
-import { User } from "@/types/user";
+import { User } from "@/utils/types/user";
+import { SignInData, SignUpData, VerifyCodeData } from "@/utils/types/auth";
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -23,11 +24,7 @@ interface AuthContextType {
 }
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -65,7 +62,9 @@ export function AuthProvider({
         password: data.password,
       });
       router.push(
-        `/verify?contact=${data.email || data.phone_number}&method=${data.email ? "email" : "phone_number"}`
+        `/verify?contact=${data.email || data.phone_number}&method=${
+          data.email ? "email" : "phone_number"
+        }`
       );
     } catch (error) {
       console.error("Sign up failed:", error);
