@@ -21,7 +21,7 @@ interface DeleteApplicationProps {
 export function DeleteApplication( { applyId ,onStatusUpdate }: DeleteApplicationProps) {
     const handleDelete = async () => {
         try {
-            // await axiosInstance.delete(`${API_ENDPOINTS.JOB_STATUS}/${applyId}`)
+            await axiosInstance.delete(`${API_ENDPOINTS.JOB_STATUS}/${applyId}`)
             if (onStatusUpdate) {
               await onStatusUpdate()
              }

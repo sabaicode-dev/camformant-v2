@@ -1,6 +1,10 @@
 "use client";
 
-import { Calendar, momentLocalizer, View } from "react-big-calendar";
+import {
+  Calendar,
+  momentLocalizer,
+  View,
+} from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useEffect, useState } from "react";
 import moment from "moment-timezone";
@@ -8,10 +12,9 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { useAuth } from "@/context/AuthContext";
 import axiosInstance from "@/utils/axios";
 import { EventModal } from "./EventModal";
-import { InterviewEvent, JobApply } from "@/utils/types/calendar";
+import { InterviewEvent } from "@/utils/types/calendar";
 import { eventStyleGetter } from "./CalendarStyle";
 import { JobApplication } from "@/utils/types/job";
-import { title } from "process";
 
 const localizer = momentLocalizer(moment);
 
@@ -80,20 +83,17 @@ const InterviewCalendar = () => {
 
           // Generate the dynamic label based on the days from the current date
           const dayLabel = getDayLabel(interviewDate);
-
           return {
             _id: apply._id || "",
-            title: `${apply.title} - ${dayLabel}`,
-            start: apply.interviewDate,
-            end: apply.interviewDate
-              ? new Date(apply.interviewDate)
-              : new Date(),
+            title: `${apply.title} - ${getDayLabel(interviewDate)}`,
+            start: interviewDate,
+            end: interviewDate,
             candidateName: apply.candidateName,
             jobType: apply.jobType,
-            interviewDate: apply.interviewDate,
+            interviewDate: interviewDate,
             interviewLocation: apply.interviewLocation,
             status: apply.status,
-            dayLabel,
+            dayLabel: getDayLabel(interviewDate),
           };
         });
         console.log("user:", events);

@@ -141,7 +141,7 @@ const Chart = () => {
   useEffect(() => {
     user?._id && fetchLength();
     //eslint-disable-next-line
-  }, []);
+  }, [user?._id]);
   return (
     <>
       {isLoading ? (
