@@ -30,7 +30,7 @@ const ApprovalDetail = () => {
         setUserData(response.data.data);
         console.log("response:::", response);
       } catch (error) {
-        console.log("error  :", error);
+        console.log("error :", error);
       }
     }
     getData();
