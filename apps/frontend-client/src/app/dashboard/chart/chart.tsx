@@ -88,7 +88,9 @@ const Chart = () => {
 
 
       const response = await axiosInstance.get(
-        `${API_ENDPOINTS.JOB_APPLY_LENGTH}?filter=${encodeURIComponent(JSON.stringify({ jobId: jobIdArr }))}`
+        `${API_ENDPOINTS.JOB_APPLY_LENGTH}?filter=${encodeURIComponent(
+          JSON.stringify({ jobId: jobIdArr })
+        )}`
       );
       let jobArr = jobs.map((job: IJob) => ({
         title: job.title,
