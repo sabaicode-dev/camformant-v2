@@ -4,8 +4,6 @@ import CoverOne from "../images/cover/cover-01.png";
 import userSix from "../images/user/user.jpg";
 import { HiOutlineMail } from "react-icons/hi";
 import { MdOutlinePhone } from "react-icons/md";
-import axiosInstance from "../utils/axios";
-import { API_ENDPOINTS } from "../utils/const/api-endpoints";
 
 const Profile = () => {
   // const getInfo=async()=>{

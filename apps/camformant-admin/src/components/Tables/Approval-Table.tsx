@@ -15,7 +15,7 @@ const ApprovalTable = () => {
       try {
         const query = `page=${currentPage}&limit=5&filter=${encodeURIComponent('{"status":"unverified"}')}`;
         const res = await axiosInstance.get(
-          `${API_ENDPOINTS.ALL_CORPORTOR_ACCOUNT}?${query}`
+          `${API_ENDPOINTS.CORPORTOR_ACCOUNT}?${query}`
         );
         setCorporatorData(res.data.data.data);
         if (!notFetch.current) {
