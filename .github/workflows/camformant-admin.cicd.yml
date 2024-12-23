@@ -57,6 +57,16 @@ jobs:
       # - name: Set environment variables from GitHub Secrets
       #   run: |
       #     echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
+      #     echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
+      #     echo "REACT_APP_AUTH_ENDPOINT=${{ secrets.REACT_APP_AUTH_ENDPOINT }}" >> .env
+      #     echo "REACT_APP_ADMIN_ENDPOINT=${{ secrets.REACT_APP_ADMIN_ENDPOINT }}" >> .env
+      #     echo "REACT_APP_USER_ENDPOINT=${{ secrets.REACT_APP_USER_ENDPOINT }}" >> .env
+      #     echo "REACT_APP_CORPORATOR_ENDPOINT=${{ secrets.REACT_APP_CORPORATOR_ENDPOINT }}" >> .env
+      #     echo "REACT_APP_JOB_ENDPOINT=${{ secrets.REACT_APP_JOB_ENDPOINT }}" >> .env
+
+      - name: Set environment variables
+        run: |
+          echo "GENERATE_SOURCEMAP=false" >> .env
 
       # Build React app using Webpack
       - name: Build React App
