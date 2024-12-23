@@ -138,6 +138,7 @@ const Chart = () => {
   }
   useEffect(() => {
     jobs.length && user?._id && fetchLength();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <>
