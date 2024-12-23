@@ -39,14 +39,14 @@ jobs:
         with:
           node-version: "21.1.0" # Use the correct Node.js version
 
-      # Cache npm dependencies to speed up the build
-      - name: Cache node modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-
+      # # Cache npm dependencies to speed up the build
+      # - name: Cache node modules
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ~/.npm
+      #     key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-node-modules-
 
       # Install dependencies
       - name: Install Dependencies
