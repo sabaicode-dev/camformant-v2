@@ -27,7 +27,8 @@
     "webpack": "5.97.1",
     "webpack-dev-server": "4.15.2",
     "webpack-manifest-plugin": "4.1.1",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "axios": "^1.7.7"
   },
   "scripts": {
     "dev": "react-scripts start",
