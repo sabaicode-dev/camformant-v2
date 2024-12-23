@@ -62,7 +62,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password: data.password,
       });
       router.push(
-        `/verify?contact=${data.email || data.phone_number}&method=${data.email ? "email" : "phone_number"}`
+        `/verify?contact=${data.email || data.phone_number}&method=${
+          data.email ? "email" : "phone_number"
+        }`
       );
     } catch (error) {
       console.error("Sign up failed:", error);

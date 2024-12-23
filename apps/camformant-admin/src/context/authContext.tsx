@@ -5,23 +5,18 @@ import axiosInstance from "../utils/axios";
 import { API_ENDPOINTS } from "../utils/const/api-endpoints";
 
 interface AuthContextType {
-  login:({email,phone_number,password}:LoginRequest)=>Promise<void>,
+  login: ({ email, phone_number, password }: LoginRequest) => Promise<void>;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
   loading: boolean;
-  user:User| null,
-  setUser: React.Dispatch<React.SetStateAction<User|null>>
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
   resStatus: number;
-
 }
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-export const AuthProvider=({
-  children,
-}: {
-  children: ReactNode;
-})=>{
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
-  const [user,setUser]=useState<User|null>(null)
+  const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
   const [resStatus, setResStatus] = useState<number>(0);
@@ -39,7 +34,7 @@ export const AuthProvider=({
       setUser(res.data);
       setResStatus(res.status);
       setIsAuthenticated(true);
-      navigate('/')
+      navigate("/");
     } catch (error) {
       setIsAuthenticated(false);
       throw error;
@@ -54,7 +49,7 @@ export const AuthProvider=({
       // send logout to api
       setIsAuthenticated(false);
       setUser(null);
-      navigate("/auth/signin");
+      navigate("/signin");
     } catch (error) {
       console.error("Logout Failed:::", error);
     } finally {
@@ -63,21 +58,20 @@ export const AuthProvider=({
   };
   return (
     <AuthContext.Provider
-    value={{
-      resStatus,
-      isAuthenticated,
-      loading,
-      user,
-      setUser,
-      login,
-      logout
-
-    }}
-  >
-    {children}
-  </AuthContext.Provider>
+      value={{
+        resStatus,
+        isAuthenticated,
+        loading,
+        user,
+        setUser,
+        login,
+        logout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
-}
+};
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {

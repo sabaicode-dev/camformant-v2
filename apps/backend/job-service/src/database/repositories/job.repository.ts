@@ -442,11 +442,7 @@ class JobRepository {
             const count = await ApplyModel.countDocuments({
               [idKey as string]: idValue,
 
-              ...createDateQuery(
-                key,
-                Number((value as string).split("-")[0]),
-                Number((value as string).split("-")[1])
-              ),
+              ...createDateQuery(key, Number(value)),
             });
             //@ts-ignore
             counts[idValue.toString()][value.toString()] = count;
@@ -462,13 +458,9 @@ class JobRepository {
             ...(idKey && !Array.isArray(query.id![idKey])
               ? { [idKey]: new mongoose.Types.ObjectId(query.id![idKey]) }
               : {}),
-            ...(/^\d{2}-\d{2}$/.test(value as string)
+            ...(/^\d{2}$/.test(value as string)
               ? {
-                  ...createDateQuery(
-                    key,
-                    Number((value as string).split("-")[0]),
-                    Number((value as string).split("-")[1])
-                  ),
+                  ...createDateQuery(key, Number(value)),
                 }
               : { [key]: value }),
           });
@@ -486,15 +478,9 @@ class JobRepository {
             ? { [idKey]: new mongoose.Types.ObjectId(query.id![idKey]) }
             : {}),
 
-          ...(/^\d{2}-\d{2}$/.test(
-            query.filter[formatValue.toString()] as string
-          )
+          ...(/^\d{2}$/.test(query.filter[formatValue.toString()] as string)
             ? {
-                ...createDateQuery(
-                  key,
-                  Number((value as string).split("-")[0]),
-                  Number((value as string).split("-")[1])
-                ),
+                ...createDateQuery(key, Number(value)),
               }
             : { [formatValue.toString()]: value }),
         });
@@ -507,14 +493,12 @@ class JobRepository {
 }
 
 //===function===
-function createDateQuery(key: string, month: number, day: number) {
+function createDateQuery(key: string, month: number) {
+  console.log("value:::", month);
   //format month-day based on db date format
   return {
     $expr: {
-      $and: [
-        { $eq: [{ $dayOfMonth: `$${key}` }, day] },
-        { $eq: [{ $month: `$${key}` }, month] },
-      ],
+      $and: [{ $eq: [{ $month: `$${key}` }, month] }],
     },
   };
 }
