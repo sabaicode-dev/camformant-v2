@@ -94,10 +94,21 @@
 					"email": {
 						"type": "string"
 					},
-					"phone_number": {
+					"password": {
 						"type": "string"
 					},
-					"password": {
+					"contact": {
+						"properties": {
+							"phone_number": {
+								"type": "string"
+							}
+						},
+						"type": "object"
+					},
+					"status": {
+						"type": "string"
+					},
+					"employee_count": {
 						"type": "string"
 					},
 					"role": {

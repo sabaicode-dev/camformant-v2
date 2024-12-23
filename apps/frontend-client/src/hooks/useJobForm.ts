@@ -131,6 +131,32 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
     });
   };
 
+  const handleBenefitsChange = (newBenefits: string[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      benefit: newBenefits,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      benefit: newBenefits.length === 0 ? "This field is required" : null,
+    }));
+  };
+
+  const handleRequiredExperienceChange = (newExperiences: string[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      required_experience: newExperiences,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      required_experience:
+        newExperiences.length === 0 ? "This field is required" : null,
+    }));
+  };
+
+
   const validateForm = () => {
     const result = jobFormSchema.safeParse({
       ...formData,
@@ -179,6 +205,8 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
     isLoading,
     createdAtDate,
     deadlineDate,
+    handleBenefitsChange,
+    handleRequiredExperienceChange,
     handleSubmit,
     handleChange,
     handleArrayChange,
