@@ -58,7 +58,6 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
     formData.deadline ? new Date(formData.deadline) : undefined
   );
 
-
   const handleDateChange = (field: string, date: Date | undefined) => {
     if (field === "createdAt") {
       setCreatedAtDate(date);
@@ -132,31 +131,6 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
     });
   };
 
-  const handleBenefitsChange = (newBenefits: string[]) => {
-    setFormData((prev) => ({
-      ...prev,
-      benefit: newBenefits,
-    }));
-
-    setErrors((prev) => ({
-      ...prev,
-      benefit: newBenefits.length === 0 ? "This field is required" : null,
-    }));
-  };
-
-  const handleRequiredExperienceChange = (newExperiences: string[]) => {
-    setFormData((prev) => ({
-      ...prev,
-      required_experience: newExperiences,
-    }));
-
-    setErrors((prev) => ({
-      ...prev,
-      required_experience:
-        newExperiences.length === 0 ? "This field is required" : null,
-    }));
-  };
-
   const validateForm = () => {
     const result = jobFormSchema.safeParse({
       ...formData,
@@ -181,24 +155,21 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
+
     try {
-      setIsLoading(true);
       if (typeOfForm === "POST") {
         await axiosInstance.post(API_ENDPOINTS.JOB, formData);
-
       } else {
         await axiosInstance.put(
           `${API_ENDPOINTS.JOB_ENDPOINT}/${existingData!._id}`,
           { ...formData, companyId: existingData?.company?._id || "" }
         );
       }
-      setIsLoading(false);
-      router.push("/dashboard/jobs");
+
       await fetchJobs();
+      router.push("/dashboard/jobs");
     } catch (error) {
       console.error("Error submitting form:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -210,12 +181,9 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
     deadlineDate,
     handleSubmit,
     handleChange,
-    handleBenefitsChange,
-    handleRequiredExperienceChange,
     handleArrayChange,
     handleChangeNum,
     handleDateChange,
     setFormData,
   };
 };
-
