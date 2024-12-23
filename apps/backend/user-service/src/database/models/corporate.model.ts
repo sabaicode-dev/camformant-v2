@@ -4,6 +4,7 @@ interface ICorporatorProfile {
   _id?: mongoose.Types.ObjectId;
   sub?: string;
   name?: string;
+  status?:string
   email?: string;
   role?: "company";
   profile?: string;
@@ -40,6 +41,9 @@ const CorporatorSchema = new mongoose.Schema<ICorporatorProfile>(
     name: {
       type: String,
       required: true,
+    },
+    status:{
+      type: String,
     },
     email: {
       type: String,

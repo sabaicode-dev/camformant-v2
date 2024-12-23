@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 export interface ICorporatorProfile {
   _id?: string | mongoose.Types.ObjectId;
   sub?: string;
+  status?:string
   name?: string;
   email?: string;
   role?: "company";
@@ -64,4 +65,21 @@ export interface JobOpeningRequest {
     city: string;
     country: string;
   };
+}
+export interface AllJobRes{
+  data:ICorporatorProfile[]
+  totalPage:number
+  currentPage:number
+  skip:number
+  limit:number
+}
+export interface ProfileQueries{
+  page?:number
+  limit?:number
+  filter?:string
+}
+export interface QueriesRepoParams{
+  page?:number
+  limit?:number
+  filter?:{[key:string]:string}
 }

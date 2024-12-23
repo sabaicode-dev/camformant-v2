@@ -2,7 +2,7 @@ import { NotFoundError, prettyObject } from "@sabaicode-dev/camformant-libs";
 import CorporatorModel from "../models/corporate.model";
 import mongoose from "mongoose";
 import { companiesForJobs, getMultiProfileCompanyResponse } from "./types/user-repository.type";
-import { ICorporatorProfile } from "@/src/controllers/types/corporate-controller.type";
+import { AllJobRes, ICorporatorProfile, QueriesRepoParams } from "@/src/controllers/types/corporate-controller.type";
 
 class CorporateRepository {
   //TODO: type
@@ -124,16 +124,30 @@ class CorporateRepository {
       throw error;
     }
   }
-  public async getAllProfiles(): Promise<ICorporatorProfile[]> {
+  public async getAllProfiles(queries:QueriesRepoParams): Promise<AllJobRes|{}> {
     try {
-      const profiles = CorporatorModel.find().exec();
+      let {limit,filter,page=1}=queries
+      limit=limit?limit:0
+      const skip=(page-1)*limit
+      const query=filter?filter:{}
+      const profiles = await CorporatorModel.find(query).skip(skip).limit(limit);
+      console.log("filter:::::",query)
+      const countDocument:number=await CorporatorModel.countDocuments(query)
       if (!profiles) {
         console.log(
           "CompanyJobRepository - getAllProfiles() method error: No profiles found"
         );
-        return [];
+        return {};
       }
-      return profiles as unknown as ICorporatorProfile[];
+      return {
+        data:profiles,
+        totalPage:Math.ceil(countDocument/profiles.length),
+        currentPage:page,
+        skip:skip,
+        limit:limit,
+        
+
+      } as unknown as ICorporatorProfile[];
     } catch (error) {
       console.error(
         `CompanyJobRepository - getAllProfiles() method error: `,
@@ -190,10 +204,10 @@ class CorporateRepository {
     }
   }
   public async deleteCorporateProfile(
-    companyId: string
+    companySub: string
   ): Promise<ICorporatorProfile | null> {
     try {
-      const result = await CorporatorModel.findByIdAndDelete(companyId);
+      const result = await CorporatorModel.findOneAndDelete({sub:companySub});
 
       if (!result) {
         throw new NotFoundError("Job was not found!");

@@ -17,11 +17,24 @@ import {
   SignUpCommand,
   SignUpCommandInput,
   UserType,
+  AdminSetUserPasswordCommand,
+  AdminSetUserPasswordCommandInput,
+  AdminCreateUserCommand,
+  AdminCreateUserCommandInput,
+  AdminCreateUserCommandOutput,
+  AdminDeleteUserCommandInput,
+  AdminDeleteUserCommand,
+  AdminDisableUserCommandInput,
+  AdminDisableUserCommand,
+  AdminEnableUserCommandInput,
+  AdminEnableUserCommand,
+  AdminEnableUserCommandOutput,
 } from "@aws-sdk/client-cognito-identity-provider";
 import {
   GoogleCallbackRequest,
   LoginRequest,
   SignupRequest,
+  UserBodyParams,
   VerifyUserRequest,
 } from "@/src/controllers/types/auth-request.type";
 import crypto from "crypto";
@@ -32,10 +45,12 @@ import {
   AuthenticationError,
   InternalServerError,
   InvalidInputError,
+  NotFoundError,
   ResourceConflictError,
 } from "@sabaicode-dev/camformant-libs";
 import { jwtDecode } from "jwt-decode";
 import { CognitoToken } from "@/src/services/types/auth-service.type";
+import { sendMail } from "../utils/mail";
 
 const client = new CognitoIdentityProviderClient({
   region: configs.awsCognitoRegion,
@@ -625,22 +640,33 @@ class AuthService {
         Name: key === "role" ? "company" : key,
         Value: inputBody[key as keyof typeof inputBody],
       }));
-
+    attributes.push({ Name: "email_verified", Value: "true" });
     const username = (body.email || body.phone_number) as string;
 
-    const params: SignUpCommandInput = {
-      ClientId: configs.awsCognitoClientId,
+    const params: AdminCreateUserCommandInput = {
+      UserPoolId: configs.awsCognitoUserPoolId,
       Username: username,
-      Password: body.password,
-      SecretHash: this.generateSecretHash(username),
       UserAttributes: attributes,
+      TemporaryPassword: body.password,
     };
 
     try {
-      const command = new SignUpCommand(params);
-      const result = await client.send(command);
-
-      return `Corporate created successfully. Please check your ${result.CodeDeliveryDetails?.DeliveryMedium?.toLowerCase()} for a verification code.`;
+      const command = new AdminCreateUserCommand(params);
+      const result: AdminCreateUserCommandOutput = await client.send(command);
+      const userSub = result.User?.Attributes?.find(
+        (attr) => attr.Name === "sub"
+      )?.Value;
+      await this.createPassword(userSub!, body.password!);
+      await axios.post(`${configs.userServiceUrl}/v1/corporator/profile`, {
+        sub: userSub,
+        email: body.email,
+        status: "unverified",
+        name: `${body.sur_name}${body.last_name}`,
+      });
+      //set permanent password
+      await this.addToGroup(userSub!, body.role ? body.role : "company");
+      await this.disbaleUser(userSub!);
+      return `Corporate created successfully`;
     } catch (error) {
       console.error(`AuthService corporateSignup() method error: `, error);
 
@@ -823,6 +849,79 @@ class AuthService {
 
       console.error("AuthService corporateLogin() method error:", error);
       throw new Error(`Error verifying user: ${error}`);
+    }
+  }
+  public async verifyUserAccount(body: UserBodyParams) {
+    try {
+      const params: AdminEnableUserCommandInput = {
+        Username: body.sub,
+        UserPoolId: configs.awsCognitoUserPoolId,
+      };
+      const command = new AdminEnableUserCommand(params);
+      const result: AdminEnableUserCommandOutput = await client.send(command);
+      //for send mail to user after successful verify
+      if (result.$metadata) {
+        await axios.put(
+          `${configs.userServiceUrl}/v1/corporator/profile/${body.id}`,
+          {status:"verified"}
+        );
+        sendMail(body.email);
+      }
+      return result;
+    } catch (error) {
+      //cognito error
+      if (typeof error === "object" && error !== null && "name" in error) {
+        if ((error as { name: string }).name === "UserNotFoundException") {
+          throw new NotFoundError("This account not found");
+        }
+      }
+      throw error;
+    }
+  }
+  async disbaleUser(sub: string) {
+    try {
+      const params: AdminDisableUserCommandInput = {
+        UserPoolId: configs.awsCognitoUserPoolId,
+        Username: sub,
+      };
+      await client.send(new AdminDisableUserCommand(params));
+    } catch (err) {
+      throw err;
+    }
+  }
+  public async deleteUserAccount(sub: string) {
+    try {
+      const params: AdminDeleteUserCommandInput = {
+        UserPoolId: configs.awsCognitoUserPoolId,
+        Username: sub,
+      };
+      const command = new AdminDeleteUserCommand(params);
+      await client.send(command);
+      await axios.delete(
+        `${configs.userServiceUrl}/v1/corporator/profile/${sub}`
+      );
+    } catch (error) {
+      if (typeof error === "object" && error !== null && "name" in error) {
+        if ((error as { name: string }).name === "UserNotFoundException") {
+          throw new NotFoundError("This account not found");
+        }
+      }
+      throw error;
+    }
+  }
+  //set password for user since admincreateuser give temp pass for them
+  async createPassword(sub: string, password: string) {
+    try {
+      const params: AdminSetUserPasswordCommandInput = {
+        UserPoolId: configs.awsCognitoUserPoolId,
+        Username: sub,
+        Password: password,
+        Permanent: true,
+      };
+      const command = new AdminSetUserPasswordCommand(params);
+      await client.send(command);
+    } catch (err) {
+      throw err;
     }
   }
 }

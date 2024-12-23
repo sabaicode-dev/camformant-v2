@@ -4,6 +4,7 @@ import {
   GoogleCallbackRequest,
   LoginRequest,
   SignupRequest,
+  UserBodyParams,
   VerifyUserRequest,
 } from "@/src/controllers/types/auth-request.type";
 import AuthService from "@/src/services/auth.service";
@@ -14,7 +15,9 @@ import { Response, Request as ExpressRequest } from "express";
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Path,
   Post,
   Queries,
   Query,
@@ -255,8 +258,19 @@ export class AuthController extends Controller {
   }
   @Get("/getToken")
   public async getToken(@Request() request: ExpressRequest) {
-    const userCookie = request.cookies["user_id"];
+    const userCookie = request.cookies["access_token"];
     if (!userCookie) throw new NotFoundError("Cookie is not found");
     return userCookie
+  }
+  @SuccessResponse("204", "delete Successfully")
+  @Post("/admin/verifyAccount")
+  public async verifyUserAccount(@Body() body:UserBodyParams){
+    await AuthService.verifyUserAccount(body)
+    return 
+  }
+  @Delete("/admin/deleteAccount/:userSub")
+  public async deleteUserAccount(@Path() userSub:string){
+    await AuthService.deleteUserAccount(userSub)
+    return 
   }
 }
