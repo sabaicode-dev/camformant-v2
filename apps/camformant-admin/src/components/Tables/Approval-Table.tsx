@@ -54,7 +54,7 @@ const ApprovalTable = () => {
         }
         return corporArr;
       });
-      console.log("response in verify:", response);
+      console.log("response in verify::", response);
     } catch (err) {
       console.error("error in verify", err);
     } finally {
