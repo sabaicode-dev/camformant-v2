@@ -490,6 +490,7 @@ class JobRepository {
       throw err;
     }
   }
+
 }
 
 //===function===
@@ -502,6 +503,7 @@ function createDateQuery(key: string, month: number) {
     },
   };
 }
+
 async function enrichJobData(
   response: any[],
   findJobById: (id: string) => Promise<returnJobs>

@@ -60,7 +60,6 @@ const generateColors = (count: number): string[] => {
 };
 const Chart = () => {
   const { user } = useAuth();
-  const { jobs } = useJob();
   const [length, setLength] = useState<{
     applicant: number;
     interview: number;
@@ -73,6 +72,8 @@ const Chart = () => {
   const [colors, setColors] = useState<string[]>([]);
   async function fetchLength() {
     try {
+      const jobResponse = await axiosInstance.get(`${API_ENDPOINTS.JOBS}`);
+      const jobs = jobResponse.data.data;
       const lengthRes: {
         data: { Apply: number; Interview: number; Accept: number };
       } = await axiosInstance.get(
@@ -86,7 +87,9 @@ const Chart = () => {
       const jobIdArr = jobs.map((job: IJob) => job._id);
 
       const response = await axiosInstance.get(
-        `${API_ENDPOINTS.JOB_APPLY_LENGTH}?filter=${encodeURIComponent(JSON.stringify({ jobId: jobIdArr }))}`
+        `${API_ENDPOINTS.JOB_APPLY_LENGTH}?filter=${encodeURIComponent(
+          JSON.stringify({ jobId: jobIdArr })
+        )}`
       );
       let jobArr = jobs.map((job: IJob) => ({
         title: job.title,
@@ -137,8 +140,9 @@ const Chart = () => {
     }
   }
   useEffect(() => {
-    jobs.length && user?._id && fetchLength();
-  }, []);
+    user?._id && fetchLength();
+    //eslint-disable-next-line
+  }, [user?._id]);
   return (
     <>
       {isLoading ? (
@@ -154,7 +158,7 @@ const Chart = () => {
                   <span className="text-[21px] font-bold">
                     {length.applicant}
                   </span>
-                  <div className="text-[13px] text-gray-500">Apply</div>
+                  <div className="text-[13px] text-gray-500">Applicant</div>
                 </Card>
                 <Card className="w-1/3 flex flex-col rounded-[5px] bg-orange-100 justify-center dark:text-black p-[10px]">
                   <RiMailVolumeLine className="w-[23px] h-[23px] text-blue-400" />
