@@ -110,6 +110,15 @@ jobs:
           echo "NEXT_PUBLIC_JOB_ENDPOINT=${{ secrets.NEXT_PUBLIC_JOB_ENDPOINT }}" >> $GITHUB_ENV
           echo "NEXT_PUBLIC_COMPANY_ENDPOINT=${{ secrets.NEXT_PUBLIC_COMPANY_ENDPOINT }}" >> $GITHUB_ENV 
 
+      - name: Debug Environment Variables
+        run: |
+          echo "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL"
+          echo "NEXT_PUBLIC_ADMIN_ENDPOINT=$NEXT_PUBLIC_ADMIN_ENDPOINT"
+          echo "NEXT_PUBLIC_AUTH_ENDPOINT=$NEXT_PUBLIC_AUTH_ENDPOINT"
+          echo "NEXT_PUBLIC_USER_ENDPOINT=$NEXT_PUBLIC_USER_ENDPOINT"
+          echo "NEXT_PUBLIC_JOB_ENDPOINT=$NEXT_PUBLIC_JOB_ENDPOINT"
+          echo "NEXT_PUBLIC_COMPANY_ENDPOINT=$NEXT_PUBLIC_COMPANY_ENDPOINT"    
+
       # step 4: Build app for Deploy to S3
       - name: Build React App
         run: |
