@@ -467,7 +467,7 @@ const ROUTE_PATHS: RoutesConfig = {
             },
           },
           {
-            path: "/deleteMany/:applyId",
+            path: "/deleteMany/:jobId",
             methods: {
               DELETE: {
                 authRequired: true,
