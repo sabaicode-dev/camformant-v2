@@ -100,6 +100,15 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install
+          
+      - name: Set Environment Variables
+        run: |
+          echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > $GITHUB_ENV
+          echo "NEXT_PUBLIC_ADMIN_ENDPOINT=${{ secrets.NEXT_PUBLIC_ADMIN_ENDPOINT }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_AUTH_ENDPOINT=${{ secrets.NEXT_PUBLIC_AUTH_ENDPOINT }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_USER_ENDPOINT=${{ secrets.NEXT_PUBLIC_USER_ENDPOINT }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_JOB_ENDPOINT=${{ secrets.NEXT_PUBLIC_JOB_ENDPOINT }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_COMPANY_ENDPOINT=${{ secrets.NEXT_PUBLIC_COMPANY_ENDPOINT }}" >> $GITHUB_ENV 
 
       # step 4: Build app for Deploy to S3
       - name: Build React App
