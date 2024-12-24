@@ -3,7 +3,7 @@ import { FaCheck, FaRegEye, FaRegTrashAlt } from "react-icons/fa";
 import { convertDate } from "../../../utils/functions/approval-func";
 import { CorporatorParams } from "../../../utils/types/corporator";
 import PopUpModal from "../../popup-modal";
-
+import { useNavigate } from "react-router-dom";
 
 const TableContent: React.FC<{
   data: CorporatorParams[];
@@ -11,20 +11,25 @@ const TableContent: React.FC<{
   verifyUser: (email: string, sub: string, id: string) => Promise<void>;
 }> = ({ data, deleteUser, verifyUser }) => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [modalAction, setModalAction] = useState<() => Promise<void>>(() => Promise.resolve);
+  const [modalAction, setModalAction] = useState<() => Promise<void>>(
+    () => Promise.resolve
+  );
   const [modalBodyText, setModalBodyText] = useState("");
   const [isWarningModal, setWarningModal] = useState(false);
+  const navigate = useNavigate();
 
   const handleDeleteClick = (corData: CorporatorParams) => {
     setModalAction(() => () => deleteUser(corData.sub!));
-    setModalBodyText(`Are you sure you want to delete ${corData.name}? This action cannot be undone.`);
+    setModalBodyText(
+      `Are you sure you want to delete ${corData.name}? This action cannot be undone.`
+    );
     setWarningModal(true); // Set as a warning modal
     setModalOpen(true);
   };
 
   const handleVerifyClick = (corData: CorporatorParams) => {
-    setModalAction(() => () =>
-      verifyUser(corData.email!, corData.sub!, corData._id!)
+    setModalAction(
+      () => () => verifyUser(corData.email!, corData.sub!, corData._id!)
     );
     setModalBodyText(`Are you sure you want to verify ${corData.name}?`);
     setWarningModal(false); // Informational modal
@@ -78,7 +83,12 @@ const TableContent: React.FC<{
           {/* Actions Column */}
           <div className="hidden sm:flex items-center justify-center p-2.5 xl:p-5">
             <div className="flex items-center space-x-3.5">
-              <button className="hover:text-primary">
+              <button
+                className="hover:text-primary"
+                onClick={() => {
+                  navigate(`/approval/${corData.sub}`);
+                }}
+              >
                 <FaRegEye />
               </button>
               <button

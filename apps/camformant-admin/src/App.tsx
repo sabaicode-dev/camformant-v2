@@ -1,4 +1,3 @@
-
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import PageTitle from "./components/PageTitle";
@@ -12,6 +11,7 @@ import Camformant from "./page/Dashboard";
 import { AuthProvider } from "./context/authContext";
 import ProtectedRoutes from "./page/ProtectedRoute";
 import Approval from "./page/Approval";
+import ApprovalDetail from "./page/ApprovalDetail";
 function App() {
   const { pathname } = useLocation();
 
@@ -90,6 +90,15 @@ function App() {
             }
           />
         </Route>
+        <Route
+          path="/approval/:userSub"
+          element={
+            <>
+              <PageTitle title="User Approval Detail |  Admin Dashboard Template" />
+              <ApprovalDetail />
+            </>
+          }
+        ></Route>
       </Routes>
     </AuthProvider>
   );
