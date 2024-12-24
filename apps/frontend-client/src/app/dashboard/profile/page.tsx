@@ -22,7 +22,8 @@ const ProfilePage = () => {
       await fetchUser();
     } catch (error) {
       console.error("Failed to update profile data:", error);
-    } finally {
+    }
+    finally {
       setIsLoading(true);
     }
   };
@@ -37,7 +38,7 @@ const ProfilePage = () => {
     return (
       <div className="min-h-screen">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="lg:sticky lg:top-12 lg:h-[calc(100vh-6rem)]">
               <ProfileSkeleton />
             </div>
@@ -53,28 +54,25 @@ const ProfilePage = () => {
   return (
     <div className="min-h-screen">
       <div className="container mx-auto">
-        {isLoading ? (
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-            <div className="lg:sticky lg:top-0 lg:h-[calc(100vh-8rem)]">
-              <Profile user={user} />
-            </div>
-            <div className="h-screen">
-              <EditProfileForm
-                initialData={user || undefined}
-                onSubmit={handleSubmit}
-              />
-            </div>
+      { isLoading ? ( 
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="lg:sticky lg:top-0 lg:h-[calc(100vh-8rem)]">
+            <Profile user={user} />
           </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-            <div className="lg:sticky lg:top-0 lg:h-[calc(100vh-8rem)] ">
-              <ProfileSkeleton />
-            </div>
-            <div className="">
-              <EditProfileSkeleton />
-            </div>
+          <div className="h-screen">
+              <EditProfileForm initialData={user || undefined} onSubmit={handleSubmit} />
           </div>
-        )}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="lg:sticky lg:top-0 lg:h-[calc(100vh-8rem)] ">
+            <ProfileSkeleton/>
+          </div>
+          <div className="">
+            <EditProfileSkeleton/>
+          </div>
+        </div>
+      )}
       </div>
     </div>
   );

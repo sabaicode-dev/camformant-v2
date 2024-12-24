@@ -56,9 +56,7 @@ function PieChartComponent({
 }: {
   applyData: ApplyDataLengthParams[];
 }) {
-  const [chartData, setChartData] = useState<ChartDataParams[]>([
-    { browser: "chrome", applicants: 275, fill: arrColor[0] },
-  ]);
+  const [chartData, setChartData] = useState<ChartDataParams[]>([]);
 
   useEffect(() => {
     let applyArr: ChartDataParams[] = [];
@@ -77,7 +75,11 @@ function PieChartComponent({
         });
       else applyArr[3].applicants += data.length;
     });
-    applyArr.length > 0 && setChartData(applyArr);
+    setChartData(
+      applyArr.length > 0
+        ? applyArr
+        : [{ browser: "chrome", applicants: 275, fill: arrColor[0] }]
+    );
     //eslint-disable-next-line
   }, [applyData]);
   const totalApplicants = React.useMemo(() => {
