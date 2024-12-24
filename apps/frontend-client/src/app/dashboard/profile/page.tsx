@@ -14,7 +14,7 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const handleSubmit = async (data: ProfileData) => {
     try {
-      setIsLoading(false);
+      // setIsLoading(false);
       await axiosInstance.put(
         `${API_ENDPOINTS.CORPARATE_PROFILE_UPDATE}/${user?._id}`,
         data
@@ -31,13 +31,14 @@ const ProfilePage = () => {
   useEffect(() => {
     fetchUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!user) {
     return (
       <div className="min-h-screen">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <div className="lg:sticky lg:top-12 lg:h-[calc(100vh-6rem)]">
               <ProfileSkeleton />
             </div>

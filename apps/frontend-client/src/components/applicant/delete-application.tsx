@@ -25,8 +25,6 @@ export function DeleteApplication( { applyId ,onStatusUpdate }: DeleteApplicatio
             if (onStatusUpdate) {
               await onStatusUpdate()
              }
-            console.log("Application deleted successfully with id:", applyId)
-
         } catch (error) {
             console.error("Failed to delete application:", error)
         }

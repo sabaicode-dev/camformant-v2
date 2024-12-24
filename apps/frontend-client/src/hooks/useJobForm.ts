@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Jobs } from "@/utils/types/form-type";
-import { jobFormSchema } from "@/schema/auth/formSchema";
+import { jobFormSchema } from "@/schema/job/formSchema";
 import { useRouter } from "next/navigation";
 import { useJob } from "@/context/JobContext";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
@@ -17,8 +17,6 @@ interface UseJobFormProps {
   typeOfForm: "POST" | "PUT";
 }
 const initializeFormData = (existingData?: Jobs): Jobs => {
-  const today = new Date().toISOString().split("T")[0];
-
   return {
     title: existingData?.title || "",
     position: existingData?.position || [],
@@ -39,17 +37,19 @@ const initializeFormData = (existingData?: Jobs): Jobs => {
       : "",
     createdAt: existingData?.createdAt
       ? new Date(existingData.createdAt).toISOString().split("T")[0]
-      : "", // Set today as default for createdAt
+      : "",
   };
 };
 
+
 export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
   const router = useRouter();
-  const { fetchJobs, isLoading } = useJob();
+  const { fetchJobs } = useJob();
   const [errors, setErrors] = useState<Record<string, string | null>>({});
   const [formData, setFormData] = useState<Jobs>(
     initializeFormData(existingData)
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   const [createdAtDate, setCreatedAtDate] = useState<Date | undefined>(
     formData.createdAt ? new Date(formData.createdAt) : undefined
@@ -131,6 +131,32 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
     });
   };
 
+  const handleBenefitsChange = (newBenefits: string[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      benefit: newBenefits,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      benefit: newBenefits.length === 0 ? "This field is required" : null,
+    }));
+  };
+
+  const handleRequiredExperienceChange = (newExperiences: string[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      required_experience: newExperiences,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      required_experience:
+        newExperiences.length === 0 ? "This field is required" : null,
+    }));
+  };
+
+
   const validateForm = () => {
     const result = jobFormSchema.safeParse({
       ...formData,
@@ -179,6 +205,8 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
     isLoading,
     createdAtDate,
     deadlineDate,
+    handleBenefitsChange,
+    handleRequiredExperienceChange,
     handleSubmit,
     handleChange,
     handleArrayChange,

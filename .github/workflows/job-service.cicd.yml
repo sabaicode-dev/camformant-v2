@@ -126,6 +126,7 @@ jobs:
             echo "CORPORATOR_API_ENDPOINT=${{ secrets.CORPORATOR_API_ENDPOINT }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
             echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
             echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
+            echo "NOTIFICATION_SERVICE_API_ENDPOINT=${{ secrets.NOTIFICATION_SERVICE_API_ENDPOINT }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
 
       - name: Install Dependencies and Restart PM2
         uses: appleboy/ssh-action@master

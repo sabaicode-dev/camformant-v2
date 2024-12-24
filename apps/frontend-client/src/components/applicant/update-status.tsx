@@ -76,8 +76,8 @@ export function UpdateStatus({ applyId, currentStatus ,onStatusUpdate }: UpdateS
               <SelectContent>
                 <SelectItem value="Apply">Apply</SelectItem>
                 <SelectItem value="Review">Review</SelectItem>
-                <SelectItem value="Interview">Interview</SelectItem>
                 <SelectItem value="Shortlist">Shortlist</SelectItem>
+                <SelectItem value="Interview">Interview</SelectItem>
                 <SelectItem value="Accept">Accept</SelectItem>
               </SelectContent>
             </Select>

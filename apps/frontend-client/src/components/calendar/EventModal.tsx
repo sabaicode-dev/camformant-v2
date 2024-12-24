@@ -59,7 +59,7 @@ export const EventModal = ({ event, onClose }: EventModalProps) => {
               </label>
               <p className="text-gray-900 flex gap-1 items-center text-[14px] dark:text-gray-100">
                 <Clock4 className="h-[16px]" />
-                {formatEventTime(event.start)} - {formatEventTime(event.end)}
+                {event.start && event.end ? `${formatEventTime(event.start)} - ${formatEventTime(event.end)}` : 'Time not available'}
               </p>
             </div>
           </div>
