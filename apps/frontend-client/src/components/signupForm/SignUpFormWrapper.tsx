@@ -10,18 +10,9 @@ export function SignUpFormWrapper({ children }: SignUpFormWrapperProps) {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="flex flex-col-reverse md:flex-row w-full md:w-3/4 lg:w-2/3 bg-white rounded-lg shadow-lg overflow-hidden">
-        {/* Left Side - Image */}
         <div className="md:w-1/2 w-full flex items-center justify-center p-8">
-          <Image
-            src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?q=80&w=2070&auto=format&fit=crop"
-            alt="Corporate signup"
-            width={500}
-            height={500}
-            className="w-full h-auto object-cover rounded-lg"
-          />
+          <Image className="w-full h-auto object-cover" src="/img/Job hunt-amico.png" alt="Job image" width={800} height={800} priority />
         </div>
-
-        {/* Right Side - Form */}
         <div className="md:w-1/2 w-full p-8">
           <Card className="w-full border-none shadow-none">
             <div className="space-y-6">
