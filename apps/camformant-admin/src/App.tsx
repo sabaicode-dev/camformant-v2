@@ -33,63 +33,62 @@ function App() {
           }
         />
 
-        <Route element={<ProtectedRoutes />}>
-          <Route
-            index
-            path="/"
-            element={
-              <>
-                <PageTitle title="Dashboard |  Admin Dashboard Template" />
-                <Camformant />
-              </>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <>
-                <PageTitle title="Profile |  Admin Dashboard Template" />
-                <Profile />
-              </>
-            }
-          />
-          <Route
-            path="/post"
-            element={
-              <>
-                <PageTitle title="Post |  Admin Dashboard Template" />
-                <Post />
-              </>
-            }
-          />
-          <Route
-            path="/chart"
-            element={
-              <>
-                <PageTitle title="Basic Chart | Admin Dashboard Template" />
-                <Chart />
-              </>
-            }
-          />
-          <Route
-            path="/tables"
-            element={
-              <>
-                <PageTitle title="Tables |  Admin Dashboard Template" />
-                <Tables />
-              </>
-            }
-          />
-          <Route
-            path="/approval"
-            element={
-              <>
-                <PageTitle title="User Approval |  Admin Dashboard Template" />
-                <Approval />
-              </>
-            }
-          />
-        </Route>
+        <Route
+          index
+          path="/"
+          element={
+            <>
+              <PageTitle title="Dashboard |  Admin Dashboard Template" />
+              <Camformant />
+            </>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <>
+              <PageTitle title="Profile |  Admin Dashboard Template" />
+              <Profile />
+            </>
+          }
+        />
+        <Route
+          path="/post"
+          element={
+            <>
+              <PageTitle title="Post |  Admin Dashboard Template" />
+              <Post />
+            </>
+          }
+        />
+        <Route
+          path="/chart"
+          element={
+            <>
+              <PageTitle title="Basic Chart | Admin Dashboard Template" />
+              <Chart />
+            </>
+          }
+        />
+        <Route
+          path="/tables"
+          element={
+            <>
+              <PageTitle title="Tables |  Admin Dashboard Template" />
+              <Tables />
+            </>
+          }
+        />
+        <Route
+          path="/approval"
+          element={
+            <>
+              <PageTitle title="User Approval |  Admin Dashboard Template" />
+              <Approval />
+            </>
+          }
+        />
+
         <Route
           path="/approval/:userSub"
           element={
