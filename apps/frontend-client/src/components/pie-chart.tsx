@@ -86,7 +86,7 @@ function PieChartComponent({
   }, [chartData]);
   return (
     <div className="h-auto">
-      <Card className="flex flex-col justify-center gap-[87px] shadow-md">
+      <Card className="flex flex-col w-full justify-center gap-[87px] shadow-md">
         <CardHeader>
           <CardTitle>Pie Chart - Number Of Apply</CardTitle>
           <CardDescription>For Each Job</CardDescription>
@@ -94,9 +94,9 @@ function PieChartComponent({
         <CardContent>
           <ChartContainer
             config={chartConfig}
-            className="relative w-[300px] h-[300px] "
+            className=" w-[300px] h-[300px] m-auto "
           >
-            <PieChart className="absolute">
+            <PieChart className=" ">
               <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent hideLabel />}
