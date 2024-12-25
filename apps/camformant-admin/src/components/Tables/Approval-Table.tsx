@@ -77,7 +77,7 @@ const ApprovalTable = () => {
         return corporArr;
       });
     } catch (err) {
-      console.error("error in delete", err);
+      console.error("error in delete::", err);
     } finally {
       setIsLoading(false);
     }
