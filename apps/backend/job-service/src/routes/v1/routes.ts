@@ -277,21 +277,21 @@ export function RegisterRoutes(app: Router) {
 
 
     
+        const argsJobController_postIJob: Record<string, TsoaRoute.ParameterSchema> = {
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                body: {"in":"body","name":"body","required":true,"ref":"IJob"},
+        };
         app.post('/v1/jobs/job',
             ...(fetchMiddlewares<RequestHandler>(JobController)),
             ...(fetchMiddlewares<RequestHandler>(JobController.prototype.postIJob)),
 
             async function JobController_postIJob(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-                    body: {"in":"body","name":"body","required":true,"ref":"IJob"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsJobController_postIJob, request, response });
 
                 const controller = new JobController();
 
@@ -308,20 +308,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsJobController_postJobApply: Record<string, TsoaRoute.ParameterSchema> = {
+                body: {"in":"body","name":"body","required":true,"ref":"PostJobApplyBody"},
+        };
         app.post('/v1/jobs/jobApply',
             ...(fetchMiddlewares<RequestHandler>(JobController)),
             ...(fetchMiddlewares<RequestHandler>(JobController.prototype.postJobApply)),
 
             async function JobController_postJobApply(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    body: {"in":"body","name":"body","required":true,"ref":"PostJobApplyBody"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsJobController_postJobApply, request, response });
 
                 const controller = new JobController();
 
@@ -338,20 +338,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsJobController_createJob: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"body","name":"req","required":true,"ref":"JobParams"},
+        };
         app.post('/v1/jobs',
             ...(fetchMiddlewares<RequestHandler>(JobController)),
             ...(fetchMiddlewares<RequestHandler>(JobController.prototype.createJob)),
 
             async function JobController_createJob(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    req: {"in":"body","name":"req","required":true,"ref":"JobParams"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsJobController_createJob, request, response });
 
                 const controller = new JobController();
 
@@ -368,21 +368,21 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsJobController_getAllJobs: Record<string, TsoaRoute.ParameterSchema> = {
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                queries: {"in":"queries","name":"queries","required":true,"ref":"JobGetAllControllerParams"},
+        };
         app.get('/v1/jobs',
             ...(fetchMiddlewares<RequestHandler>(JobController)),
             ...(fetchMiddlewares<RequestHandler>(JobController.prototype.getAllJobs)),
 
             async function JobController_getAllJobs(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-                    queries: {"in":"queries","name":"queries","required":true,"ref":"JobGetAllControllerParams"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsJobController_getAllJobs, request, response });
 
                 const controller = new JobController();
 
@@ -399,20 +399,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsJobController_getAllJobsWithCorporator: Record<string, TsoaRoute.ParameterSchema> = {
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+        };
         app.get('/v1/jobs/corporator',
             ...(fetchMiddlewares<RequestHandler>(JobController)),
             ...(fetchMiddlewares<RequestHandler>(JobController.prototype.getAllJobsWithCorporator)),
 
             async function JobController_getAllJobsWithCorporator(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsJobController_getAllJobsWithCorporator, request, response });
 
                 const controller = new JobController();
 
@@ -429,20 +429,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsJobController_getSearchHistory: Record<string, TsoaRoute.ParameterSchema> = {
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+        };
         app.get('/v1/jobs/search-history',
             ...(fetchMiddlewares<RequestHandler>(JobController)),
             ...(fetchMiddlewares<RequestHandler>(JobController.prototype.getSearchHistory)),
 
             async function JobController_getSearchHistory(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsJobController_getSearchHistory, request, response });
 
                 const controller = new JobController();
 
@@ -459,19 +459,19 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsJobController_getSearchTrending: Record<string, TsoaRoute.ParameterSchema> = {
+        };
         app.get('/v1/jobs/search-trending',
             ...(fetchMiddlewares<RequestHandler>(JobController)),
             ...(fetchMiddlewares<RequestHandler>(JobController.prototype.getSearchTrending)),
 
             async function JobController_getSearchTrending(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsJobController_getSearchTrending, request, response });
 
                 const controller = new JobController();
 
@@ -488,20 +488,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsJobController_getApplyLength: Record<string, TsoaRoute.ParameterSchema> = {
+                query: {"in":"queries","name":"query","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"filter":{"dataType":"string","required":true},"id":{"dataType":"string"}}},
+        };
         app.get('/v1/jobs/jobApply/applyLength',
             ...(fetchMiddlewares<RequestHandler>(JobController)),
             ...(fetchMiddlewares<RequestHandler>(JobController.prototype.getApplyLength)),
 
             async function JobController_getApplyLength(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    query: {"in":"queries","name":"query","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"filter":{"dataType":"string","required":true},"id":{"dataType":"string"}}},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsJobController_getApplyLength, request, response });
 
                 const controller = new JobController();
 
@@ -518,20 +518,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsJobController_getJobApply: Record<string, TsoaRoute.ParameterSchema> = {
+                queries: {"in":"queries","name":"queries","required":true,"ref":"JobApplyQueriesController"},
+        };
         app.get('/v1/jobs/jobApply',
             ...(fetchMiddlewares<RequestHandler>(JobController)),
             ...(fetchMiddlewares<RequestHandler>(JobController.prototype.getJobApply)),
 
             async function JobController_getJobApply(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    queries: {"in":"queries","name":"queries","required":true,"ref":"JobApplyQueriesController"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsJobController_getJobApply, request, response });
 
                 const controller = new JobController();
 
@@ -548,21 +548,21 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsJobController_putJobApply: Record<string, TsoaRoute.ParameterSchema> = {
+                applyId: {"in":"path","name":"applyId","required":true,"dataType":"string"},
+                body: {"in":"body","name":"body","required":true,"ref":"BodyUpdateJobApply"},
+        };
         app.put('/v1/jobs/jobApply/:applyId',
             ...(fetchMiddlewares<RequestHandler>(JobController)),
             ...(fetchMiddlewares<RequestHandler>(JobController.prototype.putJobApply)),
 
             async function JobController_putJobApply(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    applyId: {"in":"path","name":"applyId","required":true,"dataType":"string"},
-                    body: {"in":"body","name":"body","required":true,"ref":"BodyUpdateJobApply"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsJobController_putJobApply, request, response });
 
                 const controller = new JobController();
 
@@ -579,20 +579,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsJobController_deleteManyJobApply: Record<string, TsoaRoute.ParameterSchema> = {
+                jobId: {"in":"path","name":"jobId","required":true,"dataType":"string"},
+        };
         app.delete('/v1/jobs/jobApply/deleteMany/:jobId',
             ...(fetchMiddlewares<RequestHandler>(JobController)),
             ...(fetchMiddlewares<RequestHandler>(JobController.prototype.deleteManyJobApply)),
 
             async function JobController_deleteManyJobApply(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    jobId: {"in":"path","name":"jobId","required":true,"dataType":"string"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsJobController_deleteManyJobApply, request, response });
 
                 const controller = new JobController();
 
@@ -609,20 +609,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsJobController_deleteJobApply: Record<string, TsoaRoute.ParameterSchema> = {
+                applyId: {"in":"path","name":"applyId","required":true,"dataType":"string"},
+        };
         app.delete('/v1/jobs/jobApply/:applyId',
             ...(fetchMiddlewares<RequestHandler>(JobController)),
             ...(fetchMiddlewares<RequestHandler>(JobController.prototype.deleteJobApply)),
 
             async function JobController_deleteJobApply(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    applyId: {"in":"path","name":"applyId","required":true,"dataType":"string"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsJobController_deleteJobApply, request, response });
 
                 const controller = new JobController();
 
@@ -639,20 +639,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsJobController_getJobById: Record<string, TsoaRoute.ParameterSchema> = {
+                jobId: {"in":"path","name":"jobId","required":true,"dataType":"string"},
+        };
         app.get('/v1/jobs/:jobId',
             ...(fetchMiddlewares<RequestHandler>(JobController)),
             ...(fetchMiddlewares<RequestHandler>(JobController.prototype.getJobById)),
 
             async function JobController_getJobById(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    jobId: {"in":"path","name":"jobId","required":true,"dataType":"string"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsJobController_getJobById, request, response });
 
                 const controller = new JobController();
 
@@ -669,21 +669,21 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsJobController_updateJobById: Record<string, TsoaRoute.ParameterSchema> = {
+                jobId: {"in":"path","name":"jobId","required":true,"dataType":"string"},
+                updateDatJob: {"in":"body","name":"updateDatJob","required":true,"ref":"IJob"},
+        };
         app.put('/v1/jobs/:jobId',
             ...(fetchMiddlewares<RequestHandler>(JobController)),
             ...(fetchMiddlewares<RequestHandler>(JobController.prototype.updateJobById)),
 
             async function JobController_updateJobById(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    jobId: {"in":"path","name":"jobId","required":true,"dataType":"string"},
-                    updateDatJob: {"in":"body","name":"updateDatJob","required":true,"ref":"IJob"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsJobController_updateJobById, request, response });
 
                 const controller = new JobController();
 
@@ -700,20 +700,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsJobController_deleteJobById: Record<string, TsoaRoute.ParameterSchema> = {
+                jobId: {"in":"path","name":"jobId","required":true,"dataType":"string"},
+        };
         app.delete('/v1/jobs/:jobId',
             ...(fetchMiddlewares<RequestHandler>(JobController)),
             ...(fetchMiddlewares<RequestHandler>(JobController.prototype.deleteJobById)),
 
             async function JobController_deleteJobById(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    jobId: {"in":"path","name":"jobId","required":true,"dataType":"string"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsJobController_deleteJobById, request, response });
 
                 const controller = new JobController();
 
@@ -730,19 +730,19 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsHealthController_getHealth: Record<string, TsoaRoute.ParameterSchema> = {
+        };
         app.get('/v1/jobs/health',
             ...(fetchMiddlewares<RequestHandler>(HealthController)),
             ...(fetchMiddlewares<RequestHandler>(HealthController.prototype.getHealth)),
 
             async function HealthController_getHealth(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsHealthController_getHealth, request, response });
 
                 const controller = new HealthController();
 

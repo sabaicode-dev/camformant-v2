@@ -112,7 +112,8 @@ const InterviewCalendar = () => {
   };
   
   return (
-    <div className="calendar-container dark:bg-gray-900 p-4">
+    <div className="p-4 calendar-container dark:bg-gray-900">
+      {/* @ts-ignore */}
       <Calendar
         localizer={localizer}
         events={events}
@@ -125,7 +126,7 @@ const InterviewCalendar = () => {
         onNavigate={(newDate) => setDate(newDate)}
         eventPropGetter={eventStyleGetter}
         onSelectEvent={handleSelectEvent}
-        className="dark:text-white  rounded-lg shadow-lg"
+        className="rounded-lg shadow-lg dark:text-white"
       />
 
       {showModal && selectedEvent && (

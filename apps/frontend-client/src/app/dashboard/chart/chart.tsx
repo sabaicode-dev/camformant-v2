@@ -8,7 +8,6 @@ import JobList from "@/components/jobList";
 import { useEffect, useState } from "react";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
-import { useJob } from "@/context/JobContext";
 import { useAuth } from "@/context/AuthContext";
 import { ApplyDataLengthParams, IJob } from "@/utils/types/job";
 import DashboardSkeleton from "@/components/dashboard/dashboard-skeleton";
@@ -185,15 +184,13 @@ const Chart = () => {
           </div>
           {/* cover chart  and pieChart*/}
           <div className="flex flex-col w-1/3 gap-[32px]">
-            <div className="w-full h-[130px] 2xl:h-[180px] ">
-              <Card  className="flex w-full h-full relative items-center bg-blue-500 px-[17px] rounded-lg overflow-hidden ">
+            <div className="w-full">
+              <Card className="flex relative h-[130px] items-center bg-blue-500 px-[17px] rounded-lg overflow-hidden w-full max-w-xl">
                 <div className="text-white">
                   <h2 className="text-[16px] font-bold">
                     Most <br /> Applied Job
                   </h2>
-                  <p className="mt-2 text-[12px ]">
-                    {applyData[0] ? applyData[0].title : "Default"}
-                  </p>
+                  <p className="mt-2 text-[12px ]">{applyData[0].title}</p>
                 </div>
                 <div
                   className="bg-[rgba(255,174,22,1)] w-[calc(50%-10px)] h-full absolute right-0"

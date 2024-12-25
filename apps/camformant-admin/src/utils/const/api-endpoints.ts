@@ -9,5 +9,5 @@ export const API_ENDPOINTS = {
 
   //USER SERVICE
   USER_PROFILE: `${process.env.REACT_APP_ADMIN_ENDPOINT}/me`,
-  ALL_CORPORTOR_ACCOUNT: `${process.env.REACT_APP_CORPORATOR_ENDPOINT}/profile`,
+  CORPORTOR_ACCOUNT: `${process.env.REACT_APP_CORPORATOR_ENDPOINT}/profile`,
 };

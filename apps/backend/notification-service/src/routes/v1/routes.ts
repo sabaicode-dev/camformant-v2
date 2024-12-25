@@ -91,21 +91,21 @@ export function RegisterRoutes(app: Router) {
 
 
     
+        const argsNotificationsController_subscribe: Record<string, TsoaRoute.ParameterSchema> = {
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                body: {"in":"body","name":"body","required":true,"ref":"PushSubscriptionParams"},
+        };
         app.post('/v1/notifications/subscribe',
             ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
             ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.subscribe)),
 
             async function NotificationsController_subscribe(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-                    body: {"in":"body","name":"body","required":true,"ref":"PushSubscriptionParams"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsNotificationsController_subscribe, request, response });
 
                 const controller = new NotificationsController();
 
@@ -122,20 +122,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsNotificationsController_pushOneUserNotification: Record<string, TsoaRoute.ParameterSchema> = {
+                body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"type":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Job Listings"]},{"dataType":"enum","enums":["Apply"]}],"required":true},"userId":{"dataType":"string","required":true},"payload":{"ref":"NotificationPayload","required":true}}},
+        };
         app.post('/v1/notifications/push-notification',
             ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
             ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.pushOneUserNotification)),
 
             async function NotificationsController_pushOneUserNotification(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"type":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Job Listings"]},{"dataType":"enum","enums":["Apply"]}],"required":true},"userId":{"dataType":"string","required":true},"payload":{"ref":"NotificationPayload","required":true}}},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsNotificationsController_pushOneUserNotification, request, response });
 
                 const controller = new NotificationsController();
 
@@ -152,20 +152,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsNotificationsController_unsubscribe: Record<string, TsoaRoute.ParameterSchema> = {
+                reqBody: {"in":"body","name":"reqBody","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"endpoint":{"dataType":"string","required":true}}},
+        };
         app.delete('/v1/notifications/unsubscribe',
             ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
             ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.unsubscribe)),
 
             async function NotificationsController_unsubscribe(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    reqBody: {"in":"body","name":"reqBody","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"endpoint":{"dataType":"string","required":true}}},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsNotificationsController_unsubscribe, request, response });
 
                 const controller = new NotificationsController();
 
@@ -182,20 +182,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsNotificationsController_getNotification: Record<string, TsoaRoute.ParameterSchema> = {
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+        };
         app.get('/v1/notifications',
             ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
             ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.getNotification)),
 
             async function NotificationsController_getNotification(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsNotificationsController_getNotification, request, response });
 
                 const controller = new NotificationsController();
 
@@ -212,20 +212,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsNotificationsController_pushToSubscribers: Record<string, TsoaRoute.ParameterSchema> = {
+                body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"type":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Job Listings"]},{"dataType":"enum","enums":["Apply"]}],"required":true},"payload":{"ref":"NotificationPayload","required":true}}},
+        };
         app.post('/v1/notifications/push-all-notifications',
             ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
             ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.pushToSubscribers)),
 
             async function NotificationsController_pushToSubscribers(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"type":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Job Listings"]},{"dataType":"enum","enums":["Apply"]}],"required":true},"payload":{"ref":"NotificationPayload","required":true}}},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsNotificationsController_pushToSubscribers, request, response });
 
                 const controller = new NotificationsController();
 
@@ -242,21 +242,21 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsNotificationsController_getUserNotificationHistory: Record<string, TsoaRoute.ParameterSchema> = {
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                query: {"in":"queries","name":"query","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"search":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Job Listings"]},{"dataType":"enum","enums":["Apply"]}]}}},
+        };
         app.get('/v1/notifications/getUserNotification',
             ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
             ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.getUserNotificationHistory)),
 
             async function NotificationsController_getUserNotificationHistory(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-                    query: {"in":"queries","name":"query","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"search":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Job Listings"]},{"dataType":"enum","enums":["Apply"]}]}}},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsNotificationsController_getUserNotificationHistory, request, response });
 
                 const controller = new NotificationsController();
 
@@ -273,19 +273,19 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsHealthController_getHealth: Record<string, TsoaRoute.ParameterSchema> = {
+        };
         app.get('/v1/notifications/health',
             ...(fetchMiddlewares<RequestHandler>(HealthController)),
             ...(fetchMiddlewares<RequestHandler>(HealthController.prototype.getHealth)),
 
             async function HealthController_getHealth(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsHealthController_getHealth, request, response });
 
                 const controller = new HealthController();
 
