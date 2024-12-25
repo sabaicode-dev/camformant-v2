@@ -66,6 +66,12 @@ jobs:
 
       - name: Set environment variables
         run: |
+          echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env
+          echo "NEXT_PUBLIC_ADMIN_ENDPOINT=${{ secrets.NEXT_PUBLIC_ADMIN_ENDPOINT }}" >> .env
+          echo "NEXT_PUBLIC_AUTH_ENDPOINT=${{ secrets.NEXT_PUBLIC_AUTH_ENDPOINT }}" >> .env
+          echo "NEXT_PUBLIC_USER_ENDPOINT=${{ secrets.NEXT_PUBLIC_USER_ENDPOINT }}" >> .env
+          echo "NEXT_PUBLIC_JOB_ENDPOINT=${{ secrets.NEXT_PUBLIC_JOB_ENDPOINT }}" >> .env
+          echo "NEXT_PUBLIC_COMPANY_ENDPOINT=${{ secrets.NEXT_PUBLIC_COMPANY_ENDPOINT }}" >> .env 
           echo "GENERATE_SOURCEMAP=false" >> .env
 
       # Build React app using Webpack
