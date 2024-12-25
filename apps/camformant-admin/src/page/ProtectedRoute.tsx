@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axios";
 import { API_ENDPOINTS } from "../utils/const/api-endpoints";
-import SkeletonLoader from "../components/skeleton/skeleton-loader";
 
 const ProtectedRoutes = () => {
   const navigate = useNavigate();
@@ -25,10 +24,7 @@ const ProtectedRoutes = () => {
     };
     checkAuth();
   }, [navigate]);
-  if (isLoading) {
-    return <SkeletonLoader text="loading..." />; 
-  }
 
-  return isAuthenticated ? <Outlet /> : null;
+  return isAuthenticated&&!isLoading? <Outlet /> : null;
 };
 export default ProtectedRoutes;
