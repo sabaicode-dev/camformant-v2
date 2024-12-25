@@ -12,6 +12,7 @@ import { AuthProvider } from "./context/authContext";
 import ProtectedRoutes from "./page/ProtectedRoute";
 import Approval from "./page/Approval";
 import ApprovalDetail from "./page/ApprovalDetail";
+import NotFound from "./page/NotFound";
 function App() {
   const { pathname } = useLocation();
 
@@ -35,8 +36,7 @@ function App() {
 
         <Route element={<ProtectedRoutes />}>
           <Route
-            index
-            path="/"
+            path="/dashboard"
             element={
               <>
                 <PageTitle title="Dashboard |  Admin Dashboard Template" />
@@ -81,7 +81,7 @@ function App() {
             }
           />
           <Route
-            path="/approval"
+            index
             element={
               <>
                 <PageTitle title="User Approval |  Admin Dashboard Template" />
@@ -99,6 +99,7 @@ function App() {
             }
           ></Route>
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </AuthProvider>
   );

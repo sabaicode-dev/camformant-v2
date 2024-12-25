@@ -13,6 +13,10 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
   const visiblePages = 4; // Maximum number of visible pages
 
+  if (totalPages <= 1) {
+    return null; // Do not render pagination if only one page
+  }
+
   const renderPageButton = (page: number) => (
     <button
       key={page}

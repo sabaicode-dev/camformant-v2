@@ -1,4 +1,10 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginRequest, User } from "../utils/types/auth";
 import axiosInstance from "../utils/axios";
@@ -20,6 +26,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
   const [resStatus, setResStatus] = useState<number>(0);
+  const fetchUser = async () => {
+    try {
+      const res = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
+      console.log("res.data:::", res.data);
+      setUser(res.data);
+      setResStatus(res.status);
+    } catch (error) {
+      console.error("fetch user error:", error);
+    }
+  };
+  useEffect(() => {
+    fetchUser();
+  }, [isAuthenticated]);
   const login = async ({ email, phone_number, password }: LoginRequest) => {
     setLoading(true);
     try {
@@ -29,10 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       // Fetch the user profile data after login
-      const res = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
-      console.log("res.data:::", res.data);
-      setUser(res.data);
-      setResStatus(res.status);
+      await fetchUser();
       setIsAuthenticated(true);
       navigate("/");
     } catch (error) {
