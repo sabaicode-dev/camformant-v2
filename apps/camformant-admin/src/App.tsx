@@ -9,7 +9,7 @@ import Chart from "./page/Chart";
 import Post from "./page/Post";
 import Camformant from "./page/Dashboard";
 import { AuthProvider } from "./context/authContext";
-import ProtectedRoutes from "./page/ProtectedRoute";
+// import ProtectedRoutes from "./page/ProtectedRoute";
 import Approval from "./page/Approval";
 import ApprovalDetail from "./page/ApprovalDetail";
 function App() {
