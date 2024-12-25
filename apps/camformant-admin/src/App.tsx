@@ -9,7 +9,7 @@ import Chart from "./page/Chart";
 import Post from "./page/Post";
 import Camformant from "./page/Dashboard";
 import { AuthProvider } from "./context/authContext";
-// import ProtectedRoutes from "./page/ProtectedRoute";
+import ProtectedRoutes from "./page/ProtectedRoute";
 import Approval from "./page/Approval";
 import ApprovalDetail from "./page/ApprovalDetail";
 function App() {
@@ -33,70 +33,72 @@ function App() {
           }
         />
 
-        <Route
-          index
-          path="/"
-          element={
-            <>
-              <PageTitle title="Dashboard |  Admin Dashboard Template" />
-              <Camformant />
-            </>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <>
-              <PageTitle title="Profile |  Admin Dashboard Template" />
-              <Profile />
-            </>
-          }
-        />
-        <Route
-          path="/post"
-          element={
-            <>
-              <PageTitle title="Post |  Admin Dashboard Template" />
-              <Post />
-            </>
-          }
-        />
-        <Route
-          path="/chart"
-          element={
-            <>
-              <PageTitle title="Basic Chart | Admin Dashboard Template" />
-              <Chart />
-            </>
-          }
-        />
-        <Route
-          path="/tables"
-          element={
-            <>
-              <PageTitle title="Tables |  Admin Dashboard Template" />
-              <Tables />
-            </>
-          }
-        />
-        <Route
-          path="/approval"
-          element={
-            <>
-              <PageTitle title="User Approval |  Admin Dashboard Template" />
-              <Approval />
-            </>
-          }
-        />
-        <Route
-          path="/approval/:userSub"
-          element={
-            <>
-              <PageTitle title="User Approval Detail |  Admin Dashboard Template" />
-              <ApprovalDetail />
-            </>
-          }
-        ></Route>
+        <Route element={<ProtectedRoutes />}>
+          <Route
+            index
+            path="/"
+            element={
+              <>
+                <PageTitle title="Dashboard |  Admin Dashboard Template" />
+                <Camformant />
+              </>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <>
+                <PageTitle title="Profile |  Admin Dashboard Template" />
+                <Profile />
+              </>
+            }
+          />
+          <Route
+            path="/post"
+            element={
+              <>
+                <PageTitle title="Post |  Admin Dashboard Template" />
+                <Post />
+              </>
+            }
+          />
+          <Route
+            path="/chart"
+            element={
+              <>
+                <PageTitle title="Basic Chart | Admin Dashboard Template" />
+                <Chart />
+              </>
+            }
+          />
+          <Route
+            path="/tables"
+            element={
+              <>
+                <PageTitle title="Tables |  Admin Dashboard Template" />
+                <Tables />
+              </>
+            }
+          />
+          <Route
+            path="/approval"
+            element={
+              <>
+                <PageTitle title="User Approval |  Admin Dashboard Template" />
+                <Approval />
+              </>
+            }
+          />
+          <Route
+            path="/approval/:userSub"
+            element={
+              <>
+                <PageTitle title="User Approval Detail |  Admin Dashboard Template" />
+                <ApprovalDetail />
+              </>
+            }
+          ></Route>
+        </Route>
       </Routes>
     </AuthProvider>
   );
