@@ -84,7 +84,7 @@ const ApprovalTable = () => {
   };
 
   const handlePageChange = (page: number) => {
-    console.log("in handle:::", page);
+    console.log("in handle", page);
     setCurrentPage(page);
   };
 
