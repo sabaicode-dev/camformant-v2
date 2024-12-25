@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Jobs } from '@/utils/types/form-type';
 import { useJobForm } from '@/hooks/useJobForm';
 import JobFormSkeleton from './JobFormSkeleton';
+import { useJob } from '@/context/JobContext';
 
 interface JobFormProps {
   formTitle: string;
@@ -33,7 +34,6 @@ const JobForm: React.FC<JobFormProps> = ({ formTitle, existingData, typeOfForm =
     existingData,
     typeOfForm
   });
-
   return (
       <>
       {
