@@ -14,7 +14,6 @@ import {
   handleInputChange,
 } from "@/utils/functions/input-functions";
 import { EducationParams } from "@/utils/types/user-profile";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Sheet } from "react-modal-sheet";
 
@@ -104,7 +103,6 @@ const Page = () => {
           {Object.entries(entry).map(([key, value]) => {
             return key != "year" ? (
               <InputComponent
-                // key={`education-${key}-${index}`}
                 values={value}
                 setFocused={setFocusedField}
                 focused={focusedField}

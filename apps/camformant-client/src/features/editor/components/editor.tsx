@@ -40,7 +40,6 @@ const Editor: React.FC<{
   const [activeTool, setActiveTool] = useState<ActiveTool>("select");
   const [patternImageSrc, setPatternImageSrc] = useState<string | null>(null);
   const [isOpenTemp, setIsOpenTem] = useState<boolean>(false);
-  // const { addNotification, NotificationDisplay } = useNotification();
   //state for cropper
   const [isCropping, setIsCropping] = useState<boolean>(false); // State to control cropper visibility
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -193,7 +192,6 @@ const Editor: React.FC<{
       setIsCropping(false);
     } catch (error) {
       console.error("Failed to crop image", error);
-      // addNotification("Failed to crop image", "error");
     }
   };
 

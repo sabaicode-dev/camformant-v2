@@ -37,9 +37,6 @@ const Page: React.FC = () => {
   const [next, setNext] = useState<boolean>(false);
   const [isOpen, setOpen] = useState(false);
 
-  // const ip = 'http://172.20.10.5:3030'
-  // const ip = 'http://localhost:3040'
-
   useEffect(() => {
     async function GetData() {
       try {

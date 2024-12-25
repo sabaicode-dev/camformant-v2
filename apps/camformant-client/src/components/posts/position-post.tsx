@@ -36,13 +36,13 @@ export interface companiesForJobs {
 }
 export interface IJob {
   _id?: string;
-  title?: string; // name of the job that company looking for. Example: Java Developer
-  position?: string[]; // tags that belong to the tile: Backend Development, Programming, etc.
+  title?: string;
+  position?: string[];
   workMode?: string[];
-  location?: string; // location could be phnom penh, kompong-cham, etc.
+  location?: string;
   requirement?: string;
   description?: string;
-  address?: string; // address could be the link address of the company (google link)
+  address?: string;
   min_salary?: number;
   max_salary?: number;
   job_opening?: number;
@@ -54,7 +54,7 @@ export interface IJob {
   updatedAt?: Date;
   deadline?: string | number | Date | undefined;
   company?: companiesForJobs;
-  favorite?:boolean
+  favorite?: boolean;
 }
 export interface Job extends IJob {
   _id: string;

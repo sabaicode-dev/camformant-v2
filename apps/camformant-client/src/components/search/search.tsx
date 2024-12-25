@@ -23,7 +23,6 @@ interface autoFocusd {
   focus?: RefObject<HTMLInputElement>;
   buttonBack?: boolean;
   isFilterDisplay?: boolean;
-  // setSearchValue?: Dispatch<SetStateAction<string>>;
   onChangeFilterValues?: (value: FilterValueParams) => void;
   searchValue?: string;
   onChangeSearchValue?: (value: string) => void;

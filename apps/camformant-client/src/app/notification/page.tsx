@@ -1,7 +1,6 @@
 "use client";
 
 import { CardGeneral } from "@/components/card-notification/card-general";
-// import { CardTips } from "@/components/card-notification/card-tips";
 import { CategoryPosition } from "@/components/category-position/category-position";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
@@ -16,7 +15,6 @@ export interface INotificationHistory {
   url?: string;
   updatedAt?: Date;
 }
-// Assuming CategoryPositionData is an array of categories
 interface typeMee {
   id: number;
   text: string;
@@ -76,14 +74,13 @@ const Page: React.FC = () => {
                   text={item.text}
                   isSelected={contentId === item.id}
                   onClick={() => handleClickId(item.id)}
-                ></CategoryPosition>
+                />
               </div>
             ))}
           </div>
         </div>
         <div className="w-full p-4">
           {contentId && <CardGeneral data={data} />}
-          {/* {contentId === 2 && <Content2 />} */}
         </div>
       </div>
     </div>

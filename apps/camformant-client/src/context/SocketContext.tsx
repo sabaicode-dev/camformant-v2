@@ -25,12 +25,10 @@ export const SocketContextProvider = ({
   useEffect(() => {
     // Only initialize socket connection if user is authenticated
     if (userId) {
-      // Ensure socket is connected
       if (!socket.connected) {
         socket.connect();
       }
 
-      // Set up event listener for online users
       socket.on("getOnlineUsers", (users: string[]) => {
         console.log("socket online users:", users);
         setOnlineUsers(users);

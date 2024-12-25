@@ -30,7 +30,7 @@ export const FontSidebar = ({
       )}
     >
       <ScrollArea className="p-2">
-        <div className="flex p-4 space-x-3 overflow-x-auto w-full  border-b">
+        <div className="flex w-full p-4 space-x-3 overflow-x-auto border-b">
           {fonts.map((font) => (
             <Button
               key={font}

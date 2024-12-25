@@ -54,7 +54,6 @@ const Chat = () => {
     setIsLoading(true);
     try {
       const nextPage = page + 1;
-      // const query = buildQuery(nextPage, selectedPosition);
       const query = `?page=${nextPage}`;
       const res = await axiosInstance.get(
         `${API_ENDPOINTS.GET_CONVERSATIONS}${query}`
@@ -132,7 +131,6 @@ const Chat = () => {
   const handleConversationClick = (conId: string) => {
     router.push(`/chat/${conId}`);
   };
-  console.log("onlineUsers:::", onlineUsers);
 
   return (
     <div className="relative h-screen">

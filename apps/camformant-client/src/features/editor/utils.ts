@@ -160,7 +160,7 @@ export const setFetchData = (
           const fabricObject = searchObject(canvas, nameForSearch) as
             | fabric.Textbox
             | fabric.Group;
-          if (innerKey == "academic" && innerValue!="highschool") {
+          if (innerKey == "academic" && innerValue != "highschool") {
             educationAcademic =
               (innerValue as string).trim() + " of " + item.major.trim();
           }
@@ -447,16 +447,6 @@ export const catchEditedData = (
             ? doubleKeyTextbox.valueForMainKey
             : activeObject.text;
         }
-
-        // if (indexForUpdate) {
-        //   if (!previous[nameWithoutNumber][indexForUpdate - 1]["index"])
-        //     previous[nameWithoutNumber][indexForUpdate - 1]["index"] =
-        //       indexForUpdate - 1;
-        //   previous[nameWithoutNumber][indexForUpdate - 1][backString] =
-        //     activeObject.text;
-        // } else {
-        //   previous[nameWithoutNumber] = activeObject.text;
-        // }
         return previous;
       });
     }

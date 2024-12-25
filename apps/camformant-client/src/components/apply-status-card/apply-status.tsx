@@ -1,13 +1,10 @@
 "use client";
 
-import React, { SetStateAction, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import NoApply from "./no-apply";
 
 import CardStatus from "./card-status";
 import { useAuth } from "@/context/auth";
-import { IoArrowBack } from "react-icons/io5";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import CallToAction from "../calltoaction/call-to-action";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";

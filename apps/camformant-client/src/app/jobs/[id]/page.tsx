@@ -34,7 +34,6 @@ const Page: React.FC = () => {
   const [next, setNext] = useState<boolean>(false);
   const { addNotification, NotificationDisplay } = useNotification();
 
-  // Fetch Job Detail
   useEffect(() => {
     const fetchJob = async () => {
       try {
@@ -180,7 +179,9 @@ const Page: React.FC = () => {
       <div className="fixed bottom-0 z-30 flex items-center justify-center w-full h-20 gap-3 pl-5 pr-5 bg-white ">
         <button
           onClick={popUpApply}
-          className={` ${next ? "bg-gray-400 pointer-events-none " : "bg-primaryCam"} p-3 w-full rounded-3xl text-white`}
+          className={` ${
+            next ? "bg-gray-400 pointer-events-none " : "bg-primaryCam"
+          } p-3 w-full rounded-3xl text-white`}
         >
           Apply Now
         </button>
@@ -210,14 +211,20 @@ const Page: React.FC = () => {
               {cv && (
                 <div
                   onClick={handleSelectCv}
-                  className={` ${user ? "flex" : " hidden"} h-20 pl-5 w-full flex rounded-3xl
+                  className={` ${
+                    user ? "flex" : " hidden"
+                  } h-20 pl-5 w-full flex rounded-3xl
                              items-center
-                               drop-shadow-xl ${selected ? "bg-orange-500" : "bg-white"} `}
+                               drop-shadow-xl ${
+                                 selected ? "bg-orange-500" : "bg-white"
+                               } `}
                 >
                   <h1 className="flex items-center gap-5">
                     {" "}
                     <span
-                      className={`${selected ? "text-black" : "text-primaryCam  "} text-2xl `}
+                      className={`${
+                        selected ? "text-black" : "text-primaryCam  "
+                      } text-2xl `}
                     >
                       <BsPersonVcard />
                     </span>{" "}
@@ -234,7 +241,9 @@ const Page: React.FC = () => {
               <button
                 onClick={() => handleConfirm()}
                 className={`p-5 flex rounded-3xl text-white justify-center 
-                            gap-5 items-center ${selected ? "bg-orange-500" : "bg-orange-200"}  w-48`}
+                            gap-5 items-center ${
+                              selected ? "bg-orange-500" : "bg-orange-200"
+                            }  w-48`}
               >
                 Confirm{" "}
                 <span className="text-2xl">

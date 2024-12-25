@@ -91,7 +91,6 @@ export const AuthProvider = ({
       checkAuthStatus();
     }
   }, [isLogin]);
-  //lastUser?.favorites
 
   const login = async ({ email, phone_number, password }: LoginRequest) => {
     setLoading(true);
@@ -135,7 +134,9 @@ export const AuthProvider = ({
 
       // TODO: redirect to verify page with contact and method (email or phone_number)
       router.push(
-        `/verify?contact=${email || phone_number}&method=${email ? "email" : "phone_number"}`
+        `/verify?contact=${email || phone_number}&method=${
+          email ? "email" : "phone_number"
+        }`
       );
     } catch (error) {
       console.log("This error: ", error);
@@ -185,7 +186,6 @@ export const AuthProvider = ({
     setLoading(true);
     try {
       await axiosInstance.post(API_ENDPOINTS.SIGN_OUT);
-      // send logout to api
       setIsAuthenticated(false);
       setUser(null);
       router.push("/login");

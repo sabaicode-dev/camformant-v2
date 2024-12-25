@@ -13,7 +13,6 @@ import {
   handleInputChange,
 } from "@/utils/functions/input-functions";
 import { ReferenceParams } from "@/utils/types/user-profile";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 const Page = () => {
@@ -30,7 +29,6 @@ const Page = () => {
   const [next, setNext] = useState<boolean>(false);
   const [isPut, setIsPut] = useState<boolean>(false);
 
-  // const ip = 'http://localhost:3040'
   useEffect(() => {
     async function GetData() {
       try {
@@ -100,7 +98,6 @@ const Page = () => {
           ))}
         </div>
       ))}
-      {/* <InputComponent values={} setValues={}  setFocused={} focused={} txt='' valuesFouce=''  /> */}
       <Button
         lengthofData={refEntries.length}
         onAdd={() => addEntry(setRefEntries, refEntries, inputEmpty)}

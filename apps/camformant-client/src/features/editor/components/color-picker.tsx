@@ -13,7 +13,7 @@ export const ColorPicker = ({
   return (
     <div>
       <div className="flex items-center justify-center h-full overflow-auto">
-        <div className="p-2  w-full" style={{ scrollBehavior: "smooth" }}>
+        <div className="w-full p-2" style={{ scrollBehavior: "smooth" }}>
           {/* @ts-ignore */}
           <CirclePicker
             circleSize={25}
@@ -27,7 +27,7 @@ export const ColorPicker = ({
           />
         </div>
       </div>
-      <div className="flex items-center gap-2 justify-start m-3 w-full ">
+      <div className="flex items-center justify-start w-full gap-2 m-3 ">
         <p>Pick any Color:</p>
         <input
           type="color"
@@ -36,19 +36,9 @@ export const ColorPicker = ({
             const selectedColor = e.target.value; // HEX format from input
             onChange(selectedColor); // Update color state
           }}
-          className="w-10 h-10 rounded-lg border flex"
+          className="flex w-10 h-10 border rounded-lg"
         />
       </div>
     </div>
   );
 };
-
-// {/* <div className="flex w-full space-y-4 overflow-x-scroll"> */}
-// {/* <ChromePicker
-//   color={value}
-//   onChange={(color) => {
-//     const formattedValue = rgbaObjectToString(color.rgb);
-//     onChange(formattedValue);
-//   }}
-//   className="border rounded-lg"
-// // /> */}

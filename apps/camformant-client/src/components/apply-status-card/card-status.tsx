@@ -1,5 +1,5 @@
 "use client";
-import React, { SetStateAction, useEffect, useRef, useState } from "react";
+import React, { SetStateAction, useRef, useState } from "react";
 import { Card } from "../card/card";
 import { BiSolidChat } from "react-icons/bi";
 import { BsFileTextFill } from "react-icons/bs";

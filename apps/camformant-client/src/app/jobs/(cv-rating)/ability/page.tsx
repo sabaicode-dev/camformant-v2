@@ -47,9 +47,6 @@ const Page: React.FC = () => {
   const [isPut, setIsPut] = useState<boolean>(false); //for check if our page have any change that must put or not
   const { addNotification, NotificationDisplay } = useNotification();
 
-  // const ip = 'http://172.20.10.5:3030'
-  // const ip = 'http://localhost:3040'
-
   useEffect(() => {
     async function GetData() {
       try {
