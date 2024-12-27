@@ -29,7 +29,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchUser = async () => {
     try {
       const res = await axiosInstance.get(API_ENDPOINTS.USER_PROFILE);
-      console.log("res.data:::", res.data);
       setUser(res.data);
       setResStatus(res.status);
     } catch (error) {
