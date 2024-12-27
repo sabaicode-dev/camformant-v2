@@ -127,13 +127,6 @@ const ChatDashboard: React.FC = () => {
 
   const handleSendMessage = async () => {
     if (!selectedConversation || messageInput.trim() === "") return;
-    // if (
-    //   messages.length > 0 &&
-    //   messages[messages.length - 1].message === messageInput
-    // ) {
-    //   console.log("Duplicate message detected. Not sending.");
-    //   return;
-    // }
     
     const optimisticMessage: Message = {
       _id: Date.now().toString(),
@@ -152,12 +145,6 @@ const ChatDashboard: React.FC = () => {
       setMessageInput("");
       setTimeout(() => scrollToBottom("smooth"), 100);
       socket.emit("sendMessage",optimisticMessage);
-      // await axiosInstance.post(
-      //   `${process.env.NEXT_PUBLIC_API_URL}/v1/messages/send/${selectedConversation.receiver}`,
-      //   {
-      //     message: messageInput,
-      //   }
-      // );
     } catch (error) {
       console.error("Failed to send message:", error);
       setMessages((prevMessages) =>

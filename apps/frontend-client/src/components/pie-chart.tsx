@@ -71,7 +71,7 @@ function PieChartComponent({
     applyData.forEach((data: ApplyDataLengthParams, index: number) => {
       const applicants = data.length;
       if (applicants > 0) {
-        allZero = false; 
+        allZero = false;
       }
 
       if (index <= 2) {
@@ -141,7 +141,7 @@ function PieChartComponent({
                           <tspan
                             x={viewBox.cx}
                             y={viewBox.cy}
-                            className="fill-foreground text-3xl font-bold"
+                            className="text-3xl font-bold fill-foreground"
                           >
                             {totalApplicants.toLocaleString()}
                           </tspan>

@@ -1,4 +1,4 @@
-import React, { SetStateAction, useState } from "react";
+import { SetStateAction, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -41,36 +41,41 @@ export function UpdateStatus({
   const [interviewDate, setInterviewDate] = useState<Date>();
   const [interviewLocation, setInterviewLocation] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [time, setTime] = useState<string>();
 
   const handleSubmit = async () => {
     try {
-      console.log("date::::", startDate);
+      const [hours, minutes] = (time ?? "00:00").split(":").map(Number);
+      if (startDate) {
+        console.log("inside startDate");
+        startDate?.setHours(hours);
+        startDate?.setMinutes(minutes);
+      } else {
+        interviewDate?.setHours(hours);
+        interviewDate?.setMinutes(minutes);
+      }
       const response = await axiosInstance.put(
         `${API_ENDPOINTS.JOB_STATUS}/${applyId}`,
         {
           status: status,
-          startDate: startDate ? format(startDate, "yyyy-MM-dd") : undefined,
+          startDate: startDate
+            ? format(startDate, "yyyy-MM-dd HH:mm")
+            : undefined,
           interviewDate: interviewDate
-            ? format(interviewDate, "yyyy-MM-dd")
+            ? format(interviewDate, "yyyy-MM-dd HH:mm")
             : undefined,
           interviewLocation,
         }
       );
-      // if (response) {
-      //   setIsOpen(false);
-      //   if (onStatusUpdate) {
-      //     await onStatusUpdate();
-      //   }
-      // }
+      if (response) {
+        setIsOpen(false);
+        if (onStatusUpdate) {
+          await onStatusUpdate();
+        }
+      }
     } catch (error) {
       console.error("Failed to update status:", error);
     }
-  };
-  const handleTime = (
-    value: string,
-    actionMethod: React.Dispatch<SetStateAction<Date | undefined>>
-  ) => {
-    console.log("time::::", value);
   };
 
   return (
@@ -104,7 +109,7 @@ export function UpdateStatus({
 
           {status === "Interview" && (
             <>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <label className="text-sm font-medium">Interview Date</label>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -132,15 +137,17 @@ export function UpdateStatus({
                 </Popover>
               </div>
               <div>
-                <label className="text-sm font-medium">Interview Hour</label>
+                <label className="text-sm font-medium mr-3">
+                  Interview Hour
+                </label>
                 <input
                   type="time"
                   onChange={(e) => {
-                    handleTime(e.target.value, setInterviewDate);
+                    setTime(e.target.value);
                   }}
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <label className="text-sm font-medium">
                   Interview Location
                 </label>
@@ -154,30 +161,43 @@ export function UpdateStatus({
           )}
 
           {status === "Accept" && (
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Start Date</label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !startDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {startDate ? format(startDate, "PPP") : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={startDate}
-                    onSelect={setStartDate}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+            <div>
+              <div className="space-y-1">
+                <label className="text-sm font-medium">Start Date</label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !startDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {startDate ? format(startDate, "PPP") : "Pick a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={startDate}
+                      onSelect={setStartDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium mr-3">
+                  Interview Hour
+                </label>
+                <input
+                  type="time"
+                  onChange={(e) => {
+                    setTime(e.target.value);
+                  }}
+                />
+              </div>
             </div>
           )}
 
