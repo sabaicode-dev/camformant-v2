@@ -227,9 +227,9 @@ const ChatDashboard: React.FC = () => {
 
   console.log(":::::::::::::", onlineUsers);
   return (
-    <div className="flex h-full bg-gray-200 rounded-sm max-w-screen border-1">
+    <div className="flex h-full bg-gray-200 dark:bg-gray-800 rounded-sm max-w-screen border-1">
       {/* Conversations Sidebar */}
-      <div className="h-full bg-white rounded-r-sm shadow-sm w-96 border-1">
+      <div className="h-full bg-white dark:bg-gray-900 rounded-r-sm shadow-sm w-96 border-1">
         <div className="flex items-center justify-between p-4 border-b">
           <div className="flex items-center space-x-2">
             <MessageCircle className="text-blue-600" />
@@ -241,7 +241,7 @@ const ChatDashboard: React.FC = () => {
         </div>
 
         <div className="p-3">
-          <div className="flex items-center px-3 py-2 rounded-full bg-gray-50">
+          <div className="flex items-center px-3 py-2 rounded-full dark:bg-gray-800 bg-gray-50">
             <Search className="mr-2 text-gray-400" size={20} />
             <Input
               type="text"

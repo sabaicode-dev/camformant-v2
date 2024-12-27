@@ -8,7 +8,6 @@ import JobList from "@/components/jobList";
 import { useEffect, useState } from "react";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
-import { useJob } from "@/context/JobContext";
 import { useAuth } from "@/context/AuthContext";
 import { ApplyDataLengthParams, IJob } from "@/utils/types/job";
 import DashboardSkeleton from "@/components/dashboard/dashboard-skeleton";
