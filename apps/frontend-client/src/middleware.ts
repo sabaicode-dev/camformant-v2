@@ -36,11 +36,11 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname === "/") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/dashboard/chart", request.url));
   }
 
   if (pathname === "/signin" && access_token) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/dashboard/chart", request.url));
   }
 
   if (pathname.startsWith("/dashboard") && !access_token) {

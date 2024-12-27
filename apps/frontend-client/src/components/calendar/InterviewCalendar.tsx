@@ -26,7 +26,7 @@ const InterviewCalendar = () => {
   const [currentView, setCurrentView] = useState<View>("month");
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState<InterviewEvent[]>([]);
-  const { isLoading, user } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchInterviews = async () => {
@@ -110,11 +110,7 @@ const InterviewCalendar = () => {
     setSelectedEvent(event);
     setShowModal(true);
   };
-
-  if (!isLoading) {
-    return <div>Loading...</div>;
-  }
-
+  
   return (
     <div className="calendar-container dark:bg-gray-900 p-4">
       <Calendar

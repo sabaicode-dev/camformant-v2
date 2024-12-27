@@ -71,10 +71,6 @@ function ChartComponent({applyMonthly,colors}:{applyMonthly:ApplyMonthlyParams[]
             <div className="flex gap-4">
               <Button variant="outline">Monthly</Button>
             </div>
-            <Button variant="outline" className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" />
-              Export PDF
-            </Button>
           </CardFooter>
         </Card>
     </div>

@@ -31,6 +31,7 @@ import {
   AdminEnableUserCommandOutput,
 } from "@aws-sdk/client-cognito-identity-provider";
 import {
+  CorporateSignupRequest,
   GoogleCallbackRequest,
   LoginRequest,
   SignupRequest,
@@ -248,7 +249,7 @@ class AuthService {
       await client.send(command);
       // console.log("result::: ", result);
       return "success cleared cookies from cignito";
-    } catch (error) {}
+    } catch (error) { }
   }
 
   loginWithGoogle(state: string): string {
@@ -610,9 +611,9 @@ class AuthService {
   }
 
   // corporate
-  async corporateSignup(body: SignupRequest): Promise<string> {
+  async corporateSignup(body: CorporateSignupRequest): Promise<string> {
     const existingUser = await this.getUserByEmail(
-      (body.email || body.phone_number) as string
+      (body.email) as string
     );
     if (existingUser) {
       throw new ResourceConflictError(
@@ -626,12 +627,12 @@ class AuthService {
       ...Object.keys(body)
         .filter((key) => key !== "sur_name" && key !== "last_name")
         .reduce<Record<string, any>>((obj, key) => {
-          obj[key] = body[key as keyof SignupRequest];
+          obj[key] = body[key as keyof CorporateSignupRequest];
           return obj;
         }, {}),
     };
     // Allowed attributes
-    const allowedAttributes = ["email", "phone_number", "name", "custom:role"];
+    const allowedAttributes = ["email", "name", "custom:role"];
 
     // Filter and map attributes
     const attributes = Object.keys(inputBody)
@@ -641,7 +642,7 @@ class AuthService {
         Value: inputBody[key as keyof typeof inputBody],
       }));
     attributes.push({ Name: "email_verified", Value: "true" });
-    const username = (body.email || body.phone_number) as string;
+    const username = (body.email) as string;
 
     const params: AdminCreateUserCommandInput = {
       UserPoolId: configs.awsCognitoUserPoolId,
@@ -659,14 +660,18 @@ class AuthService {
       await this.createPassword(userSub!, body.password!);
       await axios.post(`${configs.userServiceUrl}/v1/corporator/profile`, {
         sub: userSub,
-        email: body.email,
-        status: "unverified",
         name: `${body.sur_name}${body.last_name}`,
+        email: body.email,
+        contact: {
+          phone_number: body?.contact?.phone_number,
+        },
+        employee_count: body?.employee_count,
+        status: "unverified",
       });
       //set permanent password
       await this.addToGroup(userSub!, body.role ? body.role : "company");
       await this.disbaleUser(userSub!);
-      return `Corporate created successfully`;
+      return `Your corporate signup request has been successfully submitted. It is now pending admin verification. You will be notified once your account has been approved`;
     } catch (error) {
       console.error(`AuthService corporateSignup() method error: `, error);
 
@@ -738,7 +743,7 @@ class AuthService {
   }
 
   async corporateLogin(body: LoginRequest): Promise<CognitoToken> {
-    const username = (body.email || body.phone_number) as string;
+    const username = (body.email) as string;
 
     const params: InitiateAuthCommandInput = {
       AuthFlow: "USER_PASSWORD_AUTH",
@@ -776,7 +781,7 @@ class AuthService {
       if (typeof error === "object" && error !== null && "name" in error) {
         if ((error as { name: string }).name === "NotAuthorizedException") {
           throw new InvalidInputError({
-            message: AUTH_MESSAGES.AUTHENTICATION.ACCOUNT_NOT_FOUND,
+            message: `Your account is currently unverified. Please wait for admin approval or contact support for assistance.`,
           });
         }
       }
@@ -789,7 +794,6 @@ class AuthService {
           });
         }
       }
-
       console.error("AuthService corporateLogin() method error:", error);
       throw new Error(`Error verifying user: ${error}`);
     }
@@ -863,7 +867,7 @@ class AuthService {
       if (result.$metadata) {
         await axios.put(
           `${configs.userServiceUrl}/v1/corporator/profile/${body.id}`,
-          {status:"verified"}
+          { status: "verified" }
         );
         sendMail(body.email);
       }

@@ -41,7 +41,6 @@ const initializeFormData = (existingData?: Jobs): Jobs => {
   };
 };
 
-
 export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
   const router = useRouter();
   const { fetchJobs } = useJob();
@@ -131,6 +130,31 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
     });
   };
 
+  const handleBenefitsChange = (newBenefits: string[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      benefit: newBenefits,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      benefit: newBenefits.length === 0 ? "This field is required" : null,
+    }));
+  };
+
+  const handleRequiredExperienceChange = (newExperiences: string[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      required_experience: newExperiences,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      required_experience:
+        newExperiences.length === 0 ? "This field is required" : null,
+    }));
+  };
+
   const validateForm = () => {
     const result = jobFormSchema.safeParse({
       ...formData,
@@ -158,6 +182,7 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
 
     try {
       if (typeOfForm === "POST") {
+        setIsLoading(true);
         await axiosInstance.post(API_ENDPOINTS.JOB, formData);
       } else {
         await axiosInstance.put(
@@ -167,6 +192,7 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
       }
 
       await fetchJobs();
+      setIsLoading(false)
       router.push("/dashboard/jobs");
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -179,6 +205,8 @@ export const useJobForm = ({ existingData, typeOfForm }: UseJobFormProps) => {
     isLoading,
     createdAtDate,
     deadlineDate,
+    handleBenefitsChange,
+    handleRequiredExperienceChange,
     handleSubmit,
     handleChange,
     handleArrayChange,

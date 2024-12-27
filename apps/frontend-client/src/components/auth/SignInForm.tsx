@@ -70,12 +70,12 @@ export function SignInForm() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen dark:bg-black bg-gray-100 p-4">
-      <div className="flex flex-col-reverse md:flex-row w-full md:w-3/4 lg:w-2/3 dark:bg-gray-700 h-auto md:h-[550px] bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-black p-4">
+      <div className="flex flex-col-reverse md:flex-row w-full max-w-[900px] dark:bg-gray-800 h-auto bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Left Image Section */}
-        <div className="w-full md:w-1/2 flex justify-center items-center">
+        <div className="w-full md:w-1/2 flex justify-center items-center p-4">
           <Image
-            className="w-full h-auto object-cover"
+            className="w-full h-auto object-cover rounded-md"
             src="/img/Job hunt-amico.png"
             alt="Job image"
             width={800}
@@ -85,10 +85,10 @@ export function SignInForm() {
         </div>
         {/* Right Form Section */}
         <div className="w-full md:w-1/2 flex justify-center items-center p-6 sm:p-8">
-          <Card className="w-full max-w-sm border-none dark:bg-gray-700">
-            <CardHeader className="space-y-1">
+          <Card className="w-full max-w-sm border-none px-2 sm:px-4 dark:bg-gray-800">
+            <CardHeader className="space-y-2">
               <CardTitle className="text-2xl text-center">Sign In</CardTitle>
-              <CardDescription className="text-center">
+              <CardDescription className="text-center text-sm sm:text-base">
                 Enter your email and password to sign in to your account
               </CardDescription>
             </CardHeader>
@@ -110,7 +110,7 @@ export function SignInForm() {
                             placeholder="name@example.com"
                             {...field}
                             type="email"
-                            disabled={!isLoading}
+                            disabled={isLoading}
                           />
                         </FormControl>
                         <FormMessage />
@@ -129,14 +129,14 @@ export function SignInForm() {
                             <Input
                               {...field}
                               type={showPassword ? "text" : "password"}
-                              disabled={!isLoading}
+                              disabled={isLoading}
                               placeholder="password"
                             />
                             <button
                               type="button"
                               onClick={togglePasswordVisibility}
-                              disabled={!isLoading}
-                              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                              disabled={isLoading}
+                              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
                             >
                               {showPassword ? (
                                 <EyeOpenIcon />
@@ -160,9 +160,9 @@ export function SignInForm() {
                   <Button
                     type="submit"
                     className="w-full bg-orange-500 text-white hover:bg-orange-600"
-                    disabled={!isLoading}
+                    disabled={isLoading}
                   >
-                    {!isLoading && (
+                    {isLoading && (
                       <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                     )}
                     Sign In
