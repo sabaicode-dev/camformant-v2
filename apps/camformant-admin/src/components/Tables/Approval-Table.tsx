@@ -29,7 +29,7 @@ const ApprovalTable = () => {
         }
         notFetch.current = true;
       } catch (err) {
-        console.log("err:", err);
+        console.log("err:::::", err);
       } finally {
         setIsLoading(false);
       }
