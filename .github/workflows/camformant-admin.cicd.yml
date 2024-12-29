@@ -39,6 +39,11 @@ jobs:
         with:
           node-version: "18.17.1" # Use the correct Node.js version
 
+      - name: Configure npm to use GitHub Packages
+        run: |
+          echo "@sabaicode-dev:registry=https://npm.pkg.github.com/" > ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+
       # Cache npm dependencies to speed up the build
       - name: Cache node modules
         uses: actions/cache@v3
@@ -90,12 +95,16 @@ jobs:
         run: |
           echo "Listing files in the root of the repository"
           tree -L 2  # Confirm directory structure
+      - name: Configure npm to use GitHub Packages
+        run: |
+          echo "@sabaicode-dev:registry=https://npm.pkg.github.com/" > ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
       # step 3: Install dependencies
       - name: Install Dependencies
         run: |
           npm install
-          
+
       - name: Set Environment Variables
         run: |
           echo "REACT_APP_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env
@@ -103,11 +112,11 @@ jobs:
           echo "REACT_APP_AUTH_ENDPOINT=${{ secrets.NEXT_PUBLIC_AUTH_ENDPOINT }}" >> .env
           echo "REACT_APP_USER_ENDPOINT=${{ secrets.NEXT_PUBLIC_USER_ENDPOINT }}" >> .env
           echo "REACT_APP_JOB_ENDPOINT=${{ secrets.NEXT_PUBLIC_JOB_ENDPOINT }}" >> .env
-          echo "REACT_APP_COMPANY_ENDPOINT=${{ secrets.NEXT_PUBLIC_COMPANY_ENDPOINT }}" >> .env 
+          echo "REACT_APP_COMPANY_ENDPOINT=${{ secrets.NEXT_PUBLIC_COMPANY_ENDPOINT }}" >> .env
 
       - name: Debug .env File
         run: |
-          cat .env    
+          cat .env
 
       # step 4: Build app for Deploy to S3
       - name: Build React App
