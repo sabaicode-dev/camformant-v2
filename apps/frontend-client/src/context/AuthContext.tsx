@@ -15,8 +15,8 @@ interface AuthContextType {
     sur_name,
     last_name,
     email,
-    phone_number,
     password,
+    confirmPassword,
   }: SignUpData) => Promise<void>;
   verifyCode: ({ email, phone_number, code }: VerifyCodeData) => Promise<void>;
   signIn: ({ email, phone_number, password }: SignInData) => Promise<void>;
@@ -24,14 +24,10 @@ interface AuthContextType {
 }
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);   
   const router = useRouter();
 
   const fetchUser = async () => {
@@ -58,16 +54,16 @@ export function AuthProvider({
   const signUp = async (data: SignUpData) => {
     setIsLoading(true);
     try {
-      await axiosInstance.post(`${API_ENDPOINTS.CORPARATE_SIGNUP}`, {
+      await axiosInstance.post(API_ENDPOINTS.CORPARATE_SIGNUP, {
         sur_name: data.sur_name,
         last_name: data.last_name,
         email: data.email,
-        phone_number: data.phone_number,
         password: data.password,
+        contact: data.contact,
+        employee_count: data.employee_count,
       });
-      router.push(
-        `/verify?contact=${data.email || data.phone_number}&method=${data.email ? "email" : "phone_number"}`
-      );
+      router.push("/pending");
+      console.log("signup form :::::::::::", data);
     } catch (error) {
       console.error("Sign up failed:", error);
       setIsAuthenticated(false);
@@ -102,7 +98,7 @@ export function AuthProvider({
       const res = await axiosInstance.get(API_ENDPOINTS.CORPARATE_PROFILE_ME);
       setUser(res.data.data);
       setIsAuthenticated(true);
-      router.push("/dashboard");
+      router.push("/dashboard/chart");
     } catch (error) {
       console.error("Sign in failed:", error);
 

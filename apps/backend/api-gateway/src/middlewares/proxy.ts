@@ -340,7 +340,6 @@ const proxyConfigs: ProxyConfig = {
           // Add headers to proxyReq for forwarding to the target service
           proxyReq.setHeader("currentUser", JSON.stringify(currentUser)); // Another header as specified
         }
-
       },
       proxyRes: (_proxyRes, req, res) => {
         const requestOrigin = req.headers.origin;

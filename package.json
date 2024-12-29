@@ -14,8 +14,8 @@
     "start:backend": "concurrently \"yarn workspace user-service dev\" \"yarn workspace job-service dev\" \"yarn workspace chat-service dev\" \"yarn workspace api-gateway-service dev\" \"yarn workspace auth-service dev\"",
     "start:camformant": "yarn workspace camformant-client start",
     "start:camformant-client": "yarn workspace camformant-client dev",
-    "start:dashboard": "concurrently \"yarn workspace ms-ui-components watch\" \"yarn workspace frontend-client dev\"",
     "start:camformant-admin": "yarn workspace camformant-admin dev",
+    "start:frontend-client": "yarn workspace frontend-client dev",
     "start:user-service": "yarn workspace user-service dev",
     "start:product-service": "yarn workspace product-service dev",
     "start:auth-service": "yarn workspace auth-service dev",
@@ -23,11 +23,10 @@
     "start:job-service": "yarn workspace job-service dev",
     "start:api-gateway-service": "yarn workspace api-gateway-service dev",
     "start:notification-service": "yarn workspace notification-service dev",
-    "start:dashboard-services": "concurrently \"yarn workspace frontend-client dev\" \"yarn workspace auth-service dev\"  \"yarn workspace api-gateway-service dev\" \"yarn workspace job-service dev\" \"yarn workspace user-service dev\" \"yarn workspace chat-service dev\"",
-    "start:admin-services": "concurrently \"yarn workspace camformant-admin dev\" \"yarn workspace auth-service dev\"  \"yarn workspace api-gateway-service dev\" \"yarn workspace job-service dev\" \"yarn workspace user-service dev\"",
+    "start:dashboard": "concurrently \"yarn workspace frontend-client dev\"  \"yarn workspace auth-service dev\"  \"yarn workspace api-gateway-service dev\" \"yarn workspace job-service dev\" \"yarn workspace user-service dev\" \"yarn workspace chat-service dev\" \"yarn workspace notification-service dev\"",
     "docker:dev": "docker-compose -f ./apps/backend/docker-compose.dev.yml up -d",
     "docker:local": "docker-compose -f ./apps/backend/docker-compose.local.yml up -d",
-    "start": "concurrently \"yarn workspace camformant-client dev\" \"yarn workspace user-service dev\" \"yarn workspace job-service dev\" \"yarn workspace chat-service dev\" \"yarn workspace api-gateway-service dev\" \"yarn workspace auth-service dev\" \"yarn workspace notification-service dev\" ",
+    "start": "concurrently \"yarn workspace camformant-client dev\" \"yarn workspace user-service dev\" \"yarn workspace job-service dev\" \"yarn workspace chat-service dev\" \"yarn workspace api-gateway-service dev\" \"yarn workspace auth-service dev\" \"yarn workspace notification-service dev\" \"yarn workspace frontend-client dev\" ",
     "docker:stop": "docker-compose -f ./apps/backend/docker-compose.dev.yml down"
   },
   "devDependencies": {

@@ -26,7 +26,7 @@ const InterviewCalendar = () => {
   const [currentView, setCurrentView] = useState<View>("month");
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState<InterviewEvent[]>([]);
-  const { isLoading, user } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchInterviews = async () => {
@@ -110,13 +110,10 @@ const InterviewCalendar = () => {
     setSelectedEvent(event);
     setShowModal(true);
   };
-
-  if (!isLoading) {
-    return <div>Loading...</div>;
-  }
-
+  
   return (
-    <div className="calendar-container dark:bg-gray-900 p-4">
+    <div className="p-4 calendar-container dark:bg-gray-900">
+      {/* @ts-ignore */}
       <Calendar
         localizer={localizer}
         events={events}
@@ -129,7 +126,7 @@ const InterviewCalendar = () => {
         onNavigate={(newDate) => setDate(newDate)}
         eventPropGetter={eventStyleGetter}
         onSelectEvent={handleSelectEvent}
-        className="dark:text-white  rounded-lg shadow-lg"
+        className="rounded-lg shadow-lg dark:text-white"
       />
 
       {showModal && selectedEvent && (

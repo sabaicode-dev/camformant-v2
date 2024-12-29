@@ -2,13 +2,12 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
-import { Suspense } from "react";
 import { JobDetails, JobTechnicalDetail } from "@/utils/types/job"; // Import the JobDetails type
 import { JobHeader } from "@/components/jobview/JobHeader";
 import { JobOverview } from "@/components/jobview/JobOverview";
 import { JobDescription } from "@/components/jobview/JobDescription";
 import { JobDetail } from "@/components/jobview/JobDetails";
-import { JobViewSkeleton } from "@/components/jobview/jovViewSkeleton";
+import { JobViewSkeleton } from "@/components/jobview/jobViewSkeleton";
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -83,7 +82,7 @@ const MyJobComponent = ({ params }: { params: { jobId: string } }) => {
   return (
     <div className="p-6 ">
       <JobHeader />
-      <div className="flex flex-col gap-4 sm:flex-col sm:gap-6 xl:flex-row xl:gap-6">
+      <div className="flex flex-col gap-4 sm:gap-6 md:flex-row xl:gap-6">
         <div className="w-full xl:w-1/3 space-y-6 text-[16px]">
           <JobOverview details={jobDetails} />
         </div>

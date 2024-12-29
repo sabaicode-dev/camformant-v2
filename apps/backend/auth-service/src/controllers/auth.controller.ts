@@ -180,7 +180,7 @@ export class AuthController extends Controller {
       if (!request.cookies["access_token"] || !request.cookies["id_token"])
         return { message: "no authorized" };
       return { message: "authorized" };
-    } catch (error) {}
+    } catch (error) { }
   }
 
   @Post("/corporate/signup")
@@ -264,13 +264,13 @@ export class AuthController extends Controller {
   }
   @SuccessResponse("204", "delete Successfully")
   @Post("/admin/verifyAccount")
-  public async verifyUserAccount(@Body() body:UserBodyParams){
+  public async verifyUserAccount(@Body() body: UserBodyParams) {
     await AuthService.verifyUserAccount(body)
-    return 
+    return
   }
   @Delete("/admin/deleteAccount/:userSub")
-  public async deleteUserAccount(@Path() userSub:string){
+  public async deleteUserAccount(@Path() userSub: string) {
     await AuthService.deleteUserAccount(userSub)
-    return 
+    return
   }
 }
