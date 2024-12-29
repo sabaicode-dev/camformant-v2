@@ -1,6 +1,5 @@
 import { JobDetails } from "@/utils/types/job";
 
-
 export const JobDetailRow: React.FC<JobDetails> = ({ label, value }) => {
 
   return(

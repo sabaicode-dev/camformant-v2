@@ -7,7 +7,7 @@ import { JobHeader } from "@/components/jobview/JobHeader";
 import { JobOverview } from "@/components/jobview/JobOverview";
 import { JobDescription } from "@/components/jobview/JobDescription";
 import { JobDetail } from "@/components/jobview/JobDetails";
-import { JobViewSkeleton } from "@/components/jobview/jovViewSkeleton";
+import { JobViewSkeleton } from "@/components/jobview/jobViewSkeleton";
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);

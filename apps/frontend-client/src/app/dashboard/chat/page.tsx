@@ -32,63 +32,6 @@ interface Message {
   updatedAt: string;
 }
 
-const KakaoTalk = [
-  {
-    _id: "1",
-    receiver: "2",
-    messages: [],
-    updatedAt: "2021-09-01T12:00:00.000Z",
-    role: "admin",
-    profile: "https://sophornbucket.s3.us-west-2.amazonaws.com/user-service/674535e502cd5277dce74f5b/1734881052103-Sabai Code1.webp",
-    name: "John Doe",
-  },
-  {
-    _id: "2",
-    receiver: "3",
-    messages: [],
-    updatedAt: "2021-09-01T12:00:00.000Z",
-    role: "admin",
-    profile: "https://sophornbucket.s3.us-west-2.amazonaws.com/user-service/674535e502cd5277dce74f5b/1734881052103-Sabai Code1.webp",
-    name: "Jane Doe",
-  },
-  {
-    _id: "3",
-    receiver: "4",
-    messages: [],
-    updatedAt: "2021-09-01T12:00:00.000Z",
-    role: "admin",
-    profile: "https://sophornbucket.s3.us-west-2.amazonaws.com/user-service/674535e502cd5277dce74f5b/1734881052103-Sabai Code1.webp",
-    name: "Alice Doe",
-  },
-  {
-    _id: "4",
-    receiver: "5",
-    messages: [],
-    updatedAt: "2021-09-01T12:00:00.000Z",
-    role: "admin",
-    profile: "https://sophornbucket.s3.us-west-2.amazonaws.com/user-service/674535e502cd5277dce74f5b/1734881052103-Sabai Code1.webp",
-    name: "Bob Doe",
-  },
-  {
-    _id: "5",
-    receiver: "6",
-    messages: [],
-    updatedAt: "2021-09-01T12:00:00.000Z",
-    role: "admin",
-    profile: "https://sophornbucket.s3.us-west-2.amazonaws.com/user-service/674535e502cd5277dce74f5b/1734881052103-Sabai Code1.webp",
-    name: "Eve Doe",
-  },
-  {
-    _id: "6",
-    receiver: "7",
-    messages: [],
-    updatedAt: "2021-09-01T12:00:00.000Z",
-    role: "admin",
-    profile: "https://sophornbucket.s3.us-west-2.amazonaws.com/user-service/674535e502cd5277dce74f5b/1734881052103-Sabai Code1.webp",
-    name: "Mallory Doe",
-  },
-];
-
 const ChatDashboard: React.FC = () => {
   const { user } = useAuth();
   const socketContext = useSocketContext();
@@ -296,7 +239,7 @@ const ChatDashboard: React.FC = () => {
         </div>
 
         <div className="overflow-y-auto">
-          {KakaoTalk.map((conversation) => (
+          {conversations.map((conversation) => (
             <ConversationListItem
               key={conversation._id}
               id={conversation._id}

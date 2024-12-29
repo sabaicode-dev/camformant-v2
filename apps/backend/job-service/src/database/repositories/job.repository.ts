@@ -495,7 +495,6 @@ class JobRepository {
 
 //===function===
 function createDateQuery(key: string, month: number) {
-  console.log("value:::", month);
   //format month-day based on db date format
   return {
     $expr: {
