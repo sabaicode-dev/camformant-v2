@@ -104,8 +104,8 @@ function PieChartComponent({
     //eslint-disable-next-line
   }, [chartData]);
   return (
-    <div className="h-auto">
-      <Card className="flex flex-col w-full justify-center gap-[87px] shadow-md">
+    <div className="h-full">
+      <Card className="flex flex-col w-full h-full justify-center gap-[87px] shadow-md dark:bg-[#1e2746] dark:border-gray-700 dark:shadow-md border p-[20px] rounded-[5px]">
         <CardHeader>
           <CardTitle>Pie Chart - Number Of Apply</CardTitle>
           <CardDescription>For Each Job</CardDescription>

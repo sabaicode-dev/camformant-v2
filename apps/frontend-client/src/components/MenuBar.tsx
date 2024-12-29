@@ -34,13 +34,11 @@ export const MenuBar = () => {
   };
 
   return (
-    <Menubar className="w-full py-8 bg-white dark:bg-black fixed top-0 z-40">
+    <Menubar className="w-full py-8 bg-white dark:bg-[#1e2746] fixed top-0 z-40">
       <div className="w-1/6 flex items-center">
         <SidebarGroup>
           <SidebarGroupLabel>
-            <div>
               <Image src={SabaiROkLogo} width={100} height={100} alt="logo" />
-            </div>
           </SidebarGroupLabel>
         </SidebarGroup>
       </div>
