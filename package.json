@@ -15,6 +15,7 @@
     "start:camformant": "yarn workspace camformant-client start",
     "start:camformant-client": "yarn workspace camformant-client dev",
     "start:camformant-admin": "yarn workspace camformant-admin dev",
+    "start:frontend-client": "yarn workspace frontend-client dev",
     "start:user-service": "yarn workspace user-service dev",
     "start:product-service": "yarn workspace product-service dev",
     "start:auth-service": "yarn workspace auth-service dev",
