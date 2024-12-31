@@ -15,7 +15,7 @@ const JobList: React.FC<{
 }> = ({ applyData }) => {
   const router=useRouter()
   return (
-    <div className="rounded-lg shadow-lg border  p-2">
+    <div className="rounded-lg shadow-md p-5 dark:bg-[#1e2746] dark:border-gray-700 dark:shadow-md border mb-10">
       {applyData.map((item: ApplyDataLengthParams) => (
         <div
           key={item.id}

@@ -83,7 +83,7 @@ export function UpdateStatus({
       <DialogTrigger asChild>
         <SquarePen className=" h-[35px] w-[35px] p-2 bg-green-100 hover:bg-green-200 text-green-900 rounded-full" />
       </DialogTrigger>
-      <DialogContent className="bg-slate-50">
+      <DialogContent className="bg-slate-50 dark:bg-[#1e2746] dark:border-gray-700 dark:shadow-md border rounded-md">
         <DialogHeader>
           <DialogTitle>Update Application Status</DialogTitle>
         </DialogHeader>
