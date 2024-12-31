@@ -5,7 +5,7 @@ import { CorsOptions } from "cors";
 export const allowedOrigins: string[] = [
   configs.clientUrl,
   configs.corporatorUrl,
-  configs.adminUrl
+  configs.adminUrl,
 ];
 
 const corsOptions: CorsOptions = {

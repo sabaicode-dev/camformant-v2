@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUser = async () => {
     try {
-      setIsLoading(true);
+      setIsLoading(false);
       const res = await axiosInstance.get(
         `${API_ENDPOINTS.CORPARATE_PROFILE_ME}`
       );
@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsAuthenticated(false);
       setUser(null);
     } finally {
-      setIsLoading(false);
+      setIsLoading(true);
     }
   };
 
@@ -62,8 +62,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         contact: data.contact,
         employee_count: data.employee_count,
       });
-      router.push('/pending');
-      console.log("signup form :::::::::::",data);
+      router.push("/pending");
+      console.log("signup form :::::::::::", data);
     } catch (error) {
       console.error("Sign up failed:", error);
       setIsAuthenticated(false);

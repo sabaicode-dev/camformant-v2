@@ -14,7 +14,7 @@ export function formatDate(dateString: string | Date) {
   };
 
   // Format the date with the desired time zone and return it
-  const formattedDate = date.toLocaleString("en-TH", options);
+  const formattedDate = date.toLocaleString("en-GB", options);
   return formattedDate;
 }
 

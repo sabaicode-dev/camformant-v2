@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 const CalendarPage = () => {
   const {isLoading} =useAuth()
 
-  if (isLoading) {
+  if (!isLoading) {
     return <CalendarSkeleton />;
   }
 

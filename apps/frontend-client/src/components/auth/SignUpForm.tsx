@@ -11,8 +11,9 @@ import { SignUpFormWrapper } from "../signupForm/SignUpFormWrapper";
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 
 export function SignUpForm() {
-  const { signUp, isLoading } = useAuth();
+  const { signUp } = useAuth();
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
@@ -31,15 +32,16 @@ export function SignUpForm() {
 
   async function onSubmit(data: SignUpFormValues) {
     try {
-      setError("");
+      setIsLoading(true);
       await signUp(data);
+      setIsLoading(false);
     } catch (error: any) {
       setError(error.message || "Something went wrong");
     }
   }
 
   return (
-    <SignUpFormWrapper>
+    <SignUpFormWrapper title="Submit an account" description="Submit an account to get started">
     <FormFields form={form} onSubmit={onSubmit} isLoading={isLoading} error={error} />
     </SignUpFormWrapper>
   );
