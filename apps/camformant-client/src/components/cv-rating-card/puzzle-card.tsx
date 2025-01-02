@@ -66,14 +66,14 @@ const PuzzleCard: React.FC<typePropsTotal> = ({ propTotal }) => {
   }, [info, edu, exp, self, cert, port, ref, ability, propTotal]);
 
   const TitleCard = [
-    { txt: "Basic Information", rating: info, route: "/basic" },
-    { txt: "Education", rating: edu, route: "/educ" },
-    { txt: "Experience ", rating: exp, route: "/exp" },
-    { txt: "Ability ", rating: ability, route: "/ability" },
-    { txt: "Self Description", rating: self, route: "/description" },
-    { txt: "Portfilio", rating: port, route: "/portfolio" },
-    { txt: "Certificate", rating: cert, route: "/certificate" },
-    { txt: "Reference", rating: ref, route: "/references" },
+    { txt: "Basic Information", rating: info, route: "basic" },
+    { txt: "Education", rating: edu, route: "educ" },
+    { txt: "Experience ", rating: exp, route: "exp" },
+    { txt: "Ability ", rating: ability, route: "ability" },
+    { txt: "Self Description", rating: self, route: "description" },
+    { txt: "Portfilio", rating: port, route: "portfolio" },
+    { txt: "Certificate", rating: cert, route: "certificate" },
+    { txt: "Reference", rating: ref, route: "references" },
   ];
   return (
     <div className="flex container justify-center w-full gap-[4%] h-full pt-5 flex-wrap pb-40  ">

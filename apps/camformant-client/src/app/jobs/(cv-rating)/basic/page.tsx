@@ -31,10 +31,10 @@ const Page = () => {
   useEffect(() => {
     async function GetData() {
       try {
+        setLoading(true);
         const response = await axiosInstance.get(
           `${API_ENDPOINTS.USER_PROFILE_DETAIL}/${user?._id}?category=basic`
         );
-        setLoading(true);
         const res = response.data.data.basic;
         if (res.Length) return;
         console.log("datares:", res);
@@ -69,9 +69,6 @@ const Page = () => {
         address, // Address from state
         martial: status, // Marital status from state
       };
-      console.log("response", dataValue);
-      console.log("Data", dataValue);
-      setLoading(true);
       const response = await axiosInstance.put(
         API_ENDPOINTS.USER_PROFILE_DETAIL,
         { basic: { ...dataValue } }
@@ -80,8 +77,6 @@ const Page = () => {
       return response;
     } catch (error) {
       console.error("error in post", error);
-    } finally {
-      setLoading(false);
     }
   };
 

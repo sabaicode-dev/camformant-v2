@@ -47,7 +47,6 @@ const Page = () => {
   }, [user?._id]);
   async function PostData() {
     try {
-      setNext(true); // Trigger loading
       const dataValue = {
         portfolio: portfoEntries,
       };
@@ -60,9 +59,7 @@ const Page = () => {
       return response;
     } catch (error) {
       console.error(error);
-    } finally {
-      setNext(false); // Stop loading
-    }
+    } 
   }
   return (
     <div>

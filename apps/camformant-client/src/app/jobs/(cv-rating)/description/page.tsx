@@ -125,7 +125,6 @@ const SelfDescription: React.FC = () => {
 
   async function PostData() {
     try {
-      setNext(true); // Trigger loading
       const dataValue = {
         description,
         strength,
@@ -135,8 +134,6 @@ const SelfDescription: React.FC = () => {
       });
     } catch (error) {
       console.error(error);
-    } finally {
-      setNext(false); // Stop loading
     }
   }
 

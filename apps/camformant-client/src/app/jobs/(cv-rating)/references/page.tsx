@@ -50,7 +50,6 @@ const Page = () => {
 
   async function PostData() {
     try {
-      setNext(true);
       const dataValue = {
         references: refEntries,
       };
@@ -62,8 +61,6 @@ const Page = () => {
       return response;
     } catch (error) {
       console.error(error);
-    } finally {
-      setNext(false);
     }
   }
 

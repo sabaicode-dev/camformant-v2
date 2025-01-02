@@ -51,9 +51,7 @@ const Page = () => {
       return response;
     } catch (error) {
       console.log("post err", error);
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
   return (
     <div>

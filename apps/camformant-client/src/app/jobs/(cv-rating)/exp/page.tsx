@@ -68,7 +68,6 @@ const Page: React.FC = () => {
 
   async function PostData() {
     try {
-      setNext(true);
       const dataValue = {
         experiences: experEntries,
       };
@@ -80,8 +79,6 @@ const Page: React.FC = () => {
       return response;
     } catch (error) {
       console.error(error);
-    } finally {
-      setNext(false);
     }
   }
 
