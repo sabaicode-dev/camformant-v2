@@ -59,7 +59,7 @@ const TemplateModal: React.FC<{
         style: cvData[index].style,
       };
     });
-    //postCv(cvData[index]);
+    setIsOpen(false);
   };
   return (
     <div

@@ -190,7 +190,9 @@ const Chart = () => {
                   <h2 className="text-[16px] font-bold">
                     Most <br /> Applied Job
                   </h2>
-                  <p className="mt-2 text-[12px ]">{applyData[0].title}</p>
+                  <p className="mt-2 text-[12px ]">
+                    {applyData[0] ? applyData[0].title : "Default"}
+                  </p>
                 </div>
                 <div
                   className="bg-[rgba(255,174,22,1)] w-[calc(50%-10px)] h-full absolute right-0"

@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  Calendar,
-  momentLocalizer,
-  View,
-} from "react-big-calendar";
+import { Calendar, momentLocalizer, View } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useEffect, useState } from "react";
 import moment from "moment-timezone";
@@ -15,6 +11,7 @@ import { EventModal } from "./EventModal";
 import { InterviewEvent } from "@/utils/types/calendar";
 import { eventStyleGetter } from "./CalendarStyle";
 import { JobApplication } from "@/utils/types/job";
+import { format } from "path";
 
 const localizer = momentLocalizer(moment);
 
@@ -38,12 +35,30 @@ const InterviewCalendar = () => {
         );
         const applications: JobApplication[] = response.data.data.map(
           (application: JobApplication) => {
+            // Convert the interviewDate to Cambodia time
+            const interviewDateInCambodia = application.companyResponse
+              ?.interviewDate
+              ? moment(application.companyResponse?.interviewDate).tz(
+                  "Asia/Phnom_Penh"
+                )
+              : undefined;
             return {
               _id: application._id,
               status: application.userInfo?.status,
               title: application.userInfo?.name,
               jobType: application.jobInfo?.position,
               interviewLocation: application.companyResponse?.interviewLocation,
+              interviewTime: interviewDateInCambodia?.format("h:mm A"),
+              start: application.companyResponse?.interviewDate
+                ? new Date(
+                    application.companyResponse.interviewDate
+                  ).toISOString() // Convert Date to ISO string
+                : undefined,
+              end: application.companyResponse?.interviewDate
+                ? new Date(
+                    application.companyResponse.interviewDate
+                  ).toISOString() // Convert Date to ISO string
+                : undefined,
               interviewDate: application.companyResponse?.interviewDate
                 ? new Date(
                     application.companyResponse.interviewDate
@@ -75,28 +90,40 @@ const InterviewCalendar = () => {
             return `${Math.abs(diffDays)} days ago`; // Past dates
           }
         };
+
+        const convertToCambodiaISO = (utcTime: string): string => {
+          const utcDate = new Date(utcTime);
+
+          // Convert to Cambodia timezone (UTC+7)
+          const cambodiaTime = new Date(utcDate.getTime() + 7 * 60 * 60 * 1000);
+
+          // Return the time in ISO format without milliseconds and 'Z'
+          return cambodiaTime.toISOString().split(".")[0]; // Removes milliseconds and 'Z'
+        };
         // Example: Creating event objects with dynamic day labels
         const events: InterviewEvent[] = applications.map((apply: any) => {
           const interviewDate = apply.interviewDate
             ? new Date(apply.interviewDate)
             : new Date();
 
-          // Generate the dynamic label based on the days from the current date
+          //covert time in cambo
+          const utcTime = apply.start;
+          const cambodiaTimeISO = convertToCambodiaISO(utcTime);
+
           const dayLabel = getDayLabel(interviewDate);
           return {
             _id: apply._id || "",
             title: `${apply.title} - ${getDayLabel(interviewDate)}`,
-            start: interviewDate,
-            end: interviewDate,
-            candidateName: apply.candidateName,
+            start: new Date(cambodiaTimeISO),
+            end: new Date(cambodiaTimeISO),
             jobType: apply.jobType,
-            interviewDate: interviewDate,
+            interviewDate: apply.interviewDate,
             interviewLocation: apply.interviewLocation,
+            interviewTime: apply.interviewTime,
             status: apply.status,
             dayLabel: getDayLabel(interviewDate),
           };
         });
-        console.log("user:", events);
         setEvents(events);
       } catch (error) {
         console.error("Error fetching interviews:", error);
@@ -110,7 +137,7 @@ const InterviewCalendar = () => {
     setSelectedEvent(event);
     setShowModal(true);
   };
-  
+
   return (
     <div className="p-4 calendar-container dark:bg-gray-900">
       {/* @ts-ignore */}

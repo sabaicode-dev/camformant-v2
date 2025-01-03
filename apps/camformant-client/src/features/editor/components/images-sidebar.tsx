@@ -33,15 +33,10 @@ export const ImagesSidebar = ({
           : "hidden"
       )}
     >
-      {/* Header Sidebar */}
-      <ToolSidebarHeader
-        title="Images"
-        description="add Image to your canvas"
-      />
       <div className="p-4">
         <UploadButton
           appearance={{
-            button: "w-full text-sm font-medium",
+            button: "w-full text-sm font-medium bg-black",
             allowedContent: "hidden",
           }}
           content={{

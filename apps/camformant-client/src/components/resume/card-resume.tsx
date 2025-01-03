@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Mypic from "../../../public/images/Croods User Interface.png";
 import AttachedCvs from "@/components/resume/attached-cv";
 import Image from "next/image";
 import MiniCardResume from "./mini-card-resume";
@@ -47,7 +46,7 @@ const CardResume: React.FC = () => {
         <div className="flex flex-col items-center justify-center pt-5">
           <h1 className="w-full pb-5 text-xl font-semibold">My Resume</h1>
           <Image
-            src={Mypic}
+            src="/images/croods-user-interface.png"
             alt="Default profile image"
             width={252}
             height={188}

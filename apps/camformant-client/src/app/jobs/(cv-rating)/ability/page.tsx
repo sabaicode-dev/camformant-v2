@@ -70,7 +70,6 @@ const Page: React.FC = () => {
 
   async function PostData() {
     try {
-      setNext(true);
       const dataValue: {
         skills: SkillParams[];
         expertise: ExpertiseParams[];
@@ -88,8 +87,6 @@ const Page: React.FC = () => {
       return response;
     } catch (error) {
       console.error(error);
-    } finally {
-      setNext(false);
     }
   }
 

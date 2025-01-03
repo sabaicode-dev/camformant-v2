@@ -1,8 +1,8 @@
-name: Deploy React App to AWS S3
+name: Camformant-Admin
 
 on:
   pull_request:
-    branches: 
+    branches:
       - main
     paths:
       - "apps/camformant-admin/**"
@@ -37,7 +37,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "20" # Use the correct Node.js version
+          node-version: "18.17.1" # Use the correct Node.js version
+
+      - name: Configure npm to use GitHub Packages
+        run: |
+          echo "@sabaicode-dev:registry=https://npm.pkg.github.com/" > ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
       # Cache npm dependencies to speed up the build
       - name: Cache node modules
@@ -57,7 +62,12 @@ jobs:
       # - name: Set environment variables from GitHub Secrets
       #   run: |
       #     echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
-
+      #     echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
+      #     echo "REACT_APP_AUTH_ENDPOINT=${{ secrets.REACT_APP_AUTH_ENDPOINT }}" >> .env
+      #     echo "REACT_APP_ADMIN_ENDPOINT=${{ secrets.REACT_APP_ADMIN_ENDPOINT }}" >> .env
+      #     echo "REACT_APP_USER_ENDPOINT=${{ secrets.REACT_APP_USER_ENDPOINT }}" >> .env
+      #     echo "REACT_APP_CORPORATOR_ENDPOINT=${{ secrets.REACT_APP_CORPORATOR_ENDPOINT }}" >> .env
+      #     echo "REACT_APP_JOB_ENDPOINT=${{ secrets.REACT_APP_JOB_ENDPOINT }}" >> .env
       # Build React app using Webpack
       - name: Build React App
         run: |
@@ -85,11 +95,28 @@ jobs:
         run: |
           echo "Listing files in the root of the repository"
           tree -L 2  # Confirm directory structure
+      - name: Configure npm to use GitHub Packages
+        run: |
+          echo "@sabaicode-dev:registry=https://npm.pkg.github.com/" > ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
       # step 3: Install dependencies
       - name: Install Dependencies
         run: |
           npm install
+
+      - name: Set Environment Variables
+        run: |
+          echo "REACT_APP_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env
+          echo "REACT_APP_ADMIN_ENDPOINT=${{ secrets.NEXT_PUBLIC_ADMIN_ENDPOINT }}" >> .env
+          echo "REACT_APP_AUTH_ENDPOINT=${{ secrets.NEXT_PUBLIC_AUTH_ENDPOINT }}" >> .env
+          echo "REACT_APP_USER_ENDPOINT=${{ secrets.NEXT_PUBLIC_USER_ENDPOINT }}" >> .env
+          echo "REACT_APP_JOB_ENDPOINT=${{ secrets.NEXT_PUBLIC_JOB_ENDPOINT }}" >> .env
+          echo "REACT_APP_COMPANY_ENDPOINT=${{ secrets.NEXT_PUBLIC_COMPANY_ENDPOINT }}" >> .env
+
+      - name: Debug .env File
+        run: |
+          cat .env
 
       # step 4: Build app for Deploy to S3
       - name: Build React App

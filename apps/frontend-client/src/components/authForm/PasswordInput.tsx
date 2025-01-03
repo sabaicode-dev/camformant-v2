@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { FormField } from "./FormField";
 
-export function PasswordInput({ form }: { form: any }) {
+export function PasswordInput({ form , isCf }: { form: any ,isCf: boolean }) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <>
+    {isCf ? (
+      <>
       <FormField
         form={form}
         name="password"
@@ -47,6 +49,30 @@ export function PasswordInput({ form }: { form: any }) {
           </button>
         }
       />
+      </>
+    ) : (
+      <FormField
+        form={form}
+        name="password"
+        label="Password"
+        type={showPassword ? "text" : "password"}
+        placeholder="Enter your password"
+        rightElement={
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            {showPassword ? (
+              <EyeOffIcon className="h-4 w-4" />
+            ) : (
+              <EyeIcon className="h-4 w-4" />
+            )}
+          </button>
+        }
+      />
+    )}
+      
     </>
   );
 }
