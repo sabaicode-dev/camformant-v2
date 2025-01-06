@@ -1,30 +1,31 @@
 "use client";
-import React from "react";
+import React, { SetStateAction } from "react";
 import { SidebarItem } from "@/features/editor/components/sidebar-item";
 import { ActiveTool } from "@/features/editor/types";
-import {
-  LayoutTemplate,
-  ImageIcon,
-  Pencil,
-  Presentation,
-  Settings,
-  Sparkles,
-  Type,
-} from "lucide-react";
+import { LayoutTemplate, ImageIcon, Settings, Type } from "lucide-react";
 import Shapes from "./icons/svg components/shapes";
 interface SidebarProps {
   activeTool: ActiveTool;
   onChangeActiveTool: (tool: ActiveTool) => void;
+  setOpenTemplate: React.Dispatch<SetStateAction<boolean>>;
 }
 
-export function Sidebar({ activeTool, onChangeActiveTool }: SidebarProps) {
+export function Sidebar({
+  activeTool,
+  onChangeActiveTool,
+  setOpenTemplate,
+}: SidebarProps) {
   return (
-    <aside className="bg-white border-r flex w-full h-full overflow-x-scroll whitespace-nowrap items-center justify-center">
+    <aside className="flex items-center justify-center w-full h-full overflow-x-scroll bg-white border-b border-b-orange-300 whitespace-nowrap">
       <SidebarItem
         icon={LayoutTemplate}
         label="Design"
         isActive={activeTool === "templates"}
-        onClick={() => onChangeActiveTool("templates")}
+        onClick={() => {
+          onChangeActiveTool("templates");
+          setOpenTemplate(true);
+          console.log("template");
+        }}
       />
       <SidebarItem
         icon={ImageIcon}

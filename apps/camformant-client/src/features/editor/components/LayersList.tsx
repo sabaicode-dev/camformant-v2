@@ -11,12 +11,13 @@ const LayersList: React.FC<LayersListProps> = ({ canvas }) => {
   const [layers, setLayers] = useState<fabric.Object[]>([]);
 
   // Function to update the layers list whenever the canvas changes
-  const updateLayersList = () => {
+  //todo: fixed build
+  const updateLayersList = React.useCallback(() => {
     if (canvas) {
       const objects = canvas.getObjects();
       setLayers([...objects]); // Trigger re-render with updated layers
     }
-  };
+  }, [canvas]);
 
   // Listen for changes in the canvas using useEffect
   useEffect(() => {
@@ -36,12 +37,13 @@ const LayersList: React.FC<LayersListProps> = ({ canvas }) => {
       canvas.off("object:removed", updateLayersList);
       canvas.off("object:modified", updateLayersList);
     };
-  }, [canvas]);
+  }, [canvas, updateLayersList]);
 
   // Forcefully re-render the component whenever the canvas changes
   useEffect(() => {
+    const objectsLength = canvas?.getObjects().length;
     updateLayersList();
-  }, [canvas?.getObjects().length]); // Trigger whenever the objects' length changes
+  }, [canvas, updateLayersList]); // Trigger whenever the objects' length changes
 
   return (
     <div className="layers-list absolute z-[50]">
@@ -52,6 +54,7 @@ const LayersList: React.FC<LayersListProps> = ({ canvas }) => {
           .reverse()
           .map((layer, index) => (
             <li
+              key={1}
               // key={layer?.id ? `${layer.id}-${index}` : index}
               style={{
                 cursor: "pointer",

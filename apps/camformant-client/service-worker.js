@@ -1,5 +1,6 @@
 // Import Workbox library
-import { precacheAndRoute } from 'workbox-precaching';
+import { precacheAndRoute } from "workbox-precaching";
+console.log("hello service worker is on");
 
 // Precache all assets injected by `next-pwa`
 precacheAndRoute(self.__WB_MANIFEST);
@@ -10,7 +11,7 @@ self.addEventListener("push", (event) => {
     const data = event.data.json();
     const title = data.title;
     const body = data.body;
-    const url = data.data?.url || '/';
+    const url = data.data?.url || "/";
 
     const notificationOptions = {
       body: body,
@@ -22,7 +23,7 @@ self.addEventListener("push", (event) => {
       },
     };
 
-    console.log('Push Notification Trigger', notificationOptions)
+    console.log("Push Notification Trigger", notificationOptions);
 
     event.waitUntil(
       self.registration.showNotification(title, notificationOptions)
@@ -30,29 +31,33 @@ self.addEventListener("push", (event) => {
   }
 });
 
-self.addEventListener('notificationclick', function (event) {
-  console.log('Notification click received.');
+self.addEventListener("notificationclick", function (event) {
+  console.log("Notification click received.");
 
   // Close the notification
   event.notification.close();
 
   const notificationData = event.notification.data;
-  const urlToOpen = notificationData?.url || '/'; // Fallback to root if no URL is provided
+  const urlToOpen = notificationData?.url || "/"; // Fallback to root if no URL is provided
 
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      // Check if there's an open tab with the same origin as the URL (i.e., same app)
-      const client = clientList.find((c) => c.url.startsWith(self.location.origin) && 'focus' in c);
+    clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clientList) => {
+        // Check if there's an open tab with the same origin as the URL (i.e., same app)
+        const client = clientList.find(
+          (c) => c.url.startsWith(self.location.origin) && "focus" in c
+        );
 
-      if (client) {
-        // If a client is found, focus on that tab
-        client.focus();
-        // Use the client to navigate to the new URL
-        return client.navigate(urlToOpen);
-      } else {
-        // If no client is found, open a new tab
-        return clients.openWindow(urlToOpen);
-      }
-    })
+        if (client) {
+          // If a client is found, focus on that tab
+          client.focus();
+          // Use the client to navigate to the new URL
+          return client.navigate(urlToOpen);
+        } else {
+          // If no client is found, open a new tab
+          return clients.openWindow(urlToOpen);
+        }
+      })
   );
 });

@@ -10,10 +10,13 @@ type Config = {
   awsCognitoClientSecret: string;
   awsCognitoDomain: string;
   awsRedirectUri: string;
-  clientUrl: string;
+  corporatorUrl: string;
   userServiceUrl: string;
   awsAccessKeyId: string;
   awsSecretAccessKey: string;
+  gmailUser: string;
+  gmailAppPassowrd: string;
+  clientUrl:string;
 };
 
 // Function to load and validate environment variables
@@ -32,10 +35,12 @@ function loadConfig(): Config {
     AWS_COGNITO_CLIENT_SECRET: Joi.string().required(),
     AWS_COGNITO_DOMAIN: Joi.string().required(),
     AWS_REDIRECT_URI: Joi.string().required(),
-    CLIENT_URL: Joi.string().required(),
     USER_SERVICE_URL: Joi.string().required(),
     AWS_ACCESS_KEY_ID: Joi.string().required(),
     AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+    GMAIL_USER: Joi.string().required(),
+    GMAIL_APP_PASSWORD: Joi.string().required(),
+    CLIENT_URL: Joi.string().required(),
   })
     .unknown()
     .required();
@@ -54,10 +59,13 @@ function loadConfig(): Config {
     awsCognitoClientSecret: envVars.AWS_COGNITO_CLIENT_SECRET,
     awsCognitoDomain: envVars.AWS_COGNITO_DOMAIN,
     awsRedirectUri: envVars.AWS_REDIRECT_URI,
-    clientUrl: envVars.CLIENT_URL,
+    corporatorUrl: envVars.CORPORATOR_URL,
     userServiceUrl: envVars.USER_SERVICE_URL,
     awsAccessKeyId: envVars.AWS_ACCESS_KEY_ID,
     awsSecretAccessKey: envVars.AWS_SECRET_ACCESS_KEY,
+    gmailUser: envVars.GMAIL_USER,
+    gmailAppPassowrd: envVars.GMAIL_APP_PASSWORD,
+    clientUrl: envVars.GMAIL_APP_PASSWORD,
   };
 }
 

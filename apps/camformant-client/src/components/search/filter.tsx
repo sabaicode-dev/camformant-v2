@@ -260,7 +260,7 @@ export const Filter: React.FC<FilterProps> = ({
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-center p-4 border-t-2 ">
+      <div className="flex items-center justify-center p-4 border-t-2 border-gray-300 ">
         <button
           onClick={handleCompleteFilter}
           className="w-full p-5 text-white bg-primaryCam rounded-2xl"

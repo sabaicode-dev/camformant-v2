@@ -8,14 +8,15 @@ import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/auth";
-import { IJob } from "@/components/type-data/TypeofData";
+import { IJob, IJobFav } from "@/components/type-data/TypeofData";
+import Image from "next/image";
 
 const Page: React.FC = () => {
-  const { user } = useAuth();
+  const { user, onChangeUser, setUser } = useAuth();
   const [jobData, setJobData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  //todo: realtime favorite
   const toggleFavorite = async (jobId: string) => {
     const jobIndex = jobData.findIndex((job) => job._id === jobId);
     if (jobIndex === -1) return;
@@ -29,11 +30,27 @@ const Page: React.FC = () => {
 
     try {
       if (newFavoriteStatus) {
-        await axiosInstance.post(`${API_ENDPOINTS.FAVORITE}`, { jobId });
+        await axiosInstance.post(`${API_ENDPOINTS.FAVORITE}`, {
+          jobId,
+        });
+        onChangeUser(jobId);
       } else {
         await axiosInstance.delete(`${API_ENDPOINTS.FAVORITE}/${jobId}`);
         // Remove the job from the list if unfavorited
-        setJobData((prevData) => prevData.filter((job) => job._id !== jobId));
+        let dataForDelete: any;
+        setJobData((prevData) => {
+          dataForDelete = prevData.filter((job: IJobFav) => job._id !== jobId);
+          setUser((prevData) =>
+            prevData
+              ? {
+                  ...prevData,
+                  favorites:
+                    dataForDelete.map(({ _id }: { _id: string }) => _id) ?? [],
+                }
+              : null
+          );
+          return dataForDelete;
+        });
       }
     } catch (error) {
       console.error("Error updating favorite status:", error);
@@ -50,41 +67,29 @@ const Page: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
+        console.log("user:::", user);
 
         // Get the user's favorite job IDs
         const favoriteJobIds = user?.favorites || [];
-        // console.log("user: ", user);
-        // console.log("favoriteJobIds: ", favoriteJobIds);
 
-        if (favoriteJobIds.length === 0) {
+        if (!favoriteJobIds.length) {
           setJobData([]);
           setLoading(false);
           return;
         }
+        const userFav = user?.favorites.join(",");
         const response = await axiosInstance.get(
-          `${API_ENDPOINTS.JOBS}?limit=*`
+          `${API_ENDPOINTS.JOBS}?userFav=${userFav}`
         );
-        console.log(response.data.data);
-
-        // console.log(response.data);
 
         const jobs: IJob[] = response.data.data.jobs;
+        console.log("user fav:::", jobs);
 
-        const filteredJob = jobs.filter((job) => {
-          for (let i = 0; i < favoriteJobIds.length; i++) {
-            if (job._id === favoriteJobIds[i]) return job;
-          }
-        });
-
-        console.log(filteredJob);
-
-        //TODO:todo
         // Set favorite status to true for these jobs
-        const jobsWithFavoriteStatus = filteredJob.map((job) => ({
+        const jobsWithFavoriteStatus = jobs.map((job) => ({
           ...job,
           favorite: true,
         }));
-
         setJobData(jobsWithFavoriteStatus);
         setLoading(false);
       } catch (error) {
@@ -95,7 +100,8 @@ const Page: React.FC = () => {
     };
 
     fetchFavoriteJobs();
-  }, [user]);
+    // eslint-disable-next-line
+  }, []);
 
   if (error) {
     return (
@@ -111,7 +117,7 @@ const Page: React.FC = () => {
     <div className="container pt-2 mb-20">
       <div className="h-10 mt-4 mb-8 w-14">
         <Link href={"/profile"}>
-          <BackButton_md styles=" bg-primaryCam p-3 px-4 rounded-xl" />
+          <BackButton_md styles="bg-primaryCam p-3 px-4 rounded-xl text-gray-200" />
         </Link>
       </div>
       {loading ? (
@@ -129,7 +135,7 @@ const Page: React.FC = () => {
               _id={job._id}
               title={job.title}
               position={job.position}
-              profile={job.companyId?.profile}
+              profile={job.company?.profile}
               min_salary={job.min_salary}
               max_salary={job.max_salary}
               job_opening={job.job_opening}
@@ -143,9 +149,16 @@ const Page: React.FC = () => {
           </div>
         ))
       ) : (
-        <p className="flex items-center justify-center w-full h-56 mb-20">
-          No favorite jobs available
-        </p>
+        <div className="flex flex-col items-center w-full p-5 mt-20 gap-y-5">
+          <p className="w-full text-center">No favorite jobs available</p>
+          <Image
+            src={"/images/favorite.png"}
+            alt="no favorite"
+            width={2000}
+            height={1762}
+            className="w-full lg:w-1/2"
+          />
+        </div>
       )}
     </div>
   );

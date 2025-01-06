@@ -7,9 +7,6 @@ import { ToolSidebarClose } from "@/features/editor/components/tool-sidebar-clos
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-// import { useGetImages } from "@/features/images/api/use-get-images";
-// import { AlertTriangle, Loader } from "lucide-react";
-
 import { UploadButton } from "@/utils/uploadthing";
 
 interface ImagesSidebarProps {
@@ -30,19 +27,16 @@ export const ImagesSidebar = ({
   return (
     <aside
       className={cn(
-        "bg-white relative border-r z-[40] w-[200px] h-full flex flex-col",
-        activeTool === "images" ? "visible" : "hidden"
+        "bg-slate-100 relative border-r z-[40] w-[200px] h-full flex flex-col border-none",
+        activeTool === "images" || activeTool === "imageReplace"
+          ? "visible"
+          : "hidden"
       )}
     >
-      {/* Header Sidebar */}
-      {/* <ToolSidebarHeader
-        title="Images"
-        description="add Image to your canvas"
-      /> */}
-      <div className="p-4 border-b">
+      <div className="p-4">
         <UploadButton
           appearance={{
-            button: "w-full text-sm font-medium",
+            button: "w-full text-sm font-medium bg-black",
             allowedContent: "hidden",
           }}
           content={{
@@ -50,7 +44,13 @@ export const ImagesSidebar = ({
           }}
           endpoint="imageUploader"
           onClientUploadComplete={(res: any) => {
-            editor?.addImage(res[0].url);
+            if (res && res[0]) {
+              if (activeTool == "images")
+                editor?.addImage(res[0].url); // Add image to the editor
+              else editor?.replaceImage(res[0].url);
+            } else {
+              console.error("Invalid response:", res);
+            }
           }}
         />
       </div>
@@ -65,13 +65,13 @@ export const ImagesSidebar = ({
           <p className="text-xs text-muted-foreground">
             Failed to fetch images
           </p>
-        </div>
+        </div>F
       )} */}
       <ScrollArea>
-        <div className="p-4 space-y-1 border-b"></div>
+        <div className="p-4 space-y-1"></div>
       </ScrollArea>
       {/* Footer SideBar */}
-      {/* <ToolSidebarClose onClick={onClose} /> */}
+      <ToolSidebarClose onClick={onClose} />
     </aside>
   );
 };

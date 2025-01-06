@@ -1,6 +1,5 @@
 "use client";
-
-import { useCallback, useEffect, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useState } from "react";
 import categoryPosition from "@/data/data.json";
 import { Heading } from "@/components/heading/heading";
 import { CategoryPosition } from "@/components/category-position/category-position";
@@ -8,12 +7,66 @@ import axiosInstance from "@/utils/axios";
 import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
 import { Card } from "@/components/card/card";
 import { useAuth } from "@/context/auth";
-import { Job } from "@/app/jobs/[id]/message/page";
 import SkeletonCard from "@/components/skeleton/skeleton-card";
+import Image from "next/image";
+import { jobSyncUpdate, toggleFavorite } from "@/utils/functions/job-function";
+import { AddNotificationType } from "@/hooks/user-notification";
 
-export const PositionPost: React.FC = () => {
-  const { user } = useAuth();
-  const [jobData, setJobData] = useState<any[]>([]);
+interface Company {
+  name: string;
+  profile: string;
+}
+export interface companiesForJobs {
+  _id?: string;
+  profile?: string;
+  name?: string;
+  location?: {
+    address?: string;
+    city?: string;
+    country?: string;
+  };
+  description?: string;
+  contact?: {
+    phone_number?: string;
+    website?: string;
+  };
+  email?: string;
+  job_openings_count?: number;
+  job_closings_count?: number;
+}
+export interface IJob {
+  _id?: string;
+  title?: string;
+  position?: string[];
+  workMode?: string[];
+  location?: string;
+  requirement?: string;
+  description?: string;
+  address?: string;
+  min_salary?: number;
+  max_salary?: number;
+  job_opening?: number;
+  type?: string[];
+  schedule?: string[];
+  required_experience?: string[];
+  benefit?: string[];
+  createdAt?: Date;
+  updatedAt?: Date;
+  deadline?: string | number | Date | undefined;
+  company?: companiesForJobs;
+  favorite?: boolean;
+}
+export interface Job extends IJob {
+  _id: string;
+  company: Company;
+}
+
+export const PositionPost: React.FC<{
+  forSync: boolean;
+  addNotifications: AddNotificationType;
+}> = ({ forSync, addNotifications }) => {
+  const { user, setUser } = useAuth();
+  const [jobData, setJobData] = useState<Job[]>([]);
   const [selectedPosition, setSelectedPosition] = useState<string>("All");
 
   // FETCHING DATA STATE
@@ -50,50 +103,24 @@ export const PositionPost: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [hasMore, isLoading, page, selectedPosition]);
+  }, [hasMore, isLoading, page, selectedPosition, user?.favorites]);
 
   const onScroll = useCallback(async () => {
     if (
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
+      window.innerHeight + window.scrollY >= document.body.scrollHeight - 200 &&
       hasMore &&
-      !isLoading
+      !isLoading &&
+      jobData.length > 0
     ) {
       await loadMoreData();
     }
-  }, [hasMore, isLoading, loadMoreData]);
+  }, [hasMore, isLoading, loadMoreData, jobData]);
 
   const handleSelectPosition = (category: string) => {
     setSelectedPosition(category);
     setJobData([]);
     setPage(1);
     setHasMore(true);
-  };
-
-  const toggleFavorite = async (jobId: string) => {
-    const jobIndex = jobData.findIndex((job) => job._id === jobId);
-    if (jobIndex === -1) return;
-
-    const currentFavoriteStatus = jobData[jobIndex].favorite;
-    const newFavoriteStatus = !currentFavoriteStatus;
-
-    const updatedJobs = [...jobData];
-    updatedJobs[jobIndex].favorite = newFavoriteStatus;
-    setJobData(updatedJobs);
-
-    try {
-      if (newFavoriteStatus) {
-        await axiosInstance.post(API_ENDPOINTS.FAVORITE, { jobId });
-      } else {
-        await axiosInstance.delete(`${API_ENDPOINTS.FAVORITE}/${jobId}`);
-      }
-    } catch (error) {
-      console.error("Error updating favorite status:", error);
-      setError("Failed to update favorite status. Please try again later.");
-
-      // Revert the UI change if the API call fails
-      updatedJobs[jobIndex].favorite = currentFavoriteStatus;
-      setJobData(updatedJobs);
-    }
   };
 
   useEffect(() => {
@@ -109,7 +136,6 @@ export const PositionPost: React.FC = () => {
         const jobResponse = await axiosInstance.get(
           `${API_ENDPOINTS.JOBS}${query}`
         );
-
         const { jobs, totalPages } = jobResponse.data.data; // Adjust based on your actual response structure
 
         if (jobs.length === 0 || 1 >= totalPages) {
@@ -117,9 +143,9 @@ export const PositionPost: React.FC = () => {
         }
 
         // Merge favorite status into jobs
-        const jobsWithFavoriteStatus = jobs.map((job: any) => ({
+        const jobsWithFavoriteStatus = jobs.map((job: IJob) => ({
           ...job,
-          favorite: user?.favorites.includes(job._id) || false,
+          favorite: user?.favorites.includes(job._id!) || false,
         }));
 
         setJobData(jobsWithFavoriteStatus);
@@ -132,7 +158,8 @@ export const PositionPost: React.FC = () => {
     };
 
     fetchJobs();
-  }, [selectedPosition, user]);
+    // eslint-disable-next-line
+  }, [selectedPosition, forSync]);
 
   useEffect(() => {
     window.addEventListener("scroll", onScroll);
@@ -140,7 +167,7 @@ export const PositionPost: React.FC = () => {
   }, [onScroll]);
 
   return (
-    <div className="container mt-5 pb-14">
+    <div className="container mt-5 pb-28">
       <Heading title="Positions" subTitle="You can find more positions here" />
 
       <div className="flex items-center justify-start gap-5 p-1 mt-4 mb-8 overflow-x-auto">
@@ -162,36 +189,51 @@ export const PositionPost: React.FC = () => {
               _id={job._id}
               title={job.title}
               position={job.position}
-              profile={job.companyId?.profile}
+              profile={job.company?.profile || ""}
               min_salary={job.min_salary}
               max_salary={job.max_salary}
               job_opening={job.job_opening}
               type={job.type}
               schedule={job.schedule}
               location={job.location}
-              deadline={new Date(job.deadline)}
-              setHeart={() => toggleFavorite(job._id)}
+              deadline={new Date(job.deadline!)}
+              setHeart={() => {
+                user
+                  ? toggleFavorite(
+                      jobData,
+                      job._id,
+                      setJobData,
+                      setUser,
+                      setError
+                    )
+                  : addNotifications("Login for add to favorites", "error");
+              }}
               heart={job.favorite}
             />
           </div>
         ))
-      ) : isLoading ? (
-        Array(5)
-          .fill(0)
-          .map((_, index) => (
-            <div key={index} className="mb-4 rounded-xl drop-shadow-md">
-              <SkeletonCard />
-            </div>
-          ))
+      ) : jobData.length === 0 && !isLoading && !error ? (
+        <div className="flex flex-col items-center w-full">
+          <Image
+            src={"/images/unavailable.png"}
+            alt="No jobs available"
+            width={1280}
+            height={1280}
+            className="w-full lg:w-1/2"
+          />
+          <p className="mb-10 ">No jobs available</p>
+        </div>
       ) : (
-        <p className="flex items-center justify-center w-full h-56 mb-20">
-          No jobs available
-        </p>
+        ""
       )}
 
-      {isLoading && hasMore && (
-        <p className="text-center text-gray-500">Loading more jobs...</p>
-      )}
+      {isLoading &&
+        hasMore &&
+        Array.from({ length: 3 }).map((_, index) => (
+          <div className="p-1 mb-2" key={index}>
+            <SkeletonCard />
+          </div>
+        ))}
       {!hasMore && jobData.length > 0 && (
         <p className="my-10 text-center text-gray-500">
           You have seen all jobs.
@@ -202,7 +244,7 @@ export const PositionPost: React.FC = () => {
   );
 };
 
-function buildQuery(page: number, selectedPosition: string) {
+export function buildQuery(page: number, selectedPosition: string[] | string) {
   const filter = { position: selectedPosition };
   const encodedFilter = encodeURIComponent(JSON.stringify(filter));
   return `?filter=${encodedFilter}&page=${page}&limit=5`;

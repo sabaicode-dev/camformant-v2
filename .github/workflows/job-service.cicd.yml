@@ -58,95 +58,96 @@ jobs:
           name: build
           path: ./apps/backend/job-service/build
 
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #   if: github.ref == 'refs/heads/main'
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Set up Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20"
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-  #     - name: Download build artifacts
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: build
-  #         path: ./apps/backend/job-service/build
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: ./apps/backend/job-service/build
 
-  #     - name: Prepare Deployment Directories
-  #       uses: appleboy/ssh-action@master
-  #       with:
-  #         host: ${{ secrets.EC2_IP }}
-  #         username: ${{ secrets.EC2_USERNAME }}
-  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
-  #         port: 22
-  #         script: |
-  #           mkdir -p /home/ubuntu/apps/job-service/build
-  #           mkdir -p /home/ubuntu/apps/job-service/build/configs
+      - name: Prepare Deployment Directories
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            mkdir -p /home/ubuntu/apps/job-service/build
+            mkdir -p /home/ubuntu/apps/job-service/build/configs
 
-  #     - name: Copy files to EC2
-  #       uses: appleboy/scp-action@master
-  #       with:
-  #         host: ${{ secrets.EC2_IP }}
-  #         username: ${{ secrets.EC2_USERNAME }} # Update as per your setup
-  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
-  #         port: 22
-  #         source: "./apps/backend/job-service/build/*"
-  #         target: "/home/ubuntu/apps/job-service/build"
-  #         strip_components: 4
+      - name: Copy files to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_IP }}
+          username: ${{ secrets.EC2_USERNAME }} # Update as per your setup
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          source: "./apps/backend/job-service/build/*"
+          target: "/home/ubuntu/apps/job-service/build"
+          strip_components: 4
 
-  #     - name: Configure npm to use GitHub Packages
-  #       uses: appleboy/ssh-action@master
-  #       with:
-  #         host: ${{ secrets.EC2_IP }}
-  #         username: ${{ secrets.EC2_USERNAME }}
-  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
-  #         port: 22
-  #         script: |
-  #           echo "@sabaicode-dev:registry=https://npm.pkg.github.com/" > /home/ubuntu/apps/job-service/build/.npmrc
-  #           echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> /home/ubuntu/apps/job-service/build/.npmrc
+      - name: Configure npm to use GitHub Packages
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "@sabaicode-dev:registry=https://npm.pkg.github.com/" > /home/ubuntu/apps/job-service/build/.npmrc
+            echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> /home/ubuntu/apps/job-service/build/.npmrc
 
-  #     - name: Create .env File
-  #       uses: appleboy/ssh-action@master
-  #       with:
-  #         host: ${{ secrets.EC2_IP }}
-  #         username: ${{ secrets.EC2_USERNAME }}
-  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
-  #         port: 22
-  #         script: |
-  #           echo "NODE_ENV=${{ secrets.NODE_ENV }}" > /home/ubuntu/apps/job-service/build/configs/.env.production
-  #           echo "PORT=${{ secrets.JOB_PORT }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
-  #           echo "MONGODB_URL=${{ secrets.JOB_MONGODB_URL }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
-  #           echo "S3_REGION=${{ secrets.S3_REGION }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
-  #           echo "S3_BUCKET=${{ secrets.S3_BUCKET }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
-  #           echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
-  #           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
+      - name: Create .env File
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "NODE_ENV=${{ secrets.NODE_ENV }}" > /home/ubuntu/apps/job-service/build/configs/.env.production
+            echo "PORT=${{ secrets.JOB_PORT }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
+            echo "MONGODB_URL=${{ secrets.JOB_MONGODB_URL }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
+            echo "CLIENT_URL=${{ secrets.CLIENT_URL }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
+            echo "CORPORATOR_API_ENDPOINT=${{ secrets.CORPORATOR_API_ENDPOINT }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
+            echo "NOTIFICATION_SERVICE_API_ENDPOINT=${{ secrets.NOTIFICATION_SERVICE_API_ENDPOINT }}" >> /home/ubuntu/apps/job-service/build/configs/.env.production
 
-  #     - name: Install Dependencies and Restart PM2
-  #       uses: appleboy/ssh-action@master
-  #       with:
-  #         host: ${{ secrets.EC2_IP }}
-  #         username: ${{ secrets.EC2_USERNAME }}
-  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
-  #         port: 22
-  #         script: |
-  #           # Load the full user environment for non-interactive shells
-  #           source /home/ubuntu/.nvm/nvm.sh
-  #           source /home/ubuntu/.profile
+      - name: Install Dependencies and Restart PM2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # Load the full user environment for non-interactive shells
+            source /home/ubuntu/.nvm/nvm.sh
+            source /home/ubuntu/.profile
 
-  #           cd /home/ubuntu/apps/job-service/build
-  #           yarn install --production
+            cd /home/ubuntu/apps/job-service/build
+            yarn install --production
 
-  #           # Check if the PM2 process is running
-  #           if pm2 show job-service > /dev/null; then
-  #             echo "Application is running. Restarting..."
-  #             yarn restart
-  #           else
-  #             echo "Application is not running. Starting..."
-  #             yarn start
-  #           fi
+            # Check if the PM2 process is running
+            if pm2 show job-service > /dev/null; then
+              echo "Application is running. Restarting..."
+              yarn restart
+            else
+              echo "Application is not running. Starting..."
+              yarn start
+            fi

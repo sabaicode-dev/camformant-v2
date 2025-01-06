@@ -6,9 +6,10 @@ interface typeProfile {
   pic?: string | File;
   rating?: number;
   username: string | null;
+  userId: string | null;
 }
 
-const ProfileRating: React.FC<typeProfile> = ({ pic, rating, username }) => {
+const ProfileRating: React.FC<typeProfile> = ({ pic, rating, username,userId }) => {
   return (
     <div className="flex flex-col justify-center w-full gap-3 p-8 bg-white shadow-md shadow-slate-100 rounded-se-2xl rounded-ss-2xl">
       <div className="container flex items-center gap-x-5">
@@ -33,7 +34,7 @@ const ProfileRating: React.FC<typeProfile> = ({ pic, rating, username }) => {
           <h1 className="text-lg font-semibold">
             {username ? username : "No nickname"}
           </h1>
-          <Link href={"/preview"}>
+          <Link href={rating?`/editor/${userId}`:"/jobs/basic"}>
             <span className="text-primaryCam">Preview</span>
           </Link>
         </div>

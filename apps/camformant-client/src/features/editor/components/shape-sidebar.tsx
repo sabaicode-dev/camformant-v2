@@ -7,8 +7,6 @@ import { FaDiamond } from "react-icons/fa6";
 
 import { ActiveTool, Editor } from "@/features/editor/types";
 
-import { ToolSidebarHeader } from "@/features/editor/components/tool-sidebar-header";
-import { ToolSidebarClose } from "@/features/editor/components/tool-sidebar-close";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ShapeTool } from "@/features/editor/components/shape-tool";
 
@@ -29,12 +27,12 @@ export const ShapeSidebar = ({
   return (
     <aside
       className={cn(
-        "bg-white relative border-r z-[40] flex justify-center items-center",
+        "bg-white relative z-[40] flex justify-center items-center",
         activeTool === "shapes" ? "visible" : "hidden"
       )}
     >
       <ScrollArea>
-        <div className="p-4 space-x-3 border-b flex overflow-x-hidden">
+        <div className="flex p-4 space-x-3 overflow-x-hidden border border-orange-300">
           <ShapeTool
             onClick={() => editor?.addCircle()}
             icon={FaCircle}

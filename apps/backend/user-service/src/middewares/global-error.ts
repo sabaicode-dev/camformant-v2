@@ -1,6 +1,6 @@
 import {
-  // APP_ERROR_MESSAGE,
   ApplicationError,
+  AUTH_MESSAGES,
   HTTP_STATUS_CODE,
   prettyObject,
 } from "@sabaicode-dev/camformant-libs";
@@ -13,6 +13,7 @@ export function globalErrorHandler(
   res: Response,
   _next: NextFunction
 ) {
+  console.log("error in user-service::: ", error);
   // Log the error with Sentry
   Sentry.captureException(error);
 
@@ -23,7 +24,7 @@ export function globalErrorHandler(
     const errors = error.errors;
 
     console.error(
-      `$UserService - globalErrorHandler() method error: `,
+      `$UserService - globalErrorHandler() method error:`,
       prettyObject(error)
     );
     return res.status(status).json({ message, error: errors });
@@ -36,6 +37,5 @@ export function globalErrorHandler(
   );
   res
     .status(HTTP_STATUS_CODE.SERVER_ERROR)
-    .json({ message: "APP ERROR.server error" });
-  // .json({ message: APP_ERROR_MESSAGE.serverError });
+    .json({ message: AUTH_MESSAGES.ERRORS.UNEXPECTED_ERROR });
 }

@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@aws-sdk/client-cloudwatch-logs": "^3.624.0",
-    "@sabaicode-dev/camformant-libs": "0.0.1",
     "aws-jwt-verify": "^4.0.1",
     "axios": "^1.7.2",
     "cookie-parser": "^1.4.6",
@@ -24,7 +23,8 @@
     "joi": "^17.13.3",
     "jwt-decode": "^4.0.0",
     "winston": "^3.14.1",
-    "winston-cloudwatch": "^6.3.0"
+    "winston-cloudwatch": "^6.3.0",
+    "@sabaicode-dev/camformant-libs": "^0.0.1"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.7",

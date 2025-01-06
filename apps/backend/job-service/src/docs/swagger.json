@@ -39,6 +39,9 @@
 					"companyId": {
 						"type": "string"
 					},
+					"profile": {
+						"type": "string"
+					},
 					"title": {
 						"type": "string"
 					},
@@ -60,10 +63,10 @@
 					"requirement": {
 						"type": "string"
 					},
-					"address": {
+					"description": {
 						"type": "string"
 					},
-					"description": {
+					"address": {
 						"type": "string"
 					},
 					"min_salary": {
@@ -73,10 +76,6 @@
 					"max_salary": {
 						"type": "number",
 						"format": "double"
-					},
-					"deadline": {
-						"type": "string",
-						"format": "date-time"
 					},
 					"job_opening": {
 						"type": "number",
@@ -113,6 +112,10 @@
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time"
+					},
+					"deadline": {
+						"type": "string",
+						"format": "date-time"
 					}
 				},
 				"type": "object",
@@ -133,8 +136,329 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"mongoose.Types.ObjectId": {
+				"type": "string"
+			},
+			"StatusMode": {
+				"enum": [
+					"Apply",
+					"Review",
+					"Shortlist",
+					"Interview",
+					"Accept"
+				],
+				"type": "string"
+			},
+			"ApplyUserInfo": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"profile": {
+						"type": "string"
+					},
+					"status": {
+						"$ref": "#/components/schemas/StatusMode"
+					},
+					"cv": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"profile",
+					"status",
+					"cv"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApplyCompanyResp": {
+				"properties": {
+					"startDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"interviewDate": {
+						"type": "string"
+					},
+					"interviewLocation": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"JobApplyResponse": {
+				"properties": {
+					"_id": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"userId": {
+						"type": "string"
+					},
+					"jobId": {
+						"type": "string"
+					},
+					"companyId": {
+						"type": "string"
+					},
+					"userInfo": {
+						"$ref": "#/components/schemas/ApplyUserInfo"
+					},
+					"companyResponse": {
+						"$ref": "#/components/schemas/ApplyCompanyResp"
+					},
+					"appliedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"statusDate": {
+						"properties": {
+							"Apply": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Review": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Shortlist": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Interview": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"Accept": {
+								"type": "string",
+								"format": "date-time"
+							}
+						},
+						"type": "object"
+					},
+					"jobInfo": {
+						"$ref": "#/components/schemas/IJob"
+					}
+				},
+				"required": [
+					"userId",
+					"jobId",
+					"companyId",
+					"userInfo"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"PostJobApplyBody": {
+				"properties": {
+					"userId": {
+						"type": "string"
+					},
+					"jobId": {
+						"type": "string"
+					},
+					"companyId": {
+						"type": "string"
+					},
+					"userInfo": {
+						"$ref": "#/components/schemas/ApplyUserInfo"
+					},
+					"companyResponse": {
+						"$ref": "#/components/schemas/ApplyCompanyResp"
+					}
+				},
+				"required": [
+					"userId",
+					"jobId",
+					"companyId",
+					"userInfo"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"JobParams": {
 				"properties": {
+					"companyId": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+							}
+						]
+					},
+					"title": {
+						"type": "string"
+					},
+					"position": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"workMode": {
+						"items": {
+							"$ref": "#/components/schemas/WorkMode"
+						},
+						"type": "array"
+					},
+					"location": {
+						"type": "string"
+					},
+					"requirement": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"address": {
+						"type": "string"
+					},
+					"min_salary": {
+						"anyOf": [
+							{
+								"type": "number",
+								"format": "double"
+							},
+							{
+								"type": "number",
+								"enum": [
+									0
+								]
+							}
+						]
+					},
+					"max_salary": {
+						"anyOf": [
+							{
+								"type": "number",
+								"format": "double"
+							},
+							{
+								"type": "number",
+								"enum": [
+									5000
+								]
+							}
+						]
+					},
+					"job_opening": {
+						"type": "number",
+						"format": "double"
+					},
+					"type": {
+						"items": {
+							"$ref": "#/components/schemas/EmploymentType"
+						},
+						"type": "array"
+					},
+					"schedule": {
+						"items": {
+							"$ref": "#/components/schemas/EmploymentSchedule"
+						},
+						"type": "array"
+					},
+					"required_experience": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"benefit": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"deadline": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"title",
+					"position",
+					"workMode",
+					"location",
+					"requirement",
+					"address",
+					"min_salary",
+					"max_salary",
+					"createdAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"companiesForJobs": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"profile": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"location": {
+						"properties": {
+							"country": {
+								"type": "string"
+							},
+							"city": {
+								"type": "string"
+							},
+							"address": {
+								"type": "string"
+							}
+						},
+						"type": "object"
+					},
+					"description": {
+						"type": "string"
+					},
+					"contact": {
+						"properties": {
+							"website": {
+								"type": "string"
+							},
+							"phone_number": {
+								"type": "string"
+							}
+						},
+						"type": "object"
+					},
+					"email": {
+						"type": "string"
+					},
+					"job_openings_count": {
+						"type": "number",
+						"format": "double"
+					},
+					"job_closings_count": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"returnJobs": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
 					"companyId": {
 						"type": "string"
 					},
@@ -201,62 +525,22 @@
 						},
 						"type": "array"
 					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
 					"deadline": {
 						"type": "string",
 						"format": "date-time"
+					},
+					"company": {
+						"$ref": "#/components/schemas/companiesForJobs"
 					}
 				},
-				"type": "object",
-				"additionalProperties": false
-			},
-			"PaginationResponse_IJob_": {
-				"properties": {
-					"totalItems": {
-						"type": "number",
-						"format": "double"
-					},
-					"totalPages": {
-						"type": "number",
-						"format": "double"
-					},
-					"currentPage": {
-						"type": "number",
-						"format": "double"
-					}
-				},
-				"required": [
-					"totalItems",
-					"totalPages",
-					"currentPage"
-				],
-				"type": "object",
-				"additionalProperties": {
-					"anyOf": [
-						{
-							"items": {
-								"$ref": "#/components/schemas/IJob"
-							},
-							"type": "array"
-						},
-						{
-							"type": "number",
-							"format": "double"
-						}
-					]
-				}
-			},
-			"APIResponse_PaginationResponse_IJob__": {
-				"properties": {
-					"message": {
-						"type": "string"
-					},
-					"data": {
-						"$ref": "#/components/schemas/PaginationResponse_IJob_"
-					}
-				},
-				"required": [
-					"message"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -277,8 +561,29 @@
 					},
 					"search": {
 						"type": "string"
+					},
+					"userFav": {
+						"type": "string"
 					}
 				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"APIResponse_IJob-Array_": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/IJob"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"message"
+				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -300,60 +605,103 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ICompany": {
+			"GetApplyJobResLimit": {
 				"properties": {
-					"_id": {
-						"type": "string"
+					"applyData": {
+						"items": {
+							"$ref": "#/components/schemas/JobApplyResponse"
+						},
+						"type": "array"
 					},
-					"name": {
-						"type": "string"
-					},
-					"location": {
-						"type": "string"
-					},
-					"bio": {
-						"type": "string"
-					},
-					"profile": {
-						"type": "string"
-					},
-					"email": {
-						"type": "string"
-					},
-					"phone_number": {
-						"type": "string"
-					},
-					"job_openings": {
+					"totalPages": {
 						"type": "number",
 						"format": "double"
 					},
-					"job_closings": {
+					"currentPage": {
 						"type": "number",
 						"format": "double"
 					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
+					"skip": {
+						"type": "number",
+						"format": "double"
 					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
+					"limit": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"applyData",
+					"totalPages",
+					"currentPage",
+					"skip",
+					"limit"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"JobApplyQueriesController": {
+				"properties": {
+					"userId": {
+						"type": "string"
+					},
+					"jobId": {
+						"type": "string"
+					},
+					"companyId": {
+						"type": "string"
+					},
+					"page": {
+						"type": "number",
+						"format": "double"
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					},
+					"filter": {
+						"type": "string"
+					},
+					"sort": {
+						"type": "string"
 					}
 				},
 				"type": "object",
 				"additionalProperties": false
 			},
-			"APIResponse_ICompany_": {
+			"BodyUpdateJobApply": {
 				"properties": {
-					"message": {
-						"type": "string"
+					"status": {
+						"$ref": "#/components/schemas/StatusMode"
 					},
-					"data": {
-						"$ref": "#/components/schemas/ICompany"
+					"startDate": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"interviewDate": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"interviewLocation": {
+						"type": "string"
 					}
 				},
 				"required": [
-					"message"
+					"status"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -370,6 +718,191 @@
 		"contact": {}
 	},
 	"paths": {
+		"/v1/jobs/job": {
+			"post": {
+				"operationId": "PostIJob",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIResponse_IJob_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/IJob"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/jobs/jobApply": {
+			"post": {
+				"operationId": "PostJobApply",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"anyOf": [
+												{
+													"properties": {},
+													"type": "object"
+												},
+												{
+													"$ref": "#/components/schemas/JobApplyResponse"
+												}
+											]
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PostJobApplyBody"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetJobApply",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"anyOf": [
+												{
+													"$ref": "#/components/schemas/GetApplyJobResLimit"
+												},
+												{
+													"items": {
+														"$ref": "#/components/schemas/JobApplyResponse"
+													},
+													"type": "array"
+												}
+											]
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "userId",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "jobId",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "companyId",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "page",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "filter",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "sort",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
 		"/v1/jobs": {
 			"post": {
 				"operationId": "CreateJob",
@@ -409,7 +942,55 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/APIResponse_PaginationResponse_IJob__"
+									"properties": {
+										"data": {
+											"properties": {
+												"limit": {
+													"type": "number",
+													"format": "double"
+												},
+												"skip": {
+													"type": "number",
+													"format": "double"
+												},
+												"currentPage": {
+													"type": "number",
+													"format": "double"
+												},
+												"totalPages": {
+													"type": "number",
+													"format": "double"
+												},
+												"totalJobs": {
+													"type": "number",
+													"format": "double"
+												},
+												"jobs": {
+													"items": {
+														"$ref": "#/components/schemas/returnJobs"
+													},
+													"type": "array"
+												}
+											},
+											"required": [
+												"limit",
+												"skip",
+												"currentPage",
+												"totalPages",
+												"totalJobs",
+												"jobs"
+											],
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
 								}
 							}
 						}
@@ -460,8 +1041,38 @@
 						"schema": {
 							"type": "string"
 						}
+					},
+					{
+						"in": "query",
+						"name": "userFav",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
 					}
 				]
+			}
+		},
+		"/v1/jobs/corporator": {
+			"get": {
+				"operationId": "GetAllJobsWithCorporator",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIResponse_IJob-Array_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": []
 			}
 		},
 		"/v1/jobs/search-history": {
@@ -506,6 +1117,203 @@
 				],
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/v1/jobs/jobApply/applyLength": {
+			"get": {
+				"operationId": "GetApplyLength",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"properties": {},
+											"additionalProperties": {
+												"type": "number",
+												"format": "double"
+											},
+											"type": "object"
+										},
+										{
+											"properties": {},
+											"additionalProperties": {
+												"properties": {},
+												"additionalProperties": {
+													"type": "number",
+													"format": "double"
+												},
+												"type": "object"
+											},
+											"type": "object"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "filter",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "id",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v1/jobs/jobApply/{applyId}": {
+			"put": {
+				"operationId": "PutJobApply",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"anyOf": [
+												{
+													"properties": {},
+													"type": "object"
+												},
+												{
+													"$ref": "#/components/schemas/JobApplyResponse"
+												}
+											]
+										},
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"data",
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "applyId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/BodyUpdateJobApply"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteJobApply",
+				"responses": {
+					"204": {
+						"description": "Deleted",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "applyId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v1/jobs/jobApply/deleteMany/{jobId}": {
+			"delete": {
+				"operationId": "DeleteManyJobApply",
+				"responses": {
+					"204": {
+						"description": "Deleted",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "jobId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/v1/jobs/{jobId}": {
@@ -595,7 +1403,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/JobParams"
+								"$ref": "#/components/schemas/IJob"
 							}
 						}
 					}
@@ -667,337 +1475,6 @@
 				],
 				"security": [],
 				"parameters": []
-			}
-		},
-		"/v1/companies": {
-			"post": {
-				"operationId": "CreateCompany",
-				"responses": {
-					"201": {
-						"description": "Created",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/APIResponse_ICompany_"
-								},
-								"examples": {
-									"Example 1": {
-										"value": {
-											"message": "Company was created successfully!",
-											"data": {
-												"_id": "64a7f1e2d6f4c12a3456abcd",
-												"name": "Tech Innovators Inc.",
-												"location": "San Francisco, CA",
-												"bio": "A leading company in tech innovations.",
-												"profile": "https://your-bucket-name.s3.amazonaws.com/profiles/unique-id.jpg",
-												"email": "contact@techinnovators.com",
-												"phone_number": "+1-555-1234",
-												"job_openings": 10,
-												"job_closings": 2,
-												"createdAt": "2023-10-03T12:34:56.789Z",
-												"updatedAt": "2023-10-03T12:34:56.789Z"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"409": {
-						"description": "Resource Conflict Error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"error": {
-											"properties": {},
-											"type": "object"
-										},
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"message"
-									],
-									"type": "object"
-								},
-								"examples": {
-									"Example 1": {
-										"value": {
-											"message": "This resource is already exists!"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal Server Error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"message"
-									],
-									"type": "object"
-								},
-								"examples": {
-									"Example 1": {
-										"value": {
-											"message": "Something went wrong!"
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"description": "Creates a new company with the provided details and profile image.",
-				"tags": [
-					"Company"
-				],
-				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"multipart/form-data": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"profile": {
-										"type": "string",
-										"format": "binary",
-										"description": "The profile image file for the company."
-									},
-									"name": {
-										"type": "string",
-										"description": "The name of the company."
-									},
-									"location": {
-										"type": "string",
-										"description": "The location of the company."
-									},
-									"bio": {
-										"type": "string",
-										"description": "A short biography of the company."
-									},
-									"email": {
-										"type": "string",
-										"description": "The contact email of the company."
-									},
-									"phone_number": {
-										"type": "string",
-										"description": "The contact phone number of the company."
-									},
-									"job_openings": {
-										"type": "string",
-										"description": "The number of job openings."
-									},
-									"job_closings": {
-										"type": "string",
-										"description": "The number of job closings."
-									}
-								},
-								"required": [
-									"profile",
-									"name",
-									"location",
-									"bio",
-									"email",
-									"phone_number",
-									"job_openings",
-									"job_closings"
-								]
-							}
-						}
-					}
-				}
-			},
-			"get": {
-				"operationId": "GetAllCompany",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"data": {
-											"items": {
-												"$ref": "#/components/schemas/ICompany"
-											},
-											"type": "array"
-										},
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"data",
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Company"
-				],
-				"security": [],
-				"parameters": []
-			}
-		},
-		"/v1/companies/{companyId}": {
-			"get": {
-				"operationId": "FindCompanyById",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/APIResponse_ICompany_"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Company"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "companyId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			},
-			"put": {
-				"operationId": "UpdateCompanyById",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/APIResponse_ICompany_"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Company"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "companyId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"multipart/form-data": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"profile": {
-										"type": "string",
-										"format": "binary"
-									},
-									"name": {
-										"type": "string"
-									},
-									"location": {
-										"type": "string"
-									},
-									"bio": {
-										"type": "string"
-									},
-									"email": {
-										"type": "string"
-									},
-									"phone_number": {
-										"type": "string"
-									},
-									"job_openings": {
-										"type": "string"
-									},
-									"job_closings": {
-										"type": "string"
-									}
-								},
-								"required": [
-									"profile",
-									"name",
-									"location",
-									"bio",
-									"email",
-									"phone_number",
-									"job_openings",
-									"job_closings"
-								]
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"operationId": "DeleteCompanyById",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Company"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "companyId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
 			}
 		}
 	},

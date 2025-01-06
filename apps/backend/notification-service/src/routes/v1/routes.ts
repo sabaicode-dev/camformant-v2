@@ -17,9 +17,12 @@ const models: TsoaRoute.Models = {
     "INotification": {
         "dataType": "refObject",
         "properties": {
+            "_id": {"dataType":"string"},
             "userId": {"dataType":"string","required":true},
             "endpoint": {"dataType":"string","required":true},
             "keys": {"dataType":"nestedObjectLiteral","nestedProperties":{"auth":{"dataType":"string","required":true},"p256dh":{"dataType":"string","required":true}},"required":true},
+            "updatedAt": {"dataType":"datetime"},
+            "createdAt": {"dataType":"datetime"},
         },
         "additionalProperties": false,
     },
@@ -47,7 +50,26 @@ const models: TsoaRoute.Models = {
         "properties": {
             "title": {"dataType":"string","required":true},
             "body": {"dataType":"string","required":true},
-            "data": {"dataType":"nestedObjectLiteral","nestedProperties":{}},
+            "data": {"dataType":"nestedObjectLiteral","nestedProperties":{"url":{"dataType":"string"}}},
+            "tag": {"dataType":"string"},
+            "timestamp": {"dataType":"datetime"},
+            "icon": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "INotificationHistory": {
+        "dataType": "refObject",
+        "properties": {
+            "_id": {"dataType":"string"},
+            "userId": {"dataType":"array","array":{"dataType":"string"}},
+            "url": {"dataType":"string"},
+            "title": {"dataType":"string"},
+            "description": {"dataType":"string"},
+            "icon": {"dataType":"string"},
+            "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Job Listings"]},{"dataType":"enum","enums":["Apply"]},{"dataType":"enum","enums":["new subscribe"]}]},
+            "updatedAt": {"dataType":"datetime"},
+            "createdAt": {"dataType":"datetime"},
         },
         "additionalProperties": false,
     },
@@ -100,26 +122,25 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsNotificationsController_pushNotification: Record<string, TsoaRoute.ParameterSchema> = {
-                request: {"in":"request","name":"request","required":true,"dataType":"object"},
-                body: {"in":"body","name":"body","required":true,"ref":"NotificationPayload"},
+        const argsNotificationsController_pushOneUserNotification: Record<string, TsoaRoute.ParameterSchema> = {
+                body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"type":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Job Listings"]},{"dataType":"enum","enums":["Apply"]}],"required":true},"userId":{"dataType":"string","required":true},"payload":{"ref":"NotificationPayload","required":true}}},
         };
         app.post('/v1/notifications/push-notification',
             ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
-            ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.pushNotification)),
+            ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.pushOneUserNotification)),
 
-            async function NotificationsController_pushNotification(request: ExRequest, response: ExResponse, next: any) {
+            async function NotificationsController_pushOneUserNotification(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsNotificationsController_pushNotification, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsNotificationsController_pushOneUserNotification, request, response });
 
                 const controller = new NotificationsController();
 
               await templateService.apiHandler({
-                methodName: 'pushNotification',
+                methodName: 'pushOneUserNotification',
                 controller,
                 response,
                 next,
@@ -132,7 +153,7 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsNotificationsController_unsubscribe: Record<string, TsoaRoute.ParameterSchema> = {
-                endpoint: {"in":"body","name":"endpoint","required":true,"dataType":"string"},
+                reqBody: {"in":"body","name":"reqBody","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"endpoint":{"dataType":"string","required":true}}},
         };
         app.delete('/v1/notifications/unsubscribe',
             ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
@@ -155,6 +176,97 @@ export function RegisterRoutes(app: Router) {
                 next,
                 validatedArgs,
                 successStatus: 204,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsNotificationsController_getNotification: Record<string, TsoaRoute.ParameterSchema> = {
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+        };
+        app.get('/v1/notifications',
+            ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
+            ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.getNotification)),
+
+            async function NotificationsController_getNotification(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsNotificationsController_getNotification, request, response });
+
+                const controller = new NotificationsController();
+
+              await templateService.apiHandler({
+                methodName: 'getNotification',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsNotificationsController_pushToSubscribers: Record<string, TsoaRoute.ParameterSchema> = {
+                body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"type":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Job Listings"]},{"dataType":"enum","enums":["Apply"]}],"required":true},"payload":{"ref":"NotificationPayload","required":true}}},
+        };
+        app.post('/v1/notifications/push-all-notifications',
+            ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
+            ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.pushToSubscribers)),
+
+            async function NotificationsController_pushToSubscribers(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsNotificationsController_pushToSubscribers, request, response });
+
+                const controller = new NotificationsController();
+
+              await templateService.apiHandler({
+                methodName: 'pushToSubscribers',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsNotificationsController_getUserNotificationHistory: Record<string, TsoaRoute.ParameterSchema> = {
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                query: {"in":"queries","name":"query","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"search":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Job Listings"]},{"dataType":"enum","enums":["Apply"]}]}}},
+        };
+        app.get('/v1/notifications/getUserNotification',
+            ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
+            ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.getUserNotificationHistory)),
+
+            async function NotificationsController_getUserNotificationHistory(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsNotificationsController_getUserNotificationHistory, request, response });
+
+                const controller = new NotificationsController();
+
+              await templateService.apiHandler({
+                methodName: 'getUserNotificationHistory',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
               });
             } catch (err) {
                 return next(err);

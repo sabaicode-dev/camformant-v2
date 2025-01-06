@@ -12,7 +12,7 @@ type VerifyFormProps = {
 };
 
 const Page: React.FC = () => {
-  const { verify, loading } = useAuth();
+  const { verify, loading, resStatus } = useAuth();
   const searchParams = useSearchParams();
   const contactQuery = searchParams.get("contact");
   const contactMethodQuery = searchParams.get("method");
@@ -33,6 +33,9 @@ const Page: React.FC = () => {
         [contactMethodQuery!]: contactQuery,
         code: otpCode,
       });
+      if (resStatus === 200) {
+        addNotification("Verify Successful", "success");
+      }
     } catch (error) {
       if (isAPIErrorResponse(error)) {
         addNotification(error.response.data.message, "error");

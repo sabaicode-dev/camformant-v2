@@ -1,11 +1,16 @@
-import { use, useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { fabric } from "fabric";
 import { JSON_KEYS } from "@/features/editor/types";
 interface UseHistoryProps {
   canvas: fabric.Canvas | null;
+  saveCallback?: (values: {
+    json: string;
+    height: number;
+    width: number;
+  }) => void;
 }
 
-export const useHistory = ({ canvas }: UseHistoryProps) => {
+export const useHistory = ({ canvas, saveCallback }: UseHistoryProps) => {
   const [historyIndex, setHistoryIndex] = useState(0);
   const canvasHistory = useRef<string[]>([]);
   const skipSave = useRef(false);
@@ -27,14 +32,19 @@ export const useHistory = ({ canvas }: UseHistoryProps) => {
         canvasHistory.current.push(json);
         setHistoryIndex(canvasHistory.current.length - 1);
       }
-      //TODO:  callback (save to db)
+      const workspace = canvas
+        .getObjects()
+        .find((object) => object.name === "clip");
+      const height = workspace?.height || 0;
+      const width = workspace?.width || 0;
+      saveCallback?.({ json, height, width });
     },
-    [canvas]
+    [canvas, saveCallback]
   );
   const undo = useCallback(() => {
     if (canUndo()) {
       skipSave.current = true;
-      canvas?.clear().renderAll();
+      canvas?.renderAll();
 
       const previousIndex = historyIndex - 1;
       const previousState = JSON.parse(canvasHistory.current[previousIndex]);
@@ -49,7 +59,7 @@ export const useHistory = ({ canvas }: UseHistoryProps) => {
   const redo = useCallback(() => {
     if (canRedo()) {
       skipSave.current = true;
-      canvas?.clear().renderAll();
+      canvas?.renderAll();
 
       const nextIndex = historyIndex + 1;
       const nextState = JSON.parse(canvasHistory.current[nextIndex]);

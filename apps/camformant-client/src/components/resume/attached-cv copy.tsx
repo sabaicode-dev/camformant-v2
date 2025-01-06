@@ -1,7 +1,7 @@
 "use client";
-import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
+import Image from "next/image";
 
 const AttachedCvs: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -19,36 +19,6 @@ const AttachedCvs: React.FC = () => {
     },
     withCredentials: true,
   };
-
-  // useEffect(() => {
-  //   async function PostCV() {
-  //     if (!file) return;
-  //     try {
-  //       setNext(true);
-  //       const formData = new FormData();
-  //       formData.append("file_path", file);
-
-  //       const res = await axios.put(
-  //         "http://localhost:3040/v1/user/cv-to-image", // Update this to your endpoint for conversion
-  //         formData,
-  //         config
-  //       );
-
-  //       if (res.status === 200 && res.data.imageUrl) {
-  //         // Assuming the backend returns the image URL
-  //         setImageURL(res.data.imageUrl); // Set the image URL to display the converted image
-  //       } else {
-  //         console.log("Error uploading CV");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error during upload and conversion:", error);
-  //     } finally {
-  //       setNext(false);
-  //     }
-  //   }
-
-  //   PostCV();
-  // }, [file]);
 
   function handleSelectFile(event: React.ChangeEvent<HTMLInputElement>) {
     const cv = event.target.files?.[0];
@@ -69,17 +39,17 @@ const AttachedCvs: React.FC = () => {
       {imageURL ? (
         // Show the converted image
         <div className="mt-4">
-          <img
+          <Image
             src={imageURL}
             alt="Converted CV"
-            className="max-w-full h-auto rounded-lg"
+            className="h-auto max-w-full rounded-lg"
           />
         </div>
       ) : (
         // Show the upload button if no image is available
         <button
           onClick={handleUploads}
-          className="w-full p-10 shadow-xl rounded-3xl flex justify-start items-center bg-white"
+          className="flex items-center justify-start w-full p-10 bg-white shadow-xl rounded-3xl"
         >
           Attach CV
         </button>

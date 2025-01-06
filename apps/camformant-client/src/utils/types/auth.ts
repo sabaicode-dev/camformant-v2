@@ -6,7 +6,7 @@ export interface SignupRequest {
   email?: string;
   phone_number?: string;
   password?: string;
-  role?: "admin" | "user";
+  role?: "company" | "user";
 }
 export interface SignupResponse extends APIResponse, APIErrorResponse { }
 

@@ -4,9 +4,8 @@ export interface SignupRequest {
   email?: string;
   phone_number?: string;
   password?: string;
-  role?: "admin" | "user";
+  role?: "company" | "user";
 }
-
 export interface VerifyUserRequest {
   email?: string;
   phone_number?: string;
@@ -24,3 +23,21 @@ export interface GoogleCallbackRequest {
   state?: string;
   error?: string;
 }
+export interface CorporateSignupRequest {
+  sur_name?: string;
+  last_name?: string;
+  email?: string;
+  password?: string;
+  contact?: {
+    phone_number?: string;
+  }
+  status?: string;
+  employee_count?: string;
+  role?: "company";
+}
+export interface UserBodyParams {
+  email: string;
+  sub: string;
+  id: string
+}
+

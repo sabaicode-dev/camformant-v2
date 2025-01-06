@@ -1,11 +1,13 @@
-import dotenv from 'dotenv';
-import path from 'path';
-import Joi from 'joi';
+import dotenv from "dotenv";
+import path from "path";
+import Joi from "joi";
 
 type Config = {
   env: string;
   port: number;
   clientUrl: string;
+  corporatorUrl: string;
+  adminUrl:string
   authServiceUrl: string;
   userServiceUrl: string;
   jobServiceUrl: string;
@@ -22,7 +24,7 @@ type Config = {
 // Function to load and validate environment variables
 function loadConfig(): Config {
   // Determine the environment and set the appropriate .env file
-  const env = process.env.NODE_ENV || 'development';
+  const env = process.env.NODE_ENV || "development";
   const envPath = path.resolve(__dirname, `./configs/.env.${env}`);
   dotenv.config({ path: envPath });
 
@@ -31,6 +33,8 @@ function loadConfig(): Config {
     NODE_ENV: Joi.string().required(),
     PORT: Joi.number().default(3000),
     CLIENT_URL: Joi.string().required(),
+    CORPORATOR_URL: Joi.string().required(),
+    ADMIN_URL:Joi.string().required(),
     AUTH_SERVICE_URL: Joi.string().required(),
     USER_SERVICE_URL: Joi.string().required(),
     JOB_SERVICE_URL: Joi.string().required(),
@@ -41,8 +45,10 @@ function loadConfig(): Config {
     AWS_CLOUDWATCH_LOGS_GROUP_NAME: Joi.string().required(),
     AWS_COGNITO_USER_POOL_ID: Joi.string().required(),
     AWS_COGNITO_CLIENT_ID: Joi.string().required(),
-    NOTIFICATION_SERVICE_URL: Joi.string().required()
-  }).unknown().required();
+    NOTIFICATION_SERVICE_URL: Joi.string().required(),
+  })
+    .unknown()
+    .required();
 
   // Validate the environment variables
   const { value: envVars, error } = envVarsSchema.validate(process.env);
@@ -54,6 +60,8 @@ function loadConfig(): Config {
     env: envVars.NODE_ENV,
     port: envVars.PORT,
     clientUrl: envVars.CLIENT_URL,
+    corporatorUrl: envVars.CORPORATOR_URL,
+    adminUrl:envVars.ADMIN_URL,
     authServiceUrl: envVars.AUTH_SERVICE_URL,
     userServiceUrl: envVars.USER_SERVICE_URL,
     jobServiceUrl: envVars.JOB_SERVICE_URL,
@@ -64,7 +72,7 @@ function loadConfig(): Config {
     awsCloudwatchLogsGroupName: envVars.AWS_CLOUDWATCH_LOGS_GROUP_NAME,
     awsCognitoUserPoolId: envVars.AWS_COGNITO_USER_POOL_ID,
     awsCognitoClientId: envVars.AWS_COGNITO_CLIENT_ID,
-    notificationServiceUrl: envVars.NOTIFICATION_SERVICE_URL
+    notificationServiceUrl: envVars.NOTIFICATION_SERVICE_URL,
   };
 }
 

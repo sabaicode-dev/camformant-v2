@@ -7,7 +7,12 @@ type Config = {
   port: number;
   mongodbUrl: string;
   notificationServiceUrl: string;
+  corporator_api_endpoint: string;
   glitchtipDNS: string;
+  awsS3BucketName: string;
+  awsRegion: string;
+  awsAcessKeyId: string;
+  awsSecretAccessKey: string;
 };
 
 // Function to load and validate environment variables
@@ -22,8 +27,13 @@ function loadConfig(): Config {
     NODE_ENV: Joi.string().required(),
     PORT: Joi.number().default(3000),
     MONGODB_URL: Joi.string().required(),
+    CORPORATOR_API_ENDPOINT: Joi.string().required(),
     NOTIFICATION_SERVICE_URL: Joi.string().required(),
     GLITCHTIP_DNS: Joi.string().required(),
+    AWS_S3_BUCKET_NAME: Joi.string().required(),
+    AWS_REGION: Joi.string().required(),
+    AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+    AWS_ACCESS_KEY_ID: Joi.string().required(),
   })
     .unknown()
     .required();
@@ -38,8 +48,13 @@ function loadConfig(): Config {
     env: envVars.NODE_ENV,
     port: envVars.PORT,
     mongodbUrl: envVars.MONGODB_URL,
+    corporator_api_endpoint: envVars.CORPORATOR_API_ENDPOINT,
     notificationServiceUrl: envVars.NOTIFICATION_SERVICE_URL,
     glitchtipDNS: envVars.GLITCHTIP_DNS,
+    awsS3BucketName: envVars.AWS_S3_BUCKET_NAME,
+    awsRegion: envVars.AWS_REGION,
+    awsAcessKeyId: envVars.AWS_ACCESS_KEY_ID,
+    awsSecretAccessKey: envVars.AWS_SECRET_ACCESS_KEY,
   };
 }
 

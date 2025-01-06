@@ -35,7 +35,10 @@ esbuild.build({
           '../../../node_modules/swagger-ui-dist/*.js',
           '../../../node_modules/swagger-ui-dist/*.png'
         ],
-        to: ['./']
+        to: ['./'],
+        
+          from: ['./src/configs/.env.production'],
+          to: ['./configs'],
       }
     })
   ],

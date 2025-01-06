@@ -2,6 +2,7 @@
 import withPWA from "next-pwa";
 
 const nextConfig = {
+  output: "standalone",
   compiler: {
     // Remove console logs only in production
     removeConsole: process.env.NODE_ENV === "production",
@@ -26,6 +27,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "cam-formant.s3.amazonaws.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "encrypted-tbn0.gstatic.com",
         pathname: "/**",
       },
@@ -41,6 +47,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "cam-formant.s3.amazonaws.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "microservice-sample-resource.s3.amazonaws.com",
         pathname: "/**",
       },
@@ -48,6 +59,25 @@ const nextConfig = {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "camformant.s3.ap-southeast-2.amazonaws.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "sophornbucket.s3.us-west-2.amazonaws.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "teytey.s3.us-east-1.amazonaws.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**",
       },
     ],
   },

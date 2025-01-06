@@ -23,24 +23,24 @@ interface autoFocusd {
   focus?: RefObject<HTMLInputElement>;
   buttonBack?: boolean;
   isFilterDisplay?: boolean;
-  setSearchValue?: Dispatch<SetStateAction<string>>;
-  setCompleteFilter?: Dispatch<SetStateAction<FilterValueParams>>;
+  onChangeFilterValues?: (value: FilterValueParams) => void;
   searchValue?: string;
+  onChangeSearchValue?: (value: string) => void;
 }
 
 export const Search: React.FC<autoFocusd> = ({
   focus,
   buttonBack,
   isFilterDisplay = false,
-  setSearchValue,
-  setCompleteFilter,
+  onChangeFilterValues,
   searchValue,
+  onChangeSearchValue,
 }) => {
   const [isOpen, setOpen] = useState(false);
   const [filterValues, setFilterValues] = useState(defaultFilterValue);
 
   const handleCompleteFilter = () => {
-    setCompleteFilter!(filterValues);
+    onChangeFilterValues!(filterValues);
     setOpen(false);
   };
 
@@ -54,7 +54,7 @@ export const Search: React.FC<autoFocusd> = ({
     setFilterValues(defaultFilterValue);
   }
   function handleInputOnChange(e: ChangeEvent<HTMLInputElement>) {
-    setSearchValue!(e.target.value);
+    onChangeSearchValue!(e.target.value);
   }
 
   return (
@@ -62,7 +62,7 @@ export const Search: React.FC<autoFocusd> = ({
       {isFilterDisplay && (
         <button
           onClick={() => setOpen(true)}
-          className="absolute translate-y-[16px] right-5 z-50 "
+          className="absolute translate-y-[16px] right-3 top-1 z-50 "
         >
           <IoMdFunnel size={22} className="text-primaryCam" />
         </button>
@@ -70,7 +70,7 @@ export const Search: React.FC<autoFocusd> = ({
 
       <div className="flex items-center w-full">
         <div className={` ${buttonBack ? "block" : "hidden"} `}>
-          <Link href={"../"}>
+          <Link href={"../home"}>
             <BackButton_md styles=" bg-white p-3 px-4 rounded-xl top-5 left-3 " />
           </Link>
         </div>
@@ -80,6 +80,7 @@ export const Search: React.FC<autoFocusd> = ({
           </div>
           <input
             type="text"
+            value={searchValue}
             onChange={handleInputOnChange}
             ref={focus || undefined}
             placeholder="Search Job vacancy"

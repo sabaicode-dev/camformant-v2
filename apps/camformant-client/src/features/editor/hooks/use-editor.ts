@@ -1,6 +1,6 @@
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useRef, useEffect } from "react";
 import { fabric } from "fabric";
-
+import { jsPDF } from "jspdf";
 import { useAutoResize } from "@/features/editor/hooks/use-auto-resize";
 
 import {
@@ -20,12 +20,17 @@ import {
   FONT_WEIGHT,
   FONT_SIZE,
   JSON_KEYS,
+  CvContentParams,
 } from "@/features/editor/types";
 import { UseCanvasEvents } from "@/features/editor/hooks/use-canvas-events";
 import {
+  catchEditedData,
   createFilter,
   downloadFile,
   isTextType,
+  postCv,
+  setFetchData,
+  setUneditableAbility,
   transformText,
 } from "@/features/editor/utils";
 import { useClipboard } from "@/features/editor/hooks/use-clipboard";
@@ -33,7 +38,15 @@ import { useHistory } from "@/features/editor/hooks/use-history";
 import { useHotKeys } from "@/features/editor/hooks/use-hotkeys";
 import { useWindowEvent } from "@/features/editor/hooks/use-window-events";
 import { useArrowKey } from "./use-arrowKey";
+import { useLoadState } from "./use-load-state";
+import { CustomCvDataParams } from "@/utils/types/user-profile";
 const buildEditor = ({
+  dataForUpdate,
+  setDataForUpdate,
+  cvContent,
+  setCvContent,
+  canvasHistory,
+  setHistoryIndex,
   moveLeft,
   moveRight,
   moveUp,
@@ -46,6 +59,8 @@ const buildEditor = ({
   autoZoom,
   copy,
   paste,
+  setPatternImageSrc,
+  setShowCropper,
   canvas,
   fillColor,
   setFillColor,
@@ -61,6 +76,7 @@ const buildEditor = ({
 }: BuildEditorProps): Editor => {
   const generateSaveOptions = () => {
     const { width, height, left, top } = getWorkspace() as fabric.Rect;
+    console.log("top right...", width, height, left, top);
 
     return {
       name: "Image",
@@ -79,6 +95,28 @@ const buildEditor = ({
     canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     const dataUrl = canvas.toDataURL(options);
     downloadFile(dataUrl, "png");
+    autoZoom();
+  };
+  const savePdf = () => {
+    const options = generateSaveOptions();
+
+    // Create jsPDF instance
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "pt",
+      format: "a4",
+    });
+    const data = canvas.toDataURL({ format: "png", multiplier: 4 });
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pdfWidth;
+    const imgHeight = pdfHeight;
+    console.log(" img width:", imgWidth, " img height:", imgHeight);
+    pdf.addImage(data, "PNG", 0, 0, imgWidth, imgHeight);
+    //downloadFile(data, "pdf");
+    pdf.save("canvas.pdf");
+
     autoZoom();
   };
   const saveSvg = () => {
@@ -106,11 +144,32 @@ const buildEditor = ({
     downloadFile(fileString, "json");
   };
 
-  const loadJson = (json: string) => {
-    const data = JSON.parse(json);
+  const loadJson = (
+    json: string | any,
+    style?: string,
+    userData?: CustomCvDataParams | {}
+  ) => {
+    console.log("canvas in loadjson", canvas);
+    const data = typeof json == "string" ? JSON.parse(json) : json;
     canvas.loadFromJSON(data, () => {
+      const currentState = JSON.stringify(canvas.toJSON());
+      canvasHistory.current = [currentState];
+      setHistoryIndex(0);
       autoZoom();
+      if (style) {
+        setFetchData(canvas, userData);
+        save();
+      }
     });
+  };
+  const updateCv = () => {
+    postCv(
+      cvContent.style,
+      canvas,
+      dataForUpdate,
+      setDataForUpdate,
+      setCvContent
+    );
   };
 
   // find workspace name clip that we recently added
@@ -133,14 +192,44 @@ const buildEditor = ({
     canvas.add(object);
     canvas.setActiveObject(object);
   };
+  const getPattern = () => {
+    const selectedObject = canvas.getActiveObject() as fabric.Circle;
+    const pattern = selectedObject.get("fill") as fabric.Pattern | undefined;
+    return { pattern, selectedObject };
+  };
+  const createPattern = (circleRadius: number, image: fabric.Image) => {
+    const translateX = 0; // No horizontal translation needed
+    const translateY = 0;
+    const scale = Math.max(
+      (circleRadius * 2) / image.width!,
+      (circleRadius * 2) / image.height!
+    );
+
+    const pattern = new fabric.Pattern({
+      source: image.getElement() as HTMLImageElement, // Use the new image as the pattern source
+      repeat: "no-repeat",
+      patternTransform: [scale, 0, 0, scale, translateX, translateY], // Preserve the existing pattern's transform if any
+    });
+    return pattern as fabric.Pattern;
+  };
+  const resetSelection = (objects: fabric.Object[]) => {
+    canvas.discardActiveObject(); // Clear the active selection
+    const newActiveSelection = new fabric.ActiveSelection(objects, {
+      canvas: canvas,
+    });
+    canvas.setActiveObject(newActiveSelection);
+    canvas.renderAll();
+  };
 
   return {
+    updateCv,
     onMoveLeft: () => moveLeft(),
     onMoveRight: () => moveRight(),
     onMoveUp: () => moveUp(),
     onMoveDown: () => moveDown(),
     saveJpg,
     savePng,
+    savePdf,
     saveJson,
     saveSvg,
     loadJson,
@@ -148,6 +237,120 @@ const buildEditor = ({
     canUndo,
     canRedo,
     getWorkspace,
+    //for group align
+    alignVerticalTop: () => {
+      const selectedObjects = canvas.getActiveObjects();
+      const mainTop = selectedObjects[0].top;
+      let widthForAlign: number = selectedObjects[0].left!;
+
+      selectedObjects.forEach((object) => {
+        object.set({
+          top: mainTop,
+        });
+        widthForAlign += object.width!;
+      });
+      canvas.discardActiveObject(); // Clear the active selection
+      const newActiveSelection = new fabric.ActiveSelection(selectedObjects, {
+        canvas: canvas,
+      }); //to create a new active selection from an array of objects.
+      canvas.setActiveObject(newActiveSelection); //setActiveObject is designed to set a single active object
+      canvas.renderAll();
+    },
+    alignVerticalBottom: () => {
+      const selectedObjects = canvas.getActiveObjects();
+      const bottom = Math.max(
+        ...selectedObjects.map((obj) => obj.top! + obj.height! * obj.scaleY!)
+      );
+
+      selectedObjects.forEach((obj) => {
+        const objHeight = obj.height! * obj.scaleY!;
+        obj.top = bottom - objHeight;
+        obj.setCoords(); // Update object coordinates
+      });
+
+      canvas.requestRenderAll();
+    },
+    alignVerticalCenter: () => {
+      const selectedObjects = canvas.getActiveObjects();
+      const highestHeightObject = selectedObjects.reduce((max, obj) => {
+        const maxHeight = max.height! * max.scaleY!;
+        const objHeight = obj.height! * obj.scaleY!;
+        return maxHeight < objHeight ? obj : max;
+      });
+
+      let widthForAlign: number = selectedObjects[0].left!;
+      console.log(
+        "highest:",
+        highestHeightObject.height! * highestHeightObject.scaleY!
+      );
+
+      selectedObjects.forEach((object) => {
+        const objectHeight = object.height! * object.scaleY!;
+        const highestHeight =
+          highestHeightObject.height! * highestHeightObject.scaleY!;
+
+        if (highestHeightObject !== object) {
+          object.set({
+            top:
+              highestHeightObject.top! + (highestHeight / 2 - objectHeight / 2),
+          });
+        }
+
+        widthForAlign += object.width! * object.scaleX!;
+      });
+
+      resetSelection(selectedObjects);
+    },
+    alignHorizontalCenter: () => {
+      const selectedObjects = canvas.getActiveObjects();
+      // Find the horizontal center position
+      const centerX = Math.min(
+        ...selectedObjects.map(
+          (obj) => obj.left! + (obj.width! * obj.scaleX!) / 2
+        )
+      );
+
+      selectedObjects.forEach((obj) => {
+        const objWidth = obj.width! * obj.scaleX!;
+        obj.left = centerX - objWidth / 2;
+        obj.setCoords();
+      });
+
+      resetSelection(selectedObjects);
+    },
+    alignHorizontalRight: () => {
+      const selectedObjects = canvas.getActiveObjects();
+      const mainRight =
+        selectedObjects[0]!.left! +
+        selectedObjects[0].width! * selectedObjects[0].scaleX!;
+      selectedObjects.forEach((object: any) => {
+        const objectWidth = object.width * object.scaleX;
+        object.set("left", mainRight - objectWidth);
+        resetSelection(selectedObjects);
+      });
+    },
+    alignHorizontalLeft: () => {
+      const selectedObjects = canvas.getActiveObjects();
+      const mainLeft = selectedObjects[0].left;
+      selectedObjects.forEach((object) => {
+        object.set("left", mainLeft);
+        resetSelection(selectedObjects);
+      });
+    },
+
+    //for seteditable and set not ediable
+    setEditable: () => {
+      canvas.getObjects().forEach((object) => {
+        object.name != "clip" &&
+          object.set({
+            selectable: true,
+            hasControls: true,
+          });
+      });
+    },
+    setUneditable: () => {
+      setUneditableAbility(canvas);
+    },
     zoomIn: () => {
       let zoomRatio = canvas.getZoom();
       zoomRatio += 0.1;
@@ -167,7 +370,7 @@ const buildEditor = ({
       const workspace = getWorkspace();
       workspace?.set(value);
       autoZoom();
-      save(); //if save with db not use this save()
+      save(); //if save with db not use this save() 
       //TODO: save
     },
     changeBackground: (value: string) => {
@@ -193,27 +396,107 @@ const buildEditor = ({
           imageObject.filters = effect ? [effect] : [];
           imageObject.applyFilters();
           canvas.renderAll();
+        } else {
+          objects.forEach((object) => {
+            if (object instanceof fabric.Circle) {
+              const pattern = object.fill as fabric.Pattern;
+              console.log("type of source", typeof pattern.source);
+              const patternImage = new fabric.Image(pattern.source);
+              const effect = createFilter(value);
+
+              if (effect) {
+                console.log("it have effect");
+                patternImage.filters = [effect];
+                patternImage.applyFilters(); // Apply the filter to the image
+              }
+              pattern.source = patternImage.getElement() as HTMLImageElement;
+              object.set("fill", pattern);
+            }
+            object.dirty = true;
+            canvas.renderAll();
+          });
         }
       });
     },
     addImage: (value: string) => {
-      // console.log("Success");
       fabric.Image.fromURL(
         value,
         (image) => {
-          const workspace = getWorkspace();
+          //fabirc.image
+          const circleRadius = 100; // Radius of 100 pixels, making the circle diameter 200 pixels
 
-          image.scaleToWidth(workspace?.width || 0);
-          image.scaleToHeight(workspace?.height || 0);
+          // Create a circle with the desired dimensions and style
+          const circle = new fabric.Circle({
+            left: 10, // Position from the left
+            top: 10, // Position from the top
+            radius: circleRadius, // Radius of the circle
+            stroke: "red", // Border color
+            strokeWidth: 5, // Border thickness
+            fill: "", // Placeholder to apply pattern later
+          });
+          const pattern = createPattern(circleRadius, image);
 
-          addToCanvas(image);
+          // Set the circle's fill to the pattern
+          circle.set("fill", pattern);
+          addToCanvas(circle);
         },
         {
           crossOrigin: "anonymous",
         }
       );
     },
+    replaceImage(value: string) {
+      fabric.Image.fromURL(
+        value,
+        (image) => {
+          const { pattern, selectedObject } = getPattern();
 
+          if (pattern) {
+            const circleRadius = 100;
+            const newPattern: fabric.Pattern = createPattern(
+              circleRadius,
+              image
+            );
+
+            // Update the circle's fill with the new pattern
+            selectedObject.set("fill", newPattern);
+          }
+          canvas.renderAll();
+        },
+        {
+          crossOrigin: "anonymous",
+        }
+      );
+    },
+    enableCropping: () => {
+      const { pattern } = getPattern();
+      if (pattern!.source instanceof HTMLImageElement) {
+        const imageSrc = pattern!.source.src;
+        setPatternImageSrc(imageSrc);
+        setShowCropper(true);
+      }
+    },
+    handleCrop: (imageUrl: string) => {
+      const { selectedObject } = getPattern();
+      if (imageUrl) {
+        fabric.Image.fromURL(
+          imageUrl,
+          (img) => {
+            console.log("crop data url", imageUrl);
+            const circleRadius = 100;
+            const newPattern = createPattern(circleRadius, img);
+            selectedObject.set("fill", newPattern);
+            canvas.renderAll();
+            setShowCropper(false);
+          },
+          {
+            crossOrigin: "anonymous",
+          }
+        );
+      } else {
+        console.log("Cropper not initialized");
+      }
+    },
     delete: () => {
       canvas.getActiveObjects().forEach((object) => canvas.remove(object));
       canvas.discardActiveObject();
@@ -565,17 +848,25 @@ const buildEditor = ({
     selectedObjects,
   };
 };
-export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
+
+export const useEditor = ({
+  defaultState, // it contains usrData and json and style
+  setPatternImageSrc,
+  setShowCropper,
+  setCvContent,
+  clearSelectionCallback,
+}: EditorHookProps) => {
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const [selectedObjects, setSelectedObjects] = useState<fabric.Object[]>([]);
-
+  const initialState = useRef(defaultState.json);
   const [fontFamily, setFontFamily] = useState(FONT_FAMILY);
   const [fillColor, setFillColor] = useState(FILL_COLOR);
   const [strokeColor, setStrokeColor] = useState(STROKE_COLOR);
   const [strokeWidth, setStrokeWidth] = useState(STROKE_WIDTH);
   const [strokeDashArray, setStrokeDashArray] =
     useState<number[]>(STROKE_DASH_ARRAY);
+  const [dataForUpdate, setDataForUpdate] = useState({});
 
   const { save, canRedo, canUndo, redo, undo, canvasHistory, setHistoryIndex } =
     useHistory({ canvas });
@@ -593,7 +884,6 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     setSelectedObjects,
     clearSelectionCallback,
   });
-
   useHotKeys({
     canvas,
     save,
@@ -607,70 +897,26 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     moveUp,
   });
 
-  // Handle touch events for mobile gestures, including zoom in and out
-  // const handleTouchEvents = useCallback(() => {
-  //   if (!canvas) return;
+  useLoadState({
+    //for set history when we fetch data
+    canvas,
+    autoZoom,
+    initialState,
+    canvasHistory,
+    setHistoryIndex,
+    userData: defaultState.userData,
+  });
 
-  //   const info = document.getElementById("touchInfo");
-  //   if (!info) return;
-
-  //   // Initial zoom scale
-  //   let lastZoomScale = 1;
-
-  //   // canvas.on({
-  //   //   "touch:gesture": function (event) {
-  //   //     var text = document.createTextNode(" Gesture ");
-  //   //     info.insertBefore(text, info.firstChild);
-
-  //   //     // Check if event.e.touches is available for gesture scaling
-  //   //     if (event.e.touches && event.e.touches.length === 2) {
-  //   //       // Pinch zoom scaling based on the gesture scale
-  //   //       alert("hi info");
-  //   //       const scale = event.e.scale;
-  //   //       const zoom = (canvas.getZoom() * scale) / lastZoomScale;
-
-  //   //       // Set limits to prevent over-zooming
-  //   //       if (zoom > 5) {
-  //   //         canvas.setZoom(5); // Maximum zoom level
-  //   //       } else if (zoom < 0.2) {
-  //   //         canvas.setZoom(0.2); // Minimum zoom level
-  //   //       } else {
-  //   //         canvas.setZoom(zoom); // Apply zoom
-  //   //       }
-
-  //   //       lastZoomScale = scale; // Update last zoom scale for the next event
-  //   //       event.e.preventDefault(); // Prevent default pinch-to-zoom behavior on the webpage
-  //   //     }
-  //   //   },
-  //   //   "touch:drag": function () {
-  //   //     var text = document.createTextNode(" Dragging ");
-  //   //     info.insertBefore(text, info.firstChild);
-  //   //   },
-  //   //   "touch:orientation": function () {
-  //   //     var text = document.createTextNode(" Orientation ");
-  //   //     info.insertBefore(text, info.firstChild);
-  //   //   },
-  //   //   "touch:shake": function () {
-  //   //     var text = document.createTextNode(" Shaking ");
-  //   //     info.insertBefore(text, info.firstChild);
-  //   //   },
-  //   //   "touch:longpress": function () {
-  //   //     var text = document.createTextNode(" Longpress ");
-  //   //     info.insertBefore(text, info.firstChild);
-  //   //   },
-  //   // });
-
-  //   // Reset the lastZoomScale when the touch ends
-  //   // canvas.on("touch:end", function () {
-  //   //   lastZoomScale = 1;
-  //   // });
-  // }, [canvas]);
-
-  // useMemo to save the state on the memory when the state changes so the re-render won't affect the Memo
   const editor = useMemo(() => {
     if (canvas) {
       // handleTouchEvents(); // Initialize touch events when canvas is ready
       return buildEditor({
+        dataForUpdate,
+        setDataForUpdate,
+        cvContent: defaultState,
+        setCvContent,
+        canvasHistory,
+        setHistoryIndex,
         moveLeft,
         moveRight,
         moveUp,
@@ -683,6 +929,10 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
         autoZoom,
         copy,
         paste,
+        //@ts-ignore
+        setPatternImageSrc,
+        //@ts-ignore
+        setShowCropper,
         canvas,
         fillColor,
         setFillColor,
@@ -698,7 +948,9 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
       });
     }
     return undefined;
+    // eslint-disable-next-line
   }, [
+    defaultState.style,
     moveLeft,
     canRedo,
     canUndo,
@@ -707,6 +959,8 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     save,
     copy,
     paste,
+    setPatternImageSrc,
+    setShowCropper,
     canvas,
     strokeWidth,
     strokeColor,
@@ -714,11 +968,35 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     strokeDashArray,
     fontFamily,
     autoZoom,
-    // handleTouchEvents,
+    fillColor,
+    moveDown,
+    moveRight,
+    moveUp,
+    canvasHistory,
+    dataForUpdate,
+    defaultState,
+    setCvContent,
+    setHistoryIndex,
   ]);
+  useEffect(() => {
+    if (canvas) {
+      canvas.on("text:editing:exited", (e: fabric.IEvent<Event>) => {
+        console.log("text edit");
+        catchEditedData(e, setDataForUpdate, canvas);
+        console.log("DATA FOR UPDATE", dataForUpdate);
+      });
+      canvas.on("object:scaling", (e: fabric.IEvent<Event>) => {
+        if (e.target instanceof fabric.Textbox) {
+          const withScalingValue: number =
+            e.target.get("fontSize")! * e.target.scaleY!;
+          e.target.set("fontSize", parseFloat(withScalingValue.toFixed(2)));
+        }
+      });
+    }
+  }, [canvas, dataForUpdate]);
 
   const init = useCallback(
-    ({
+    async ({
       initialCanvas,
       initialContainer,
     }: {
@@ -730,12 +1008,12 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
         cornerColor: "#ff5c00",
         cornerStyle: "rect",
         borderColor: "#ff5c00",
-        borderScaleFactor: 1.5,
+        borderScaleFactor: 1,
         transparentCorners: false,
         borderOpacityWhenMoving: 1,
         cornerStrokeColor: "#ff5c00",
-        padding: 15,
-        cornerSize: 10,
+        padding: 5,
+        cornerSize: 8,
       });
 
       const initialWorkspace = new fabric.Rect({
@@ -747,16 +1025,14 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
         hasControls: false,
         shadow: new fabric.Shadow({ color: "rgba(0,0,0,0.8)", blur: 5 }),
       });
+
       initialCanvas.setWidth(initialContainer.offsetWidth);
       initialCanvas.setHeight(initialContainer.offsetHeight);
-
       initialCanvas.add(initialWorkspace);
       initialCanvas.centerObject(initialWorkspace);
       initialCanvas.clipPath = initialWorkspace;
-
       setCanvas(initialCanvas);
       setContainer(initialContainer);
-
       const currentState = JSON.stringify(initialCanvas.toJSON(JSON_KEYS));
       canvasHistory.current = [currentState];
       setHistoryIndex(0);

@@ -1,15 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Mypic from "../../../public/images/Croods User Interface.png";
-import AttachedCvs from "./attached-cv";
+import AttachedCvs from "@/components/resume/attached-cv";
 import Image from "next/image";
-import axios from "axios";
 import MiniCardResume from "./mini-card-resume";
-
-interface CvData {
-  cv: string[]; // Adjust based on your actual data structure
-}
+import axiosInstance from "@/utils/axios";
+import { API_ENDPOINTS } from "@/utils/const/api-endpoints";
+import SkeletonLoader from "../cv-rating-card/router-page/basic/skeleton";
+import { CvData } from "@/utils/types/user-profile";
 
 const CardResume: React.FC = () => {
   const [show, setShow] = useState<boolean>(false);
@@ -17,25 +15,16 @@ const CardResume: React.FC = () => {
   const [next, setNext] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-  };
-
   useEffect(() => {
     const getCv = async () => {
       try {
         setLoading(true);
-        const check_cv = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/user/cv/`,
-          config
+        const check_cv = await axiosInstance.get(
+          API_ENDPOINTS.USER_SERVICE_CV_FILE
         );
-
-        if (check_cv.status === 200) {
-          setCvs(check_cv.data); // Set the entire response data, which includes the 'cv' array
-          setShow(check_cv.data.cv.length > 0); // Set show based on whether there are CVs
+        if (check_cv.status == 200) {
+          setCvs(check_cv.data.data); // Set the entire response data, which includes the 'cv' array
+          setShow(check_cv.data.data.cv.length > 0); // Set show based on whether there are CVs
         } else {
           setShow(false);
         }
@@ -51,61 +40,43 @@ const CardResume: React.FC = () => {
 
   return (
     <div className="h-[400px] ">
-      <AttachedCvs next={next} setNext={setNext} />
+      <AttachedCvs setNext={setNext} setLoading={setLoading} />
 
-      {!show && !loading && (
-        <div className="flex flex-col justify-center pt-5 items-center">
-          <h1 className="font-semibold w-full text-xl pb-5">My Resume</h1>
+      {!show && (
+        <div className="flex flex-col items-center justify-center pt-5">
+          <h1 className="w-full pb-5 text-xl font-semibold">My Resume</h1>
           <Image
-            src={Mypic}
+            src="/images/croods-user-interface.png"
             alt="Default profile image"
-            width={200}
-            height={200}
+            width={252}
+            height={188}
           />
-          <div className="flex flex-col justify-center items-center">
+          <div className="flex flex-col items-center justify-center">
             <h1 className="text-sm">Sorry, You Do not Have a Resume Yet.</h1>
-            <p className="text-gray-400 text-xs">You will see your data when</p>
-            <p className="text-gray-400 text-xs">you have uploaded your CV.</p>
+            <p className="text-xs text-gray-400">You will see your data when</p>
+            <p className="text-xs text-gray-400">you have uploaded your CV.</p>
           </div>
         </div>
       )}
 
-      {loading && (
-        <div className="flex flex-col justify-center pt-5 items-center pb-20">
-          <h1 className="font-semibold w-full text-xl pb-5">My Resume</h1>
-          <div className="w-full flex flex-col gap-3">
-            {Array(5)
-              .fill(0)
-              .map((_, index) => (
-                <div key={index} className="mb-5 rounded-xl drop-shadow-md">
-                  <MiniCardResume
-                    isLoading={true}
-                    name={""}
-                    index={index}
-                    next={next}
-                    setNext={setNext}
-                  />
-                </div>
-              ))}
-          </div>
-        </div>
-      )}
+      {loading && <SkeletonLoader text="Loading..." />}
 
       {show && (
-        <div className="flex flex-col justify-center pt-5 items-center pb-20">
-          <h1 className="font-semibold w-full text-xl pb-5">My Resume</h1>
-          <div className="w-full flex flex-col gap-3  ">
-            {cvs?.cv?.map((item: string, index: number) => (
-              <div key={index} className="w-full relative h-full">
-                <MiniCardResume
-                  name={item}
-                  index={index}
-                  next={next}
-                  setNext={setNext}
-                  style="translate-x-[-70px]"
-                />
-              </div>
-            ))}
+        <div className="flex flex-col items-center justify-center pt-5 pb-20">
+          <h1 className="w-full pb-5 text-xl font-semibold">My Resume</h1>
+          <div className="flex flex-col w-full gap-3 ">
+            {cvs?.cv?.map(
+              (item: { url: string; _id: string }, index: number) => (
+                <div key={index} className="relative w-full h-full">
+                  <MiniCardResume
+                    item={item}
+                    index={index}
+                    setNext={setNext}
+                    style="translate-x-[-70px]"
+                  />
+                </div>
+              )
+            )}
           </div>
         </div>
       )}
