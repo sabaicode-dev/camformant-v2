@@ -72,19 +72,19 @@ export function RegisterRoutes(app: Router) {
 
 
     
+        const argsHealthController_getHealth: Record<string, TsoaRoute.ParameterSchema> = {
+        };
         app.get('/v1/chat/health',
             ...(fetchMiddlewares<RequestHandler>(HealthController)),
             ...(fetchMiddlewares<RequestHandler>(HealthController.prototype.getHealth)),
 
             async function HealthController_getHealth(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsHealthController_getHealth, request, response });
 
                 const controller = new HealthController();
 
@@ -101,20 +101,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsConversationController_getConversations: Record<string, TsoaRoute.ParameterSchema> = {
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+        };
         app.get('/v1/conversations',
             ...(fetchMiddlewares<RequestHandler>(ConversationController)),
             ...(fetchMiddlewares<RequestHandler>(ConversationController.prototype.getConversations)),
 
             async function ConversationController_getConversations(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsConversationController_getConversations, request, response });
 
                 const controller = new ConversationController();
 
@@ -131,21 +131,21 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsConversationController_createConversation: Record<string, TsoaRoute.ParameterSchema> = {
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                requestBody: {"in":"body","name":"requestBody","required":true,"ref":"CreateConversationParams"},
+        };
         app.post('/v1/conversations',
             ...(fetchMiddlewares<RequestHandler>(ConversationController)),
             ...(fetchMiddlewares<RequestHandler>(ConversationController.prototype.createConversation)),
 
             async function ConversationController_createConversation(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"CreateConversationParams"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsConversationController_createConversation, request, response });
 
                 const controller = new ConversationController();
 
@@ -162,20 +162,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsConversationController_saveMessage: Record<string, TsoaRoute.ParameterSchema> = {
+                requestBody: {"in":"body","name":"requestBody","required":true,"ref":"IMessage"},
+        };
         app.post('/v1/conversations/:conversationId/messages',
             ...(fetchMiddlewares<RequestHandler>(ConversationController)),
             ...(fetchMiddlewares<RequestHandler>(ConversationController.prototype.saveMessage)),
 
             async function ConversationController_saveMessage(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"IMessage"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsConversationController_saveMessage, request, response });
 
                 const controller = new ConversationController();
 
@@ -192,20 +192,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsConversationController_getMessagesByConversationId: Record<string, TsoaRoute.ParameterSchema> = {
+                conversationId: {"in":"path","name":"conversationId","required":true,"dataType":"string"},
+        };
         app.get('/v1/conversations/:conversationId/messages',
             ...(fetchMiddlewares<RequestHandler>(ConversationController)),
             ...(fetchMiddlewares<RequestHandler>(ConversationController.prototype.getMessagesByConversationId)),
 
             async function ConversationController_getMessagesByConversationId(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    conversationId: {"in":"path","name":"conversationId","required":true,"dataType":"string"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsConversationController_getMessagesByConversationId, request, response });
 
                 const controller = new ConversationController();
 
@@ -222,19 +222,19 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsConversationController_getEncrypt: Record<string, TsoaRoute.ParameterSchema> = {
+        };
         app.get('/v1/conversations/enc',
             ...(fetchMiddlewares<RequestHandler>(ConversationController)),
             ...(fetchMiddlewares<RequestHandler>(ConversationController.prototype.getEncrypt)),
 
             async function ConversationController_getEncrypt(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsConversationController_getEncrypt, request, response });
 
                 const controller = new ConversationController();
 

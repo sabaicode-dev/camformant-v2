@@ -4,7 +4,7 @@
 /yarn-error.log
 /.pnp
 .pnp.js
-
+*.pem
 # Next.js
 /.next/
 /out/

@@ -69,21 +69,21 @@ export function RegisterRoutes(app: Router) {
 
 
     
+        const argsNotificationsController_subscribe: Record<string, TsoaRoute.ParameterSchema> = {
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                body: {"in":"body","name":"body","required":true,"ref":"PushSubscriptionParams"},
+        };
         app.post('/v1/notifications/subscribe',
             ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
             ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.subscribe)),
 
             async function NotificationsController_subscribe(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-                    body: {"in":"body","name":"body","required":true,"ref":"PushSubscriptionParams"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsNotificationsController_subscribe, request, response });
 
                 const controller = new NotificationsController();
 
@@ -100,21 +100,21 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsNotificationsController_pushNotification: Record<string, TsoaRoute.ParameterSchema> = {
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                body: {"in":"body","name":"body","required":true,"ref":"NotificationPayload"},
+        };
         app.post('/v1/notifications/push-notification',
             ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
             ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.pushNotification)),
 
             async function NotificationsController_pushNotification(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-                    body: {"in":"body","name":"body","required":true,"ref":"NotificationPayload"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsNotificationsController_pushNotification, request, response });
 
                 const controller = new NotificationsController();
 
@@ -131,20 +131,20 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsNotificationsController_unsubscribe: Record<string, TsoaRoute.ParameterSchema> = {
+                endpoint: {"in":"body","name":"endpoint","required":true,"dataType":"string"},
+        };
         app.delete('/v1/notifications/unsubscribe',
             ...(fetchMiddlewares<RequestHandler>(NotificationsController)),
             ...(fetchMiddlewares<RequestHandler>(NotificationsController.prototype.unsubscribe)),
 
             async function NotificationsController_unsubscribe(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    endpoint: {"in":"body","name":"endpoint","required":true,"dataType":"string"},
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsNotificationsController_unsubscribe, request, response });
 
                 const controller = new NotificationsController();
 
@@ -161,19 +161,19 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsHealthController_getHealth: Record<string, TsoaRoute.ParameterSchema> = {
+        };
         app.get('/v1/notifications/health',
             ...(fetchMiddlewares<RequestHandler>(HealthController)),
             ...(fetchMiddlewares<RequestHandler>(HealthController.prototype.getHealth)),
 
             async function HealthController_getHealth(request: ExRequest, response: ExResponse, next: any) {
-            const args: Record<string, TsoaRoute.ParameterSchema> = {
-            };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsHealthController_getHealth, request, response });
 
                 const controller = new HealthController();
 
