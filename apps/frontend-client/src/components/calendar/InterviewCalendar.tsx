@@ -11,9 +11,73 @@ import { EventModal } from "./EventModal";
 import { InterviewEvent } from "@/utils/types/calendar";
 import { eventStyleGetter } from "./CalendarStyle";
 import { JobApplication } from "@/utils/types/job";
-import { format } from "path";
+import { Button } from "../ui/button";
 
 const localizer = momentLocalizer(moment);
+
+// Custom Toolbar Component
+const CustomToolbar = ({ date, view, onNavigate, onView }: any) => {
+  const goToBack = () => {
+    onNavigate("PREV");
+  };
+
+  const goToNext = () => {
+    onNavigate("NEXT");
+  };
+
+  const goToToday = () => {
+    onNavigate("TODAY");
+  };
+
+  const handleViewChange = (newView: View) => {
+    onView(newView);
+  };
+
+  const formattedDate = moment(date).format("MMMM YYYY");
+
+  return (
+    <div className="flex justify-between items-center p-4 bg-gray-100 dark:bg-[#1e2746] shadow-md rounded-lg ">
+      <div className="flex gap-2">
+        <Button onClick={goToBack} className="hover:bg-orange-300 hover:text-white ">
+          &lt; Prev
+        </Button>
+        <Button onClick={goToToday} className="hover:bg-orange-300 hover:text-white">
+          Today
+        </Button>
+        <Button onClick={goToNext} className="hover:bg-orange-300 hover:text-white">
+          Next &gt;
+        </Button>
+      </div>
+      <div className="text-lg font-bold">{formattedDate}</div>
+      <div className="flex gap-2">
+        <Button
+          onClick={() => handleViewChange("month")}
+          className={`hover:bg-orange-300 hover:text-white ${view === "month" ? "bg-orange-400 text-white" : "hover:bg-orange-300 hover:text-white"}`}
+        >
+          Month
+        </Button>
+        <Button
+          onClick={() => handleViewChange("week")}
+          className={`hover:bg-orange-300 hover:text-white ${view === "week" ? "bg-orange-400 text-white" : "hover:bg-orange-300 hover:text-white"}`}
+        >
+          Week
+        </Button>
+        <Button
+          onClick={() => handleViewChange("day")}
+          className={`hover:bg-orange-300 hover:text-white ${view === "day" ? "bg-orange-400 text-white" : ""}`}
+        >
+          Day
+        </Button>
+        <Button
+          onClick={() => handleViewChange("agenda")}
+          className={`hover:bg-orange-300 hover:text-white ${view === "agenda" ? "bg-orange-400 text-white" : ""}`}
+        >
+          Agenda
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 const InterviewCalendar = () => {
   const [showModal, setShowModal] = useState(false);
@@ -139,8 +203,7 @@ const InterviewCalendar = () => {
   };
 
   return (
-    <div className="p-4 calendar-container dark:bg-gray-900">
-      {/* @ts-ignore */}
+    <div className="p-5 calendar-container dark:bg-[#1e2746] dark:border-gray-700 dark:shadow-md border rounded-[5px] ">
       <Calendar
         localizer={localizer}
         events={events}
