@@ -34,13 +34,11 @@ export const MenuBar = () => {
   };
 
   return (
-    <Menubar className="w-full py-8 bg-white dark:bg-black fixed top-0 z-40">
+    <Menubar className="w-full py-8 bg-white dark:bg-[#1e2746] fixed top-0 z-40">
       <div className="w-1/6 flex items-center">
         <SidebarGroup>
           <SidebarGroupLabel>
-            <div>
               <Image src={SabaiROkLogo} width={100} height={100} alt="logo" />
-            </div>
           </SidebarGroupLabel>
         </SidebarGroup>
       </div>
@@ -71,14 +69,13 @@ export const MenuBar = () => {
           <DropdownMenu>
           <DropdownMenuTrigger>
           <Avatar>
-            <AvatarImage src={user?.profile } className="w-15 h-15" />
+            <AvatarImage src={user?.profile } className="w-15 h-15 object-cover" />
             <AvatarFallback>{user?.name || ""}</AvatarFallback>
           </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => router.push("/profile")}>Profile</DropdownMenuItem>
             <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

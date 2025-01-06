@@ -80,13 +80,12 @@ const MyJobComponent = ({ params }: { params: { jobId: string } }) => {
     return <JobViewSkeleton />;
   }
   return (
-    <div className="p-6 ">
-      <JobHeader />
-      <div className="flex flex-col gap-4 sm:gap-6 md:flex-row xl:gap-6">
+    <div className="py-6">
+      <div className="flex flex-col gap-3 sm:flex-col sm:gap-6 xl:flex-row xl:gap-6">
         <div className="w-full xl:w-1/3 space-y-6 text-[16px]">
           <JobOverview details={jobDetails} />
         </div>
-        <div className="w-full bg-white text-[16px] rounded-lg mb-2 shadow-md xl:w-2/3">
+        <div className="w-full bg-white text-[16px] rounded-lg mb-2 shadow-md xl:w-2/3 dark:bg-[#1e2746] dark:border-gray-700 dark:shadow-md border">
           <JobDescription job_description={jobDescription} profile="" />
           <JobDetail details={jobData} />
         </div>

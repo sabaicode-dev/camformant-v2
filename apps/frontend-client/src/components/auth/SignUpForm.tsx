@@ -5,8 +5,8 @@ import * as z from "zod";
 import { useAuth } from "@/context/AuthContext";
 import { signUpSchema } from "@/lib/validations/authValidations";
 import { useState } from "react";
-import { FormFields } from "../signupForm/FormFields";
-import { SignUpFormWrapper } from "../signupForm/SignUpFormWrapper";
+import { SignUpFormFields } from "../authForm/SignUpFormFields";
+import { FormWrapper } from "../authForm/FormWrapper";
 
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 
@@ -36,13 +36,14 @@ export function SignUpForm() {
       await signUp(data);
       setIsLoading(false);
     } catch (error: any) {
-      setError(error.message || "Something went wrong");
+      setError(error.response.data.message || "Something went wrong");
+      setIsLoading(false);
     }
   }
 
   return (
-    <SignUpFormWrapper title="Submit an account" description="Submit an account to get started">
-    <FormFields form={form} onSubmit={onSubmit} isLoading={isLoading} error={error} />
-    </SignUpFormWrapper>
+    <FormWrapper title="Submit an account" description="Submit an account to get started">
+    <SignUpFormFields form={form} onSubmit={onSubmit} isLoading={isLoading} error={error} />
+    </FormWrapper>
   );
 }

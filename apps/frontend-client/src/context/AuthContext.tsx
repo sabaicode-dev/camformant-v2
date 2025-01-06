@@ -19,7 +19,7 @@ interface AuthContextType {
     confirmPassword,
   }: SignUpData) => Promise<void>;
   verifyCode: ({ email, phone_number, code }: VerifyCodeData) => Promise<void>;
-  signIn: ({ email, phone_number, password }: SignInData) => Promise<void>;
+  signIn: ({ email, password }: SignInData) => Promise<void>;
   signOut: () => Promise<void>;
 }
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -92,20 +92,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signIn = async (data: SignInData) => {
-    setIsLoading(true);
+    // setIsLoading(true);
     try {
-      await axiosInstance.post(API_ENDPOINTS.CORPARATE_SIGNIN, data);
+      await axiosInstance.post(API_ENDPOINTS.CORPARATE_SIGNIN, {
+        email: data.email,
+        password: data.password,
+      });
       const res = await axiosInstance.get(API_ENDPOINTS.CORPARATE_PROFILE_ME);
       setUser(res.data.data);
       setIsAuthenticated(true);
       router.push("/dashboard/chart");
     } catch (error) {
-      console.error("Sign in failed:", error);
-
+      console.log("Sign in failed:", error);
       setIsAuthenticated(false);
-      throw error;
-    } finally {
+      setUser(null);
       setIsLoading(false);
+      throw error;
     }
   };
 

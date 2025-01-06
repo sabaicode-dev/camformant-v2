@@ -12,19 +12,19 @@ export async function middleware(request: NextRequest) {
   const refresh_token = allCookies.split("; ").find((cookie) => cookie.startsWith("refresh_token="))?.split("=")[1];
   const username = allCookies.split("; ").find((cookie) => cookie.startsWith("username="))?.split("=")[1];
 
-  let userInfoResponse, userInfo;
-  if (access_token) {
-    userInfoResponse = await fetch(new URL("/api/userInfo", request.url), {
-      method: "GET",
-      headers: {
-        Cookie: allCookies || "",
-      },
-    });
-    if (!userInfoResponse.ok) {
-      return authHelpers.clearAuthAndRedirect(request, "/signin", access_token);
-    }
-    userInfo = await userInfoResponse.json();
-  }
+  // let userInfoResponse, userInfo;
+  // if (access_token) {
+  //   userInfoResponse = await fetch(new URL("/api/userInfo", request.url), {
+  //     method: "GET",
+  //     headers: {
+  //       Cookie: allCookies || "",
+  //     },
+  //   });
+  //   if (!userInfoResponse.ok) {
+  //     return authHelpers.clearAuthAndRedirect(request, "/signin", access_token);
+  //   }
+  //   userInfo = await userInfoResponse.json();
+  // }
 
   if (!access_token && refresh_token && username) {
     const refreshResult = await authHelpers.refreshAccessToken(refresh_token, username);
@@ -39,23 +39,23 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard/chart", request.url));
   }
 
-  if (pathname === "/signin" && access_token) {
-    return NextResponse.redirect(new URL("/dashboard/chart", request.url));
-  }
+  // if (pathname === "/signin" && access_token) {
+  //   return NextResponse.redirect(new URL("/dashboard/chart", request.url));
+  // }
 
-  if (pathname.startsWith("/dashboard") && !access_token) {
-    return NextResponse.redirect(new URL("/signin", request.url));
-  }
+  // if (pathname.startsWith("/dashboard") && !access_token) {
+  //   return NextResponse.redirect(new URL("/signin", request.url));
+  // }
 
-  if (pathname.startsWith("/dashboard")) {
-    const role = userInfo.data.role;
-    if (role !== "company") {
-      return await authHelpers.clearAuthAndRedirect(request, "/signin", access_token);
-    } else {
-      console.log("middleware.ts: User is authorized for the dashboard");
-      return NextResponse.next();
-    }
-  }
+  // if (pathname.startsWith("/dashboard")) {
+  //   const role = userInfo.data.role;
+  //   if (role !== "company") {
+  //     return await authHelpers.clearAuthAndRedirect(request, "/signin", access_token);
+  //   } else {
+  //     console.log("middleware.ts: User is authorized for the dashboard");
+  //     return NextResponse.next();
+  //   }
+  // }
   return NextResponse.next();
 }
 

@@ -79,7 +79,9 @@ export const useMap = ({ setFormData }: UseMapProps) => {
       });
 
       loader.load().then(async () => {
+        //ui map
         const { Map } = await loader.importLibrary("maps");
+        // klg pin
         const { Marker } = await loader.importLibrary("marker");
 
         const map = mapRef.current ? new Map(mapRef.current, mapOptions) : null;

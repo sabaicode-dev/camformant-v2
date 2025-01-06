@@ -32,7 +32,6 @@ export interface VerifyCodeData {
 
 export interface SignInData {
     email: string;
-    phone_number: string;
     password: string;
 }
 

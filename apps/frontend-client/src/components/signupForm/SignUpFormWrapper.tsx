@@ -8,7 +8,7 @@ interface SignUpFormWrapperProps {
   children: React.ReactNode;
 }
 
-export function SignUpFormWrapper({ children , title , description }: SignUpFormWrapperProps) {
+export function SignUpFormWrapper({ children , title , description  }: SignUpFormWrapperProps) {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-black p-4">
       <div className="flex flex-col-reverse md:flex-row w-full md:w-3/4 lg:w-2/3 bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">

@@ -43,11 +43,10 @@ export function FormField({
                 type={type}
                 min={min}
                 placeholder={placeholder}
-                className="w-full p-1 rounded-md border font-medium min-h-10 h-auto placeholder-gray-400 placeholder:pl-2 pl-3"
-                disabled={isLoading}
+                className="w-full border-gray-300 border dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
               />
               {rightElement && (
-                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                <div className="absolute right-3 top-4 -translate-y-1/2">
                   {rightElement}
                 </div>
               )}
