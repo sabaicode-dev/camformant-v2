@@ -50,7 +50,7 @@ export const CardLocation: React.FC<CardLocationProps> = ({ address }) => {
           href={googleMapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-primaryCam hover:underline mt-4 inline-block text-center"
+          className="inline-block mt-4 text-center text-primaryCam hover:underline"
         >
           Open in Google Maps
         </a>
