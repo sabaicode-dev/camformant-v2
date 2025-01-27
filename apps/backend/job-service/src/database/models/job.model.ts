@@ -90,7 +90,8 @@ const JobSchema: Schema = new Schema(
     position: { type: [String], required: true },
     workMode: { type: [String], required: true, enum: Object.values(WorkMode) },
     requirement: { type: String, required: true },
-    location: { type: String, required: true },
+    // location: { type: String, required: true },
+    location: { type: String },
     job_opening: { type: Number, required: true },
     max_salary: {
       type: Number,
@@ -109,7 +110,8 @@ const JobSchema: Schema = new Schema(
       },
     },
     description: { type: String, required: true },
-    address: { type: String, required: true },
+    // address: { type: String, required: true },
+    address: { type: String },
     type: {
       type: [String],
       enum: Object.values(EmploymentType),

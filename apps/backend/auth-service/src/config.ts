@@ -16,7 +16,7 @@ type Config = {
   awsSecretAccessKey: string;
   gmailUser: string;
   gmailAppPassowrd: string;
-  clientUrl:string;
+  clientUrl: string;
 };
 
 // Function to load and validate environment variables
@@ -65,7 +65,7 @@ function loadConfig(): Config {
     awsSecretAccessKey: envVars.AWS_SECRET_ACCESS_KEY,
     gmailUser: envVars.GMAIL_USER,
     gmailAppPassowrd: envVars.GMAIL_APP_PASSWORD,
-    clientUrl: envVars.GMAIL_APP_PASSWORD,
+    clientUrl: envVars.CLIENT_URL,
   };
 }
 

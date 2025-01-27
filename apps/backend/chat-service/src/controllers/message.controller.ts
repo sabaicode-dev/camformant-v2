@@ -93,8 +93,9 @@ export class MessageController extends Controller {
   @Get("/conversation/{conversationId}")
   public async getConversationById(@Path() conversationId: string) {
     try {
-      const result =
-        await this.MessageService.getConversationById(conversationId);
+      const result = await this.MessageService.getConversationById(
+        conversationId
+      );
       return result;
     } catch (error) {
       throw error;

@@ -22,7 +22,7 @@ export const useMap = ({ setFormData }: UseMapProps) => {
     const geocoder = new google.maps.Geocoder();
     geocoder
       .geocode({ location })
-      .then((response) => {
+      ?.then((response) => {
         if (response.results && response.results.length > 0) {
           const formattedAddress = response.results[0].formatted_address;
           const locArr = formattedAddress.split(",").slice(-2);
