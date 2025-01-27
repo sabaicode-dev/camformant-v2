@@ -1,84 +1,49 @@
-# Project Name: Your Project Name
+# Getting Started
 
-Welcome to the **Your Project Name** repository. This README provides guidelines on our coding conventions, project structure, and development practices to ensure consistency and maintainability of the codebase.
+Before starting the services, make sure to set up the necessary environment variables. **Go to [Link](https://docs.google.com/spreadsheets/d/1o7DnviMjOyH5QuX2fmfkFewxplx3xGmmHtlI5r1o5Ys/edit?usp=sharing) to get the required `.env` files**.
 
-## Code Conventions
+To start the various services in the project, run the following commands in separate terminal windows:
 
-We aim to maintain a clean and uniform codebase. Please adhere to the following conventions when contributing to this project.
+### Frontend Apps
 
-### Directory Structure
+- **Admin Dashboard**
+  ```bash
+  yarn start:camformant-admin
+  ```
+- **Client Commpany**
+  ```bash
+  yarn start:frontend-client
+  ```
+- **Client User**
+  ```bash
+  yarn start:camformant-client
+  ```
 
-Our project is organized into several key directories:
+### Backend Services
 
-```bash
-/project-root
-|-- /apps
-| |-- /backend # Backend Service
-| |-- /frontend-client # NextJS application for the client
-| |-- /frontend-dashboard # ReactJS Dashboard application
-|-- /packages
-| |-- /ui-components # Reusable UI components
-| |-- /libs
-| |-- /utils # Utility functions
-| |-- /types # TypeScript type definitions
-```
+- **User Service**
+  ```bash
+  yarn start:user-service
+  ```
+- **Authentication Service**
+  ```bash
+  yarn start:auth-service
+  ```
+- **Chat Service**
+  ```bash
+  yarn start:chat-service
+  ```
+- **Job Service**
+  ```bash
+  yarn start:job-service
+  ```
+- **Notification Service**
+  ```bash
+  yarn start:notification-service
+  ```
+- **API Gateway**
+  ```bash
+  yarn start:api-gateway-service
+  ```
 
-### Naming Conventions
-
-#### Files and Folders
-
-- **Files**: Use kebab-case for file names. Example: `user-profile.ts`, `login-form.tsx`.
-- **Folders**: Use kebab-case for folder names. Example: `ui-components`, `order-processing`.
-
-#### Code
-
-- **Variables and Functions**: Use camelCase for identifiers.
-  ```typescript
-  let recordCount = 10;
-  function fetchUserData() { ... }
-
-- **Classes and Interface**: Use PascalCase for classes and interfaces
-  ```typescript
-  class UserProcessor { ... }
-  interface UserData { ... }
-
-#### Functions
-- Keep functions concise and focused on a single task.
-- Clearly name functions to reflect their purpose.
-
-#### Variables
-- Use descriptive names, avoiding vague or generic terms.
-- Avoid single-letter names except in short, localized loops.
-
-#### React/NextJS Components
-- Name React/NextJS components using PascalCase and match the file name with the component name.
-- Place each component in its own folder with its associated styles and tests.
-
-#### Commit Messages
-- Use clear, concise commit messages in the imperative mood.
-Example: "Add payment processing module", "Fix boundary error in cart calculation".
-
-#### Pull Requests
-- Describe changes thoroughly.
-- Ensure code passes all tests and adheres to the coding standards set forth in this document.
-
-
-#### Setup and Development
-## Getting Started
-To set up the project locally, follow these steps:
-
-1. Clone the repository
-```bash
-git clone [repository-url]
-```
-2. Install dependencies
-```bash
-yarn install
-```
-3. Start All Server
-```bash
-yarn start
-```
-
-#### Contributing
-Please read our contributing guidelines carefully before making a pull request. Contributions should be made in a separate branch and submitted via pull requests to the main branch for review.
+Make sure you have all dependencies installed by running `yarn install` in the root directory before starting the services.
